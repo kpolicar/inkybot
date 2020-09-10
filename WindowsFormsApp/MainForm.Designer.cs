@@ -27,9 +27,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.statusBarPanel1 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
+            this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
+            this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -38,24 +40,31 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(404, 410);
+            this.panel1.Size = new System.Drawing.Size(1263, 681);
             this.panel1.TabIndex = 0;
             // 
             // statusBarPanel1
             // 
-            this.statusBarPanel1.Alignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.statusBarPanel1.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
-            this.statusBarPanel1.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.Raised;
             this.statusBarPanel1.Name = "statusBarPanel1";
-            this.statusBarPanel1.Width = 404;
+            this.statusBarPanel1.Width = 1253;
+            // 
+            // statusBarPanel2
+            // 
+            this.statusBarPanel2.Alignment = System.Windows.Forms.HorizontalAlignment.Right;
+            this.statusBarPanel2.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+            this.statusBarPanel2.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.Raised;
+            this.statusBarPanel2.Name = "statusBarPanel2";
+            this.statusBarPanel2.Width = 10;
             // 
             // statusBar1
             // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 388);
+            this.statusBar1.Location = new System.Drawing.Point(0, 659);
             this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {this.statusBarPanel1});
+            this.statusBar1.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[]
+                {this.statusBarPanel1, this.statusBarPanel2});
             this.statusBar1.ShowPanels = true;
-            this.statusBar1.Size = new System.Drawing.Size(404, 22);
+            this.statusBar1.Size = new System.Drawing.Size(1263, 22);
             this.statusBar1.SizingGrip = false;
             this.statusBar1.TabIndex = 0;
             // 
@@ -63,13 +72,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 410);
+            this.ClientSize = new System.Drawing.Size(1263, 681);
             this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.panel1);
             this.HelpButton = true;
             this.Name = "MainForm";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -77,6 +87,7 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.StatusBar statusBar1;
-        private WindowsFormsApp.Controls.MousePositionStatusBarPanel statusBarPanel1;
+        private System.Windows.Forms.StatusBarPanel statusBarPanel1;
+        private WindowsFormsApp.Controls.MousePositionStatusBarPanel statusBarPanel2;
     }
 }

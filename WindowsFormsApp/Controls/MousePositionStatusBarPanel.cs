@@ -30,6 +30,7 @@ namespace WindowsFormsApp.Controls
 
         
         protected override void Dispose(bool disposing) {
+            Unsubscribe();
             if (disposing)
                 m_GlobalHook.Dispose();
             base.Dispose(disposing);

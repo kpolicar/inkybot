@@ -30,6 +30,5 @@ namespace WindowsFormsApp
         
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
-
     }
 }
