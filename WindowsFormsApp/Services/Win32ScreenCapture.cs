@@ -8,7 +8,7 @@ namespace WindowsFormsApp
     /// <summary>
     /// Provides functions to capture the entire screen, or a particular window, and save it to a file.
     /// </summary>
-    public class ScreenCapture
+    public class Win32ScreenCapture : ScreenCapture
     {
         /// <summary>
         /// Creates an Image object containing a screen shot of the entire desktop
@@ -19,7 +19,7 @@ namespace WindowsFormsApp
             return CaptureWindow( User32.GetDesktopWindow() );
         }
         
-        public static Bitmap cropAtRect(Bitmap b, Rectangle r)
+        public Bitmap cropAtRect(Bitmap b, Rectangle r)
         {
             Bitmap nb = new Bitmap(r.Width, r.Height);
             using (Graphics g = Graphics.FromImage(nb))

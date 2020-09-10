@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Globalization;
 using Windows.Graphics.Imaging;
@@ -11,7 +14,7 @@ using Windows.Storage.Streams;
 
 namespace WindowsFormsApp
 {
-    public class Ocr
+    public class ScreenReader : DofusDataProvider
     {
         ScreenCapture screen;
         InMemoryRandomAccessStream stream;
@@ -19,32 +22,46 @@ namespace WindowsFormsApp
         OcrEngine engine;
         IntPtr handle;
 
-        public Ocr(IntPtr hwnd) {
-            if (!OcrEngine.IsLanguageSupported(language))
-            {
+        public ScreenReader(IntPtr hwnd) {
+            if (!OcrEngine.IsLanguageSupported(language)) {
                 throw new Exception($"{language.LanguageTag} is not supported in this system.");
             }
             
             engine = OcrEngine.TryCreateFromLanguage(language);
-            screen = new ScreenCapture();
+            screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             stream = new InMemoryRandomAccessStream();
             handle = hwnd;
         }
         
-        ~Ocr() {
+        ~ScreenReader() {
             stream.Dispose();
         }
-
-        public async Task<OcrResult> stats()
-        {
-            return await ocr(new Rectangle(745, 305, 1050-745, 760-305));
-            //return await ocr(new Rectangle(740, 305, 1044-740, 840-305));
+        
+        public async Task<Dictionary<string, string>> Stats() {
+            var stats = new Dictionary<string, string>();
+            
+            //var result = await Scan(new Rectangle(740, 305, 1044-740, 840-305));
+            var result = await Scan(new Rectangle(745, 305, 1050-745, 760-305));
+            foreach (var line in result.Lines) {
+                var data = line.Text.Split(new [] { ' ' }, 2);
+                stats[data[1]] = data[0];
+            }
+            
+            return stats;
         }
 
-        public async Task<OcrResult> ocr(Rectangle bounds) {
+        public async Task<Dictionary<string, string>> Max() {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Dictionary<string, string>> Min() {
+            throw new NotImplementedException();
+        }
+
+        public async Task<OcrResult> Scan(Rectangle bounds) {
             //var bitmap = (Bitmap) screen.CaptureWindow(handle);
-            var bitmap = Bitmap.FromFile("A:/Desktop/ex.jpg");
-            bitmap = ScreenCapture.cropAtRect((Bitmap)bitmap, bounds);
+            var bitmap = Image.FromFile("A:/Desktop/ex.jpg");
+            bitmap = screen.cropAtRect((Bitmap) bitmap, bounds);
 
             var fstream = File.Create("A:/Desktop/example.jpg");
             bitmap.Save(fstream, ImageFormat.Jpeg);//choose the specific image format by your own bitmap source

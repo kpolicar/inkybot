@@ -9,16 +9,15 @@ namespace WindowsFormsApp
     private Process pDocked;
     private IntPtr hWndOriginalParent;
     private IntPtr hWndDocked;
-    private Ocr ocr;
+    private ScreenReader screenReader;
     private DebugForm debugForm;
-
 
     public MainForm()
     {
       InitializeComponent();
       dockIt();
+      Program.Services.AddService(typeof(DofusDataProvider), screenReader = new ScreenReader(hWndDocked));
       statusBarPanel2.Subscribe(panel1);
-      ocr = new Ocr(hWndDocked);
       debugForm = new DebugForm(this);
       debugForm.Show();
       KeyDown += Form1_KeyDown;
@@ -27,7 +26,7 @@ namespace WindowsFormsApp
     private async void Form1_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Control) {
-        var results = await ocr.stats();
+        var results = await screenReader.Stats();
         debugForm.DisplayStats(results);
       }
     }

@@ -57,6 +57,8 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Contracts\DofusDataProvider.cs" />
+        <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
         <Compile Include="DebugForm.cs">
           <SubType>Form</SubType>
@@ -70,8 +72,8 @@
         <Compile Include="MainForm.Designer.cs">
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="Ocr.cs" />
-        <Compile Include="ScreenCapture.cs" />
+        <Compile Include="Services\Win32ScreenCapture.cs" />
+        <Compile Include="Services\ScreenReader.cs" />
         <Compile Include="Win32.cs" />
         <Compile Include="Win32.Window.cs">
           <DependentUpon>Win32.cs</DependentUpon>
