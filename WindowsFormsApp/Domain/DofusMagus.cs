@@ -41,14 +41,23 @@ namespace WindowsFormsApp
         }
 
         public async void DoMage() {
+            int row = 0;
+            int column = 0;
+            
             while (shouldContinueMaging) {
                 var stats = await dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(stats));
                 
                 item = new Item(stats);
-                commandIssuer.SelectRune(500, 500);
+                commandIssuer.SelectRune(row, column);
+
+                if (++column > 2) {
+                    column = 0;
+                    if (++row > 13) 
+                        row = 0;
+                }
                 
-                Thread.Sleep(1000);
+                Thread.Sleep(200);
             }
         }
     }

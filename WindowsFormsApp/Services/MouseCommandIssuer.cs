@@ -9,7 +9,7 @@
         }
         
         public void SelectRune(int row, int column) {
-            mouse.DoubleClick(row, column);
+            mouse.DoubleClick(1065 + column*55, 320 + row*39);
         }
     }
 }

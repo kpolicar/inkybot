@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
@@ -17,7 +18,10 @@ namespace WindowsFormsApp
       InitializeDofusClient();
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReader(hWndDocked));
+      var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
+      mouse.SetRelativeToHandle(hWndDocked);
       statusBarPanel2.Subscribe(panel1);
+      
       statsForm = new StatsForm(this);
       statsForm.Show();
     }
