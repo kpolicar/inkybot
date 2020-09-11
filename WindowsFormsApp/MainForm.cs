@@ -31,10 +31,11 @@ namespace WindowsFormsApp
 
     private async void Form1_KeyDown(object sender, KeyEventArgs e)
     {
-      if (e.Control) {
-        var results = await screenReader.Stats();
-        statsForm.DisplayStats(results);
-      }
+      if (!e.Control)
+        return;
+        
+      var results = await screenReader.Stats();
+      statsForm.DisplayStats(results);
     }
   }
 }
