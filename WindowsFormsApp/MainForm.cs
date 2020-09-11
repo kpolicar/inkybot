@@ -15,22 +15,11 @@ namespace WindowsFormsApp
     {
       InitializeComponent();
       InitializeDofusClient();
-      KeyboardHook.Init();
-      KeyboardHook.KeyPressed += StopMaging;
-      Disposed += (object sender, EventArgs e) => {
-        Debug.WriteLine("yes");
-        KeyboardHook.Release();
-      };
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReader(hWndDocked));
       statusBarPanel2.Subscribe(panel1);
       statsForm = new StatsForm(this);
       statsForm.Show();
-    }
-
-    private void StopMaging(object sender, EventArgs e) {
-      var magus = (DofusMagus) Program.Services.GetService(typeof(DofusMagus));
-      magus?.StopMage();
     }
 
     private void InitializeDofusClient() {

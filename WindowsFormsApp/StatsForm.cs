@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using WindowsFormsApp.Events;
 
@@ -8,7 +9,6 @@ namespace WindowsFormsApp
     public partial class StatsForm : Form
     {
         private MainForm mainForm;
-        Timer timer1 = new Timer();
         private bool isMaging = false;
         private DofusMagus magus;
 
@@ -18,8 +18,23 @@ namespace WindowsFormsApp
             this.mainForm = mainForm;
             magus = (DofusMagus) Program.Services.GetService(typeof(DofusMagus));
             magus.StatsCollected += StatsUpdated;
+
+            InitializeKeyboardShortcuts();
+            
+            Disposed += (sender, e) => {
+                KeyboardHook.Release();
+                magus.StopMage();
+            };
         }
-        
+
+        private void InitializeKeyboardShortcuts() {
+            KeyboardHook.Init();
+            KeyboardHook.KeyPressed += (sender, e) => {
+                if (e.KeyCode == Keys.F2)
+                    button1_Click(sender, e);
+            };
+        }
+
         delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
         private void StatsUpdated(object sender, StatsEventArgs e)
         {
@@ -43,7 +58,7 @@ namespace WindowsFormsApp
 
         private void button1_Click(object sender, EventArgs e) {
             magus.BeginMage(isMaging = !isMaging);
-            button1.Text = isMaging ? "Stop" : "Begin";
+            button1.Text = isMaging ? "Stop (F2)" : "Begin (F2)";
         }
     }
 }

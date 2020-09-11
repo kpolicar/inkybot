@@ -12,7 +12,7 @@ namespace WindowsFormsApp
         private const int WM_KEYDOWN = 0x0100;
         private static Win32.LowLevelKeyboardProc _proc = HookCallback;
         private static IntPtr _hookID = IntPtr.Zero;
-        public static event EventHandler KeyPressed;
+        public static event KeyEventHandler KeyPressed;
 
         public static void Init()
         {
@@ -41,9 +41,7 @@ namespace WindowsFormsApp
                 int vkCode = Marshal.ReadInt32(lParam);
                 Debug.WriteLine((Keys)vkCode);
                 
-                if (((Keys)vkCode).ToString() == "Add") {
-                    KeyPressed?.Invoke(null, null);
-                }
+                KeyPressed?.Invoke(null, new KeyEventArgs((Keys)vkCode));
             }
 
             return Win32.CallNextHookEx(_hookID, nCode, wParam, lParam);
