@@ -8,34 +8,35 @@ namespace WindowsFormsApp
   {
     private Process pDocked;
     private IntPtr hWndDocked;
-    private ScreenReader screenReader;
+    private DofusCommandIssuer command;
     private StatsForm statsForm;
 
     public MainForm()
     {
       InitializeComponent();
       InitializeDofusClient();
+      KeyboardHook.Init();
+      KeyboardHook.KeyPressed += StopMaging;
+      Disposed += (object sender, EventArgs e) => {
+        Debug.WriteLine("yes");
+        KeyboardHook.Release();
+      };
       
-      Program.Services.AddService(typeof(DofusDataProvider), screenReader = new ScreenReader(hWndDocked));
+      Program.Services.AddService(typeof(DofusDataProvider), new ScreenReader(hWndDocked));
       statusBarPanel2.Subscribe(panel1);
       statsForm = new StatsForm(this);
       statsForm.Show();
-      KeyDown += Form1_KeyDown;
+    }
+
+    private void StopMaging(object sender, EventArgs e) {
+      var magus = (DofusMagus) Program.Services.GetService(typeof(DofusMagus));
+      magus?.StopMage();
     }
 
     private void InitializeDofusClient() {
-      pDocked = Process.Start(@"notepad");
+      pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Games/Dofus/dofus.exe");
       WindowHelpers.DockProcess(pDocked, panel1, ref hWndDocked);
       WindowHelpers.RemoveWindowBorders(hWndDocked);
-    }
-
-    private async void Form1_KeyDown(object sender, KeyEventArgs e)
-    {
-      if (!e.Control)
-        return;
-        
-      var results = await screenReader.Stats();
-      statsForm.DisplayStats(results);
     }
   }
 }

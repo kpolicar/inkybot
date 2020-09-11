@@ -40,8 +40,9 @@ namespace WindowsFormsApp
         public async Task<Dictionary<string, string>> Stats() {
             var stats = new Dictionary<string, string>();
             
-            //var result = await Scan(new Rectangle(740, 305, 1044-740, 840-305));
-            var result = await Scan(new Rectangle(745, 305, 1050-745, 760-305));
+            var result = Program.debug ?
+                await Scan(new Rectangle(745, 305, 1050-745, 760-305)) :
+                await Scan(new Rectangle(740, 305, 1044-740, 840-305));
             foreach (var line in result.Lines) {
                 var data = line.Text.Split(new [] { ' ' }, 2);
                 stats[data[1]] = data[0];
@@ -59,8 +60,7 @@ namespace WindowsFormsApp
         }
 
         public async Task<OcrResult> Scan(Rectangle bounds) {
-            //var bitmap = (Bitmap) screen.CaptureWindow(handle);
-            var bitmap = Image.FromFile("A:/Desktop/ex.jpg");
+            var bitmap = Program.debug ? Image.FromFile("A:/Desktop/ex.jpg") : (Bitmap) screen.CaptureWindow(handle);
             bitmap = screen.cropAtRect((Bitmap) bitmap, bounds);
 
             var fstream = File.Create("A:/Desktop/example.bmp");

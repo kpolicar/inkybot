@@ -4,11 +4,13 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
   static class Program
   {
+    public static bool debug = true;
     public static ServiceContainer Services = new ServiceContainer();
 
     /// <summary>
@@ -17,6 +19,9 @@ namespace WindowsFormsApp
     [STAThread]
     static void Main() {
       Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
+      Services.AddService(typeof(Mouse), new Win32Mouse());
+      Services.AddService(typeof(DofusCommandIssuer), new MouseCommandIssuer());
+      Services.AddService(typeof(DofusMagus), new DofusMagus());
       
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

@@ -58,8 +58,15 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Contracts\DofusDataProvider.cs" />
+        <Compile Include="Contracts\DofusCommandIssuer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
+        <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
+        <Compile Include="Domain\DofusMagus.cs" />
+        <Compile Include="Domain\Item.cs" />
+        <Compile Include="Events\StatsEventArgs.cs" />
+        <Compile Include="KeyboardHook.cs" />
+        <Compile Include="Services\MouseCommandIssuer.cs" />
         <Compile Include="StatsForm.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -80,7 +87,7 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Services\Mouse.cs" />
+        <Compile Include="Services\Win32Mouse.cs" />
         <Compile Include="WindowHelpers.cs" />
         <EmbeddedResource Include="DebugForm.resx">
           <DependentUpon>StatsForm.cs</DependentUpon>
