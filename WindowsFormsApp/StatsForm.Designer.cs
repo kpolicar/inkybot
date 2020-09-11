@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp
 {
-    partial class DebugForm
+    partial class StatsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -100,7 +100,7 @@ namespace WindowsFormsApp
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.dataGridView1);
-            this.Name = "DebugForm";
+            this.Name = "StatsForm";
             this.Text = "Debug";
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

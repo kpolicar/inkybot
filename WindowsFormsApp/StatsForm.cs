@@ -7,11 +7,11 @@ using Windows.Media.Ocr;
 
 namespace WindowsFormsApp
 {
-    public partial class DebugForm : Form
+    public partial class StatsForm : Form
     {
         private MainForm mainForm;
 
-        public DebugForm(MainForm mainForm) {
+        public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
         }

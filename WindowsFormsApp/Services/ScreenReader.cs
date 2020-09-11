@@ -63,8 +63,8 @@ namespace WindowsFormsApp
             var bitmap = Image.FromFile("A:/Desktop/ex.jpg");
             bitmap = screen.cropAtRect((Bitmap) bitmap, bounds);
 
-            var fstream = File.Create("A:/Desktop/example.jpg");
-            bitmap.Save(fstream, ImageFormat.Jpeg);//choose the specific image format by your own bitmap source
+            var fstream = File.Create("A:/Desktop/example.bmp");
+            bitmap.Save(fstream, ImageFormat.Bmp);//choose the specific image format by your own bitmap source
             fstream.Dispose();
             
             bitmap.Save(stream.AsStream(), ImageFormat.Bmp);
