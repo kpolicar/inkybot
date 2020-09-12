@@ -96,7 +96,7 @@ namespace WindowsFormsApp
             ParryStatData("AP"),
             
             new Data("Heal", 10, 10f, 5f),
-            new Data("Critical", 10, 10f, 5f),
+            new Data("% Critical", 10, 10f, 5f),
             new Data("Reflect", 10, 10f, 10f),
             
             PerModifiersStatData("Spell Damage"),

@@ -32,8 +32,9 @@ namespace WindowsFormsApp
             var stats = new Item.ItemStat[result.Lines.Count];
             foreach (var line in result.Lines) {
                 var valueText = Regex.Match(line.Text, @"-?\d+").Value;
-                var nameText = Regex.Replace(line.Text, "", @"-?\d+");
+                var nameText = Regex.Replace(line.Text, @"-?\d+ ?", "");
 
+                Debug.WriteLine(valueText+" "+nameText);
                 var stat = Stat.Stats.First(statData => statData.DisplayName == nameText);
                 var value = int.Parse(valueText);
                 stats[i++] = new Item.ItemStat(stat, value);
