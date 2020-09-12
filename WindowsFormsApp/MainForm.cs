@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
@@ -9,7 +10,6 @@ namespace WindowsFormsApp
   {
     private Process pDocked;
     private IntPtr hWndDocked;
-    private IDofusCommandIssuer command;
     private StatsForm statsForm;
 
     public MainForm()
@@ -17,7 +17,7 @@ namespace WindowsFormsApp
       InitializeComponent();
       InitializeDofusClient();
       
-      Program.Services.AddService(typeof(IDofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
+      Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
       var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
       mouse.SetRelativeToHandle(hWndDocked);
       statusBarPanel2.Subscribe(panel1);

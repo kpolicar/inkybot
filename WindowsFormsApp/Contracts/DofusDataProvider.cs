@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace WindowsFormsApp
+namespace WindowsFormsApp.Contracts
 {
-    public interface IDofusDataProvider
+    public interface DofusDataProvider
     {
         Task<Item.ItemStat[]> Stats();
     }

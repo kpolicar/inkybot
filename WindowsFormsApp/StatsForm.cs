@@ -10,20 +10,20 @@ namespace WindowsFormsApp
     {
         private MainForm mainForm;
         private bool isMaging = false;
-        private DofusMagus magus;
+        private DofusMagingJob magingJob;
 
 
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
-            magus = (DofusMagus) Program.Services.GetService(typeof(DofusMagus));
-            magus.StatsCollected += StatsUpdated;
+            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            magingJob.StatsCollected += StatsUpdated;
 
             InitializeKeyboardShortcuts();
             
             Disposed += (sender, e) => {
                 KeyboardHook.Release();
-                magus.StopMage();
+                magingJob.StopMage();
             };
         }
 
@@ -57,7 +57,7 @@ namespace WindowsFormsApp
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            magus.BeginMage(isMaging = !isMaging);
+            magingJob.BeginMage(isMaging = !isMaging);
             button1.Text = isMaging ? "Stop (F2)" : "Begin (F2)";
         }
     }

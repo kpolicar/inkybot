@@ -58,12 +58,14 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Contracts\IDofusDataProvider.cs" />
-        <Compile Include="Contracts\IDofusCommandIssuer.cs" />
+        <Compile Include="BasicDofusMagingAI.cs" />
+        <Compile Include="Contracts\DofusDataProvider.cs" />
+        <Compile Include="Contracts\DofusCommandIssuer.cs" />
+        <Compile Include="Contracts\DofusMagingAI.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
-        <Compile Include="Domain\DofusMagus.cs" />
+        <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\Rune.cs" />
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Stat.cs" />

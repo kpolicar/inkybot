@@ -9,8 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Globalization;
 using Windows.Graphics.Imaging;
+using Windows.Media.Capture;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
+using ScreenCapture = WindowsFormsApp.Contracts.ScreenCapture;
 
 namespace WindowsFormsApp
 {

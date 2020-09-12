@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using WindowsFormsApp.Contracts;
 
 namespace WindowsFormsApp.Services
 {

@@ -12,10 +12,11 @@ using Windows.Globalization;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
+using WindowsFormsApp.Contracts;
 
 namespace WindowsFormsApp
 {
-    public class ScreenReaderDataProvider : IDofusDataProvider
+    public class ScreenReaderDataProvider : DofusDataProvider
     {
         private Win32ScreenReader scanner;
 

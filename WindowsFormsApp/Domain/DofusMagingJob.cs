@@ -3,20 +3,21 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Windows.Devices.Input;
+using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;
 using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
-    public class DofusMagus
+    public class DofusMagingJob
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
         public event EventHandler RuneSelected;
         public event StatsEventHandler StatsCollected;
 
-        public IDofusCommandIssuer commandIssuer;
-        public IDofusDataProvider dataProvider;
+        public DofusCommandIssuer commandIssuer;
+        public DofusDataProvider dataProvider;
         public Thread magus;
         private bool shouldContinueMaging;
         
@@ -25,8 +26,8 @@ namespace WindowsFormsApp
                 StopMage();
                 return;
             }
-            commandIssuer = (IDofusCommandIssuer) Program.Services.GetService(typeof(IDofusCommandIssuer));
-            dataProvider = (IDofusDataProvider) Program.Services.GetService(typeof(IDofusDataProvider));
+            commandIssuer = (DofusCommandIssuer) Program.Services.GetService(typeof(DofusCommandIssuer));
+            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             
             shouldContinueMaging = true;
             magus = new Thread(DoMage);
@@ -44,8 +45,8 @@ namespace WindowsFormsApp
             int column = 0;
             
             while (shouldContinueMaging) {
-                var data = await dataProvider.Stats();
-                StatsCollected?.Invoke(this, new StatsEventArgs(data));
+                var itemStats = await dataProvider.Stats();
+                StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 
                 commandIssuer.SelectRune(row, column);
 

@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApp.Services
+﻿namespace WindowsFormsApp.Contracts
 {
     public interface Mouse
     {
