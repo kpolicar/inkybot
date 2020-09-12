@@ -19,6 +19,7 @@ namespace WindowsFormsApp
     public class ScreenReaderDataProvider : DofusDataProvider
     {
         private Win32ScreenReader scanner;
+        public Item.ItemStat[] lastScanResults;
 
         public ScreenReaderDataProvider(IntPtr hwnd) {
             scanner = new Win32ScreenReader(hwnd);
@@ -35,13 +36,12 @@ namespace WindowsFormsApp
                 var valueText = Regex.Match(line.Text, @"-?\d+").Value;
                 var nameText = Regex.Replace(line.Text, @"-?\d+ ?", "");
 
-                Debug.WriteLine(valueText+" "+nameText);
                 var stat = Stat.Stats.First(statData => statData.DisplayName == nameText);
                 var value = int.Parse(valueText);
-                stats[i++] = new Item.ItemStat(stat, value);
+                stats[i++] = new Item.ItemStat(stat, value, 0, 0);
             }
 
-            return stats;
+            return lastScanResults = stats;
         }
     }
 }

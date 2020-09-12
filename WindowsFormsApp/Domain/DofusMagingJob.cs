@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,22 +17,27 @@ namespace WindowsFormsApp
         public event EventHandler RuneSelected;
         public event StatsEventHandler StatsCollected;
 
-        public DofusCommandIssuer commandIssuer;
         public DofusDataProvider dataProvider;
-        public Thread magus;
+        public Thread job;
         private bool shouldContinueMaging;
+        private DofusMagingAI magus;
+        private List<IAction> history;
+
+        public DofusMagingJob() {
+            magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
+        }
         
         public void BeginMage(bool begin) {
             if (!begin) {
                 StopMage();
                 return;
             }
-            commandIssuer = (DofusCommandIssuer) Program.Services.GetService(typeof(DofusCommandIssuer));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             
             shouldContinueMaging = true;
-            magus = new Thread(DoMage);
-            magus.Start();
+            magus.SetHistory(history = new List<IAction>());
+            job = new Thread(DoMage);
+            job.Start();
             Started?.Invoke(this, null);
         }
 
@@ -41,22 +47,16 @@ namespace WindowsFormsApp
         }
 
         public async void DoMage() {
-            int row = 0;
-            int column = 0;
-            
             while (shouldContinueMaging) {
                 var itemStats = await dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 
-                commandIssuer.SelectRune(row, column);
+                var action = magus.ResolveAction(itemStats);
+                action.Execute();
+                history.Add(action);
+                Debug.WriteLine(action);
 
-                if (++column > 2) {
-                    column = 0;
-                    if (++row > 13) 
-                        row = 0;
-                }
-                
-                Thread.Sleep(200);
+                Thread.Sleep(500);
             }
         }
     }

@@ -10,15 +10,26 @@ namespace WindowsFormsApp.Services
     {
         private IntPtr relativeToControl;
 
+        public void Click(int x, int y) {
+            MoveCursor(x, y);
+            Thread.Sleep(50);
+            
+            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
+            Thread.Sleep(10);
+            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
+        }
+
         public void DoubleClick(int x, int y) {
             MoveCursor(x, y);
             Thread.Sleep(50);
             
             Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
+            Thread.Sleep(10);
             Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
 
             Thread.Sleep(50);
             Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
+            Thread.Sleep(10);
             Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
         }
 

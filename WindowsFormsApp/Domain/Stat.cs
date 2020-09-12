@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace WindowsFormsApp
 {
@@ -7,6 +8,7 @@ namespace WindowsFormsApp
         public struct Data
         {
             public string DisplayName;
+            
             public Data(string displayName, int maximum, float sinkValue, float negSinkValue) {
                 this.DisplayName = displayName;
             }

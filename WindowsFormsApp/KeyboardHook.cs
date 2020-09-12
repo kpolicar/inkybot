@@ -39,7 +39,6 @@ namespace WindowsFormsApp
             if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                Debug.WriteLine((Keys)vkCode);
                 
                 KeyPressed?.Invoke(null, new KeyEventArgs((Keys)vkCode));
             }

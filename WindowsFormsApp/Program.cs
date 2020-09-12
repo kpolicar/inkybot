@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
+using Mouse = WindowsFormsApp.Contracts.Mouse;
 
 namespace WindowsFormsApp
 {
@@ -22,6 +23,7 @@ namespace WindowsFormsApp
       Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
       Services.AddService(typeof(Mouse), new Win32Mouse());
       Services.AddService(typeof(DofusCommandIssuer), new MouseCommandIssuer());
+      Services.AddService(typeof(ActionFactory), new MouseActionFactory());
       Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
       Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
 

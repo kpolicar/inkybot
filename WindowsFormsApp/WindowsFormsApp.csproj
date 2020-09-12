@@ -58,19 +58,25 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="BasicDofusMagingAI.cs" />
+        <Compile Include="Actions\Combine.cs" />
+        <Compile Include="Actions\MouseAction.cs" />
+        <Compile Include="Actions\SelectRune.cs" />
+        <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\DofusCommandIssuer.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
+        <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
+        <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\Rune.cs" />
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Stat.cs" />
         <Compile Include="Events\StatsEventArgs.cs" />
         <Compile Include="KeyboardHook.cs" />
+        <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\MouseCommandIssuer.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
         <Compile Include="StatsForm.cs">

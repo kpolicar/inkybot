@@ -4,11 +4,11 @@ namespace WindowsFormsApp
 {
     public class Rune
     {
-        private Item.ItemStat itemStat;
-        private Type type;
+        public Stat.Data stat;
+        public Type type;
 
-        public Rune(Item.ItemStat itemStat, Type type) {
-            this.itemStat = itemStat;
+        public Rune(Stat.Data stat, Type type) {
+            this.stat = stat;
             this.type = type;
         }
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
+using Mouse = WindowsFormsApp.Contracts.Mouse;
 
 namespace WindowsFormsApp
 {
