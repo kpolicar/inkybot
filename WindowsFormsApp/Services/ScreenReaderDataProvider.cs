@@ -31,11 +31,11 @@ namespace WindowsFormsApp
             int i = 0;
             var stats = new Item.ItemStat[result.Lines.Count];
             foreach (var line in result.Lines) {
-                var data = line.Text.Split(new [] { ' ' }, 2);
+                var valueText = Regex.Match(line.Text, @"-?\d+").Value;
+                var nameText = Regex.Replace(line.Text, "", @"-?\d+");
 
-                Debug.Write(data[1]);
-                var stat = Stat.Stats.First(statData => statData.DisplayName == data[1]);
-                var value = int.Parse(Regex.Match(data[0], @"-?\d+").Value);
+                var stat = Stat.Stats.First(statData => statData.DisplayName == nameText);
+                var value = int.Parse(valueText);
                 stats[i++] = new Item.ItemStat(stat, value);
             }
 
