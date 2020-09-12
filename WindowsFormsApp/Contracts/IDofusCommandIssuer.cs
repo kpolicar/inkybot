@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApp
 {
-    public interface DofusCommandIssuer
+    public interface IDofusCommandIssuer
     {
         void SelectRune(int row, int column);
     }

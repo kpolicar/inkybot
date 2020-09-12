@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApp.Services
 {
-    public class MouseCommandIssuer : DofusCommandIssuer
+    public class MouseCommandIssuer : IDofusCommandIssuer
     {
         private Mouse mouse;
 

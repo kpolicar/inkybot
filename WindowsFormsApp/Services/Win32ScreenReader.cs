@@ -14,7 +14,7 @@ using Windows.Storage.Streams;
 
 namespace WindowsFormsApp
 {
-    public class ScreenReader : DofusDataProvider
+    public class Win32ScreenReader
     {
         ScreenCapture screen;
         InMemoryRandomAccessStream stream;
@@ -22,7 +22,7 @@ namespace WindowsFormsApp
         OcrEngine engine;
         IntPtr handle;
 
-        public ScreenReader(IntPtr hwnd) {
+        public Win32ScreenReader(IntPtr hwnd) {
             if (!OcrEngine.IsLanguageSupported(language)) {
                 throw new Exception($"{language.LanguageTag} is not supported in this system.");
             }
@@ -33,7 +33,7 @@ namespace WindowsFormsApp
             handle = hwnd;
         }
         
-        ~ScreenReader() {
+        ~Win32ScreenReader() {
             stream.Dispose();
         }
         

@@ -14,20 +14,19 @@ namespace WindowsFormsApp
         public event EventHandler Stopped;
         public event EventHandler RuneSelected;
         public event StatsEventHandler StatsCollected;
-        
-        public DofusCommandIssuer commandIssuer;
-        public DofusDataProvider dataProvider;
-        public Thread magus;
-        private Item item;
-        private bool shouldContinueMaging;
 
+        public IDofusCommandIssuer commandIssuer;
+        public IDofusDataProvider dataProvider;
+        public Thread magus;
+        private bool shouldContinueMaging;
+        
         public void BeginMage(bool begin) {
             if (!begin) {
                 StopMage();
                 return;
             }
-            commandIssuer = (DofusCommandIssuer) Program.Services.GetService(typeof(DofusCommandIssuer));
-            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            commandIssuer = (IDofusCommandIssuer) Program.Services.GetService(typeof(IDofusCommandIssuer));
+            dataProvider = (IDofusDataProvider) Program.Services.GetService(typeof(IDofusDataProvider));
             
             shouldContinueMaging = true;
             magus = new Thread(DoMage);
@@ -45,10 +44,9 @@ namespace WindowsFormsApp
             int column = 0;
             
             while (shouldContinueMaging) {
-                var stats = await dataProvider.Stats();
-                StatsCollected?.Invoke(this, new StatsEventArgs(stats));
-                
-                item = new Item(stats);
+                var data = await dataProvider.Stats();
+                StatsCollected?.Invoke(this, new StatsEventArgs(data));
+
                 commandIssuer.SelectRune(row, column);
 
                 if (++column > 2) {

@@ -7,10 +7,10 @@ namespace WindowsFormsApp.Events
 
     public class StatsEventArgs : EventArgs
     {
-        public Dictionary<string, string> stats;
+        public Item.ItemStat[] stats;
         
         
-        public StatsEventArgs(Dictionary<string, string> stats) {
+        public StatsEventArgs(Item.ItemStat[] stats) {
             this.stats = stats;
         }
     }

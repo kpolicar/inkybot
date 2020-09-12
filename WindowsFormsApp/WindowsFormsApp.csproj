@@ -12,6 +12,7 @@
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <Deterministic>true</Deterministic>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,16 +58,19 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Contracts\DofusDataProvider.cs" />
-        <Compile Include="Contracts\DofusCommandIssuer.cs" />
+        <Compile Include="Contracts\IDofusDataProvider.cs" />
+        <Compile Include="Contracts\IDofusCommandIssuer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
         <Compile Include="Domain\DofusMagus.cs" />
+        <Compile Include="Domain\Rune.cs" />
         <Compile Include="Domain\Item.cs" />
+        <Compile Include="Domain\Stat.cs" />
         <Compile Include="Events\StatsEventArgs.cs" />
         <Compile Include="KeyboardHook.cs" />
         <Compile Include="Services\MouseCommandIssuer.cs" />
+        <Compile Include="Services\ScreenReaderDataProvider.cs" />
         <Compile Include="StatsForm.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -80,7 +84,7 @@
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Win32ScreenCapture.cs" />
-        <Compile Include="Services\ScreenReader.cs" />
+        <Compile Include="Services\Win32ScreenReader.cs" />
         <Compile Include="Win32.cs" />
         <Compile Include="Win32.Window.cs">
           <DependentUpon>Win32.cs</DependentUpon>
