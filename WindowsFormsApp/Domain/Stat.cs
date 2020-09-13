@@ -53,9 +53,9 @@ namespace WindowsFormsApp
         }
         
         public static readonly Data[] Stats = {
-            new Data("Initiative", 1010, 1f, 0.5f),
-            new Data("Vitality", 1010, 1f, 0.5f),
-            new Data("Pods", 1010, 1f, 0.5f),
+            new Data("Initiative", 1010, 0.1f, 0.05f),
+            new Data("Vitality", 505, 0.2f, 0.1f),
+            new Data("Pods", 404, 0.25f, 0.125f),
             
             ElementStatData("Strength"),
             ElementStatData("Intelligence"),

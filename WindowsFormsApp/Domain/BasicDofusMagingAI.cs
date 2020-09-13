@@ -20,12 +20,14 @@ namespace WindowsFormsApp
         }
         
         public IAction ResolveAction(ItemStat[] itemStats) {
-            var prioritized = itemStats.OrderBy(StatPriority).ToArray();
+            var prioritized = itemStats.OrderByDescending(StatPriority).ToArray();
             var targetStat = prioritized.FirstOrDefault();
+
+            if (targetStat.max <= targetStat.value)
+                return actions.Finish();
 
             var previous = history.LastOrDefault();
 
-            System.Diagnostics.Debug.WriteLine(targetStat.stat.DisplayName);
             if (previous == null ||
                 previous is Combine ||
                 previous is Combine && (previous as Combine).target.stat.DisplayName != targetStat.stat.DisplayName)

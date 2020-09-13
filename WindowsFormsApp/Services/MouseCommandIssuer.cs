@@ -17,5 +17,9 @@ namespace WindowsFormsApp.Services
         public void Combine() {
             mouse.Click(1015, 225);
         }
+
+        public void RemoveItem() {
+            mouse.DoubleClick(850, 165);
+        }
     }
 }

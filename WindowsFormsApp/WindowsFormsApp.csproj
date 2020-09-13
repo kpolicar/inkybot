@@ -67,6 +67,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Actions\Combine.cs" />
+        <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\MouseAction.cs" />
         <Compile Include="Actions\SelectRune.cs" />
         <Compile Include="Contracts\ActionFactory.cs" />

@@ -33,6 +33,8 @@ namespace WindowsFormsApp
         public async Task<Item.ItemStat[]> Stats() {
             var scanResults =
                 await scan.Stats();
+            
+            Debug.WriteLine(scanResults.Length);
 
 
             var stats = new Item.ItemStat[scanResults.Length];
@@ -49,7 +51,10 @@ namespace WindowsFormsApp
                 Debug.WriteLine("min: "+result.min);
                 Debug.WriteLine("max: "+result.max);
                 try {
-                    stats[i++] = new Item.ItemStat(stat, int.Parse(value), int.Parse(result.min), int.Parse(result.max));
+                    var min = result.min != "-" ? int.Parse(result.min) : 0;
+                    var max = result.max != "-" ? int.Parse(result.max) : 0;
+                    var valuee = value.Length > 0 ? int.Parse(value) : 0;
+                    stats[i++] = new Item.ItemStat(stat, valuee, min, max);
                 }
                 catch (Exception ec) {
                     Debug.WriteLine("EXCEPTION: " + ec.Message);
