@@ -24,9 +24,10 @@ namespace WindowsFormsApp
             var targetStat = prioritized[0];
 
             var previous = history.LastOrDefault();
+            System.Diagnostics.Debug.WriteLine(targetStat.stat.DisplayName);
 
             if (previous == null ||
-                (previous as Combine)?.target.stat.DisplayName != targetStat.stat.DisplayName)
+                previous is Combine && (previous as Combine).target.stat.DisplayName != targetStat.stat.DisplayName)
             {
                 var rune = new Rune(targetStat.stat, ResolveRuneType(targetStat));
                 

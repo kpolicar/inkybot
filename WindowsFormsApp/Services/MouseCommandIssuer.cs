@@ -15,7 +15,7 @@ namespace WindowsFormsApp.Services
         }
 
         public void Combine() {
-            mouse.Click(1065, 320-39);
+            mouse.Click(1015, 225);
         }
     }
 }

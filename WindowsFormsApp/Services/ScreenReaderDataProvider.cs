@@ -18,27 +18,35 @@ namespace WindowsFormsApp
 {
     public class ScreenReaderDataProvider : DofusDataProvider
     {
-        private Win32ScreenReader scanner;
+        private DofusScreenScan scan;
         public Item.ItemStat[] lastScanResults;
+        private IntPtr handle;
 
-        public ScreenReaderDataProvider(IntPtr hwnd) {
-            scanner = new Win32ScreenReader(hwnd);
+        public ScreenReaderDataProvider(IntPtr handle) {
+            this.handle = handle;
+        }
+
+        public void FetchData() {
+            scan = new DofusScreenScan(handle);
         }
 
         public async Task<Item.ItemStat[]> Stats() {
-            var result = Program.debug ?
-                await scanner.Scan(new Rectangle(745, 305, 1050-745, 760-305)) :
-                await scanner.Scan(new Rectangle(740, 305, 1044-740, 840-305));
+            var currentStatsResult =
+                await scan.Stats();
+            var minStatsResult =
+                await scan.Min();
+            var maxStatsResult = 
+                await scan.Max();
 
-            int i = 0;
-            var stats = new Item.ItemStat[result.Lines.Count];
-            foreach (var line in result.Lines) {
-                var valueText = Regex.Match(line.Text, @"-?\d+").Value;
-                var nameText = Regex.Replace(line.Text, @"-?\d+ ?", "");
+            var stats = new Item.ItemStat[currentStatsResult.Length];
 
-                var stat = Stat.Stats.First(statData => statData.DisplayName == nameText);
-                var value = int.Parse(valueText);
-                stats[i++] = new Item.ItemStat(stat, value, 0, 0);
+            for (int i = 0; i < currentStatsResult.Length; i++) {
+                var (name, value) = currentStatsResult[i];
+                var min = minStatsResult[i];
+                var max = maxStatsResult[i];
+                
+                var stat = Stat.Stats.First(statData => statData.DisplayName == name);
+                stats[i++] = new Item.ItemStat(stat, int.Parse(value), int.Parse(min), int.Parse(max));
             }
 
             return lastScanResults = stats;

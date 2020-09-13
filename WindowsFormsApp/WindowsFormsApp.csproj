@@ -92,7 +92,7 @@
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Win32ScreenCapture.cs" />
-        <Compile Include="Services\Win32ScreenReader.cs" />
+        <Compile Include="Services\DofusScreenScan.cs" />
         <Compile Include="Win32.cs" />
         <Compile Include="Win32.Window.cs">
           <DependentUpon>Win32.cs</DependentUpon>
