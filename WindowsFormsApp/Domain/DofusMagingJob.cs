@@ -49,6 +49,7 @@ namespace WindowsFormsApp
         public async void DoMage() {
             while (shouldContinueMaging) {
                 dataProvider.FetchData();
+
                 var itemStats = await dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 

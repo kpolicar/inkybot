@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,6 +11,8 @@ using Windows.Globalization;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
+using Tesseract;
+using ImageFormat = System.Drawing.Imaging.ImageFormat;
 using ScreenCapture = WindowsFormsApp.Contracts.ScreenCapture;
 
 namespace WindowsFormsApp
@@ -20,8 +21,7 @@ namespace WindowsFormsApp
     {
         private static ScreenCapture screen;
         private static InMemoryRandomAccessStream stream;
-        private static readonly Language language = new Language("en");
-        private static OcrEngine engine;
+        private static TesseractEngine engine;
         private static bool init = false;
         private readonly IntPtr handle;
         private readonly Bitmap screenshot;
@@ -36,11 +36,11 @@ namespace WindowsFormsApp
         private void Init() {
             if (init) return;
             
-            if (!OcrEngine.IsLanguageSupported(language)) {
-                throw new Exception($"{language.LanguageTag} is not supported in this system.");
-            }
+            engine = new TesseractEngine(
+                "C:\\Users\\Klemen\\RiderProjects\\WindowsFormsApp\\WindowsFormsApp\\tessdata", 
+                "eng",
+                EngineMode.Default);
             
-            engine = OcrEngine.TryCreateFromLanguage(language);
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;
         }
@@ -50,36 +50,51 @@ namespace WindowsFormsApp
         }
 
         public async Task<(string, string)[]> Stats() {
-            var result = await Scan(new Rectangle(740, 305, 1044-740, 840-305));
+            var result = await Scan(new Rectangle(740, 305, 980-740, 840-305), "stats");
 
-            return result.Lines.Select(
+            return result.Select(
                 line => {
-                    var value = Regex.Match(line.Text, @"-?\d+").Value;
-                    var name = Regex.Replace(line.Text, @"-?\d+ ?", "");
+                    var value = Regex.Match(line, @"-?\d+").Value;
+                    var name = Regex.Replace(line, @"-?\d+ ?", "");
                     return (name, value);
                 }
             ).ToArray();
         }
 
         public async Task<string[]> Max() {
-            var result = await Scan(new Rectangle(640, 305, 690-640, 840-305));
-            return result.Lines.Select(line => line.Text).ToArray();
+            var result = await Scan(new Rectangle(690, 305, 740-690, 840-305), "max");
+            return result;
         }
 
         public async Task<string[]> Min() {
-            var result = await Scan(new Rectangle(690, 305, 740-690, 840-305));
-            return result.Lines.Select(line => line.Text).ToArray();
+            var result = await Scan(new Rectangle(640, 305, 690-640, 840-305), "min");
+            return result;
         }
 
-        private async Task<OcrResult> Scan(Rectangle bounds) {
+        private async Task<string[]> Scan(Rectangle bounds, string name) {
+            var lines = new List<string>();
             var bitmap = screen.cropAtRect(screenshot, bounds);
-            bitmap.Save(stream.AsStream(), ImageFormat.Bmp);
+            bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
             
-            var decoder = await BitmapDecoder.CreateAsync(stream);
-            var softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+            
+            var fstream = File.Create("A:/Desktop/"+name+".bmp");
+            bitmap.Save(fstream, ImageFormat.Bmp);
+            fstream.Dispose();
+            
+            var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
+            
+            using (var iter = ocrResult.GetIterator()) {
+                iter.Begin();
 
-            var ocrResult = await engine.RecognizeAsync(softwareBitmap).AsTask();
-            return ocrResult;
+                do {
+                    var text = iter.GetText(PageIteratorLevel.TextLine);
+                    var trimmed = Regex.Replace(text, @"\t|\n|\r", "");
+                    lines.Add(trimmed);
+                } while (iter.Next(PageIteratorLevel.TextLine));
+            }
+            ocrResult.Dispose();
+
+            return lines.ToArray();
         }
         
         public Bitmap TakeScreenshot() {

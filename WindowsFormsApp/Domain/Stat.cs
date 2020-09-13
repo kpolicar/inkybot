@@ -8,9 +8,15 @@ namespace WindowsFormsApp
         public struct Data
         {
             public string DisplayName;
+            public int maximum;
+            public float sinkValue;
+            public float negSinkValue;
             
             public Data(string displayName, int maximum, float sinkValue, float negSinkValue) {
                 this.DisplayName = displayName;
+                this.maximum = maximum;
+                this.sinkValue = sinkValue;
+                this.negSinkValue = negSinkValue;
             }
         }
 

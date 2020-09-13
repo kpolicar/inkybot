@@ -24,7 +24,6 @@ namespace WindowsFormsApp
             var targetStat = prioritized[0];
 
             var previous = history.LastOrDefault();
-            System.Diagnostics.Debug.WriteLine(targetStat.stat.DisplayName);
 
             if (previous == null ||
                 previous is Combine && (previous as Combine).target.stat.DisplayName != targetStat.stat.DisplayName)

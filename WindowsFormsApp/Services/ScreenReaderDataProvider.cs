@@ -37,6 +37,8 @@ namespace WindowsFormsApp
                 await scan.Min();
             var maxStatsResult = 
                 await scan.Max();
+            
+            Debug.WriteLine("length: "+currentStatsResult.Length);
 
             var stats = new Item.ItemStat[currentStatsResult.Length];
 
@@ -46,8 +48,13 @@ namespace WindowsFormsApp
                 var max = maxStatsResult[i];
                 
                 var stat = Stat.Stats.First(statData => statData.DisplayName == name);
-                stats[i++] = new Item.ItemStat(stat, int.Parse(value), int.Parse(min), int.Parse(max));
+                Debug.WriteLine("stat: "+name);
+                Debug.WriteLine("value: "+value);
+                Debug.WriteLine("min: "+min);
+                Debug.WriteLine("max: "+max);
+                stats[i] = new Item.ItemStat(stat, int.Parse(value), int.Parse(min), int.Parse(max));
             }
+            Debug.WriteLine("-----");
 
             return lastScanResults = stats;
         }
