@@ -21,11 +21,13 @@ namespace WindowsFormsApp
         
         public IAction ResolveAction(ItemStat[] itemStats) {
             var prioritized = itemStats.OrderBy(StatPriority).ToArray();
-            var targetStat = prioritized[0];
+            var targetStat = prioritized.FirstOrDefault();
 
             var previous = history.LastOrDefault();
 
+            System.Diagnostics.Debug.WriteLine(targetStat.stat.DisplayName);
             if (previous == null ||
+                previous is Combine ||
                 previous is Combine && (previous as Combine).target.stat.DisplayName != targetStat.stat.DisplayName)
             {
                 var rune = new Rune(targetStat.stat, ResolveRuneType(targetStat));

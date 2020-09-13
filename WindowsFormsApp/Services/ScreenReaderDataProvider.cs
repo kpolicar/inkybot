@@ -31,31 +31,33 @@ namespace WindowsFormsApp
         }
 
         public async Task<Item.ItemStat[]> Stats() {
-            var currentStatsResult =
+            var scanResults =
                 await scan.Stats();
-            var minStatsResult =
-                await scan.Min();
-            var maxStatsResult = 
-                await scan.Max();
-            
-            Debug.WriteLine("length: "+currentStatsResult.Length);
 
-            var stats = new Item.ItemStat[currentStatsResult.Length];
 
-            for (int i = 0; i < currentStatsResult.Length; i++) {
-                var (name, value) = currentStatsResult[i];
-                var min = minStatsResult[i];
-                var max = maxStatsResult[i];
+            var stats = new Item.ItemStat[scanResults.Length];
+
+            int i = 0;
+            foreach (var result in scanResults) {
+                var value = Regex.Match(result.stat, @"-?\d+").Value;
+                var name = Regex.Replace(result.stat, @"-?\d+ ?", "");
+                
                 
                 var stat = Stat.Stats.First(statData => statData.DisplayName == name);
                 Debug.WriteLine("stat: "+name);
                 Debug.WriteLine("value: "+value);
-                Debug.WriteLine("min: "+min);
-                Debug.WriteLine("max: "+max);
-                stats[i] = new Item.ItemStat(stat, int.Parse(value), int.Parse(min), int.Parse(max));
+                Debug.WriteLine("min: "+result.min);
+                Debug.WriteLine("max: "+result.max);
+                try {
+                    stats[i++] = new Item.ItemStat(stat, int.Parse(value), int.Parse(result.min), int.Parse(result.max));
+                }
+                catch (Exception ec) {
+                    Debug.WriteLine("EXCEPTION: " + ec.Message);
+                    return new Item.ItemStat[]{};
+                }
             }
             Debug.WriteLine("-----");
-
+            
             return lastScanResults = stats;
         }
     }

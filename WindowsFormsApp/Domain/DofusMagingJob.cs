@@ -53,10 +53,12 @@ namespace WindowsFormsApp
                 var itemStats = await dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 
-                var action = magus.ResolveAction(itemStats);
-                action.Execute();
-                history.Add(action);
-                Debug.WriteLine(history.Count);
+                if (itemStats.Length > 0) {
+                    var action = magus.ResolveAction(itemStats);
+                    action.Execute();
+                    history.Add(action);
+                }
+                Debug.WriteLine("History count: "+history.Count);
 
                 Thread.Sleep(2000);
             }

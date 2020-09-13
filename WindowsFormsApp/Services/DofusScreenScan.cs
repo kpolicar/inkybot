@@ -17,6 +17,20 @@ using ScreenCapture = WindowsFormsApp.Contracts.ScreenCapture;
 
 namespace WindowsFormsApp
 {
+
+    public struct StatLineScanResult
+    {
+        public string stat;
+        public string max;
+        public string min;
+
+        public StatLineScanResult(string min, string max, string stat) {
+            this.min = min;
+            this.max = max;
+            this.stat = stat;
+        }
+    }
+    
     public class DofusScreenScan
     {
         private static ScreenCapture screen;
@@ -49,30 +63,27 @@ namespace WindowsFormsApp
             stream.Dispose();
         }
 
-        public async Task<(string, string)[]> Stats() {
-            var result = await Scan(new Rectangle(740, 305, 980-740, 840-305), "stats");
+        public async Task<StatLineScanResult[]> Stats() {
+            var Results = new List<StatLineScanResult>();
+            var (x, y) = (626, 302);
 
-            return result.Select(
-                line => {
-                    var value = Regex.Match(line, @"-?\d+").Value;
-                    var name = Regex.Replace(line, @"-?\d+ ?", "");
-                    return (name, value);
-                }
-            ).ToArray();
+            bool isResultValid = true;
+            for (int yOffset = 0; isResultValid; yOffset += 39) {
+                var result = await ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
+                var separated = result.Split(new[] {' '}, 3);
+                
+                isResultValid = separated.Length == 3;
+                if (!isResultValid) continue;
+                
+                var (min, max, stat) = (separated[0], separated[1], separated[2]);
+                Results.Add(new StatLineScanResult(min, max, stat));
+            }
+
+            return Results.ToArray();
         }
 
-        public async Task<string[]> Max() {
-            var result = await Scan(new Rectangle(690, 305, 740-690, 840-305), "max");
-            return result;
-        }
-
-        public async Task<string[]> Min() {
-            var result = await Scan(new Rectangle(640, 305, 690-640, 840-305), "min");
-            return result;
-        }
-
-        private async Task<string[]> Scan(Rectangle bounds, string name) {
-            var lines = new List<string>();
+        private async Task<string> ScanLine(Rectangle bounds, string name) {
+            string scannedLine = "";
             var bitmap = screen.cropAtRect(screenshot, bounds);
             bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
             
@@ -81,20 +92,17 @@ namespace WindowsFormsApp
             bitmap.Save(fstream, ImageFormat.Bmp);
             fstream.Dispose();
             
-            var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
+            var ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
             
             using (var iter = ocrResult.GetIterator()) {
                 iter.Begin();
 
-                do {
-                    var text = iter.GetText(PageIteratorLevel.TextLine);
-                    var trimmed = Regex.Replace(text, @"\t|\n|\r", "");
-                    lines.Add(trimmed);
-                } while (iter.Next(PageIteratorLevel.TextLine));
+                var text = iter.GetText(PageIteratorLevel.TextLine);
+                scannedLine = Regex.Replace(text, @"\t|\n|\r", "");
             }
             ocrResult.Dispose();
 
-            return lines.ToArray();
+            return scannedLine;
         }
         
         public Bitmap TakeScreenshot() {
