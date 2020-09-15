@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
@@ -6,8 +8,25 @@ using static WindowsFormsApp.Item;
 
 namespace WindowsFormsApp
 {
+    
     public class BasicDofusMagingAI : DofusMagingAI
     {
+        private struct ItemMage
+        {
+            public ItemStat stat;
+            public Rune rune;
+
+            public bool WillOvermage => stat.value + rune.IncreaseInValue > stat.max;
+
+            public ItemMage(ItemStat stat, Rune rune) {
+                this.stat = stat;
+                this.rune = rune;
+            }
+
+            public int NumberOfRunesNeededForFullMage =>
+                (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
+        }
+        
         private List<IAction> history;
         private ActionFactory actions;
         private Config config;
@@ -25,40 +44,45 @@ namespace WindowsFormsApp
         }
 
         public IAction ResolveAction(ItemStat[] itemStats) {
-            var prioritized = itemStats.OrderByDescending(StatPriority).ToArray();
-            var targetStat = prioritized.FirstOrDefault();
 
-            if (targetStat.max <= targetStat.value)
+            var itemMage = itemStats
+                .DefaultIfEmpty(itemStats.First())
+                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat))))
+                .OrderByDescending(StatPriority)
+                .FirstOrDefault(item => !item.WillOvermage);
+
+            // Todo: add condition based on remaining sink
+            if (itemMage.stat.max <= itemMage.stat.value)
                 return actions.Finish();
 
             var previous = history.LastOrDefault();
 
             if (previous == null ||
                 previous is Combine ||
-                previous is Combine && (previous as Combine).target.stat.DisplayName != targetStat.stat.DisplayName)
+                previous is Combine && (previous as Combine).target.stat.DisplayName != itemMage.stat.stat.DisplayName)
             {
-                var rune = new Rune(targetStat.stat, ResolveRuneType(targetStat));
-                
-                return actions.SelectRune(rune);
+                return actions.SelectRune(itemMage.rune);
             }
             
-            return actions.Combine(targetStat);
+            return actions.Combine(itemMage.stat);
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
-            if (itemStat.value > config.For(itemStat).ChangeToRaRuneValue) {
+            var itemConfig = config.For(itemStat);
+
+            if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) {
                 return Rune.Type.Ra;
             }
 
-            if (itemStat.value > config.For(itemStat).ChangeToPaRuneValue) {
+            if (itemConfig.CanUsePaRunes && itemStat.value > itemConfig.ChangeToPaRuneValue) {
                 return Rune.Type.Pa;
             }
             
             return Rune.Type.Sm;
         }
 
-        private int StatPriority(ItemStat itemStat) {
-            return config.For(itemStat).maximum - itemStat.value;
+        private int StatPriority(ItemMage itemMage) {
+            return itemMage.NumberOfRunesNeededForFullMage;
         }
     }
 }

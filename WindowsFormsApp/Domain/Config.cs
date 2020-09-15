@@ -9,6 +9,9 @@ namespace WindowsFormsApp
         public readonly int ChangeToRaRuneValue;
         public readonly int maximum;
 
+        public bool CanUsePaRunes => ChangeToPaRuneValue != int.MinValue;
+        public bool CanUseRaRunes => ChangeToRaRuneValue != int.MinValue;
+
         public StatConfig(int ChangeToPaRuneValue, int ChangeToRaRuneValue, int maximum) {
             this.ChangeToPaRuneValue = ChangeToPaRuneValue;
             this.ChangeToRaRuneValue = ChangeToRaRuneValue;

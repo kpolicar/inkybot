@@ -123,7 +123,7 @@ namespace WindowsFormsApp
             PerModifiersStatData("Melee Resistance"),
             
             new Stat("Damage", 5, 20f, 20f),
-            new Stat("Summon", 3, 30f, 35f),
+            new Stat("Summons", 3, 30f, 35f),
             new Stat("Range", 1, 51f, 25f),
             new Stat("MP", 1, 90f, 45f),
             new Stat("AP", 1, 100f, 50f),

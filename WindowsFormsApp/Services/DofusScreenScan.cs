@@ -70,7 +70,7 @@ namespace WindowsFormsApp
             bool isResultValid = true;
             for (int yOffset = 0; isResultValid; yOffset += 39) {
                 var result = await ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
-                result = Regex.Match(result, @"[a-zA-Z0-9\- ]+$").Value;
+                result = Regex.Match(result, @"[a-zA-Z0-9\-\% ]+$").Value;
                 var separated = result.Split(new[] {' '}, 3);
                 
                 isResultValid = separated.Length == 3;
