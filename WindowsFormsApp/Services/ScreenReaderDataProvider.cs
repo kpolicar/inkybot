@@ -39,15 +39,12 @@ namespace WindowsFormsApp
 
             int i = 0;
             foreach (var result in scanResults) {
-                var value = Regex.Match(result.stat, @"-?\d+").Value;
-                var name = Regex.Replace(result.stat, @"-?\d+ ?", "");
-                
-                
-                var stat = Stat.Stats.First(statData => statData.DisplayName == name);
+
+                var stat = Stat.Stats.First(statData => statData.DisplayName == result.name);
                 try {
                     var min = result.min != "-" ? int.Parse(result.min) : 0;
                     var max = result.max != "-" ? int.Parse(result.max) : 0;
-                    var valuee = value.Length > 0 ? int.Parse(value) : 0;
+                    var valuee = result.value.Length > 0 ? int.Parse(result.value) : 0;
                     stats[i++] = new Item.ItemStat(stat, valuee, min, max);
                 }
                 catch (Exception ec) {

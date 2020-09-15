@@ -20,14 +20,16 @@ namespace WindowsFormsApp
 
     public struct StatLineScanResult
     {
-        public string stat;
-        public string max;
+        public string name;
+        public string value;
         public string min;
+        public string max;
 
-        public StatLineScanResult(string min, string max, string stat) {
+        public StatLineScanResult(string name, string value, string min, string max) {
+            this.name = name;
+            this.value = value;
             this.min = min;
             this.max = max;
-            this.stat = stat;
         }
     }
     
@@ -49,11 +51,11 @@ namespace WindowsFormsApp
 
         private void Init() {
             if (init) return;
-            
             engine = new TesseractEngine(
                 "C:\\Users\\Klemen\\RiderProjects\\WindowsFormsApp\\WindowsFormsApp\\tessdata", 
                 "eng",
-                EngineMode.Default);
+                EngineMode.Default,
+                "C:\\Users\\Klemen\\RiderProjects\\WindowsFormsApp\\WindowsFormsApp\\tessdata\\config\\config");
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;
@@ -65,19 +67,20 @@ namespace WindowsFormsApp
 
         public async Task<StatLineScanResult[]> Stats() {
             var Results = new List<StatLineScanResult>();
-            var (x, y) = (626, 302);
+            var (x, y) = (626, 300);
 
             bool isResultValid = true;
             for (int yOffset = 0; isResultValid; yOffset += 39) {
                 var result = await ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
-                result = Regex.Match(result, @"[a-zA-Z0-9\-\% ]+$").Value;
-                var separated = result.Split(new[] {' '}, 3);
-                
-                isResultValid = separated.Length == 3;
+
+                var separated = Regex.Match(result, @"(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)").Groups;
+
+                isResultValid = separated.Count == 5;
                 if (!isResultValid) continue;
                 
-                var (min, max, stat) = (separated[0], separated[1], separated[2]);
-                Results.Add(new StatLineScanResult(min, max, stat));
+                var (min, max, value, name) =
+                    (separated[1].Value, separated[2].Value, separated[3].Value, separated[4].Value);
+                Results.Add(new StatLineScanResult(name, value, min, max));
             }
 
             return Results.ToArray();

@@ -12,11 +12,14 @@ namespace WindowsFormsApp
     private Process pDocked;
     private IntPtr hWndDocked;
     private StatsForm statsForm;
+    private IndicatorForm indicatorForm;
 
     public MainForm()
     {
       InitializeComponent();
+      
       InitializeDofusClient();
+
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
       var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
@@ -25,6 +28,8 @@ namespace WindowsFormsApp
       
       statsForm = new StatsForm(this);
       statsForm.Show();
+      indicatorForm = new IndicatorForm(panel1);
+      indicatorForm.Show();
     }
 
     private void InitializeDofusClient() {
