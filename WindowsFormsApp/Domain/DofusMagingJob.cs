@@ -22,9 +22,11 @@ namespace WindowsFormsApp
         private bool shouldContinueMaging;
         private DofusMagingAI magus;
         private List<IAction> history;
+        private Config config;
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
+            config = new Config();
         }
         
         public void BeginMage(bool begin) {
@@ -36,6 +38,8 @@ namespace WindowsFormsApp
             
             shouldContinueMaging = true;
             magus.SetHistory(history = new List<IAction>());
+            magus.SetConfig(config);
+            
             job = new Thread(DoMage);
             job.Start();
             Started?.Invoke(this, null);

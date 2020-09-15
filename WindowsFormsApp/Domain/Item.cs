@@ -6,12 +6,12 @@ namespace WindowsFormsApp
     {
         public struct ItemStat
         {
-            public Stat.Data stat;
+            public Stat stat;
             public int value;
             public int min;
             public int max;
 
-            public ItemStat(Stat.Data itemStat, int value, int min, int max) {
+            public ItemStat(Stat itemStat, int value, int min, int max) {
                 this.stat = itemStat;
                 this.value = value;
                 this.min = min;

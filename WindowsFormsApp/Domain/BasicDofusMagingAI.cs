@@ -10,6 +10,7 @@ namespace WindowsFormsApp
     {
         private List<IAction> history;
         private ActionFactory actions;
+        private Config config;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
@@ -18,7 +19,11 @@ namespace WindowsFormsApp
         public void SetHistory(List<IAction> history) {
             this.history = history;
         }
-        
+
+        public void SetConfig(Config config) {
+            this.config = config;
+        }
+
         public IAction ResolveAction(ItemStat[] itemStats) {
             var prioritized = itemStats.OrderByDescending(StatPriority).ToArray();
             var targetStat = prioritized.FirstOrDefault();
@@ -41,11 +46,20 @@ namespace WindowsFormsApp
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
+
+            if (itemStat.value > config.For(itemStat).ChangeToRaRuneValue) {
+                return Rune.Type.Ra;
+            }
+
+            if (itemStat.value > config.For(itemStat).ChangeToPaRuneValue) {
+                return Rune.Type.Pa;
+            }
+            
             return Rune.Type.Sm;
         }
 
-        private int StatPriority(ItemStat stat) {
-            return stat.max - stat.value;
+        private int StatPriority(ItemStat itemStat) {
+            return config.For(itemStat).maximum - itemStat.value;
         }
     }
 }

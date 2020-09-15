@@ -6,5 +6,6 @@ namespace WindowsFormsApp.Contracts
     {
         IAction ResolveAction(Item.ItemStat[] itemStats);
         void SetHistory(List<IAction> history);
+        void SetConfig(Config config);
     }
 }

@@ -78,6 +78,7 @@
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\MousePositionStatusBarPanel.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
+        <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\Rune.cs" />

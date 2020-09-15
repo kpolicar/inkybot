@@ -3,70 +3,79 @@ using System.Collections.ObjectModel;
 
 namespace WindowsFormsApp
 {
-    public static class Stat
+    public class Stat
     {
-        public struct Data
+        
+        readonly public string DisplayName;
+        readonly public int maximum;
+        readonly public float sinkValue;
+        readonly public float negSinkValue;
+        readonly public int changeToPaRuneThreshold;
+        readonly public int changeToRaRuneThreshold;
+
+
+        private Stat(string DisplayName,
+            int maximum,
+            float sinkValue,
+            float negSinkValue,
+            int changeToPaRuneThreshold = int.MinValue,
+            int changeToRaRuneThreshold = int.MinValue)
         {
-            public string DisplayName;
-            public int maximum;
-            public float sinkValue;
-            public float negSinkValue;
-            
-            public Data(string displayName, int maximum, float sinkValue, float negSinkValue) {
-                this.DisplayName = displayName;
-                this.maximum = maximum;
-                this.sinkValue = sinkValue;
-                this.negSinkValue = negSinkValue;
-            }
+            this.DisplayName = DisplayName;
+            this.maximum = maximum;
+            this.sinkValue = sinkValue;
+            this.negSinkValue = negSinkValue;
+            this.changeToPaRuneThreshold = changeToPaRuneThreshold;
+            this.changeToRaRuneThreshold = changeToRaRuneThreshold;
         }
 
-        private static Data ElementStatData(string displayName) {
-            return new Data(displayName, 101, 1f, 1f);
+        private static Stat ElementStatData(string DisplayName) {
+            return new Stat(DisplayName, 101, 1f, 1f, 20, 50);
         }
 
-        private static Data FlatElementResistanceStatData(string elementDisplayName) {
-            return new Data(elementDisplayName+" Resistance", 50, 2f, 2f);
+        private static Stat FlatElementResistanceStatData(string elementDisplayName) {
+            return new Stat(elementDisplayName+" Resistance", 50, 2f, 2f, 15);
         }
 
-        private static Data ElementDamageStatData(string elementDisplayName) {
-            return new Data(elementDisplayName+" Damage", 20, 5f, 2.5f);
+        private static Stat ElementDamageStatData(string elementDisplayName) {
+            return new Stat(elementDisplayName+" Damage", 20, 5f, 2.5f, 10);
         }
 
-        private static Data PerElementResistanceStatData(string elementDisplayName) {
-            return new Data("% "+elementDisplayName+" Resistance", 16, 6f, 3f);
+        private static Stat PerElementResistanceStatData(string elementDisplayName) {
+            return new Stat("% "+elementDisplayName+" Resistance", 16, 6f, 3f);
         }
 
-        private static Data ReductionStatData(string displayName) {
-            return new Data(displayName+" Reduction", 14, 7f, 4f);
+        private static Stat ReductionStatData(string DisplayName) {
+            return new Stat(DisplayName+" Reduction", 14, 7f, 4f);
         }
 
-        private static Data ParryStatData(string displayName) {
-            return new Data(displayName+" Parry", 14, 7f, 4f);
+        private static Stat ParryStatData(string DisplayName) {
+            return new Stat(DisplayName+" Parry", 14, 7f, 4f);
         }
 
-        private static Data EvadeStatData(string displayName) {
-            return new Data(displayName, 25, 4f, 2f);
+        private static Stat EvadeStatData(string DisplayName) {
+            return new Stat(DisplayName, 25, 4f, 2f);
         }
 
-        private static Data PerModifiersStatData(string displayName) {
-            return new Data(displayName, 6, 15f, 8f);
+        private static Stat PerModifiersStatData(string DisplayName) {
+            return new Stat(DisplayName, 6, 15f, 8f);
         }
         
-        public static readonly Data[] Stats = {
-            new Data("Initiative", 1010, 0.1f, 0.05f),
-            new Data("Vitality", 505, 0.2f, 0.1f),
-            new Data("Pods", 404, 0.25f, 0.125f),
+        public static readonly Stat[] Stats = {
+            new Stat("Initiative", 1010, 0.1f, 0.05f),
+            new Stat("Vitality", 505, 0.2f, 0.1f),
+            new Stat("Pods", 404, 0.25f, 0.125f),
             
             ElementStatData("Strength"),
             ElementStatData("Intelligence"),
             ElementStatData("Agility"),
             ElementStatData("Chance"),
             
-            new Data("CriticalResistance", 50, 2f, 1f),
-            new Data("Pushback Resistance", 50, 2f, 1f),
+            new Stat("CriticalResistance", 50, 2f, 1f),
+            new Stat("Pushback Resistance", 50, 2f, 1f),
             
-            new Data("Power", 50, 2f, 2f),
-            new Data("PerPowerTrap", 50, 2f, 2f),
+            new Stat("Power", 50, 2f, 2f),
+            new Stat("PerPowerTrap", 50, 2f, 2f),
             
             FlatElementResistanceStatData("Neutral"),
             FlatElementResistanceStatData("Earth"),
@@ -74,8 +83,8 @@ namespace WindowsFormsApp
             FlatElementResistanceStatData("Air"),
             FlatElementResistanceStatData("Water"),
             
-            new Data("Wisdom", 33, 3f, 2f),
-            new Data("Prospecting", 33, 3f, 2f),
+            new Stat("Wisdom", 33, 3f, 2f),
+            new Stat("Prospecting", 33, 3f, 2f),
             
             EvadeStatData("Lock"),
             EvadeStatData("Dodge"),
@@ -86,10 +95,10 @@ namespace WindowsFormsApp
             ElementDamageStatData("Air"),
             ElementDamageStatData("Water"),
             
-            new Data("Critical Damage", 20, 5f, 3f),
-            new Data("Pushback Damage", 20, 5f, 3f),
-            new Data("Trap Damage", 20, 5f, 5f),
-            new Data("Hunting", 1, 5f, 5f),
+            new Stat("Critical Damage", 20, 5f, 3f),
+            new Stat("Pushback Damage", 20, 5f, 3f),
+            new Stat("Trap Damage", 20, 5f, 5f),
+            new Stat("Hunting", 1, 5f, 5f),
             
             PerElementResistanceStatData("Neutral"),
             PerElementResistanceStatData("Earth"),
@@ -103,9 +112,9 @@ namespace WindowsFormsApp
             ParryStatData("MP"),
             ParryStatData("AP"),
             
-            new Data("Heal", 10, 10f, 5f),
-            new Data("% Critical", 10, 10f, 5f),
-            new Data("Reflect", 10, 10f, 10f),
+            new Stat("Heal", 10, 10f, 5f),
+            new Stat("% Critical", 10, 10f, 5f),
+            new Stat("Reflect", 10, 10f, 10f),
             
             PerModifiersStatData("Spell Damage"),
             PerModifiersStatData("Ranged Resistance"),
@@ -113,11 +122,11 @@ namespace WindowsFormsApp
             PerModifiersStatData("Melee Damage"),
             PerModifiersStatData("Melee Resistance"),
             
-            new Data("Damage", 5, 20f, 20f),
-            new Data("Summon", 3, 30f, 35f),
-            new Data("Range", 1, 51f, 25f),
-            new Data("MP", 1, 90f, 45f),
-            new Data("AP", 1, 100f, 50f),
+            new Stat("Damage", 5, 20f, 20f),
+            new Stat("Summon", 3, 30f, 35f),
+            new Stat("Range", 1, 51f, 25f),
+            new Stat("MP", 1, 90f, 45f),
+            new Stat("AP", 1, 100f, 50f),
         };
     }
 }
