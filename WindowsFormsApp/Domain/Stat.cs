@@ -46,15 +46,15 @@ namespace WindowsFormsApp
         }
 
         private static Stat ReductionStatData(string DisplayName) {
-            return new Stat(DisplayName+" Reduction", 14, 7f, 4f);
+            return new Stat(DisplayName+" Reduction", 14, 7f, 4f, 10);
         }
 
         private static Stat ParryStatData(string DisplayName) {
-            return new Stat(DisplayName+" Parry", 14, 7f, 4f);
+            return new Stat(DisplayName+" Parry", 14, 7f, 4f, 10);
         }
 
         private static Stat EvadeStatData(string DisplayName) {
-            return new Stat(DisplayName, 25, 4f, 2f);
+            return new Stat(DisplayName, 25, 4f, 2f, 10);
         }
 
         private static Stat PerModifiersStatData(string DisplayName) {
@@ -62,9 +62,9 @@ namespace WindowsFormsApp
         }
         
         public static readonly Stat[] Stats = {
-            new Stat("Initiative", 1010, 0.1f, 0.05f),
-            new Stat("Vitality", 505, 0.2f, 0.1f),
-            new Stat("Pods", 404, 0.25f, 0.125f),
+            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 400),
+            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 300),
+            new Stat("Pods", 404, 0.25f, 0.125f, 150, 350),
             
             ElementStatData("Strength"),
             ElementStatData("Intelligence"),
@@ -74,8 +74,8 @@ namespace WindowsFormsApp
             new Stat("CriticalResistance", 50, 2f, 1f),
             new Stat("Pushback Resistance", 50, 2f, 1f),
             
-            new Stat("Power", 50, 2f, 2f),
-            new Stat("PerPowerTrap", 50, 2f, 2f),
+            new Stat("Power", 50, 2f, 2f, 15, 40),
+            new Stat("Trap Power", 50, 2f, 2f, 15, 40),
             
             FlatElementResistanceStatData("Neutral"),
             FlatElementResistanceStatData("Earth"),
@@ -83,8 +83,8 @@ namespace WindowsFormsApp
             FlatElementResistanceStatData("Air"),
             FlatElementResistanceStatData("Water"),
             
-            new Stat("Wisdom", 33, 3f, 2f),
-            new Stat("Prospecting", 33, 3f, 2f),
+            new Stat("Wisdom", 33, 3f, 2f, 10, 25),
+            new Stat("Prospecting", 33, 3f, 2f, 10),
             
             EvadeStatData("Lock"),
             EvadeStatData("Dodge"),
@@ -95,9 +95,9 @@ namespace WindowsFormsApp
             ElementDamageStatData("Air"),
             ElementDamageStatData("Water"),
             
-            new Stat("Critical Damage", 20, 5f, 3f),
-            new Stat("Pushback Damage", 20, 5f, 3f),
-            new Stat("Trap Damage", 20, 5f, 5f),
+            new Stat("Critical Damage", 20, 5f, 3f, 10),
+            new Stat("Pushback Damage", 20, 5f, 3f, 10),
+            new Stat("Trap Damage", 20, 5f, 5f, 10),
             new Stat("Hunting", 1, 5f, 5f),
             
             PerElementResistanceStatData("Neutral"),

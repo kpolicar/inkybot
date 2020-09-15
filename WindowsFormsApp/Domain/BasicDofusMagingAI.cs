@@ -46,7 +46,6 @@ namespace WindowsFormsApp
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
-
             if (itemStat.value > config.For(itemStat).ChangeToRaRuneValue) {
                 return Rune.Type.Ra;
             }
