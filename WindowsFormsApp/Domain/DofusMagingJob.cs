@@ -53,8 +53,25 @@ namespace WindowsFormsApp
         public async void DoMage() {
             while (shouldContinueMaging) {
                 dataProvider.FetchData();
+                
+                var itemHistory = dataProvider.History();
 
-                var itemStats = await dataProvider.Stats();
+                foreach (var record in itemHistory) {
+                    try {
+                        Debug.WriteLine(record.ChangeInSink);
+
+                    }
+                    catch (Exception e) {
+                        Debug.WriteLine(e.Message);
+                        Debug.WriteLine(record.landed);
+                    }
+                }
+
+                
+                Thread.Sleep(2000);
+                return;
+
+                var itemStats = dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 
                 if (itemStats.Length > 0) {

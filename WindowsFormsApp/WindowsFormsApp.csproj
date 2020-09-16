@@ -81,6 +81,7 @@
         <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\IAction.cs" />
+        <Compile Include="Domain\MageHistoryRecord.cs" />
         <Compile Include="Domain\Rune.cs" />
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Stat.cs" />

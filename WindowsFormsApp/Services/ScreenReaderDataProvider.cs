@@ -30,9 +30,35 @@ namespace WindowsFormsApp
             scan = new DofusScreenScan(handle);
         }
 
-        public async Task<Item.ItemStat[]> Stats() {
+        public IEnumerable<MageHistoryRecord> History() {
             var scanResults =
-                await scan.Stats();
+                scan.History();
+
+            var records = scanResults.Select(mageEntry => {
+                var changes = Regex.Matches(mageEntry, @"(-?\d+) ?(%? ?[A-z ]+)");
+                var sinkChange = Regex.Match(mageEntry, @"[+-]sink");
+
+
+                var statChanges = changes.Cast<Match>().Select(change => {
+                        var grouped = change.Groups;
+                        var (value, name) = (grouped[1].Value, grouped[2].Value);
+
+                        var stat = Stat.Stats.First(statData => statData.DisplayName == name);
+                        var valuee = int.Parse(value);
+
+                        return new StatChanged(stat, valuee);
+                    }
+                );
+
+                return new MageHistoryRecord(statChanges, sinkChange.Success);
+            });
+
+            return records;
+        }
+
+        public Item.ItemStat[] Stats() {
+            var scanResults =
+                scan.Stats();
             
 
             var stats = new Item.ItemStat[scanResults.Length];

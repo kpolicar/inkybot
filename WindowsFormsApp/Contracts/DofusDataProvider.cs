@@ -6,7 +6,8 @@ namespace WindowsFormsApp.Contracts
 {
     public interface DofusDataProvider
     {
-        Task<Item.ItemStat[]> Stats();
+        Item.ItemStat[] Stats();
         void FetchData();
+        IEnumerable<MageHistoryRecord> History();
     }
 }

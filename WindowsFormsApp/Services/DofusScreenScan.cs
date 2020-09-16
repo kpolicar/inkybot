@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -65,13 +66,13 @@ namespace WindowsFormsApp
             stream.Dispose();
         }
 
-        public async Task<StatLineScanResult[]> Stats() {
+        public StatLineScanResult[] Stats() {
             var Results = new List<StatLineScanResult>();
             var (x, y) = (626, 300);
 
             bool isResultValid = true;
             for (int yOffset = 0; isResultValid; yOffset += 39) {
-                var result = await ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
+                var result = ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
 
                 var separated = Regex.Match(result, @"(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)").Groups;
 
@@ -86,7 +87,37 @@ namespace WindowsFormsApp
             return Results.ToArray();
         }
 
-        private async Task<string> ScanLine(Rectangle bounds, string name) {
+        public string[] History() {
+            var (x, y) = (352, 137);
+            var (xMax, yMax) = (590, 835);
+
+            var scanned = ScanRegion(new Rectangle(x, y, xMax-x, yMax-y), "history");
+
+            return scanned;
+        }
+
+        private string[] ScanRegion(Rectangle bounds, string name) {
+            var bitmap = screen.cropAtRect(screenshot, bounds);
+            bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
+            // bitmap = Sharpen(bitmap);
+            
+            
+            var fstream = File.Create("A:/Desktop/"+name+".bmp");
+            bitmap.Save(fstream, ImageFormat.Bmp);
+            fstream.Dispose();
+            
+            var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
+
+            var results = Regex
+                .Split(ocrResult.GetText(), "\n\n")
+                .Select(result => result.Replace("\n", " "));
+            
+            ocrResult.Dispose();
+
+            return results.ToArray();
+        }
+        
+        private string ScanLine(Rectangle bounds, string name) {
             string scannedLine = "";
             var bitmap = screen.cropAtRect(screenshot, bounds);
             bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);

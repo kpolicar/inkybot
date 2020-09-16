@@ -28,8 +28,8 @@ namespace WindowsFormsApp
       
       statsForm = new StatsForm(this);
       statsForm.Show();
-      indicatorForm = new IndicatorForm(panel1);
-      indicatorForm.Show();
+      // indicatorForm = new IndicatorForm(panel1);
+      // indicatorForm.Show();
     }
 
     private void InitializeDofusClient() {
