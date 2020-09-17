@@ -88,7 +88,7 @@ namespace WindowsFormsApp
         }
 
         public string[] History() {
-            var (x, y) = (352, 137);
+            var (x, y) = (352, 97);
             var (xMax, yMax) = (590, 835);
 
             var scanned = ScanRegion(new Rectangle(x, y, xMax-x, yMax-y), "history");
@@ -107,7 +107,7 @@ namespace WindowsFormsApp
             fstream.Dispose();
             
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
-
+            
             var results = Regex
                 .Split(ocrResult.GetText(), "\n\n")
                 .Select(result => result.Replace("\n", " "));

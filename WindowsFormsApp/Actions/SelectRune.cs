@@ -13,11 +13,13 @@ namespace WindowsFormsApp.Actions
         
         public override void Execute() {
             var itemStats = screenDataProvider.lastScanResults;
+            var column = (int) rune.type;
             
             for (int row = 0; row < itemStats.Length; row++) {
                 if (rune.stat.DisplayName != itemStats[row].stat.DisplayName)
                     continue;
-                command.SelectRune(row, (int)rune.type);
+
+                mouse.DoubleClick(1065 + column*55, 320 + row*39);
             }
         }
     }

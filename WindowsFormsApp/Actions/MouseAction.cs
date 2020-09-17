@@ -5,11 +5,11 @@ namespace WindowsFormsApp.Actions
 {
     public abstract class MouseAction : IAction
     {
-        protected MouseCommandIssuer command;
+        protected Mouse mouse;
         protected ScreenReaderDataProvider screenDataProvider;
 
         public MouseAction() {
-            command = (MouseCommandIssuer) Program.Services.GetService(typeof(DofusCommandIssuer));
+            mouse = (Mouse) Program.Services.GetService(typeof(Mouse));
             screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
         }
 

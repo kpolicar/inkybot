@@ -24,6 +24,8 @@ namespace WindowsFormsApp
             }
         }
 
+        public float Sink => stat.sinkValue * IncreaseInValue;
+
         public Rune(Stat stat, Type type) {
             this.stat = stat;
             this.type = type;

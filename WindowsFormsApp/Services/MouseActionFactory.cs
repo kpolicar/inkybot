@@ -9,7 +9,7 @@ namespace WindowsFormsApp.Services
             return new Finish();
         }
         
-        public IAction Combine(Item.ItemStat target) {
+        public IAction Combine(Rune target) {
             return new Combine(target);
         }
 

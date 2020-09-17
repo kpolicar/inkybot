@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
@@ -14,6 +16,7 @@ namespace WindowsFormsApp
     private StatsForm statsForm;
     private IndicatorForm indicatorForm;
 
+    
     public MainForm()
     {
       InitializeComponent();
@@ -30,6 +33,7 @@ namespace WindowsFormsApp
       statsForm.Show();
       // indicatorForm = new IndicatorForm(panel1);
       // indicatorForm.Show();
+
     }
 
     private void InitializeDofusClient() {

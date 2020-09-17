@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using WindowsFormsApp.Events;
 
@@ -13,6 +14,23 @@ namespace WindowsFormsApp
         private DofusMagingJob magingJob;
 
 
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            const int WM_NCPAINT = 0x85;
+            if (m.Msg == WM_NCPAINT)
+            {
+                IntPtr hdc = Win32.GetWindowDC(m.HWnd);
+                if ((int)hdc != 0)
+                {
+                    var g = Graphics.FromHdc(hdc);
+                    g.FillRectangle(Brushes.Green, new Rectangle(0, 0, 4800, 23));
+                    g.Flush();
+                    Win32.ReleaseDC(m.HWnd, hdc);
+                }
+            }
+        }
+        
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
@@ -21,7 +39,7 @@ namespace WindowsFormsApp
 
             InitializeKeyboardShortcuts();
             
-            Disposed += (sender, e) => {
+            Closing += (sender, e) => {
                 KeyboardHook.Release();
                 magingJob.StopMage();
             };

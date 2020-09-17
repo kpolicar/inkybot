@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Windows.Devices.Input;
+using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;
+using WindowsFormsApp.Exceptions;
 using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
@@ -21,12 +24,16 @@ namespace WindowsFormsApp
         public Thread job;
         private bool shouldContinueMaging;
         private DofusMagingAI magus;
-        private List<IAction> history;
         private Config config;
+        private IItemHistoryAnalyzer history;
+        private ActionHandler actions;
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
+            actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
+            history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             config = new Config();
+            previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] {}, history);
         }
         
         public void BeginMage(bool begin) {
@@ -37,7 +44,6 @@ namespace WindowsFormsApp
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             
             shouldContinueMaging = true;
-            magus.SetHistory(history = new List<IAction>());
             magus.SetConfig(config);
             
             job = new Thread(DoMage);
@@ -50,38 +56,46 @@ namespace WindowsFormsApp
             Stopped?.Invoke(this, null);
         }
 
+        private ItemHistoryAnalysis previousHistory;
+
         public async void DoMage() {
+            Debug.WriteLine("started maging!");
+            bool hasCombined = false;
+            
             while (shouldContinueMaging) {
                 dataProvider.FetchData();
                 
-                var itemHistory = dataProvider.History();
+                var itemHistory = history.Analyse(dataProvider.History());
 
-                foreach (var record in itemHistory) {
-                    try {
-                        Debug.WriteLine(record.ChangeInSink);
-
-                    }
-                    catch (Exception e) {
-                        Debug.WriteLine(e.Message);
-                        Debug.WriteLine(record.landed);
+                if (hasCombined) {
+                    var historyHasChanged = itemHistory.IsDifferentFrom(previousHistory);
+                    if (!historyHasChanged) {
+                        Thread.Sleep(50);
+                        continue;
                     }
                 }
-
                 
-                Thread.Sleep(2000);
-                return;
+                try {
+                    var a = itemHistory.CalculateSink();
+                    Debug.WriteLine("sink: "+a);
+                }
+                catch (CouldNotResolveSinkException e) {
+                    Debug.WriteLine("could not resolve sink exception!");
+                }
 
                 var itemStats = dataProvider.Stats();
                 StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
 
                 if (itemStats.Length > 0) {
                     var action = magus.ResolveAction(itemStats);
-                    action.Execute();
-                    history.Add(action);
+                    actions.Execute(action);
+                    hasCombined = action is Combine;
                 }
-                Debug.WriteLine("History count: "+history.Count);
-
-                Thread.Sleep(2000);
+                previousHistory = itemHistory;
+                
+                if (!hasCombined) {
+                    Thread.Sleep(300);
+                }
             }
         }
     }

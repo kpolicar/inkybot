@@ -3,7 +3,7 @@
     public interface ActionFactory
     {
         IAction Finish();
-        IAction Combine(Item.ItemStat target);
+        IAction Combine(Rune target);
         IAction SelectRune(Rune rune);
     }
 }

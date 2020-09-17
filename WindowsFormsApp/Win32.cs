@@ -49,6 +49,12 @@ namespace WindowsFormsApp
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
         
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        [DllImport("User32.dll")]
+        public static extern IntPtr GetWindowDC(IntPtr hWnd);
+        
         public struct Rect
         {
             public int Left { get; set; }

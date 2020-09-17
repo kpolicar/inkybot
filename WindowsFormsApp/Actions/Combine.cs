@@ -2,14 +2,14 @@
 {
     public class Combine : MouseAction
     {
-        public Item.ItemStat target;
+        public Rune target;
 
-        public Combine(Item.ItemStat target) {
+        public Combine(Rune target) {
             this.target = target;
         }
         
         public override void Execute() {
-            command.Combine();
+            mouse.Click(1015, 225);
         }
     }
 }

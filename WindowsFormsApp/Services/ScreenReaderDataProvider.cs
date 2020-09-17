@@ -12,6 +12,7 @@ using Windows.Globalization;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
+using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
 
 namespace WindowsFormsApp
@@ -42,7 +43,7 @@ namespace WindowsFormsApp
                 var statChanges = changes.Cast<Match>().Select(change => {
                         var grouped = change.Groups;
                         var (value, name) = (grouped[1].Value, grouped[2].Value);
-
+                        
                         var stat = Stat.Stats.First(statData => statData.DisplayName == name);
                         var valuee = int.Parse(value);
 

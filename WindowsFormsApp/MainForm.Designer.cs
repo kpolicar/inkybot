@@ -26,6 +26,8 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources =
+                new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
             this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
@@ -76,8 +78,9 @@
             this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.panel1);
             this.HelpButton = true;
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Inkybot";
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);

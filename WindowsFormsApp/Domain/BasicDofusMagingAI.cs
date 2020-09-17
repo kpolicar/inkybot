@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
+using WindowsFormsApp.Events;
 using static WindowsFormsApp.Item;
 
 namespace WindowsFormsApp
@@ -26,17 +27,19 @@ namespace WindowsFormsApp
             public int NumberOfRunesNeededForFullMage =>
                 (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
         }
-        
-        private List<IAction> history;
+
+        private List<IAction> actionHistory = new List<IAction>();
         private ActionFactory actions;
         private Config config;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
+            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
+            actionHandler.ActionExecuted += OnActionExecuted;
         }
 
-        public void SetHistory(List<IAction> history) {
-            this.history = history;
+        public void OnActionExecuted(object sender, ActionExecutedEventArgs args) {
+            actionHistory.Add(args.action);
         }
 
         public void SetConfig(Config config) {
@@ -55,7 +58,7 @@ namespace WindowsFormsApp
             if (itemMage.stat.max <= itemMage.stat.value)
                 return actions.Finish();
 
-            var previous = history.LastOrDefault();
+            var previous = actionHistory.LastOrDefault();
 
             if (previous == null ||
                 previous is Combine ||
@@ -64,7 +67,7 @@ namespace WindowsFormsApp
                 return actions.SelectRune(itemMage.rune);
             }
             
-            return actions.Combine(itemMage.stat);
+            return actions.Combine(itemMage.rune);
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {

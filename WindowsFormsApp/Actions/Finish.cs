@@ -3,7 +3,7 @@
     public class Finish : MouseAction
     {
         public override void Execute() {
-            command.RemoveItem();
+            mouse.DoubleClick(850, 165);
             var magus = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magus.StopMage();
         }
