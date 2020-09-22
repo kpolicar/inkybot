@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -40,6 +41,10 @@ namespace WindowsFormsApp
       pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Games/Dofus/dofus.exe");
       WindowHelpers.DockProcess(pDocked, panel1, ref hWndDocked);
       WindowHelpers.RemoveWindowBorders(hWndDocked);
+    }
+
+    private void button1_Click(object sender, EventArgs e) {
+      panel2.Width = 0;
     }
   }
 }

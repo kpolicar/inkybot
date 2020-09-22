@@ -34,28 +34,6 @@ namespace WindowsFormsApp
     
     public class ItemHistoryAnalyzer : IItemHistoryAnalyzer
     {
-        private Combine previousCombine;
-        
-        protected Dictionary<MageHistoryRecord, Combine> magingActionHistory = new Dictionary<MageHistoryRecord, Combine>();
-        
-        private ActionHandler actionHandler;
-
-        public ItemHistoryAnalyzer() {
-            actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
-            actionHandler.ActionExecuted += onActionExecuted;
-        }
-
-        private void onActionExecuted(object sender, ActionExecutedEventArgs e) {
-            if (!(e.action is Combine)) return;
-
-            previousCombine = (Combine) e.action;
-        }
-
-        public void onReadHistory(MageHistoryRecord newRecord) {
-            magingActionHistory[newRecord] = previousCombine;
-            previousCombine = null;
-        }
-
         public ItemHistoryAnalysis Analyse(IEnumerable<MageHistoryRecord> history) {
             return new ItemHistoryAnalysis(history, this);
         }
@@ -66,15 +44,6 @@ namespace WindowsFormsApp
                 return record.ChangeInSink;
             }
             catch (InvalidOperationException ex) {
-                return FindSinkForRecordFromCombineHistory(record);
-            }
-        }
-
-        private float FindSinkForRecordFromCombineHistory(MageHistoryRecord record) {
-            try {
-                return magingActionHistory[record].target.Sink;
-            }
-            catch (Exception ex) {
                 throw new CouldNotResolveSinkException();
             }
         }

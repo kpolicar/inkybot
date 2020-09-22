@@ -7,6 +7,5 @@ namespace WindowsFormsApp.Contracts
     {
         ItemHistoryAnalysis Analyse(IEnumerable<MageHistoryRecord> history);
         float ResolveSinkChange(MageHistoryRecord record);
-        void onReadHistory(MageHistoryRecord changeRecord);
     }
 }

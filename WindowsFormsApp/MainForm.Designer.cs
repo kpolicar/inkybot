@@ -29,9 +29,12 @@
             System.ComponentModel.ComponentResourceManager resources =
                 new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
             this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
+            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).BeginInit();
             this.SuspendLayout();
@@ -44,6 +47,25 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1263, 681);
             this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Salmon;
+            this.panel2.Controls.Add(this.button1);
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(132, 681);
+            this.panel2.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(2, 15);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(66, 44);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // statusBarPanel1
             // 
@@ -81,6 +103,7 @@
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Inkybot";
+            this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);
@@ -92,5 +115,7 @@
         private System.Windows.Forms.StatusBar statusBar1;
         private System.Windows.Forms.StatusBarPanel statusBarPanel1;
         private WindowsFormsApp.Controls.MousePositionStatusBarPanel statusBarPanel2;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button button1;
     }
 }

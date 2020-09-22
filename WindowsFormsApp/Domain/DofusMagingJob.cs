@@ -88,14 +88,7 @@ namespace WindowsFormsApp
                     var itemHistory = history.Analyse(dataProvider.History());
 
                     if (!sinkHasInit) {
-                        try {
-                            sink = itemHistory.CalculateSink();
-                        }
-                        catch (CouldNotResolveSinkException e) {
-                            sink = 0;
-                            Debug.WriteLine("Could not resolve sink! Defaulting to 0!");
-                        }
-
+                        sink = 0;
                         sinkHasInit = true;
                     }
 
@@ -108,10 +101,7 @@ namespace WindowsFormsApp
                             continue;
                         }
 
-                        var changeRecord = itemHistory.history.Last();
-                        history.onReadHistory(changeRecord);
-
-                        sink += changeRecord.ChangeInSink;
+                        sink += itemHistory.history.Last().ChangeInSink;
                         sink = Math.Max(0f, sink);
 
                         Debug.WriteLine("sink: " + sink);
