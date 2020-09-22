@@ -51,7 +51,7 @@ namespace WindowsFormsApp
             previousCombine = (Combine) e.action;
         }
 
-        private void onReadHistory(MageHistoryRecord newRecord) {
+        public void onReadHistory(MageHistoryRecord newRecord) {
             magingActionHistory[newRecord] = previousCombine;
             previousCombine = null;
         }

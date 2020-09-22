@@ -108,7 +108,10 @@ namespace WindowsFormsApp
                             continue;
                         }
 
-                        sink += itemHistory.history.Last().ChangeInSink;
+                        var changeRecord = itemHistory.history.Last();
+                        history.onReadHistory(changeRecord);
+
+                        sink += changeRecord.ChangeInSink;
                         sink = Math.Max(0f, sink);
 
                         Debug.WriteLine("sink: " + sink);
