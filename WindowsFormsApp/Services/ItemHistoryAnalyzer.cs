@@ -12,7 +12,7 @@ namespace WindowsFormsApp
 {
     public class ItemHistoryAnalysis
     {
-        private IEnumerable<MageHistoryRecord> history;
+        public IEnumerable<MageHistoryRecord> history;
         private IItemHistoryAnalyzer analyzer;
 
         public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, IItemHistoryAnalyzer analyzer) {
@@ -62,6 +62,7 @@ namespace WindowsFormsApp
 
         public float ResolveSinkChange(MageHistoryRecord record) {
             try {
+                Debug.WriteLine("change in sink: "+record.ChangeInSink);
                 return record.ChangeInSink;
             }
             catch (InvalidOperationException ex) {

@@ -88,10 +88,16 @@ namespace WindowsFormsApp
         }
 
         public string[] History() {
-            var (x, y) = (352, 97);
+            var (x, y) = (352, 137);
             var (xMax, yMax) = (590, 835);
 
             var scanned = ScanRegion(new Rectangle(x, y, xMax-x, yMax-y), "history");
+            
+            Debug.WriteLine("-------read------");
+            foreach (var s in scanned) {
+                Debug.WriteLine(s);
+            }
+            Debug.WriteLine("-------------");
 
             return scanned;
         }
@@ -102,9 +108,9 @@ namespace WindowsFormsApp
             // bitmap = Sharpen(bitmap);
             
             
-            var fstream = File.Create("A:/Desktop/"+name+".bmp");
-            bitmap.Save(fstream, ImageFormat.Bmp);
-            fstream.Dispose();
+            // var fstream = File.Create("A:/Desktop/"+name+".bmp");
+            // bitmap.Save(fstream, ImageFormat.Bmp);
+            // fstream.Dispose();
             
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
             
@@ -123,9 +129,9 @@ namespace WindowsFormsApp
             bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
             
             
-            var fstream = File.Create("A:/Desktop/"+name+".bmp");
-            bitmap.Save(fstream, ImageFormat.Bmp);
-            fstream.Dispose();
+            // var fstream = File.Create("A:/Desktop/"+name+".bmp");
+            // bitmap.Save(fstream, ImageFormat.Bmp);
+            // fstream.Dispose();
             
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
             

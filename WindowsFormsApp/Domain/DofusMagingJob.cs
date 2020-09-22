@@ -44,6 +44,7 @@ namespace WindowsFormsApp
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             
             shouldContinueMaging = true;
+            sinkHasInit = false;
             magus.SetConfig(config);
             
             job = new Thread(DoMage);
@@ -57,46 +58,82 @@ namespace WindowsFormsApp
         }
 
         private ItemHistoryAnalysis previousHistory;
+        private float sink;
+        private bool sinkHasInit;
+
+        private IAction DoAction() {
+            var itemStats = dataProvider.Stats();
+            var action = magus.ResolveAction(itemStats);
+            actions.Execute(action);
+            return action;
+        }
 
         public async void DoMage() {
-            Debug.WriteLine("started maging!");
-            bool hasCombined = false;
-            
-            while (shouldContinueMaging) {
-                dataProvider.FetchData();
-                
-                var itemHistory = history.Analyse(dataProvider.History());
-
-                if (hasCombined) {
-                    var historyHasChanged = itemHistory.IsDifferentFrom(previousHistory);
-                    if (!historyHasChanged) {
-                        Thread.Sleep(50);
-                        continue;
-                    }
-                }
-                
-                try {
-                    var a = itemHistory.CalculateSink();
-                    Debug.WriteLine("sink: "+a);
-                }
-                catch (CouldNotResolveSinkException e) {
-                    Debug.WriteLine("could not resolve sink exception!");
-                }
-
-                var itemStats = dataProvider.Stats();
-                StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
-
-                if (itemStats.Length > 0) {
-                    var action = magus.ResolveAction(itemStats);
-                    actions.Execute(action);
-                    hasCombined = action is Combine;
-                }
-                previousHistory = itemHistory;
-                
-                if (!hasCombined) {
+            try {
+                // Do initial actions until ready for main loop
+                IAction setupAction;
+                do {
+                    dataProvider.FetchData();
+                    setupAction = DoAction();
                     Thread.Sleep(300);
-                }
+                } while (!(setupAction is Combine));
+
+                Thread.Sleep(500);
+
+
+                bool hasCombined = false;
+
+                do {
+                    dataProvider.FetchData();
+                    var itemHistory = history.Analyse(dataProvider.History());
+
+                    if (!sinkHasInit) {
+                        try {
+                            sink = itemHistory.CalculateSink();
+                        }
+                        catch (CouldNotResolveSinkException e) {
+                            sink = 0;
+                            Debug.WriteLine("Could not resolve sink! Defaulting to 0!");
+                        }
+
+                        sinkHasInit = true;
+                    }
+
+
+                    if (hasCombined) {
+                        var historyHasChanged = itemHistory.IsDifferentFrom(previousHistory);
+                        Debug.WriteLine("History has changed: " + historyHasChanged);
+                        if (!historyHasChanged) {
+                            Thread.Sleep(50);
+                            continue;
+                        }
+
+                        sink += itemHistory.history.Last().ChangeInSink;
+                        sink = Math.Max(0f, sink);
+
+                        Debug.WriteLine("sink: " + sink);
+                    }
+
+                    var itemStats = dataProvider.Stats();
+                    StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
+
+                    if (itemStats.Length > 0) {
+                        var action = magus.ResolveAction(itemStats);
+                        actions.Execute(action);
+                        hasCombined = action is Combine;
+                    }
+
+                    previousHistory = itemHistory;
+
+                    if (!hasCombined) {
+                        Thread.Sleep(300);
+                    }
+                } while (shouldContinueMaging);
             }
+            catch (Exception e) {
+                StopMage();
+                Debug.WriteLine("EXCEPTION: "+e.Message);
+            } 
         }
     }
 }
