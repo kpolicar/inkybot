@@ -56,6 +56,8 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(132, 681);
             this.panel2.TabIndex = 0;
+            this.panel2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Bottom;
+            this.Resize += this.Form1_Resize;
             // 
             // button1
             // 
@@ -65,7 +67,6 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // statusBarPanel1
             // 
@@ -99,6 +100,7 @@
             this.ClientSize = new System.Drawing.Size(1263, 681);
             this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel2);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -107,6 +109,8 @@
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);
+            
+            this.panel2.BringToFront();
         }
 
         #endregion

@@ -46,5 +46,8 @@ namespace WindowsFormsApp
     private void button1_Click(object sender, EventArgs e) {
       panel2.Width = 0;
     }
+
+    private void Form1_Resize(object sender, EventArgs e) {
+    }
   }
 }
