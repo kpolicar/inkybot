@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Windows.Devices.Input;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;

@@ -8,10 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Globalization;
-using Windows.Graphics.Imaging;
-using Windows.Media.Ocr;
-using Windows.Storage.Streams;
 using Tesseract;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 using ScreenCapture = WindowsFormsApp.Contracts.ScreenCapture;
@@ -37,7 +33,6 @@ namespace WindowsFormsApp
     public class DofusScreenScan
     {
         private static ScreenCapture screen;
-        private static InMemoryRandomAccessStream stream;
         private static TesseractEngine engine;
         private static bool init = false;
         private readonly IntPtr handle;
@@ -46,24 +41,19 @@ namespace WindowsFormsApp
         public DofusScreenScan(IntPtr hwnd) {
             Init();
             handle = hwnd;
-            stream = new InMemoryRandomAccessStream();
             screenshot = TakeScreenshot();
         }
 
         private void Init() {
             if (init) return;
             engine = new TesseractEngine(
-                "C:\\Users\\Klemen\\RiderProjects\\WindowsFormsApp\\WindowsFormsApp\\tessdata", 
+                @"A:\Projects\RiderProjects\bot\WindowsFormsApp\tessdata", 
                 "eng",
                 EngineMode.Default,
-                "C:\\Users\\Klemen\\RiderProjects\\WindowsFormsApp\\WindowsFormsApp\\tessdata\\config\\config");
+                @"A:\Projects\RiderProjects\bot\WindowsFormsApp\tessdata\config\config");
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;
-        }
-        
-        ~DofusScreenScan() {
-            stream.Dispose();
         }
 
         public StatLineScanResult[] Stats() {

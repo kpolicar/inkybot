@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using Windows.Media.Capture;
 using ScreenCapture = WindowsFormsApp.Contracts.ScreenCapture;
 
 namespace WindowsFormsApp

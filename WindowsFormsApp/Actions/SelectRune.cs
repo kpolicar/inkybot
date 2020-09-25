@@ -1,6 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
-
-namespace WindowsFormsApp.Actions
+﻿namespace WindowsFormsApp.Actions
 {
     public class SelectRune : MouseAction
     {

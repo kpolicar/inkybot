@@ -38,7 +38,7 @@ namespace WindowsFormsApp
     }
 
     private void InitializeDofusClient() {
-      pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Games/Dofus/dofus.exe");
+      pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Saved Games/Dofus/dofus.exe");
       WindowHelpers.DockProcess(pDocked, panel1, ref hWndDocked);
       WindowHelpers.RemoveWindowBorders(hWndDocked);
     }
