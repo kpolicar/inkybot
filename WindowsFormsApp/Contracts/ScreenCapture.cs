@@ -8,5 +8,6 @@ namespace WindowsFormsApp.Contracts
         Bitmap cropAtRect(Bitmap b, Rectangle r);
         Image CaptureWindow(IntPtr handle);
         Bitmap ResizeImage(Image bitmap, int width, int height);
+        Bitmap Sharpen(Bitmap image);
     }
 }

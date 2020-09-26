@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,6 +19,7 @@ namespace WindowsFormsApp
         private DofusScreenScan scan;
         public Item.ItemStat[] lastScanResults;
         private IntPtr handle;
+        private TextInfo text = CultureInfo.CurrentCulture.TextInfo;
 
         public ScreenReaderDataProvider(IntPtr handle) {
             this.handle = handle;
@@ -39,6 +41,7 @@ namespace WindowsFormsApp
                 var statChanges = changes.Cast<Match>().Select(change => {
                         var grouped = change.Groups;
                         var (value, name) = (grouped[1].Value, grouped[2].Value);
+                        name = text.ToTitleCase(name);
 
                         var stat = Stat.Stats.First(statData => statData.DisplayName == name);
                         var valuee = int.Parse(value);
@@ -46,7 +49,7 @@ namespace WindowsFormsApp
                         return new StatChanged(stat, valuee);
                     }
                 );
-
+                
                 return new MageHistoryRecord(statChanges, sinkChange.Success);
             });
 
@@ -62,8 +65,7 @@ namespace WindowsFormsApp
 
             int i = 0;
             foreach (var result in scanResults) {
-
-                var stat = Stat.Stats.First(statData => statData.DisplayName == result.name);
+                var stat = Stat.Stats.First(statData => statData.DisplayName == text.ToTitleCase(result.name));
                 try {
                     var min = result.min != "-" ? int.Parse(result.min) : 0;
                     var max = result.max != "-" ? int.Parse(result.max) : 0;
@@ -72,7 +74,7 @@ namespace WindowsFormsApp
                 }
                 catch (Exception ec) {
                     Debug.WriteLine("EXCEPTION: " + ec.Message);
-                    return new Item.ItemStat[]{};
+                    break;
                 }
             }
             

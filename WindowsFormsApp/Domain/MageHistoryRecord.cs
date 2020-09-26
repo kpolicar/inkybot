@@ -38,19 +38,20 @@ namespace WindowsFormsApp
         }
         
         public static bool operator ==  (MageHistoryRecord operand1, MageHistoryRecord operand2) {
-            var comparison = operand1.changed.Zip(operand2.changed, (record1, record2) => new { Record1 = record1, Record2 = record1});
+            var comparison = operand1.changed.Zip(operand2.changed, (record1, record2) => new { Record1 = record1, Record2 = record2});
             
             return comparison.All(comparison =>
                 comparison.Record1.stat.DisplayName == comparison.Record2.stat.DisplayName &&
-                comparison.Record1.value == comparison.Record2.value);
+                comparison.Record1.value == comparison.Record2.value) && operand1.sinkChanged == operand2.sinkChanged;
         }
         
         public static bool operator !=  (MageHistoryRecord operand1, MageHistoryRecord operand2) {
-            var comparison = operand1.changed.Zip(operand2.changed, (record1, record2) => new { Record1 = record1, Record2 = record1});
+            var comparison = operand1.changed.Zip(operand2.changed, (record1, record2) => new { Record1 = record1, Record2 = record2});
             
-            return comparison.Any(comparison =>
-                comparison.Record1.stat.DisplayName != comparison.Record2.stat.DisplayName ||
-                comparison.Record1.value != comparison.Record2.value);
+            return operand1.sinkChanged != operand2.sinkChanged ||
+                   comparison.Any(comparison =>
+                       comparison.Record1.stat.DisplayName != comparison.Record2.stat.DisplayName ||
+                       comparison.Record1.value != comparison.Record2.value);
         }
     }
 }

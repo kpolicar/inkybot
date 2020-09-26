@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -37,6 +38,7 @@ namespace WindowsFormsApp
         private static bool init = false;
         private readonly IntPtr handle;
         private readonly Bitmap screenshot;
+        private TextInfo text;
 
         public DofusScreenScan(IntPtr hwnd) {
             Init();
@@ -58,13 +60,13 @@ namespace WindowsFormsApp
 
         public StatLineScanResult[] Stats() {
             var Results = new List<StatLineScanResult>();
-            var (x, y) = (626, 300);
+            var (x, y) = (645, 300);
 
             bool isResultValid = true;
             for (int yOffset = 0; isResultValid; yOffset += 39) {
                 var result = ScanLine(new Rectangle(x, y+yOffset, 980-x, 39), "stats"+yOffset);
 
-                var separated = Regex.Match(result, @"(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)").Groups;
+                var separated = Regex.Match(result, @"^(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)$").Groups;
 
                 isResultValid = separated.Count == 5;
                 if (!isResultValid) continue;
@@ -95,12 +97,12 @@ namespace WindowsFormsApp
         private string[] ScanRegion(Rectangle bounds, string name) {
             var bitmap = screen.cropAtRect(screenshot, bounds);
             bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
-            // bitmap = Sharpen(bitmap);
+            //bitmap = screen.Sharpen((Bitmap)bitmap);
             
             
-            // var fstream = File.Create("A:/Desktop/"+name+".bmp");
-            // bitmap.Save(fstream, ImageFormat.Bmp);
-            // fstream.Dispose();
+            var fstream = File.Create(@"C:\Users\Klemen\Desktop\"+name+".bmp");
+            bitmap.Save(fstream, ImageFormat.Bmp);
+            fstream.Dispose();
             
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
             
@@ -117,21 +119,22 @@ namespace WindowsFormsApp
             string scannedLine = "";
             var bitmap = screen.cropAtRect(screenshot, bounds);
             bitmap = screen.ResizeImage(bitmap, bitmap.Width*2, bitmap.Height*2);
+            //bitmap = screen.Sharpen((Bitmap)bitmap);
             
             
-            // var fstream = File.Create("A:/Desktop/"+name+".bmp");
-            // bitmap.Save(fstream, ImageFormat.Bmp);
-            // fstream.Dispose();
+            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\"+name+".bmp");
+            //bitmap.Save(fstream, ImageFormat.Bmp);
+            //fstream.Dispose();
             
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
             
             using (var iter = ocrResult.GetIterator()) {
                 iter.Begin();
 
-                var text = iter.GetText(PageIteratorLevel.TextLine);
+                string text = ""+iter.GetText(PageIteratorLevel.TextLine);
+                ocrResult.Dispose();
                 scannedLine = Regex.Replace(text, @"\t|\n|\r", "");
             }
-            ocrResult.Dispose();
 
             return scannedLine;
         }

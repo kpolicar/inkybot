@@ -67,7 +67,8 @@ namespace WindowsFormsApp
             return action;
         }
 
-        public async void DoMage() {
+        public async void DoMage()
+        {
             try {
                 // Do initial actions until ready for main loop
                 IAction setupAction;
@@ -116,6 +117,7 @@ namespace WindowsFormsApp
                     }
 
                     previousHistory = itemHistory;
+                    Debug.WriteLine("history length set to: "+itemHistory.history.Count());
 
                     if (!hasCombined) {
                         Thread.Sleep(300);
@@ -125,6 +127,7 @@ namespace WindowsFormsApp
             catch (Exception e) {
                 StopMage();
                 Debug.WriteLine("EXCEPTION: "+e.Message);
+                Debug.WriteLine(e.StackTrace);
             } 
         }
     }
