@@ -30,11 +30,13 @@
                 new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new WindowsFormsApp.Controls.TransparentPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
             this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).BeginInit();
             this.SuspendLayout();
@@ -59,6 +61,17 @@
             this.panel2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Bottom;
             this.Resize += this.Form1_Resize;
             // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1263, 681);
+            this.panel3.TabIndex = 0;
+            this.panel3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.panel3.Click += panel3_Click;
+            this.panel3.Paint += panel3_Draw;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(2, 15);
@@ -67,6 +80,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += button1_Click;
             // 
             // statusBarPanel1
             // 
@@ -101,16 +115,19 @@
             this.Controls.Add(this.statusBar1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel3);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Inkybot";
             this.panel2.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);
             
             this.panel2.BringToFront();
+            this.panel3.BringToFront();
         }
 
         #endregion
@@ -120,6 +137,7 @@
         private System.Windows.Forms.StatusBarPanel statusBarPanel1;
         private WindowsFormsApp.Controls.MousePositionStatusBarPanel statusBarPanel2;
         private System.Windows.Forms.Panel panel2;
+        private WindowsFormsApp.Controls.TransparentPanel panel3;
         private System.Windows.Forms.Button button1;
     }
 }

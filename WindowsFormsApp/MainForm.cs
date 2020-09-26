@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
@@ -34,7 +35,6 @@ namespace WindowsFormsApp
       statsForm.Show();
       // indicatorForm = new IndicatorForm(panel1);
       // indicatorForm.Show();
-
     }
 
     private void InitializeDofusClient() {
@@ -44,7 +44,21 @@ namespace WindowsFormsApp
     }
 
     private void button1_Click(object sender, EventArgs e) {
-      panel2.Width = 0;
+      panel3.Show();
+    }
+
+    private void panel3_Draw(object sender, PaintEventArgs e)
+    {
+      var g = e.Graphics;
+      
+      Pen pen = new Pen(Color.Red, 2);
+      g.DrawRectangle(pen, new Rectangle(626, 300, 980-626, 39*11));
+      g.DrawRectangle(pen, new Rectangle(352, 137, 590-352, 835-137));
+      pen.Dispose();
+    }
+    
+    private void panel3_Click(object sender, EventArgs e) {
+      panel3.Hide();
     }
 
     private void Form1_Resize(object sender, EventArgs e) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace WindowsFormsApp
 {
   static class Program
   {
-    public static bool debug = true;
+    public static bool debug = false;
     public static ServiceContainer Services = new ServiceContainer();
 
     /// <summary>
