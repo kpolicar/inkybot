@@ -47,14 +47,23 @@ namespace WindowsFormsApp
       panel3.Show();
     }
 
-    private void panel3_Draw(object sender, PaintEventArgs e)
+    private void paintOcrIndicators()
     {
-      var g = e.Graphics;
+      var g = panel3.CreateGraphics();
       
       Pen pen = new Pen(Color.Red, 2);
       g.DrawRectangle(pen, new Rectangle(626, 300, 980-626, 39*11));
       g.DrawRectangle(pen, new Rectangle(352, 137, 590-352, 835-137));
       pen.Dispose();
+      g.Dispose();
+    }
+
+    private void panel3_VisibleChanged(object sender, EventArgs e)
+    {
+      if (panel3.Visible)
+        paintTimer.Start();
+      else
+        paintTimer.Stop();
     }
     
     private void panel3_Click(object sender, EventArgs e) {

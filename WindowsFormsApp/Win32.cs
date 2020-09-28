@@ -55,6 +55,9 @@ namespace WindowsFormsApp
         [DllImport("User32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr hWnd);
         
+        [DllImport("User32.dll")]
+        public static extern IntPtr GetDC(IntPtr hwnd);
+        
         public struct Rect
         {
             public int Left { get; set; }

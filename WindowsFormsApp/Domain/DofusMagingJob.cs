@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;
-using WindowsFormsApp.Exceptions;
-using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
@@ -59,6 +55,7 @@ namespace WindowsFormsApp
         private ItemHistoryAnalysis previousHistory;
         private float sink;
         private bool sinkHasInit;
+        private IAction previousAction;
 
         private IAction DoAction() {
             var itemStats = dataProvider.Stats();
@@ -76,14 +73,14 @@ namespace WindowsFormsApp
                     dataProvider.FetchData();
                     setupAction = DoAction();
                     Thread.Sleep(300);
-                } while (!(setupAction is Combine));
+                } while (!(setupAction is Combine) && shouldContinueMaging);
 
                 Thread.Sleep(500);
 
 
                 bool hasCombined = false;
 
-                do {
+                while (shouldContinueMaging) {
                     dataProvider.FetchData();
                     var itemHistory = history.Analyse(dataProvider.History());
 
@@ -101,7 +98,17 @@ namespace WindowsFormsApp
                             continue;
                         }
 
-                        sink += itemHistory.history.Last().ChangeInSink;
+                        try
+                        {
+                            sink += itemHistory.history.Last().ChangeInSink;
+                        } catch (Exception e)
+                        {
+                            var previousCombine = (Combine) previousAction;
+                            sink += previousCombine.target.Sink;
+                            Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
+                            Debug.WriteLine(e.StackTrace);
+                        }
+                        
                         sink = Math.Max(0f, sink);
 
                         Debug.WriteLine("sink: " + sink);
@@ -112,7 +119,7 @@ namespace WindowsFormsApp
 
                     if (itemStats.Length > 0) {
                         var action = magus.ResolveAction(itemStats);
-                        actions.Execute(action);
+                        actions.Execute(previousAction = action);
                         hasCombined = action is Combine;
                     }
 
@@ -122,7 +129,7 @@ namespace WindowsFormsApp
                     if (!hasCombined) {
                         Thread.Sleep(300);
                     }
-                } while (shouldContinueMaging);
+                };
             }
             catch (Exception e) {
                 StopMage();

@@ -35,11 +35,17 @@
             this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
             this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
             this.statusBar1 = new System.Windows.Forms.StatusBar();
+            this.paintTimer = new System.Windows.Forms.Timer();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).BeginInit();
             this.SuspendLayout();
+            // 
+            // paintTimer
+            // 
+            this.paintTimer.Interval = 10;
+            this.paintTimer.Tick += (sender, args) => paintOcrIndicators();
             // 
             // panel1
             // 
@@ -70,7 +76,8 @@
             this.panel3.TabIndex = 0;
             this.panel3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.panel3.Click += panel3_Click;
-            this.panel3.Paint += panel3_Draw;
+            this.panel3.VisibleChanged += panel3_VisibleChanged;
+            this.panel3.Hide();
             // 
             // button1
             // 
@@ -139,5 +146,6 @@
         private System.Windows.Forms.Panel panel2;
         private WindowsFormsApp.Controls.TransparentPanel panel3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Timer paintTimer;
     }
 }

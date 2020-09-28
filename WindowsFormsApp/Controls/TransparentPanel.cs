@@ -16,7 +16,7 @@ namespace WindowsFormsApp.Controls
                 return cp;
             }
         }
-    
+
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.FillRectangle(new SolidBrush(this.BackColor), this.ClientRectangle);
