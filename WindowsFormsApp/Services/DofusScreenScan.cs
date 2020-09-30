@@ -51,7 +51,7 @@ namespace WindowsFormsApp
             engine = new TesseractEngine(
                 @"A:\Projects\RiderProjects\bot\WindowsFormsApp\tessdata", 
                 "eng",
-                EngineMode.Default,
+                EngineMode.TesseractOnly,
                 @"A:\Projects\RiderProjects\bot\WindowsFormsApp\tessdata\config\config");
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
@@ -85,12 +85,6 @@ namespace WindowsFormsApp
 
             var scanned = ScanRegion(new Rectangle(x, y, xMax-x, yMax-y), "history");
             
-            Debug.WriteLine("-------read------");
-            foreach (var s in scanned) {
-                Debug.WriteLine(s);
-            }
-            Debug.WriteLine("-------------");
-
             return scanned;
         }
 
@@ -107,7 +101,7 @@ namespace WindowsFormsApp
             var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
             
             var results = Regex
-                .Split(ocrResult.GetText(), "\n\n")
+                .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
                 .Select(result => result.Replace("\n", " "));
             
             ocrResult.Dispose();

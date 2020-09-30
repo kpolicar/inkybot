@@ -1,0 +1,13 @@
+﻿Vitality 1
+Chance 2
+Wisdom 3
+Critical 4
+Summons 5
+Damage 6
+Prospecting 7
+Earth 8
+Resistance 9
+sink 10
+% 11
++ 12
+- 13

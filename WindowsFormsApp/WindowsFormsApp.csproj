@@ -42,6 +42,10 @@
           <HintPath>..\packages\InputSimulatorStandard.1.0.0\lib\netstandard2.0\InputSimulatorStandard.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="SymSpell, Version=6.5.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\SymSpell.6.5.0\lib\net472\SymSpell.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Runtime.WindowsRuntime" />
@@ -155,6 +159,7 @@
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="frequency_dictionary_en_82_765.txt" />
       <Content Include="tessdata\configs\letters.json" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -104,9 +104,9 @@ namespace WindowsFormsApp
                         } catch (Exception e)
                         {
                             var previousCombine = (Combine) previousAction;
-                            sink += previousCombine.target.Sink;
+                            sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink;
                             Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
-                            Debug.WriteLine(e.StackTrace);
+                            Debug.WriteLine("sink change:"+(itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink));
                         }
                         
                         sink = Math.Max(0f, sink);
@@ -124,7 +124,6 @@ namespace WindowsFormsApp
                     }
 
                     previousHistory = itemHistory;
-                    Debug.WriteLine("history length set to: "+itemHistory.history.Count());
 
                     if (!hasCombined) {
                         Thread.Sleep(300);

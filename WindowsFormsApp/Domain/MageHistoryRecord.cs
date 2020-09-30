@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace WindowsFormsApp
@@ -36,7 +37,7 @@ namespace WindowsFormsApp
             this.changed = changed;
             this.sinkChanged = sinkChanged;
         }
-        
+
         public static bool operator ==  (MageHistoryRecord operand1, MageHistoryRecord operand2) {
             var comparison = operand1.changed.Zip(operand2.changed, (record1, record2) => new { Record1 = record1, Record2 = record2});
             
