@@ -15,32 +15,43 @@ namespace WindowsFormsApp
         public event EventHandler RuneSelected;
         public event StatsEventHandler StatsCollected;
 
-        public DofusDataProvider dataProvider;
         public Thread job;
         private bool shouldContinueMaging;
-        private DofusMagingAI magus;
         private Config config;
-        private IItemHistoryAnalyzer history;
-        private ActionHandler actions;
+
+        internal DofusDataProvider dataProvider;
+        internal DofusMagingAI magus;
+        internal IItemHistoryAnalyzer history;
+        internal ActionHandler actions;
+        internal ItemHistoryAnalysis previousHistory;
+        internal float sink;
+        internal IAction previousAction;
+        internal DofusMagingJobState state;
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
-            config = new Config();
+            magus.SetConfig(config = new Config());
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] {}, history);
         }
-        
-        public void BeginMage(bool begin) {
-            if (!begin) {
+
+        public void BeginMage(bool begin)
+        {
+            if (begin)
+                BeginMage();
+            else
                 StopMage();
-                return;
-            }
+        }
+
+        public void BeginMage() {
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            
+
+            state = DofusMagingJobState.DOING_FIRST_COMBINE;
             shouldContinueMaging = true;
-            sinkHasInit = false;
-            magus.SetConfig(config);
+            sink = 0f;
+            previousAction = null;
+            previousHistory = null;
             
             job = new Thread(DoMage);
             job.Start();
@@ -52,85 +63,13 @@ namespace WindowsFormsApp
             Stopped?.Invoke(this, null);
         }
 
-        private ItemHistoryAnalysis previousHistory;
-        private float sink;
-        private bool sinkHasInit;
-        private IAction previousAction;
-
-        private IAction DoAction() {
-            var itemStats = dataProvider.Stats();
-            var action = magus.ResolveAction(itemStats);
-            actions.Execute(action);
-            return action;
-        }
-
-        public async void DoMage()
+        private void DoMage()
         {
             try {
-                // Do initial actions until ready for main loop
-                IAction setupAction;
-                do {
-                    dataProvider.FetchData();
-                    setupAction = DoAction();
-                    Thread.Sleep(300);
-                } while (!(setupAction is Combine) && shouldContinueMaging);
-
-                Thread.Sleep(500);
-
-
-                bool hasCombined = false;
-
                 while (shouldContinueMaging) {
-                    dataProvider.FetchData();
-                    var itemHistory = history.Analyse(dataProvider.History());
-
-                    if (!sinkHasInit) {
-                        sink = 0;
-                        sinkHasInit = true;
-                    }
-
-
-                    if (hasCombined) {
-                        var historyHasChanged = itemHistory.IsDifferentFrom(previousHistory);
-                        Debug.WriteLine("History has changed: " + historyHasChanged);
-                        if (!historyHasChanged) {
-                            Thread.Sleep(50);
-                            continue;
-                        }
-
-                        try
-                        {
-                            sink += itemHistory.history.Last().ChangeInSink;
-                        } catch (Exception e)
-                        {
-                            var previousCombine = (Combine) previousAction;
-                            sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink;
-                            Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
-                            Debug.WriteLine("sink change:"+(itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink));
-                        }
-                        
-                        sink = Math.Max(0f, sink);
-
-                        Debug.WriteLine("sink: " + sink);
-                    }
-
-                    var itemStats = dataProvider.Stats();
-                    StatsCollected?.Invoke(this, new StatsEventArgs(itemStats));
-
-                    if (itemStats.Length > 0) {
-                        var action = magus.ResolveAction(itemStats);
-                        actions.Execute(previousAction = action);
-                        hasCombined = action is Combine;
-                    }
-
-                    previousHistory = itemHistory;
-
-                    if (!hasCombined) {
-                        Thread.Sleep(300);
-                    }
-                };
-            }
-            catch (Exception e) {
+                    new DofusMagingJobTick(this).Execute();
+                }
+            } catch (Exception e) {
                 StopMage();
                 Debug.WriteLine("EXCEPTION: "+e.Message);
                 Debug.WriteLine(e.StackTrace);

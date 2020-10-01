@@ -90,6 +90,12 @@
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
+        <Compile Include="Domain\DofusMagingJobState.cs">
+          <DependentUpon>DofusMagingJob.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Domain\DofusMagingJobTick.cs">
+          <DependentUpon>DofusMagingJob.cs</DependentUpon>
+        </Compile>
         <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\MageHistoryRecord.cs" />
         <Compile Include="Domain\Rune.cs" />
