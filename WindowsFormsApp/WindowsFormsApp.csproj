@@ -74,6 +74,10 @@
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\MouseAction.cs" />
         <Compile Include="Actions\SelectRune.cs" />
+        <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
+        <Compile Include="Adapters\DofusOcrResultAdapter.cs" />
+        <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
+        <Compile Include="Adapters\OcrResultAdapter.cs" />
         <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
@@ -117,7 +121,9 @@
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Win32ScreenCapture.cs" />
-        <Compile Include="Services\DofusScreenScan.cs" />
+        <Compile Include="Services\DofusScreenScan.cs">
+          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+        </Compile>
         <Compile Include="Win32.cs" />
         <Compile Include="Win32.Window.cs">
           <DependentUpon>Win32.cs</DependentUpon>
