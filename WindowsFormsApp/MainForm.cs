@@ -1,9 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
@@ -22,7 +19,8 @@ namespace WindowsFormsApp
     public MainForm()
     {
       InitializeComponent();
-      
+      panel3.BringToFront();
+
       InitializeDofusClient();
 
       
