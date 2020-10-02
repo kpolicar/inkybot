@@ -13,7 +13,6 @@ namespace WindowsFormsApp
         public event EventHandler Started;
         public event EventHandler Stopped;
         public event EventHandler RuneSelected;
-        public event StatsEventHandler StatsCollected;
 
         public Thread job;
         private bool shouldContinueMaging;

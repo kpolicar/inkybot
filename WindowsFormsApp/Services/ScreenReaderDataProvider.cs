@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Adapters;
 using WindowsFormsApp.Contracts;
+using WindowsFormsApp.Events;
 
 namespace WindowsFormsApp
 {
@@ -20,6 +21,8 @@ namespace WindowsFormsApp
         private DofusScreenScan scan;
         public Item.ItemStat[] lastScanResults;
         private IntPtr handle;
+
+        public event EventHandler<StatsEventArgs> FetchedStats;
 
         public ScreenReaderDataProvider(IntPtr handle) {
             this.handle = handle;
@@ -31,7 +34,7 @@ namespace WindowsFormsApp
 
         public IEnumerable<MageHistoryRecord> History() {
             var scanResults = scan.History();
-            var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
+            var historyResults =  new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
                 
             return historyResults;
         }
@@ -39,6 +42,7 @@ namespace WindowsFormsApp
         public Item.ItemStat[] Stats() {
             var scanResults = scan.Stats();
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
+            FetchedStats?.Invoke(this, new StatsEventArgs(stats));
             
             return lastScanResults = stats;
         }
