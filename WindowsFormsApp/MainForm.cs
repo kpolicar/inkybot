@@ -47,7 +47,7 @@ namespace WindowsFormsApp
       panel3.Show();
     }
 
-    private void paintOcrIndicators()
+    private void paintOcrIndicators(object sender, EventArgs eventArgs)
     {
       var g = panel3.CreateGraphics();
       

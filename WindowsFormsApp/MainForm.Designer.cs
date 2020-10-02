@@ -45,7 +45,7 @@
             // paintTimer
             // 
             this.paintTimer.Interval = 10;
-            this.paintTimer.Tick += (sender, args) => paintOcrIndicators();
+            this.paintTimer.Tick += paintOcrIndicators;
             // 
             // panel1
             // 
