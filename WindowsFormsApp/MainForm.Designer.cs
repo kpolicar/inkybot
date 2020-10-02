@@ -88,7 +88,7 @@ namespace WindowsFormsApp
             this.sinkValueLabel.Name = "sinkValueLabel";
             this.sinkValueLabel.Size = new System.Drawing.Size(113, 19);
             this.sinkValueLabel.TabIndex = 7;
-            this.sinkValueLabel.Text = "13";
+            this.sinkValueLabel.Text = "0";
             this.sinkValueLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // sinkLabel

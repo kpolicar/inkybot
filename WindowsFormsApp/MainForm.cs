@@ -13,7 +13,6 @@ namespace WindowsFormsApp
     private Process pDocked;
     private IntPtr hWndDocked;
     private StatsForm statsForm;
-    private IndicatorForm indicatorForm;
 
     
     public MainForm()
@@ -30,8 +29,6 @@ namespace WindowsFormsApp
       
       statsForm = new StatsForm(this);
       statsForm.Show();
-      // indicatorForm = new IndicatorForm(panel1);
-      // indicatorForm.Show();
     }
 
     private void InitializeDofusClient() {

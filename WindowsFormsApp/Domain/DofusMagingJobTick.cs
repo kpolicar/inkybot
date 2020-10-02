@@ -74,16 +74,16 @@ namespace WindowsFormsApp
         {
             try
             {
-                job.sink += itemHistory.history.Last().ChangeInSink;
+                job.Sink += itemHistory.history.Last().ChangeInSink;
             } catch (Exception e)
             {
                 var previousCombine = (Combine) job.previousAction;
-                job.sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink;
+                job.Sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink;
                 Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
                 Debug.WriteLine("sink change:"+(itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink));
             }
             
-            job.sink = Math.Max(0f, job.sink);
+            job.Sink = Math.Max(0f, job.Sink);
         }
 
 

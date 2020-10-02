@@ -12,6 +12,7 @@ namespace WindowsFormsApp
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
+        public event EventHandler<SinkChangedEventArgs> SinkChanged;
 
         public Thread job;
         private bool shouldContinueMaging;
@@ -22,7 +23,14 @@ namespace WindowsFormsApp
         internal IItemHistoryAnalyzer history;
         internal ActionHandler actions;
         internal ItemHistoryAnalysis previousHistory;
-        internal float sink;
+        private float sink; 
+        internal float Sink {
+            get => sink;
+            set {
+                sink = value;
+                SinkChanged?.Invoke(this, new SinkChangedEventArgs(sink));
+            }
+        }
         internal IAction previousAction;
         internal DofusMagingJobState state;
 
@@ -47,7 +55,7 @@ namespace WindowsFormsApp
 
             state = DofusMagingJobState.DOING_FIRST_COMBINE;
             shouldContinueMaging = true;
-            sink = 0f;
+            Sink = 0f;
             previousAction = null;
             previousHistory = null;
             
