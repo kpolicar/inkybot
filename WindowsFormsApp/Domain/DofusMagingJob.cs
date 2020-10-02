@@ -12,7 +12,6 @@ namespace WindowsFormsApp
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
-        public event EventHandler RuneSelected;
 
         public Thread job;
         private bool shouldContinueMaging;
@@ -54,12 +53,12 @@ namespace WindowsFormsApp
             
             job = new Thread(DoMage);
             job.Start();
-            Started?.Invoke(this, null);
+            Started?.Invoke(this, EventArgs.Empty);
         }
 
         public void StopMage() {
             shouldContinueMaging = false;
-            Stopped?.Invoke(this, null);
+            Stopped?.Invoke(this, EventArgs.Empty);
         }
 
         private void DoMage()

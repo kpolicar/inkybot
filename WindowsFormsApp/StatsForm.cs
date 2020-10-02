@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;
 
 namespace WindowsFormsApp
@@ -12,6 +13,7 @@ namespace WindowsFormsApp
         private MainForm mainForm;
         private bool isMaging = false;
         private DofusMagingJob magingJob;
+        private DofusDataProvider dataProvider;
 
 
         protected override void WndProc(ref Message m)
@@ -35,10 +37,13 @@ namespace WindowsFormsApp
             InitializeComponent();
             this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            magingJob.StatsCollected += StatsUpdated;
+            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider.FetchedStats += StatsUpdated;
 
             InitializeKeyboardShortcuts();
-            
+
+            magingJob.Started += (sender, args) => isMaging = true;
+            magingJob.Stopped += (sender, args) => isMaging = false;
             Closing += (sender, e) => {
                 KeyboardHook.Release();
                 magingJob.StopMage();
