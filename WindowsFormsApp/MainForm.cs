@@ -29,7 +29,6 @@ namespace WindowsFormsApp
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
       var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
       mouse.SetRelativeToHandle(hWndDocked);
-      statusBarPanel2.Subscribe(panel1);
       
       statsForm = new StatsForm(this);
       statsForm.Show();

@@ -32,14 +32,9 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new WindowsFormsApp.Controls.TransparentPanel();
             this.button1 = new System.Windows.Forms.Button();
-            this.statusBarPanel1 = new System.Windows.Forms.StatusBarPanel();
-            this.statusBarPanel2 = new WindowsFormsApp.Controls.MousePositionStatusBarPanel();
-            this.statusBar1 = new System.Windows.Forms.StatusBar();
             this.paintTimer = new System.Windows.Forms.Timer();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).BeginInit();
             this.SuspendLayout();
             // 
             // paintTimer
@@ -89,39 +84,13 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += button1_Click;
             // 
-            // statusBarPanel1
-            // 
-            this.statusBarPanel1.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
-            this.statusBarPanel1.Name = "statusBarPanel1";
-            this.statusBarPanel1.Width = 1253;
-            // 
-            // statusBarPanel2
-            // 
-            this.statusBarPanel2.Alignment = System.Windows.Forms.HorizontalAlignment.Right;
-            this.statusBarPanel2.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
-            this.statusBarPanel2.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.Raised;
-            this.statusBarPanel2.Name = "statusBarPanel2";
-            this.statusBarPanel2.Width = 10;
-            // 
-            // statusBar1
-            // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 659);
-            this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[]
-                {this.statusBarPanel1, this.statusBarPanel2});
-            this.statusBar1.ShowPanels = true;
-            this.statusBar1.Size = new System.Drawing.Size(1263, 22);
-            this.statusBar1.SizingGrip = false;
-            this.statusBar1.TabIndex = 0;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1263, 681);
-            this.Controls.Add(this.statusBar1);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
@@ -129,8 +98,6 @@
             this.Text = "Inkybot";
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize) (this.statusBarPanel2)).EndInit();
             this.ResumeLayout(false);
             
             this.panel2.BringToFront();
@@ -140,9 +107,6 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.StatusBar statusBar1;
-        private System.Windows.Forms.StatusBarPanel statusBarPanel1;
-        private WindowsFormsApp.Controls.MousePositionStatusBarPanel statusBarPanel2;
         private System.Windows.Forms.Panel panel2;
         private WindowsFormsApp.Controls.TransparentPanel panel3;
         private System.Windows.Forms.Button button1;
