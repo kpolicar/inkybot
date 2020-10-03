@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
+using Gma.System.MouseKeyHook;
 using Mouse = WindowsFormsApp.Contracts.Mouse;
 
 namespace WindowsFormsApp
@@ -13,12 +14,14 @@ namespace WindowsFormsApp
     private Process pDocked;
     private IntPtr hWndDocked;
     private StatsForm statsForm;
+    private DofusMagingJob magingJob;
 
-    
+
+
     public MainForm()
     {
       InitializeComponent();
-      panel3.BringToFront();
+      ocrIndicatorPanel.BringToFront();
 
       InitializeDofusClient();
 
@@ -28,11 +31,18 @@ namespace WindowsFormsApp
       mouse.SetRelativeToHandle(hWndDocked);
       
       statsForm = new StatsForm(this);
-      statsForm.Show();
       magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-      magingJob.Started += onMagingStarted;
-      magingJob.Stopped += onMagingStopped;
+      BindToMagingEvents();
       InitializeKeyboardShortcuts();
+      
+      Closing += (sender, args) =>  {
+        if (debugging) StopDebugging();
+      };
+    }
+
+    private void BindToMagingEvents() {
+      magingJob.Started += OnMagingStarted;
+      magingJob.Stopped += OnMagingStopped;
     }
     
     
@@ -51,32 +61,16 @@ namespace WindowsFormsApp
 
     private void InitializeDofusClient() {
       pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Saved Games/Dofus/dofus.exe");
-      WindowHelpers.DockProcess(pDocked, panel1, ref hWndDocked);
+      WindowHelpers.DockProcess(pDocked, dofusClientPanel, ref hWndDocked);
       WindowHelpers.RemoveWindowBorders(hWndDocked);
     }
-
-    private bool debugging = false;
-    private DofusMagingJob magingJob;
-
-    private void debugButton_Click(object sender, EventArgs e) {
-      if (debugging = !debugging)  {
-        panel3.Show();
-        panel2.BringToFront();
-        debugButton.Text = "Stop Debug";
-      }
-      else  {
-        panel3.Hide();
-        debugButton.Text = "Debug";
-      }
-    }
     
-    
-    private void onMagingStopped(object sender, EventArgs e)
+    private void OnMagingStopped(object sender, EventArgs e)
     {
       toggleMageButton.Text = "Start\n(F2)";
     }
 
-    private void onMagingStarted(object sender, EventArgs e)
+    private void OnMagingStarted(object sender, EventArgs e)
     {
       toggleMageButton.Text = "Stop\n(F2)";
     }
@@ -92,7 +86,7 @@ namespace WindowsFormsApp
 
     private void paintOcrIndicators(object sender, EventArgs eventArgs)
     {
-      var g = panel3.CreateGraphics();
+      var g = ocrIndicatorPanel.CreateGraphics();
       
       Pen pen = new Pen(Color.Red, 2);
       g.DrawRectangle(pen, new Rectangle(626, 300, 980-626, 39*11));
@@ -101,16 +95,16 @@ namespace WindowsFormsApp
       g.Dispose();
     }
 
-    private void panel3_VisibleChanged(object sender, EventArgs e)
+    private void ocrIndicatorPanel_VisibleChanged(object sender, EventArgs e)
     {
-      if (panel3.Visible)
+      if (ocrIndicatorPanel.Visible)
         paintTimer.Start();
       else
         paintTimer.Stop();
     }
     
-    private void panel3_Click(object sender, EventArgs e) {
-      panel3.Hide();
+    private void ocrIndicatorPanel_Click(object sender, EventArgs e) {
+      ocrIndicatorPanel.Hide();
     }
 
     private void Form1_Resize(object sender, EventArgs e) {

@@ -31,8 +31,8 @@ namespace WindowsFormsApp
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.dofusClientPanel = new System.Windows.Forms.Panel();
+            this.sidebarPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
@@ -46,9 +46,9 @@ namespace WindowsFormsApp
             this.userInfoPanel = new System.Windows.Forms.Panel();
             this.subscribedInfoLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
-            this.panel3 = new WindowsFormsApp.Controls.TransparentPanel();
+            this.ocrIndicatorPanel = new WindowsFormsApp.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
-            this.panel2.SuspendLayout();
+            this.sidebarPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
             this.secondaryButtonsPanel.SuspendLayout();
@@ -56,28 +56,28 @@ namespace WindowsFormsApp
             this.userInfoPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // dofusClientPanel
             // 
-            this.panel1.AutoSize = true;
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1083, 590);
-            this.panel1.TabIndex = 0;
+            this.dofusClientPanel.AutoSize = true;
+            this.dofusClientPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dofusClientPanel.Location = new System.Drawing.Point(0, 0);
+            this.dofusClientPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.dofusClientPanel.Name = "dofusClientPanel";
+            this.dofusClientPanel.Size = new System.Drawing.Size(1083, 590);
+            this.dofusClientPanel.TabIndex = 0;
             // 
-            // panel2
+            // sidebarPanel
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel2.AutoSize = true;
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
-            this.panel2.Controls.Add(this.buttonsPanel);
-            this.panel2.Controls.Add(this.mageInfoPanel);
-            this.panel2.Controls.Add(this.userInfoPanel);
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(113, 590);
-            this.panel2.TabIndex = 0;
+            this.sidebarPanel.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
+            this.sidebarPanel.AutoSize = true;
+            this.sidebarPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
+            this.sidebarPanel.Controls.Add(this.buttonsPanel);
+            this.sidebarPanel.Controls.Add(this.mageInfoPanel);
+            this.sidebarPanel.Controls.Add(this.userInfoPanel);
+            this.sidebarPanel.Location = new System.Drawing.Point(0, 0);
+            this.sidebarPanel.Name = "sidebarPanel";
+            this.sidebarPanel.Size = new System.Drawing.Size(113, 590);
+            this.sidebarPanel.TabIndex = 0;
             // 
             // buttonsPanel
             // 
@@ -176,7 +176,7 @@ namespace WindowsFormsApp
             // 
             this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
             this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mousePositionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.mousePositionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.mousePositionLabel.Location = new System.Drawing.Point(0, 52);
             this.mousePositionLabel.Name = "mousePositionLabel";
             this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
@@ -239,18 +239,18 @@ namespace WindowsFormsApp
             this.usernameLabel.TabIndex = 2;
             this.usernameLabel.Text = "Klemen";
             // 
-            // panel3
+            // ocrIndicatorPanel
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.AutoSize = true;
-            this.panel3.BackColor = System.Drawing.Color.Transparent;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1083, 590);
-            this.panel3.TabIndex = 0;
-            this.panel3.Visible = false;
-            this.panel3.VisibleChanged += new System.EventHandler(this.panel3_VisibleChanged);
-            this.panel3.Click += new System.EventHandler(this.panel3_Click);
+            this.ocrIndicatorPanel.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.ocrIndicatorPanel.AutoSize = true;
+            this.ocrIndicatorPanel.BackColor = System.Drawing.Color.Transparent;
+            this.ocrIndicatorPanel.Location = new System.Drawing.Point(0, 0);
+            this.ocrIndicatorPanel.Name = "ocrIndicatorPanel";
+            this.ocrIndicatorPanel.Size = new System.Drawing.Size(1083, 590);
+            this.ocrIndicatorPanel.TabIndex = 0;
+            this.ocrIndicatorPanel.Visible = false;
+            this.ocrIndicatorPanel.VisibleChanged += new System.EventHandler(this.ocrIndicatorPanel_VisibleChanged);
+            this.ocrIndicatorPanel.Click += new System.EventHandler(this.ocrIndicatorPanel_Click);
             // 
             // paintTimer
             // 
@@ -262,15 +262,15 @@ namespace WindowsFormsApp
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1083, 590);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.sidebarPanel);
+            this.Controls.Add(this.dofusClientPanel);
+            this.Controls.Add(this.ocrIndicatorPanel);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Inkybot";
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.sidebarPanel.ResumeLayout(false);
+            this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);
             this.buttonsPanel.PerformLayout();
             this.primaryButtonsPanel.ResumeLayout(false);
@@ -305,9 +305,9 @@ namespace WindowsFormsApp
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private WindowsFormsApp.Controls.TransparentPanel panel3;
+        private System.Windows.Forms.Panel dofusClientPanel;
+        private System.Windows.Forms.Panel sidebarPanel;
+        private WindowsFormsApp.Controls.TransparentPanel ocrIndicatorPanel;
         private System.Windows.Forms.Timer paintTimer;
     }
 }

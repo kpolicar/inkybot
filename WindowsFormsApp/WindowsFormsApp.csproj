@@ -106,6 +106,9 @@
         <Compile Include="Events\StatsEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="KeyboardHook.cs" />
+        <Compile Include="MainForm.Debugger.cs">
+          <DependentUpon>MainForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
