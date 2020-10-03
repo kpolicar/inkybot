@@ -33,24 +33,31 @@ namespace WindowsFormsApp
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel6 = new System.Windows.Forms.Panel();
+            this.buttonsPanel = new System.Windows.Forms.Panel();
+            this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.toggleMageButton = new System.Windows.Forms.Button();
+            this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.debugButton = new System.Windows.Forms.Button();
+            this.helpButton = new System.Windows.Forms.Button();
+            this.mageInfoPanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.userInfoPanel = new System.Windows.Forms.Panel();
+            this.subscribedInfoLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
             this.panel3 = new WindowsFormsApp.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
             this.panel2.SuspendLayout();
-            this.panel6.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel4.SuspendLayout();
+            this.buttonsPanel.SuspendLayout();
+            this.primaryButtonsPanel.SuspendLayout();
+            this.secondaryButtonsPanel.SuspendLayout();
+            this.mageInfoPanel.SuspendLayout();
+            this.userInfoPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.AutoSize = true;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
@@ -61,32 +68,113 @@ namespace WindowsFormsApp
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.AutoSize = true;
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
-            this.panel2.Controls.Add(this.panel6);
-            this.panel2.Controls.Add(this.panel5);
-            this.panel2.Controls.Add(this.panel4);
+            this.panel2.Controls.Add(this.buttonsPanel);
+            this.panel2.Controls.Add(this.mageInfoPanel);
+            this.panel2.Controls.Add(this.userInfoPanel);
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(113, 590);
             this.panel2.TabIndex = 0;
             // 
-            // panel6
+            // buttonsPanel
             // 
-            this.panel6.Controls.Add(this.sinkValueLabel);
-            this.panel6.Controls.Add(this.sinkLabel);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel6.Location = new System.Drawing.Point(0, 547);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(113, 43);
-            this.panel6.TabIndex = 7;
+            this.buttonsPanel.AutoSize = true;
+            this.buttonsPanel.Controls.Add(this.primaryButtonsPanel);
+            this.buttonsPanel.Controls.Add(this.secondaryButtonsPanel);
+            this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonsPanel.Location = new System.Drawing.Point(0, 70);
+            this.buttonsPanel.Name = "buttonsPanel";
+            this.buttonsPanel.Size = new System.Drawing.Size(113, 453);
+            this.buttonsPanel.TabIndex = 8;
+            // 
+            // primaryButtonsPanel
+            // 
+            this.primaryButtonsPanel.AutoSize = true;
+            this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
+            this.primaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.primaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.primaryButtonsPanel.Location = new System.Drawing.Point(0, 0);
+            this.primaryButtonsPanel.Name = "primaryButtonsPanel";
+            this.primaryButtonsPanel.Size = new System.Drawing.Size(113, 64);
+            this.primaryButtonsPanel.TabIndex = 4;
+            // 
+            // toggleMageButton
+            // 
+            this.toggleMageButton.AutoSize = true;
+            this.toggleMageButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.toggleMageButton.FlatAppearance.BorderSize = 0;
+            this.toggleMageButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.toggleMageButton.Location = new System.Drawing.Point(0, 0);
+            this.toggleMageButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.toggleMageButton.Name = "toggleMageButton";
+            this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
+            this.toggleMageButton.TabIndex = 0;
+            this.toggleMageButton.Text = "Start";
+            this.toggleMageButton.UseVisualStyleBackColor = false;
+            this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
+            // 
+            // secondaryButtonsPanel
+            // 
+            this.secondaryButtonsPanel.Controls.Add(this.debugButton);
+            this.secondaryButtonsPanel.Controls.Add(this.helpButton);
+            this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
+            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 338);
+            this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
+            this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
+            this.secondaryButtonsPanel.TabIndex = 3;
+            // 
+            // debugButton
+            // 
+            this.debugButton.AutoSize = true;
+            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.debugButton.FlatAppearance.BorderSize = 0;
+            this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugButton.Location = new System.Drawing.Point(0, 70);
+            this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.debugButton.Name = "debugButton";
+            this.debugButton.Size = new System.Drawing.Size(113, 45);
+            this.debugButton.TabIndex = 2;
+            this.debugButton.Text = "Debug";
+            this.debugButton.UseVisualStyleBackColor = false;
+            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
+            // 
+            // helpButton
+            // 
+            this.helpButton.AutoSize = true;
+            this.helpButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.helpButton.FlatAppearance.BorderSize = 0;
+            this.helpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpButton.Location = new System.Drawing.Point(0, 22);
+            this.helpButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.helpButton.Name = "helpButton";
+            this.helpButton.Size = new System.Drawing.Size(113, 45);
+            this.helpButton.TabIndex = 1;
+            this.helpButton.Text = "Help";
+            this.helpButton.UseVisualStyleBackColor = false;
+            this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
+            // 
+            // mageInfoPanel
+            // 
+            this.mageInfoPanel.AutoSize = true;
+            this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
+            this.mageInfoPanel.Controls.Add(this.sinkLabel);
+            this.mageInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.mageInfoPanel.Location = new System.Drawing.Point(0, 523);
+            this.mageInfoPanel.Name = "mageInfoPanel";
+            this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 15);
+            this.mageInfoPanel.Size = new System.Drawing.Size(113, 67);
+            this.mageInfoPanel.TabIndex = 7;
             // 
             // sinkValueLabel
             // 
             this.sinkValueLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.sinkValueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.sinkValueLabel.Location = new System.Drawing.Point(0, 15);
+            this.sinkValueLabel.Location = new System.Drawing.Point(0, 28);
             this.sinkValueLabel.Name = "sinkValueLabel";
-            this.sinkValueLabel.Size = new System.Drawing.Size(113, 19);
+            this.sinkValueLabel.Size = new System.Drawing.Size(113, 24);
             this.sinkValueLabel.TabIndex = 7;
             this.sinkValueLabel.Text = "0";
             this.sinkValueLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -94,84 +182,61 @@ namespace WindowsFormsApp
             // sinkLabel
             // 
             this.sinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sinkLabel.Location = new System.Drawing.Point(0, 0);
+            this.sinkLabel.Location = new System.Drawing.Point(0, 15);
             this.sinkLabel.Name = "sinkLabel";
-            this.sinkLabel.Size = new System.Drawing.Size(113, 15);
+            this.sinkLabel.Size = new System.Drawing.Size(113, 13);
             this.sinkLabel.TabIndex = 6;
             this.sinkLabel.Text = "Sink";
             this.sinkLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // panel5
+            // userInfoPanel
             // 
-            this.panel5.Controls.Add(this.button1);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel5.Location = new System.Drawing.Point(0, 75);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(113, 45);
-            this.panel5.TabIndex = 5;
+            this.userInfoPanel.AutoSize = true;
+            this.userInfoPanel.Controls.Add(this.subscribedInfoLabel);
+            this.userInfoPanel.Controls.Add(this.usernameLabel);
+            this.userInfoPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.userInfoPanel.Location = new System.Drawing.Point(0, 0);
+            this.userInfoPanel.Name = "userInfoPanel";
+            this.userInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 0);
+            this.userInfoPanel.Size = new System.Drawing.Size(113, 70);
+            this.userInfoPanel.TabIndex = 4;
             // 
-            // button1
+            // subscribedInfoLabel
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(113, 45);
-            this.button1.TabIndex = 0;
-            this.button1.TabStop = false;
-            this.button1.Text = "Show OCR";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.label1);
-            this.panel4.Controls.Add(this.usernameLabel);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Margin = new System.Windows.Forms.Padding(15, 3, 3, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(113, 75);
-            this.panel4.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Location = new System.Drawing.Point(0, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(113, 35);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Subscribed until: 24/09/2022";
+            this.subscribedInfoLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.subscribedInfoLabel.Location = new System.Drawing.Point(0, 35);
+            this.subscribedInfoLabel.Name = "subscribedInfoLabel";
+            this.subscribedInfoLabel.Size = new System.Drawing.Size(113, 35);
+            this.subscribedInfoLabel.TabIndex = 3;
+            this.subscribedInfoLabel.Text = "Subscribed until: 24/09/2022";
             // 
             // usernameLabel
             // 
             this.usernameLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.usernameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.usernameLabel.Location = new System.Drawing.Point(0, 0);
+            this.usernameLabel.Location = new System.Drawing.Point(0, 15);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(113, 23);
+            this.usernameLabel.Size = new System.Drawing.Size(113, 20);
             this.usernameLabel.TabIndex = 2;
             this.usernameLabel.Text = "Klemen";
             // 
             // panel3
             // 
             this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.AutoSize = true;
             this.panel3.BackColor = System.Drawing.Color.Transparent;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1083, 590);
             this.panel3.TabIndex = 0;
             this.panel3.Visible = false;
-            this.panel3.Click += new System.EventHandler(this.panel3_Click);
             this.panel3.VisibleChanged += new System.EventHandler(this.panel3_VisibleChanged);
+            this.panel3.Click += new System.EventHandler(this.panel3_Click);
             // 
             // paintTimer
             // 
             this.paintTimer.Interval = 10;
             this.paintTimer.Tick += new System.EventHandler(this.paintOcrIndicators);
-
             // 
             // MainForm
             // 
@@ -186,22 +251,34 @@ namespace WindowsFormsApp
             this.Name = "MainForm";
             this.Text = "Inkybot";
             this.panel2.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.buttonsPanel.ResumeLayout(false);
+            this.buttonsPanel.PerformLayout();
+            this.primaryButtonsPanel.ResumeLayout(false);
+            this.primaryButtonsPanel.PerformLayout();
+            this.secondaryButtonsPanel.ResumeLayout(false);
+            this.secondaryButtonsPanel.PerformLayout();
+            this.mageInfoPanel.ResumeLayout(false);
+            this.userInfoPanel.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
+
+        private System.Windows.Forms.FlowLayoutPanel primaryButtonsPanel;
+
+        private System.Windows.Forms.FlowLayoutPanel secondaryButtonsPanel;
+
+        private System.Windows.Forms.Button debugButton;
+        private System.Windows.Forms.Button helpButton;
+        private System.Windows.Forms.Label subscribedInfoLabel;
+        private System.Windows.Forms.Button toggleMageButton;
+
+        private System.Windows.Forms.Panel buttonsPanel;
+        private System.Windows.Forms.Panel mageInfoPanel;
+        private System.Windows.Forms.Panel userInfoPanel;
 
         private System.Windows.Forms.Label sinkLabel;
         private System.Windows.Forms.Label sinkValueLabel;
-
-        private System.Windows.Forms.Panel panel6;
-
-        private System.Windows.Forms.Panel panel5;
-
-        private System.Windows.Forms.Panel panel4;
-
-        private System.Windows.Forms.Label label1;
 
         private System.Windows.Forms.Label usernameLabel;
 
@@ -210,7 +287,6 @@ namespace WindowsFormsApp
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private WindowsFormsApp.Controls.TransparentPanel panel3;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Timer paintTimer;
     }
 }

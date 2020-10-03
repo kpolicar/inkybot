@@ -37,8 +37,15 @@ namespace WindowsFormsApp
       WindowHelpers.RemoveWindowBorders(hWndDocked);
     }
 
-    private void button1_Click(object sender, EventArgs e) {
+    private void debugButton_Click(object sender, EventArgs e) {
       panel3.Show();
+    }
+
+    private void toggleMageButton_Click(object sender, EventArgs e) {
+    }
+
+    private void helpButton_Click(object sender, EventArgs e) {
+      // Open help on website
     }
 
     private void paintOcrIndicators(object sender, EventArgs eventArgs)
