@@ -37,7 +37,6 @@ namespace WindowsFormsApp
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,22 +94,11 @@ namespace WindowsFormsApp
             this.TargetColumn.HeaderText = "Target";
             this.TargetColumn.Name = "TargetColumn";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(0, 403);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(148, 38);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Begin (F2)";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // StatsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "StatsForm";
             this.Text = "Debug";
@@ -124,6 +112,5 @@ namespace WindowsFormsApp
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ValueColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
-        private System.Windows.Forms.Button button1;
     }
 }

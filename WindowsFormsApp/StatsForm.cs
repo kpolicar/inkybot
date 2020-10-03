@@ -11,52 +11,17 @@ namespace WindowsFormsApp
     public partial class StatsForm : Form
     {
         private MainForm mainForm;
-        private bool isMaging = false;
         private DofusMagingJob magingJob;
         private DofusDataProvider dataProvider;
 
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-            const int WM_NCPAINT = 0x85;
-            if (m.Msg == WM_NCPAINT)
-            {
-                IntPtr hdc = Win32.GetWindowDC(m.HWnd);
-                if ((int)hdc != 0)
-                {
-                    var g = Graphics.FromHdc(hdc);
-                    g.FillRectangle(Brushes.Green, new Rectangle(0, 0, 4800, 23));
-                    g.Flush();
-                    Win32.ReleaseDC(m.HWnd, hdc);
-                }
-            }
-        }
-        
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchedStats += StatsUpdated;
-
-            InitializeKeyboardShortcuts();
-
-            magingJob.Started += (sender, args) => isMaging = true;
-            magingJob.Stopped += (sender, args) => isMaging = false;
-            Closing += (sender, e) => {
-                KeyboardHook.Release();
-                magingJob.StopMage();
-            };
         }
 
-        private void InitializeKeyboardShortcuts() {
-            KeyboardHook.Init();
-            KeyboardHook.KeyPressed += (sender, e) => {
-                if (e.KeyCode == Keys.F2)
-                    button1_Click(sender, e);
-            };
-        }
 
         delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
         private void StatsUpdated(object sender, StatsEventArgs e)
@@ -77,11 +42,6 @@ namespace WindowsFormsApp
                     dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value);
                 }
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e) {
-            magingJob.BeginMage(isMaging = !isMaging);
-            button1.Text = isMaging ? "Stop (F2)" : "Begin (F2)";
         }
     }
 }

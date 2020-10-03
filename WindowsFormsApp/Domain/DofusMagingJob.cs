@@ -15,6 +15,7 @@ namespace WindowsFormsApp
         public event EventHandler<SinkChangedEventArgs> SinkChanged;
 
         public Thread job;
+        public bool IsMaging => shouldContinueMaging;
         private bool shouldContinueMaging;
         private Config config;
 

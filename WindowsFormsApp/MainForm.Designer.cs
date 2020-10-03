@@ -40,6 +40,7 @@ namespace WindowsFormsApp
             this.debugButton = new System.Windows.Forms.Button();
             this.helpButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
+            this.mousePositionLabel = new System.Windows.Forms.Label();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
             this.userInfoPanel = new System.Windows.Forms.Panel();
@@ -81,12 +82,13 @@ namespace WindowsFormsApp
             // buttonsPanel
             // 
             this.buttonsPanel.AutoSize = true;
+            this.buttonsPanel.BackColor = System.Drawing.Color.Transparent;
             this.buttonsPanel.Controls.Add(this.primaryButtonsPanel);
             this.buttonsPanel.Controls.Add(this.secondaryButtonsPanel);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonsPanel.Location = new System.Drawing.Point(0, 70);
             this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Size = new System.Drawing.Size(113, 453);
+            this.buttonsPanel.Size = new System.Drawing.Size(113, 433);
             this.buttonsPanel.TabIndex = 8;
             // 
             // primaryButtonsPanel
@@ -111,7 +113,7 @@ namespace WindowsFormsApp
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
             this.toggleMageButton.TabIndex = 0;
-            this.toggleMageButton.Text = "Start";
+            this.toggleMageButton.Text = "Start\n(F2)";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 
@@ -121,7 +123,7 @@ namespace WindowsFormsApp
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
-            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 338);
+            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 318);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
             this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
             this.secondaryButtonsPanel.TabIndex = 3;
@@ -159,14 +161,30 @@ namespace WindowsFormsApp
             // mageInfoPanel
             // 
             this.mageInfoPanel.AutoSize = true;
+            this.mageInfoPanel.BackColor = System.Drawing.Color.Transparent;
+            this.mageInfoPanel.Controls.Add(this.mousePositionLabel);
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
             this.mageInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.mageInfoPanel.Location = new System.Drawing.Point(0, 523);
+            this.mageInfoPanel.Location = new System.Drawing.Point(0, 503);
             this.mageInfoPanel.Name = "mageInfoPanel";
-            this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 15);
-            this.mageInfoPanel.Size = new System.Drawing.Size(113, 67);
+            this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 5);
+            this.mageInfoPanel.Size = new System.Drawing.Size(113, 87);
             this.mageInfoPanel.TabIndex = 7;
+            // 
+            // mousePositionLabel
+            // 
+            this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
+            this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mousePositionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.mousePositionLabel.Location = new System.Drawing.Point(0, 52);
+            this.mousePositionLabel.Name = "mousePositionLabel";
+            this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.mousePositionLabel.Size = new System.Drawing.Size(113, 30);
+            this.mousePositionLabel.TabIndex = 8;
+            this.mousePositionLabel.Text = "(0,0)";
+            this.mousePositionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.mousePositionLabel.Visible = false;
             // 
             // sinkValueLabel
             // 
@@ -192,6 +210,7 @@ namespace WindowsFormsApp
             // userInfoPanel
             // 
             this.userInfoPanel.AutoSize = true;
+            this.userInfoPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (155)))), ((int) (((byte) (188)))), ((int) (((byte) (35)))));
             this.userInfoPanel.Controls.Add(this.subscribedInfoLabel);
             this.userInfoPanel.Controls.Add(this.usernameLabel);
             this.userInfoPanel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -263,6 +282,8 @@ namespace WindowsFormsApp
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Label mousePositionLabel;
 
         private System.Windows.Forms.FlowLayoutPanel primaryButtonsPanel;
 

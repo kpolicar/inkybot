@@ -29,6 +29,24 @@ namespace WindowsFormsApp
       
       statsForm = new StatsForm(this);
       statsForm.Show();
+      magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+      magingJob.Started += onMagingStarted;
+      magingJob.Stopped += onMagingStopped;
+      InitializeKeyboardShortcuts();
+    }
+    
+    
+    private void InitializeKeyboardShortcuts() {
+      KeyboardHook.Init();
+      KeyboardHook.KeyPressed += (sender, e) => {
+        if (e.KeyCode == Keys.F2)
+          toggleMageButton_Click(sender, e);
+      };
+      
+      Closing += (sender, e) => {
+        KeyboardHook.Release();
+        magingJob.StopMage();
+      };
     }
 
     private void InitializeDofusClient() {
@@ -37,11 +55,35 @@ namespace WindowsFormsApp
       WindowHelpers.RemoveWindowBorders(hWndDocked);
     }
 
+    private bool debugging = false;
+    private DofusMagingJob magingJob;
+
     private void debugButton_Click(object sender, EventArgs e) {
-      panel3.Show();
+      if (debugging = !debugging)  {
+        panel3.Show();
+        panel2.BringToFront();
+        debugButton.Text = "Stop Debug";
+      }
+      else  {
+        panel3.Hide();
+        debugButton.Text = "Debug";
+      }
+    }
+    
+    
+    private void onMagingStopped(object sender, EventArgs e)
+    {
+      toggleMageButton.Text = "Start\n(F2)";
     }
 
-    private void toggleMageButton_Click(object sender, EventArgs e) {
+    private void onMagingStarted(object sender, EventArgs e)
+    {
+      toggleMageButton.Text = "Stop\n(F2)";
+    }
+
+    private void toggleMageButton_Click(object sender, EventArgs e)
+    {
+      magingJob.BeginMage(!magingJob.IsMaging);
     }
 
     private void helpButton_Click(object sender, EventArgs e) {
