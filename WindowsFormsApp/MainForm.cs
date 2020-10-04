@@ -16,13 +16,10 @@ namespace WindowsFormsApp
     private StatsForm statsForm;
     private DofusMagingJob magingJob;
 
-
-
     public MainForm()
     {
       InitializeComponent();
       ocrIndicatorPanel.BringToFront();
-
       InitializeDofusClient();
 
       

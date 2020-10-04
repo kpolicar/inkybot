@@ -42,6 +42,10 @@
           <HintPath>..\packages\InputSimulatorStandard.1.0.0\lib\netstandard2.0\InputSimulatorStandard.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="SymSpell, Version=6.5.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\SymSpell.6.5.0\lib\net472\SymSpell.dll</HintPath>
           <Private>True</Private>
@@ -87,6 +91,7 @@
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\TransparentPanel.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
+        <Compile Include="Domain\Auth.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
@@ -100,6 +105,7 @@
         <Compile Include="Domain\MageHistoryRecord.cs" />
         <Compile Include="Domain\Rune.cs" />
         <Compile Include="Domain\Item.cs" />
+        <Compile Include="Domain\Server.cs" />
         <Compile Include="Domain\Stat.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
         <Compile Include="Events\SinkChangedEventArgs.cs" />
@@ -109,6 +115,8 @@
         <Compile Include="MainForm.Debugger.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Resources\Api\AuthDetails.cs" />
+        <Compile Include="Resources\Api\User.cs" />
         <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
