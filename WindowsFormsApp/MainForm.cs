@@ -21,7 +21,6 @@ namespace WindowsFormsApp
       InitializeComponent();
       ocrIndicatorPanel.BringToFront();
       InitializeDofusClient();
-
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
       var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
@@ -35,6 +34,14 @@ namespace WindowsFormsApp
       Closing += (sender, args) =>  {
         if (debugging) StopDebugging();
       };
+    }
+
+    private void MainForm_Load(object sender, EventArgs eventArgs)
+    {
+      var result = new LoginForm().ShowDialog(this);
+      if (result != DialogResult.OK) {
+        Close();
+      }
     }
 
     private void BindToMagingEvents() {
