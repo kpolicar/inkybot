@@ -28,6 +28,7 @@ namespace WindowsFormsApp
       Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
       Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
       Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
+      Services.AddService(typeof(Auth), new Auth());
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

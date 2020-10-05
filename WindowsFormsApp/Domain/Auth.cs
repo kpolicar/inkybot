@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using WindowsFormsApp.Resources.Api;
 using Newtonsoft.Json;
 
@@ -15,7 +16,7 @@ namespace WindowsFormsApp
     {
         private AuthDetails authDetails;
 
-        public async void Login(string username, string password)
+        public async Task<bool> Login(string username, string password)
         {
             var client = new HttpClient();
             const string url = Server.BaseUrl+ "/oauth/token";
@@ -28,12 +29,15 @@ namespace WindowsFormsApp
                 {"client_secret", "***REMOVED***"},
                 {"scope", ""}
             };
-            var content = new FormUrlEncodedContent(form_params);    
+            var content = new FormUrlEncodedContent(form_params);
             var response = await client.PostAsync(url, content);
-            response.EnsureSuccessStatusCode();    // Throw if not a success code.
-            var result = response.Content.ReadAsStringAsync().Result;
 
+            if (!response.IsSuccessStatusCode)
+                return false;
+            
+            var result = response.Content.ReadAsStringAsync().Result;
             authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
+            return true;
         }
 
         public async void User()
