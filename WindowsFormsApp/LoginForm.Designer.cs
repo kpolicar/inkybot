@@ -142,7 +142,7 @@ namespace WindowsFormsApp
             this.button1.Location = new System.Drawing.Point(48, 166);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(142, 33);
-            this.button1.TabIndex = 4;
+            this.button1.TabIndex = 0;
             this.button1.Text = "Sign in";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -162,7 +162,9 @@ namespace WindowsFormsApp
             this.passwordTextBox.Location = new System.Drawing.Point(48, 128);
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(142, 20);
-            this.passwordTextBox.TabIndex = 2;
+            this.passwordTextBox.TabIndex = 4;
+            this.passwordTextBox.Text = "password";
+            this.passwordTextBox.UseSystemPasswordChar = true;
             // 
             // label3
             // 
@@ -179,7 +181,8 @@ namespace WindowsFormsApp
             this.usernameTextBox.Location = new System.Drawing.Point(48, 70);
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(142, 20);
-            this.usernameTextBox.TabIndex = 0;
+            this.usernameTextBox.TabIndex = 2;
+            this.usernameTextBox.Text = "naltamer14@gmail.com";
             // 
             // LoginForm
             // 
