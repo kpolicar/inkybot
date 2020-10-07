@@ -46,6 +46,7 @@ namespace WindowsFormsApp
             this.userInfoPanel = new System.Windows.Forms.Panel();
             this.subscribedInfoLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
+            this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.ocrIndicatorPanel = new WindowsFormsApp.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
             this.sidebarPanel.SuspendLayout();
@@ -70,7 +71,7 @@ namespace WindowsFormsApp
             // 
             this.sidebarPanel.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
             this.sidebarPanel.AutoSize = true;
-            this.sidebarPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
+            this.sidebarPanel.BackColor = System.Drawing.SystemColors.Desktop;
             this.sidebarPanel.Controls.Add(this.buttonsPanel);
             this.sidebarPanel.Controls.Add(this.mageInfoPanel);
             this.sidebarPanel.Controls.Add(this.userInfoPanel);
@@ -86,9 +87,9 @@ namespace WindowsFormsApp
             this.buttonsPanel.Controls.Add(this.primaryButtonsPanel);
             this.buttonsPanel.Controls.Add(this.secondaryButtonsPanel);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonsPanel.Location = new System.Drawing.Point(0, 70);
+            this.buttonsPanel.Location = new System.Drawing.Point(0, 96);
             this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Size = new System.Drawing.Size(113, 433);
+            this.buttonsPanel.Size = new System.Drawing.Size(113, 407);
             this.buttonsPanel.TabIndex = 8;
             // 
             // primaryButtonsPanel
@@ -105,15 +106,17 @@ namespace WindowsFormsApp
             // toggleMageButton
             // 
             this.toggleMageButton.AutoSize = true;
-            this.toggleMageButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.toggleMageButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.toggleMageButton.FlatAppearance.BorderSize = 0;
             this.toggleMageButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.toggleMageButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.toggleMageButton.ForeColor = System.Drawing.SystemColors.Control;
             this.toggleMageButton.Location = new System.Drawing.Point(0, 0);
             this.toggleMageButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
             this.toggleMageButton.TabIndex = 0;
-            this.toggleMageButton.Text = "Start\n(F2)";
+            this.toggleMageButton.Text = "START\r\n(F2)";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 
@@ -123,7 +126,7 @@ namespace WindowsFormsApp
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
-            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 318);
+            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 292);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
             this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
             this.secondaryButtonsPanel.TabIndex = 3;
@@ -131,30 +134,34 @@ namespace WindowsFormsApp
             // debugButton
             // 
             this.debugButton.AutoSize = true;
-            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.debugButton.FlatAppearance.BorderSize = 0;
             this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
             this.debugButton.Location = new System.Drawing.Point(0, 70);
             this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.debugButton.Name = "debugButton";
             this.debugButton.Size = new System.Drawing.Size(113, 45);
             this.debugButton.TabIndex = 2;
-            this.debugButton.Text = "Debug";
+            this.debugButton.Text = "DEBUG";
             this.debugButton.UseVisualStyleBackColor = false;
             this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // helpButton
             // 
             this.helpButton.AutoSize = true;
-            this.helpButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (136)))), ((int) (((byte) (165)))), ((int) (((byte) (31)))));
+            this.helpButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.helpButton.FlatAppearance.BorderSize = 0;
             this.helpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.helpButton.ForeColor = System.Drawing.SystemColors.Control;
             this.helpButton.Location = new System.Drawing.Point(0, 22);
             this.helpButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.helpButton.Name = "helpButton";
             this.helpButton.Size = new System.Drawing.Size(113, 45);
             this.helpButton.TabIndex = 1;
-            this.helpButton.Text = "Help";
+            this.helpButton.Text = "HELP";
             this.helpButton.UseVisualStyleBackColor = false;
             this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
             // 
@@ -174,9 +181,10 @@ namespace WindowsFormsApp
             // 
             // mousePositionLabel
             // 
-            this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (172)))), ((int) (((byte) (211)))), ((int) (((byte) (40)))));
+            this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (60)))), ((int) (((byte) (60)))), ((int) (((byte) (60)))));
             this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mousePositionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.mousePositionLabel.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.mousePositionLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.mousePositionLabel.Location = new System.Drawing.Point(0, 52);
             this.mousePositionLabel.Name = "mousePositionLabel";
             this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
@@ -189,7 +197,8 @@ namespace WindowsFormsApp
             // sinkValueLabel
             // 
             this.sinkValueLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sinkValueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.sinkValueLabel.Font = new System.Drawing.Font("Trebuchet MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.sinkValueLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.sinkValueLabel.Location = new System.Drawing.Point(0, 28);
             this.sinkValueLabel.Name = "sinkValueLabel";
             this.sinkValueLabel.Size = new System.Drawing.Size(113, 24);
@@ -200,6 +209,8 @@ namespace WindowsFormsApp
             // sinkLabel
             // 
             this.sinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.sinkLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.sinkLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.sinkLabel.Location = new System.Drawing.Point(0, 15);
             this.sinkLabel.Name = "sinkLabel";
             this.sinkLabel.Size = new System.Drawing.Size(113, 13);
@@ -210,34 +221,53 @@ namespace WindowsFormsApp
             // userInfoPanel
             // 
             this.userInfoPanel.AutoSize = true;
-            this.userInfoPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (155)))), ((int) (((byte) (188)))), ((int) (((byte) (35)))));
+            this.userInfoPanel.BackColor = System.Drawing.Color.Transparent;
             this.userInfoPanel.Controls.Add(this.subscribedInfoLabel);
             this.userInfoPanel.Controls.Add(this.usernameLabel);
+            this.userInfoPanel.Controls.Add(this.loggedInAsLabel);
             this.userInfoPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.userInfoPanel.Location = new System.Drawing.Point(0, 0);
             this.userInfoPanel.Name = "userInfoPanel";
-            this.userInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 0);
-            this.userInfoPanel.Size = new System.Drawing.Size(113, 70);
+            this.userInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 15);
+            this.userInfoPanel.Size = new System.Drawing.Size(113, 96);
             this.userInfoPanel.TabIndex = 4;
             // 
             // subscribedInfoLabel
             // 
+            this.subscribedInfoLabel.AutoSize = true;
             this.subscribedInfoLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.subscribedInfoLabel.Location = new System.Drawing.Point(0, 35);
+            this.subscribedInfoLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.subscribedInfoLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.subscribedInfoLabel.Location = new System.Drawing.Point(0, 52);
             this.subscribedInfoLabel.Name = "subscribedInfoLabel";
-            this.subscribedInfoLabel.Size = new System.Drawing.Size(113, 35);
+            this.subscribedInfoLabel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.subscribedInfoLabel.Size = new System.Drawing.Size(95, 29);
             this.subscribedInfoLabel.TabIndex = 3;
-            this.subscribedInfoLabel.Text = "Subscribed until: 24/09/2022";
+            this.subscribedInfoLabel.Text = "SUBSCRIBED UNTIL:\r\n24/09/2022";
             // 
             // usernameLabel
             // 
+            this.usernameLabel.AutoSize = true;
             this.usernameLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.usernameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.usernameLabel.Location = new System.Drawing.Point(0, 15);
+            this.usernameLabel.Font = new System.Drawing.Font("Trebuchet MS", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.usernameLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.usernameLabel.Location = new System.Drawing.Point(0, 28);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(113, 20);
+            this.usernameLabel.Size = new System.Drawing.Size(77, 24);
             this.usernameLabel.TabIndex = 2;
             this.usernameLabel.Text = "Klemen";
+            // 
+            // loggedInAsLabel
+            // 
+            this.loggedInAsLabel.AutoSize = true;
+            this.loggedInAsLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.loggedInAsLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.loggedInAsLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.loggedInAsLabel.Location = new System.Drawing.Point(0, 15);
+            this.loggedInAsLabel.Name = "loggedInAsLabel";
+            this.loggedInAsLabel.Size = new System.Drawing.Size(70, 13);
+            this.loggedInAsLabel.TabIndex = 4;
+            this.loggedInAsLabel.Text = "LOGGED IN AS";
             // 
             // ocrIndicatorPanel
             // 
@@ -259,7 +289,7 @@ namespace WindowsFormsApp
             // 
             // MainForm
             // 
-            this.Load += MainForm_Load;
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1083, 590);
@@ -280,9 +310,12 @@ namespace WindowsFormsApp
             this.secondaryButtonsPanel.PerformLayout();
             this.mageInfoPanel.ResumeLayout(false);
             this.userInfoPanel.ResumeLayout(false);
+            this.userInfoPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Label loggedInAsLabel;
 
         private System.Windows.Forms.Label mousePositionLabel;
 
