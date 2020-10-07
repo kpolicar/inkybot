@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
@@ -15,12 +18,14 @@ namespace WindowsFormsApp
     private IntPtr hWndDocked;
     private StatsForm statsForm;
     private DofusMagingJob magingJob;
+    private Auth auth;
 
     public MainForm()
     {
       InitializeComponent();
       ocrIndicatorPanel.BringToFront();
       InitializeDofusClient();
+      auth = (Auth) Program.Services.GetService(typeof(Auth));
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
       var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
@@ -36,11 +41,70 @@ namespace WindowsFormsApp
       };
     }
 
-    private void MainForm_Load(object sender, EventArgs eventArgs)
+    private bool DoLoginDialog()
     {
       var result = new LoginForm().ShowDialog(this);
-      if (result != DialogResult.OK) {
+      return result == DialogResult.OK;
+    }
+
+    private void MainForm_Load(object sender, EventArgs eventArgs)
+    {
+      InitFormWithLoginDiaog();
+    }
+
+    private bool InitFormWithLoginDiaog()
+    {
+      var loginSuccess = DoLoginDialog();
+      if (!loginSuccess) {
         Close();
+        return false;
+      }
+
+      userDetailsTimer.Start();
+      authTokenRefreshTimer.Start();
+      OnUserDetailsTimer(this, EventArgs.Empty);
+      
+      return true;
+    }
+
+    private void OnUserDetailsTimer(object sender, EventArgs eventArgs)
+    {
+      if (tokenRefresh != null && !tokenRefresh.IsCompleted)  {
+        tokenRefresh.ContinueWith(task => {
+          OnUserDetailsTimer(sender, eventArgs);
+        });
+        return;
+      }
+
+      UpdateUserDetails();
+    }
+
+    private async Task UpdateUserDetails()
+    {
+      try
+      {
+        var user = await auth.User();
+        usernameLabel.Text = user.name;
+      }
+      catch (HttpRequestException exception)
+      {
+        var success = InitFormWithLoginDiaog();
+        if (success)
+          Show();
+      }
+    }
+
+    private Task<bool> tokenRefresh;
+
+    private async void OnAuthTokenRefreshTimer(object sender, EventArgs eventArgs)
+    {
+      tokenRefresh = auth.RefreshToken();
+      if (await tokenRefresh) {
+        Debug.WriteLine("Refresh success");
+      }
+      else
+      {
+        Debug.WriteLine("Refresh failed");
       }
     }
 
