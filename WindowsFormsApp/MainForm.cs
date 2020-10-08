@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
+using WindowsFormsApp.Events;
 using WindowsFormsApp.Services;
 using Gma.System.MouseKeyHook;
 using Mouse = WindowsFormsApp.Contracts.Mouse;
@@ -111,9 +112,17 @@ namespace WindowsFormsApp
     private void BindToMagingEvents() {
       magingJob.Started += OnMagingStarted;
       magingJob.Stopped += OnMagingStopped;
+      magingJob.SinkChanged += OnMagingSinkChanged;
     }
-    
-    
+
+    private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e)
+    {
+      Invoke(new MethodInvoker(delegate(){
+        sinkValueLabel.Text = Convert.ToInt32(e.sink)+"";
+      }));
+    }
+
+
     private void InitializeKeyboardShortcuts() {
       KeyboardHook.Init();
       KeyboardHook.KeyPressed += (sender, e) => {
@@ -135,12 +144,16 @@ namespace WindowsFormsApp
     
     private void OnMagingStopped(object sender, EventArgs e)
     {
-      toggleMageButton.Text = "Start\n(F2)";
+      Invoke(new MethodInvoker(delegate(){
+        toggleMageButton.Text = "Start\n(F2)";
+      }));
     }
 
     private void OnMagingStarted(object sender, EventArgs e)
     {
-      toggleMageButton.Text = "Stop\n(F2)";
+      Invoke(new MethodInvoker(delegate(){
+        toggleMageButton.Text = "Stop\n(F2)";
+      }));
     }
 
     private void toggleMageButton_Click(object sender, EventArgs e)
