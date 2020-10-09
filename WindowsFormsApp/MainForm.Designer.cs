@@ -317,6 +317,7 @@ namespace WindowsFormsApp
             this.Name = "MainForm";
             this.Text = "Inkybot";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);

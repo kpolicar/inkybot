@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
+using WindowsFormsApp.Domain;
 using WindowsFormsApp.Events;
+using WindowsFormsApp.Exceptions;
+using WindowsFormsApp.Resources.Api;
 using WindowsFormsApp.Services;
 using Gma.System.MouseKeyHook;
 using Mouse = WindowsFormsApp.Contracts.Mouse;
@@ -20,12 +23,16 @@ namespace WindowsFormsApp
     private StatsForm statsForm;
     private DofusMagingJob magingJob;
     private Auth auth;
+    private Task<bool> tokenRefresh;
+    private UserSubscriptionFormEnforcer subscriptionEnforcer;
+    private ApiDataProvider api;
 
     public MainForm()
     {
       InitializeComponent();
       ocrIndicatorPanel.BringToFront();
       InitializeDofusClient();
+      subscriptionEnforcer = new UserSubscriptionFormEnforcer(this);
       auth = (Auth) Program.Services.GetService(typeof(Auth));
       
       Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
@@ -34,6 +41,7 @@ namespace WindowsFormsApp
       
       statsForm = new StatsForm(this);
       magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+      api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
       BindToMagingEvents();
       InitializeKeyboardShortcuts();
       
@@ -42,20 +50,14 @@ namespace WindowsFormsApp
       };
     }
 
-    private bool DoLoginDialog()
-    {
-      var result = new LoginForm().ShowDialog(this);
-      return result == DialogResult.OK;
-    }
-
     private void MainForm_Load(object sender, EventArgs eventArgs)
     {
       InitFormWithLoginDiaog();
     }
 
-    private bool InitFormWithLoginDiaog()
+    private bool InitFormWithLoginDiaog(string message="")
     {
-      var loginSuccess = DoLoginDialog();
+      var loginSuccess = DoLoginDialog(message);
       if (!loginSuccess) {
         Close();
         return false;
@@ -68,7 +70,13 @@ namespace WindowsFormsApp
       return true;
     }
 
-    private void OnUserDetailsTimer(object sender, EventArgs eventArgs)
+    private bool DoLoginDialog(string message="")
+    {
+      var result = new LoginForm(message).ShowDialog(this);
+      return result == DialogResult.OK;
+    }
+
+    private async void OnUserDetailsTimer(object sender, EventArgs eventArgs)
     {
       if (tokenRefresh != null && !tokenRefresh.IsCompleted)  {
         tokenRefresh.ContinueWith(task => {
@@ -77,36 +85,45 @@ namespace WindowsFormsApp
         return;
       }
 
-      UpdateUserDetails();
-    }
-
-    private async Task UpdateUserDetails()
-    {
       try
       {
-        var user = await auth.User();
-        usernameLabel.Text = user.name;
+        var user = await api.User();
+        UpdateUserDetails(user);
+        EnforceUserSubscribed(user);
       }
-      catch (HttpRequestException exception)
+      catch (Exception exception)
       {
-        var success = InitFormWithLoginDiaog();
-        if (success)
-          Show();
+        var message = exception switch
+        {
+          HttpRequestException _ => "Something went wrong!",
+          UserNotSubscribedException _ => "User is no longer subscribed!\nPlease extend your subscription to resume.",
+          _ => ""
+        };
+        ResetWithLoginDialog(message);
       }
     }
 
-    private Task<bool> tokenRefresh;
+    private void ResetWithLoginDialog(string message)
+    {
+      Hide();
+      var success = InitFormWithLoginDiaog(message);
+      if (success) Show();
+    }
 
-    private async void OnAuthTokenRefreshTimer(object sender, EventArgs eventArgs)
+    private void UpdateUserDetails(User user)
+    {
+        usernameLabel.Text = user.name;
+        subscribedInfoLabel.Text = "Subscribed to:\n" + user.subscribed_to;
+    }
+
+    private void EnforceUserSubscribed(User user)
+    {
+      if (!user.is_subscribed) throw new UserNotSubscribedException();
+    }
+
+    private void OnAuthTokenRefreshTimer(object sender, EventArgs eventArgs)
     {
       tokenRefresh = auth.RefreshToken();
-      if (await tokenRefresh) {
-        Debug.WriteLine("Refresh success");
-      }
-      else
-      {
-        Debug.WriteLine("Refresh failed");
-      }
     }
 
     private void BindToMagingEvents() {
@@ -189,6 +206,16 @@ namespace WindowsFormsApp
     }
 
     private void Form1_Resize(object sender, EventArgs e) {
+    }
+
+    private void MainForm_VisibleChanged(object sender, EventArgs e)
+    {
+      if (!Visible)
+      {
+        magingJob.StopMage();
+        userDetailsTimer.Stop();
+        authTokenRefreshTimer.Stop();
+      }
     }
   }
 }

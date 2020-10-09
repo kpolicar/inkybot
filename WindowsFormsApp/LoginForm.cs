@@ -3,17 +3,25 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
+using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
     public partial class LoginForm : Form
     {
         private Auth auth;
+        private ApiDataProvider api;
+
+        public LoginForm(string errorMessage) : this()
+        {
+            api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
+            this.errorMessage.Text = errorMessage;
+        }
 
         public LoginForm()
         {
             InitializeComponent();
-            this.auth = (Auth) Program.Services.GetService(typeof(Auth));
+            auth = (Auth) Program.Services.GetService(typeof(Auth));
         }
         
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -28,6 +36,13 @@ namespace WindowsFormsApp
                 var success = await auth.Login(usernameTextBox.Text, passwordTextBox.Text);
                 if (!success)  {
                     errorMessage.Text = "Incorrect username or password!";
+                    return;
+                }
+
+                var user = await api.User();
+                if (!user.is_subscribed)
+                {
+                    errorMessage.Text = "User is not subscribed!";
                     return;
                 }
             }

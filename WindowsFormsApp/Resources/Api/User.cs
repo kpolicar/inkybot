@@ -8,5 +8,7 @@ namespace WindowsFormsApp.Resources.Api
         public string name;
         public string email;
         public string password;
+        public bool is_subscribed;
+        public DateTime? subscribed_to;
     }
 }

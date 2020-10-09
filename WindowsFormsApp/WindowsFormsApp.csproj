@@ -92,6 +92,7 @@
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\TransparentPanel.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
+        <Compile Include="Domain\ApiDataProvider.cs" />
         <Compile Include="Domain\Auth.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />
@@ -108,10 +109,13 @@
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Server.cs" />
         <Compile Include="Domain\Stat.cs" />
+        <Compile Include="Domain\UserSubscriptionFormEnforcer.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
         <Compile Include="Events\SinkChangedEventArgs.cs" />
         <Compile Include="Events\StatsEventArgs.cs" />
+        <Compile Include="Events\FetchedUserEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
+        <Compile Include="Exceptions\UserNotSubscribedException.cs" />
         <Compile Include="KeyboardHook.cs" />
         <Compile Include="LoginForm.cs">
           <SubType>Form</SubType>
