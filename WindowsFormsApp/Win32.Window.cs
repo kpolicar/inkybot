@@ -2,7 +2,6 @@
 {
     internal static partial class Win32
     {
-        
         //assorted constants needed
         public static int GWL_STYLE = -16;
         public static int WS_SIZEBOX = 0x00040000;

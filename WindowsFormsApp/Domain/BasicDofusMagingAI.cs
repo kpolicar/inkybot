@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using WindowsFormsApp.Actions;
 using WindowsFormsApp.Contracts;
@@ -9,27 +8,10 @@ using static WindowsFormsApp.Item;
 
 namespace WindowsFormsApp
 {
-    
     public class BasicDofusMagingAI : DofusMagingAI
     {
-        private struct ItemMage
-        {
-            public ItemStat stat;
-            public Rune rune;
-
-            public bool WillOvermage => stat.value + rune.IncreaseInValue > stat.max;
-
-            public ItemMage(ItemStat stat, Rune rune) {
-                this.stat = stat;
-                this.rune = rune;
-            }
-
-            public int NumberOfRunesNeededForFullMage =>
-                (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
-        }
-
-        private List<IAction> actionHistory = new List<IAction>();
-        private ActionFactory actions;
+        private readonly List<IAction> actionHistory = new List<IAction>();
+        private readonly ActionFactory actions;
         private Config config;
 
         public BasicDofusMagingAI() {
@@ -38,16 +20,11 @@ namespace WindowsFormsApp
             actionHandler.ActionExecuted += OnActionExecuted;
         }
 
-        public void OnActionExecuted(object sender, ActionExecutedEventArgs args) {
-            actionHistory.Add(args.action);
-        }
-
         public void SetConfig(Config config) {
             this.config = config;
         }
 
         public IAction ResolveAction(ItemStat[] itemStats) {
-
             var itemMage = itemStats
                 .DefaultIfEmpty(itemStats.First())
                 .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat))))
@@ -63,29 +40,43 @@ namespace WindowsFormsApp
             if (previous == null ||
                 previous is Combine ||
                 previous is Combine && (previous as Combine).target.stat.DisplayName != itemMage.stat.stat.DisplayName)
-            {
                 return actions.SelectRune(itemMage.rune);
-            }
-            
+
             return actions.Combine(itemMage.rune);
+        }
+
+        public void OnActionExecuted(object sender, ActionExecutedEventArgs args) {
+            actionHistory.Add(args.action);
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config.For(itemStat);
 
-            if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) {
-                return Rune.Type.Ra;
-            }
+            if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) return Rune.Type.Ra;
 
-            if (itemConfig.CanUsePaRunes && itemStat.value > itemConfig.ChangeToPaRuneValue) {
-                return Rune.Type.Pa;
-            }
-            
+            if (itemConfig.CanUsePaRunes && itemStat.value > itemConfig.ChangeToPaRuneValue) return Rune.Type.Pa;
+
             return Rune.Type.Sm;
         }
 
         private int StatPriority(ItemMage itemMage) {
             return itemMage.NumberOfRunesNeededForFullMage;
+        }
+
+        private struct ItemMage
+        {
+            public readonly ItemStat stat;
+            public readonly Rune rune;
+
+            public bool WillOvermage => stat.value + rune.IncreaseInValue > stat.max;
+
+            public ItemMage(ItemStat stat, Rune rune) {
+                this.stat = stat;
+                this.rune = rune;
+            }
+
+            public int NumberOfRunesNeededForFullMage =>
+                (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
         }
     }
 }

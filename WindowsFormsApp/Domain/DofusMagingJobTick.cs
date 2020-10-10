@@ -8,18 +8,15 @@ namespace WindowsFormsApp
 {
     internal class DofusMagingJobTick
     {
-        private DofusMagingJob job;
+        private readonly DofusMagingJob job;
 
-        public DofusMagingJobTick(DofusMagingJob job)
-        {
+        public DofusMagingJobTick(DofusMagingJob job) {
             this.job = job;
         }
 
-        public void Execute()
-        {
+        public void Execute() {
             job.dataProvider.FetchData();
-            switch (job.state)
-            {
+            switch (job.state) {
                 case DofusMagingJobState.DOING_FIRST_COMBINE:
                     DoInitialMageAction();
                     break;
@@ -32,31 +29,24 @@ namespace WindowsFormsApp
             }
         }
 
-        private void DoInitialMageAction()
-        {
+        private void DoInitialMageAction() {
             var action = DoAction();
-            
-            if (action is Combine) {
-                job.state = DofusMagingJobState.STANDARD;
-            }
+
+            if (action is Combine) job.state = DofusMagingJobState.STANDARD;
             Thread.Sleep(300);
         }
 
-        private void DoMainMageAction()
-        {
+        private void DoMainMageAction() {
             var itemHistory = job.history.Analyse(job.dataProvider.History());
             job.previousHistory = itemHistory;
 
             var action = job.previousAction = DoAction();
 
-            if (action is Combine) {
-                job.state = DofusMagingJobState.EXECUTING_COMBINE;
-            }
+            if (action is Combine) job.state = DofusMagingJobState.EXECUTING_COMBINE;
             Thread.Sleep(300);
         }
 
-        private void DoHistoryCheckForChanges()
-        {
+        private void DoHistoryCheckForChanges() {
             var itemHistory = job.history.Analyse(job.dataProvider.History());
 
             var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
@@ -70,19 +60,19 @@ namespace WindowsFormsApp
         }
 
 
-        private void ChangeSinkFromLastAction(ItemHistoryAnalysis itemHistory)
-        {
-            try
-            {
+        private void ChangeSinkFromLastAction(ItemHistoryAnalysis itemHistory) {
+            try {
                 job.Sink += itemHistory.history.Last().ChangeInSink;
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 var previousCombine = (Combine) job.previousAction;
-                job.Sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink;
+                job.Sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) -
+                            previousCombine.target.Sink;
                 Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
-                Debug.WriteLine("sink change:"+(itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) - previousCombine.target.Sink));
+                Debug.WriteLine("sink change:" +
+                                (itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) -
+                                 previousCombine.target.Sink));
             }
-            
+
             job.Sink = Math.Max(0f, job.Sink);
         }
 

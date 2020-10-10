@@ -5,7 +5,7 @@ namespace WindowsFormsApp
 {
     public class ActionHandler
     {
-        public event EventHandler<ActionExecutedEventArgs> ActionExecuted;  
+        public event EventHandler<ActionExecutedEventArgs> ActionExecuted;
 
         public void Execute(IAction action) {
             action.Execute();

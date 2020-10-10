@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Events;
 
@@ -10,9 +6,9 @@ namespace WindowsFormsApp
 {
     public partial class StatsForm : Form
     {
-        private MainForm mainForm;
+        private readonly DofusDataProvider dataProvider;
         private DofusMagingJob magingJob;
-        private DofusDataProvider dataProvider;
+        private MainForm mainForm;
 
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
@@ -22,26 +18,21 @@ namespace WindowsFormsApp
             dataProvider.FetchedStats += StatsUpdated;
         }
 
-
-        delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
-        private void StatsUpdated(object sender, StatsEventArgs e)
-        {
+        private void StatsUpdated(object sender, StatsEventArgs e) {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (dataGridView1.InvokeRequired)
-            { 
+            if (dataGridView1.InvokeRequired) {
                 StatsUpdatedCallback d = StatsUpdated;
                 Invoke(d, sender, e);
-            }
-            else
-            {
+            } else {
                 dataGridView1.Rows.Clear();
 
-                foreach (var stat in e.stats) {
-                    dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value);
-                }
+                foreach (var stat in e.stats) dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value);
             }
         }
+
+
+        private delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
     }
 }

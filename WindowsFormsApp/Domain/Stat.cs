@@ -1,17 +1,82 @@
-﻿using System;
-using System.Collections.ObjectModel;
-
-namespace WindowsFormsApp
+﻿namespace WindowsFormsApp
 {
     public class Stat
     {
-        
-        readonly public string DisplayName;
-        readonly public int maximum;
-        readonly public float sinkValue;
-        readonly public float negSinkValue;
-        readonly public int changeToPaRuneThreshold;
-        readonly public int changeToRaRuneThreshold;
+        public static readonly Stat[] Stats = {
+            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 400),
+            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 300),
+            new Stat("Pods", 404, 0.25f, 0.125f, 150, 350),
+
+            ElementStatData("Strength"),
+            ElementStatData("Intelligence"),
+            ElementStatData("Agility"),
+            ElementStatData("Chance"),
+
+            new Stat("CriticalResistance", 50, 2f, 1f),
+            new Stat("Pushback Resistance", 50, 2f, 1f),
+
+            new Stat("Power", 50, 2f, 2f, 15, 40),
+            new Stat("Trap Power", 50, 2f, 2f, 15, 40),
+
+            FlatElementResistanceStatData("Neutral"),
+            FlatElementResistanceStatData("Earth"),
+            FlatElementResistanceStatData("Fire"),
+            FlatElementResistanceStatData("Air"),
+            FlatElementResistanceStatData("Water"),
+
+            new Stat("Wisdom", 33, 3f, 2f, 10, 25),
+            new Stat("Prospecting", 33, 3f, 2f, 10),
+
+            EvadeStatData("Lock"),
+            EvadeStatData("Dodge"),
+
+            ElementDamageStatData("Neutral"),
+            ElementDamageStatData("Earth"),
+            ElementDamageStatData("Fire"),
+            ElementDamageStatData("Air"),
+            ElementDamageStatData("Water"),
+
+            new Stat("Critical Damage", 20, 5f, 3f, 10),
+            new Stat("Pushback Damage", 20, 5f, 3f, 10),
+            new Stat("Trap Damage", 20, 5f, 5f, 10),
+            new Stat("Hunting", 1, 5f, 5f),
+
+            PerElementResistanceStatData("Neutral"),
+            PerElementResistanceStatData("Earth"),
+            PerElementResistanceStatData("Fire"),
+            PerElementResistanceStatData("Air"),
+            PerElementResistanceStatData("Water"),
+
+            ReductionStatData("MP"),
+            ReductionStatData("AP"),
+
+            ParryStatData("MP"),
+            ParryStatData("AP"),
+
+            new Stat("Heal", 10, 10f, 5f),
+            new Stat("% Critical", 10, 10f, 5f),
+            new Stat("Reflect", 10, 10f, 10f),
+
+            PerModifiersStatData("Spell Damage"),
+            PerModifiersStatData("Ranged Resistance"),
+            PerModifiersStatData("Weapon Damage"),
+            PerModifiersStatData("Melee Damage"),
+            PerModifiersStatData("Melee Resistance"),
+
+            new Stat("Damage", 5, 20f, 20f),
+            new Stat("Summons", 3, 30f, 35f),
+            new Stat("Range", 1, 51f, 25f),
+            new Stat("MP", 1, 90f, 45f),
+            new Stat("AP", 1, 100f, 50f)
+        };
+
+        public readonly int changeToPaRuneThreshold;
+        public readonly int changeToRaRuneThreshold;
+
+        public readonly string DisplayName;
+        public readonly int maximum;
+        public readonly float negSinkValue;
+        public readonly float sinkValue;
 
 
         private Stat(string DisplayName,
@@ -19,8 +84,7 @@ namespace WindowsFormsApp
             float sinkValue,
             float negSinkValue,
             int changeToPaRuneThreshold = int.MinValue,
-            int changeToRaRuneThreshold = int.MinValue)
-        {
+            int changeToRaRuneThreshold = int.MinValue) {
             this.DisplayName = DisplayName;
             this.maximum = maximum;
             this.sinkValue = sinkValue;
@@ -34,23 +98,23 @@ namespace WindowsFormsApp
         }
 
         private static Stat FlatElementResistanceStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName+" Resistance", 50, 2f, 2f, 15);
+            return new Stat(elementDisplayName + " Resistance", 50, 2f, 2f, 15);
         }
 
         private static Stat ElementDamageStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName+" Damage", 20, 5f, 2.5f, 10);
+            return new Stat(elementDisplayName + " Damage", 20, 5f, 2.5f, 10);
         }
 
         private static Stat PerElementResistanceStatData(string elementDisplayName) {
-            return new Stat("% "+elementDisplayName+" Resistance", 16, 6f, 3f);
+            return new Stat("% " + elementDisplayName + " Resistance", 16, 6f, 3f);
         }
 
         private static Stat ReductionStatData(string DisplayName) {
-            return new Stat(DisplayName+" Reduction", 14, 7f, 4f, 10);
+            return new Stat(DisplayName + " Reduction", 14, 7f, 4f, 10);
         }
 
         private static Stat ParryStatData(string DisplayName) {
-            return new Stat(DisplayName+" Parry", 14, 7f, 4f, 10);
+            return new Stat(DisplayName + " Parry", 14, 7f, 4f, 10);
         }
 
         private static Stat EvadeStatData(string DisplayName) {
@@ -60,73 +124,5 @@ namespace WindowsFormsApp
         private static Stat PerModifiersStatData(string DisplayName) {
             return new Stat(DisplayName, 6, 15f, 8f);
         }
-        
-        public static readonly Stat[] Stats = {
-            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 400),
-            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 300),
-            new Stat("Pods", 404, 0.25f, 0.125f, 150, 350),
-            
-            ElementStatData("Strength"),
-            ElementStatData("Intelligence"),
-            ElementStatData("Agility"),
-            ElementStatData("Chance"),
-            
-            new Stat("CriticalResistance", 50, 2f, 1f),
-            new Stat("Pushback Resistance", 50, 2f, 1f),
-            
-            new Stat("Power", 50, 2f, 2f, 15, 40),
-            new Stat("Trap Power", 50, 2f, 2f, 15, 40),
-            
-            FlatElementResistanceStatData("Neutral"),
-            FlatElementResistanceStatData("Earth"),
-            FlatElementResistanceStatData("Fire"),
-            FlatElementResistanceStatData("Air"),
-            FlatElementResistanceStatData("Water"),
-            
-            new Stat("Wisdom", 33, 3f, 2f, 10, 25),
-            new Stat("Prospecting", 33, 3f, 2f, 10),
-            
-            EvadeStatData("Lock"),
-            EvadeStatData("Dodge"),
-            
-            ElementDamageStatData("Neutral"),
-            ElementDamageStatData("Earth"),
-            ElementDamageStatData("Fire"),
-            ElementDamageStatData("Air"),
-            ElementDamageStatData("Water"),
-            
-            new Stat("Critical Damage", 20, 5f, 3f, 10),
-            new Stat("Pushback Damage", 20, 5f, 3f, 10),
-            new Stat("Trap Damage", 20, 5f, 5f, 10),
-            new Stat("Hunting", 1, 5f, 5f),
-            
-            PerElementResistanceStatData("Neutral"),
-            PerElementResistanceStatData("Earth"),
-            PerElementResistanceStatData("Fire"),
-            PerElementResistanceStatData("Air"),
-            PerElementResistanceStatData("Water"),
-            
-            ReductionStatData("MP"),
-            ReductionStatData("AP"),
-            
-            ParryStatData("MP"),
-            ParryStatData("AP"),
-            
-            new Stat("Heal", 10, 10f, 5f),
-            new Stat("% Critical", 10, 10f, 5f),
-            new Stat("Reflect", 10, 10f, 10f),
-            
-            PerModifiersStatData("Spell Damage"),
-            PerModifiersStatData("Ranged Resistance"),
-            PerModifiersStatData("Weapon Damage"),
-            PerModifiersStatData("Melee Damage"),
-            PerModifiersStatData("Melee Resistance"),
-            
-            new Stat("Damage", 5, 20f, 20f),
-            new Stat("Summons", 3, 30f, 35f),
-            new Stat("Range", 1, 51f, 25f),
-            new Stat("MP", 1, 90f, 45f),
-            new Stat("AP", 1, 100f, 50f),
-        };
     }
 }

@@ -8,7 +8,7 @@ namespace WindowsFormsApp.Services
         public IAction Finish() {
             return new Finish();
         }
-        
+
         public IAction Combine(Rune target) {
             return new Combine(target);
         }

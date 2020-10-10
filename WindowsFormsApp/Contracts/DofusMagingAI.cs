@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace WindowsFormsApp.Contracts
+﻿namespace WindowsFormsApp.Contracts
 {
     public interface DofusMagingAI
     {

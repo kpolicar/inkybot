@@ -4,6 +4,5 @@ namespace WindowsFormsApp.Exceptions
 {
     public class UserNotSubscribedException : Exception
     {
-        
     }
 }

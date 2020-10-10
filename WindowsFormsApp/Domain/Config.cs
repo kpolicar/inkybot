@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WindowsFormsApp
 {
@@ -18,23 +17,22 @@ namespace WindowsFormsApp
             this.maximum = maximum;
         }
     }
-    
+
     public class Config
     {
         public Dictionary<Stat, StatConfig> stats = new Dictionary<Stat, StatConfig>();
-            
+
         public Config() {
             ResetDefaults();
         }
-        
+
         public StatConfig For(Item.ItemStat itemStat) {
             return stats[itemStat.stat];
         }
-        
+
         public void ResetDefaults() {
-            foreach (var stat in Stat.Stats) {
+            foreach (var stat in Stat.Stats)
                 stats[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, stat.maximum);
-            }
         }
     }
 }

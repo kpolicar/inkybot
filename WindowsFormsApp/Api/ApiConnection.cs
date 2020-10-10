@@ -12,23 +12,17 @@ namespace WindowsFormsApp.Api
     public class ApiConnection
     {
         private AuthDetails authDetails;
-        private Timer refreshTokenTimer;
+        private readonly Timer refreshTokenTimer;
 
-        public Task RefreshTask
-        {
-            private set;
-            get;
-        }
-
-        public ApiConnection(AuthDetails authDetails)
-        {
+        public ApiConnection(AuthDetails authDetails) {
             this.authDetails = authDetails;
             refreshTokenTimer = new Timer(60000D);
             refreshTokenTimer.Elapsed += OnRefreshTokenTimer;
         }
 
-        public HttpClient Request()
-        {
+        public Task RefreshTask { private set; get; }
+
+        public HttpClient Request() {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", authDetails.access_token);
@@ -36,21 +30,19 @@ namespace WindowsFormsApp.Api
             return client;
         }
 
-        private void OnRefreshTokenTimer(object sender, ElapsedEventArgs e)
-        {
+        private void OnRefreshTokenTimer(object sender, ElapsedEventArgs e) {
             RefreshTask = RefreshToken();
             RefreshTask.Start();
         }
 
-        public async Task<bool> RefreshToken()
-        {
+        public async Task<bool> RefreshToken() {
             var client = new HttpClient();
-            const string url = Server.BaseUrl+ "/oauth/token";
+            const string url = Server.BaseUrl + "/oauth/token";
 
-            var form_params = new Dictionary<string,string>(){
+            var form_params = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},
                 {"refresh_token", authDetails.refresh_token},
-                {"client_id","2"},
+                {"client_id", "2"},
                 {"client_secret", "***REMOVED***"},
                 {"scope", ""}
             };
@@ -59,7 +51,7 @@ namespace WindowsFormsApp.Api
 
             if (!response.IsSuccessStatusCode)
                 return false;
-            
+
             var result = response.Content.ReadAsStringAsync().Result;
             authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             return true;

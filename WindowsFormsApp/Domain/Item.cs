@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WindowsFormsApp
+﻿namespace WindowsFormsApp
 {
     public class Item
     {
@@ -12,7 +10,7 @@ namespace WindowsFormsApp
             public int max;
 
             public ItemStat(Stat itemStat, int value, int min, int max) {
-                this.stat = itemStat;
+                stat = itemStat;
                 this.value = value;
                 this.min = min;
                 this.max = max;
