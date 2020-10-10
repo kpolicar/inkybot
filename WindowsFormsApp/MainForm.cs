@@ -17,12 +17,10 @@ namespace WindowsFormsApp
         private readonly ApiDataProvider api;
         private readonly DofusMagingJob magingJob;
 
-        private IntPtr hWndDocked;
-        private Process pDocked;
         private Task<bool> tokenRefresh;
-        private ScreenReaderDataProvider clientDataProvider;
 
         public MainForm() {
+            Debug.WriteLine(Application.LocalUserAppDataPath);
             InitializeComponent();
             ocrIndicatorPanel.BringToFront();
             InitializeDofusClient();
@@ -42,12 +40,6 @@ namespace WindowsFormsApp
             Closing += (sender, args) => {
                 if (debugging) StopDebugging();
             };
-        }
-
-        private void InitializeDofusClient() {
-            pDocked = Process.Start(Program.debug ? @"notepad" : "A:/Saved Games/Dofus/dofus.exe");
-            WindowHelpers.DockProcess(pDocked, dofusClientPanel, ref hWndDocked);
-            WindowHelpers.RemoveWindowBorders(hWndDocked);
         }
 
         private void paintOcrIndicators(object sender, EventArgs eventArgs) {
