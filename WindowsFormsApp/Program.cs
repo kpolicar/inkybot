@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp.Api;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
 using Mouse = WindowsFormsApp.Contracts.Mouse;
@@ -27,9 +28,8 @@ namespace WindowsFormsApp
       Services.AddService(typeof(ActionHandler), new ActionHandler());
       Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
       Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
-      Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
-      Services.AddService(typeof(Auth), new Auth());
       Services.AddService(typeof(ApiDataProvider), new ApiDataProvider());
+      Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

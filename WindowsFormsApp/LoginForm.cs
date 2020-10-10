@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
+using WindowsFormsApp.Api;
 using WindowsFormsApp.Services;
 
 namespace WindowsFormsApp
 {
     public partial class LoginForm : Form
     {
-        private Auth auth;
         private ApiDataProvider api;
 
         public LoginForm(string errorMessage) : this()
@@ -21,7 +21,6 @@ namespace WindowsFormsApp
         public LoginForm()
         {
             InitializeComponent();
-            auth = (Auth) Program.Services.GetService(typeof(Auth));
         }
         
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -33,8 +32,9 @@ namespace WindowsFormsApp
         {
             try
             {
-                var success = await auth.Login(usernameTextBox.Text, passwordTextBox.Text);
-                if (!success)  {
+                var connection = await Auth.Login(usernameTextBox.Text, passwordTextBox.Text);
+                
+                if (connection == null)  {
                     errorMessage.Text = "Incorrect username or password!";
                     return;
                 }

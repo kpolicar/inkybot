@@ -50,16 +50,12 @@ namespace WindowsFormsApp
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.ocrIndicatorPanel = new WindowsFormsApp.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
-            this.userDetailsTimer = new System.Timers.Timer();
-            this.authTokenRefreshTimer = new System.Timers.Timer();
             this.sidebarPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
             this.secondaryButtonsPanel.SuspendLayout();
             this.mageInfoPanel.SuspendLayout();
             this.userInfoPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.userDetailsTimer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize) (this.authTokenRefreshTimer)).BeginInit();
             this.SuspendLayout();
             // 
             // dofusClientPanel
@@ -292,18 +288,6 @@ namespace WindowsFormsApp
             this.paintTimer.Interval = 10;
             this.paintTimer.Tick += new System.EventHandler(this.paintOcrIndicators);
             // 
-            // userDetailsTimer
-            // 
-            this.userDetailsTimer.Interval = 5000D;
-            this.userDetailsTimer.SynchronizingObject = this;
-            this.userDetailsTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnUserDetailsTimer);
-            // 
-            // authTokenRefreshTimer
-            // 
-            this.authTokenRefreshTimer.Interval = 60000D;
-            this.authTokenRefreshTimer.SynchronizingObject = this;
-            this.authTokenRefreshTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnAuthTokenRefreshTimer);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -329,15 +313,9 @@ namespace WindowsFormsApp
             this.mageInfoPanel.ResumeLayout(false);
             this.userInfoPanel.ResumeLayout(false);
             this.userInfoPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.userDetailsTimer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize) (this.authTokenRefreshTimer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-
-        private System.Timers.Timer authTokenRefreshTimer;
-
-        private System.Timers.Timer userDetailsTimer;
 
         private System.Windows.Forms.Label loggedInAsLabel;
 

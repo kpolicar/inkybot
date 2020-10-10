@@ -1,26 +1,40 @@
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WindowsFormsApp.Events;
 using WindowsFormsApp.Resources.Api;
 using Newtonsoft.Json;
 
-namespace WindowsFormsApp.Services
+namespace WindowsFormsApp.Api
 {
     public class ApiDataProvider
     {
         public event EventHandler<FetchedUserEventArgs> UserFetched;
-        private Auth auth;
+        private ApiConnection connection;
 
         public ApiDataProvider()
         {
-            auth = (Auth) Program.Services.GetService(typeof(Auth));
+            Auth.ConnectionChanged += OnConnectionChanged;
         }
-        
+
+        private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e)
+        {
+            connection = e.connection;
+        }
+
         public async Task<User> User()
         {
-            var client = auth.RequestClient();
+            if (connection.RefreshTask != null && !connection.RefreshTask.IsCompleted)
+            {
+                Debug.WriteLine("waiting for refresh task");
+                await connection.RefreshTask;
+                Debug.WriteLine("done waiting for refresh task");
+            }
+            
+            var client = connection.Request();
             var response = await client.GetAsync("/api/user");
             response.EnsureSuccessStatusCode();
             

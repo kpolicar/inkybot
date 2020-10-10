@@ -84,6 +84,16 @@
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
+        <Compile Include="Api\ApiConnection.cs">
+          <Link>Api\ApiConnection.cs</Link>
+        </Compile>
+        <Compile Include="Api\ApiDataProvider.cs">
+          <Link>Api\ApiDataProvider.cs</Link>
+        </Compile>
+        <Compile Include="Api\Auth.cs">
+          <Link>Api\Auth.cs</Link>
+        </Compile>
+        <Compile Include="AuthenticatedForm.cs" />
         <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
@@ -92,8 +102,6 @@
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Controls\TransparentPanel.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
-        <Compile Include="Domain\ApiDataProvider.cs" />
-        <Compile Include="Domain\Auth.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
@@ -109,8 +117,8 @@
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Server.cs" />
         <Compile Include="Domain\Stat.cs" />
-        <Compile Include="Domain\UserSubscriptionFormEnforcer.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
+        <Compile Include="Events\ApiConnectionChangedEventArgs.cs" />
         <Compile Include="Events\SinkChangedEventArgs.cs" />
         <Compile Include="Events\StatsEventArgs.cs" />
         <Compile Include="Events\FetchedUserEventArgs.cs" />
