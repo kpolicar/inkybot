@@ -55,7 +55,7 @@ namespace WindowsFormsApp
 
             var pen = new Pen(Color.Red, 2);
             g.DrawRectangle(pen, new Rectangle(626, 300, 980 - 626, 39 * 11));
-            g.DrawRectangle(pen, new Rectangle(352, 137, 590 - 352, 835 - 137));
+            g.DrawRectangle(pen, DofusScreenScan.HistoryBounds);
             pen.Dispose();
             g.Dispose();
         }

@@ -29,6 +29,8 @@ namespace WindowsFormsApp
 
     public class DofusScreenScan
     {
+        public static readonly Rectangle HistoryBounds = new Rectangle(352, 137, 590-352, 835-137);
+        
         private static ScreenCapture screen;
         private static TesseractEngine engine;
         private static bool init;
@@ -76,10 +78,7 @@ namespace WindowsFormsApp
         }
 
         public string[] History() {
-            var (x, y) = (352, 137);
-            var (xMax, yMax) = (590, 835);
-
-            var scanned = ScanRegion(new Rectangle(x, y, xMax - x, yMax - y), "history");
+            var scanned = ScanRegion(HistoryBounds, "history");
 
             return scanned;
         }
