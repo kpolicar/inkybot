@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WindowsFormsApp.Contracts;
+using WindowsFormsApp.Events;
 using Tesseract;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 

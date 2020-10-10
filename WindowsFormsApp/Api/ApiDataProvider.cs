@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WindowsFormsApp.Events;
+using WindowsFormsApp.Exceptions;
 using WindowsFormsApp.Resources.Api;
 using Newtonsoft.Json;
 
@@ -9,26 +10,29 @@ namespace WindowsFormsApp.Api
 {
     public class ApiDataProvider
     {
-        private ApiConnection connection;
+        public ApiConnection? Connection { private set; get; }
 
         public ApiDataProvider() {
-            Auth.ConnectionChanged += OnConnectionChanged;
+            AuthManager.ConnectionChanged += OnConnectionChanged;
         }
 
         public event EventHandler<FetchedUserEventArgs> UserFetched;
 
         private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e) {
-            connection = e.connection;
+            Connection = e.connection;
+        }
+
+        private async Task WaitForStableConnection() {
+            if (Connection == null)
+                throw new ApiConnectionNotEstablishedException();
+            if (Connection.RefreshTask != null && !Connection.RefreshTask.IsCompleted)
+                await Connection.RefreshTask;
         }
 
         public async Task<User> User() {
-            if (connection.RefreshTask != null && !connection.RefreshTask.IsCompleted) {
-                Debug.WriteLine("waiting for refresh task");
-                await connection.RefreshTask;
-                Debug.WriteLine("done waiting for refresh task");
-            }
+            await WaitForStableConnection();
 
-            var client = connection.Request();
+            var client = Connection.Request();
             var response = await client.GetAsync("/api/user");
             response.EnsureSuccessStatusCode();
 

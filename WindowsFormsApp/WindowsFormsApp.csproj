@@ -93,7 +93,10 @@
         <Compile Include="Api\Auth.cs">
           <Link>Api\Auth.cs</Link>
         </Compile>
-        <Compile Include="AuthenticatedForm.cs" />
+        <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
+        <Compile Include="MainForm.Auth.cs">
+          <DependentUpon>MainForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
@@ -132,6 +135,12 @@
           <DependentUpon>LoginForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Debugger.cs">
+          <DependentUpon>MainForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="MainForm.DomainEvents.cs">
+          <DependentUpon>MainForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="MainForm.Events.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Resources\Api\AuthDetails.cs" />

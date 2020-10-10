@@ -24,7 +24,7 @@ namespace WindowsFormsApp
 
         private async void button1_Click(object sender, EventArgs e) {
             try {
-                var connection = await Auth.Login(usernameTextBox.Text, passwordTextBox.Text);
+                var connection = await AuthManager.Login(usernameTextBox.Text, passwordTextBox.Text);
 
                 if (connection == null) {
                     errorMessage.Text = "Incorrect username or password!";

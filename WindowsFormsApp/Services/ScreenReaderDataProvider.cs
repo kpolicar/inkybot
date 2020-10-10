@@ -11,7 +11,7 @@ namespace WindowsFormsApp
         private readonly IntPtr handle;
         public Item.ItemStat[] lastScanResults;
         private DofusScreenScan scan;
-
+        
         public ScreenReaderDataProvider(IntPtr handle) {
             this.handle = handle;
         }

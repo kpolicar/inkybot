@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace WindowsFormsApp.Api
 {
-    public class Auth
+    public class AuthManager
     {
         public static event EventHandler<ApiConnectionChangedEventArgs> ConnectionChanged;
 
@@ -36,6 +36,10 @@ namespace WindowsFormsApp.Api
 
             ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(connection));
             return connection;
+        }
+
+        public static void Logout() {
+            ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(null));
         }
     }
 }

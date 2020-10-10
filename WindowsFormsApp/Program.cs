@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Windows.Forms;
-using WindowsFormsApp.Api;
 using WindowsFormsApp.Contracts;
 using WindowsFormsApp.Services;
+using ApiDataProvider = WindowsFormsApp.Api.ApiDataProvider;
 
 namespace WindowsFormsApp
 {

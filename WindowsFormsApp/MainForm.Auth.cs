@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using WindowsFormsApp.Api;
@@ -6,22 +7,30 @@ using WindowsFormsApp.Exceptions;
 
 namespace WindowsFormsApp
 {
-    public class AuthenticatedForm : Form
+    public partial class MainForm
     {
-        private readonly ApiDataProvider api;
-        private readonly Timer subscriptionCheckTimer;
+        private Timer subscriptionCheckTimer;
 
-        public AuthenticatedForm() {
+        private void InitAuth() {
             Load += AuthenticatedForm_Load;
+            VisibleChanged += AuthenticatedForm_VisibleChanged;
             subscriptionCheckTimer = new Timer {
                 Interval = 5000
             };
             subscriptionCheckTimer.Tick += OnSubscriptionCheckTimer;
-            api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
         }
 
         private void AuthenticatedForm_Load(object sender, EventArgs eventArgs) {
             DoLoginDialog();
+        }
+
+        private void AuthenticatedForm_VisibleChanged(object sender, EventArgs e) {
+            if (Visible) {
+                subscriptionCheckTimer.Start();
+            } else {
+                subscriptionCheckTimer.Stop();
+                AuthManager.Logout();
+            }
         }
 
         public bool DoLoginDialog(string message = "") {
@@ -29,7 +38,7 @@ namespace WindowsFormsApp
             var result = new LoginForm(message).ShowDialog(this);
             var loginSuccess = result == DialogResult.OK;
 
-            if (!loginSuccess)
+            if (loginSuccess)
                 Show();
             else
                 Close();

@@ -6,6 +6,7 @@ namespace WindowsFormsApp
 {
     public partial class MainForm
     {
+        private readonly StatsForm statsForm;
         private bool debugging;
         private IKeyboardMouseEvents m_GlobalHook;
 

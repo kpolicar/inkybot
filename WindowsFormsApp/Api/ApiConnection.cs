@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Timers;
 using WindowsFormsApp.Resources.Api;
 using Newtonsoft.Json;
+using Timer = System.Windows.Forms.Timer;
 
 namespace WindowsFormsApp.Api
 {
@@ -16,8 +18,10 @@ namespace WindowsFormsApp.Api
 
         public ApiConnection(AuthDetails authDetails) {
             this.authDetails = authDetails;
-            refreshTokenTimer = new Timer(60000D);
-            refreshTokenTimer.Elapsed += OnRefreshTokenTimer;
+            refreshTokenTimer = new Timer();
+            refreshTokenTimer.Interval = 60000;
+            refreshTokenTimer.Tick += OnRefreshTokenTimer;
+            refreshTokenTimer.Start();
         }
 
         public Task RefreshTask { private set; get; }
@@ -30,9 +34,8 @@ namespace WindowsFormsApp.Api
             return client;
         }
 
-        private void OnRefreshTokenTimer(object sender, ElapsedEventArgs e) {
+        private void OnRefreshTokenTimer(object sender, EventArgs eventArgs) {
             RefreshTask = RefreshToken();
-            RefreshTask.Start();
         }
 
         public async Task<bool> RefreshToken() {

@@ -28,8 +28,7 @@ namespace WindowsFormsApp
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dofusClientPanel = new System.Windows.Forms.Panel();
@@ -244,7 +243,7 @@ namespace WindowsFormsApp
             this.subscribedInfoLabel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.subscribedInfoLabel.Size = new System.Drawing.Size(95, 29);
             this.subscribedInfoLabel.TabIndex = 3;
-            this.subscribedInfoLabel.Text = "SUBSCRIBED UNTIL:\r\n24/09/2022";
+            this.subscribedInfoLabel.Text = "SUBSCRIBED UNTIL:\r\ndd/mm/yyyy";
             // 
             // usernameLabel
             // 
@@ -300,7 +299,6 @@ namespace WindowsFormsApp
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Inkybot";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
