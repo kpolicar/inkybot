@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using WindowsFormsApp.Api;
@@ -16,6 +17,7 @@ namespace WindowsFormsApp
 
         public LoginForm() {
             InitializeComponent();
+            newVersionLabel.Hide();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -42,6 +44,13 @@ namespace WindowsFormsApp
             }
 
             DialogResult = DialogResult.OK;
+        }
+
+        private async void LoginForm_Load(object sender, EventArgs e) {
+            var newestVersion = await api.NewestVersion();
+            var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
+            if (currentVersionNumber != newestVersion.number)
+                newVersionLabel.Show();
         }
     }
 }

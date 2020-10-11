@@ -58,6 +58,7 @@ namespace WindowsFormsApp
                         "User is no longer subscribed!\nPlease extend your subscription to resume.",
                     _ => ""
                 };
+                Debug.WriteLine(exception.Message);
                 DoLoginDialog(message);
             }
         }

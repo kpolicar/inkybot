@@ -29,14 +29,14 @@ namespace WindowsFormsApp
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.newVersionLabel = new System.Windows.Forms.LinkLabel();
             this.errorMessage = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -107,6 +107,7 @@ namespace WindowsFormsApp
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.newVersionLabel);
             this.panel1.Controls.Add(this.errorMessage);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.linkLabel1);
@@ -121,6 +122,17 @@ namespace WindowsFormsApp
             this.panel1.Padding = new System.Windows.Forms.Padding(35);
             this.panel1.Size = new System.Drawing.Size(309, 321);
             this.panel1.TabIndex = 2;
+            // 
+            // newVersionLabel
+            // 
+            this.newVersionLabel.AutoSize = true;
+            this.newVersionLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.newVersionLabel.Location = new System.Drawing.Point(182, 9);
+            this.newVersionLabel.Name = "newVersionLabel";
+            this.newVersionLabel.Size = new System.Drawing.Size(115, 13);
+            this.newVersionLabel.TabIndex = 10;
+            this.newVersionLabel.TabStop = true;
+            this.newVersionLabel.Text = "New version available!";
             // 
             // errorMessage
             // 
@@ -218,6 +230,7 @@ namespace WindowsFormsApp
             this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.Text = "Inkybot - Login";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).EndInit();
@@ -227,6 +240,8 @@ namespace WindowsFormsApp
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.LinkLabel newVersionLabel;
 
         private System.Windows.Forms.PictureBox logoPictureBox;
 

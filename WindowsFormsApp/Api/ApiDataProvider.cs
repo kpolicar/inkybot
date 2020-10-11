@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WindowsFormsApp.Events;
 using WindowsFormsApp.Exceptions;
@@ -41,6 +42,15 @@ namespace WindowsFormsApp.Api
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
             return user;
+        }
+
+        public async Task<VersionDetails> NewestVersion() {
+            var client = new HttpClient();
+            var response = await client.GetAsync(Server.BaseUrl + "/api/client-version");
+            response.EnsureSuccessStatusCode();
+
+            var result = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
     }
 }

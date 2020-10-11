@@ -51,6 +51,7 @@
           <Private>True</Private>
         </Reference>
         <Reference Include="System" />
+        <Reference Include="System.Configuration" />
         <Reference Include="System.Core" />
         <Reference Include="System.Runtime.WindowsRuntime" />
         <Reference Include="System.Web" />
@@ -154,6 +155,7 @@
         </Compile>
         <Compile Include="Resources\Api\AuthDetails.cs" />
         <Compile Include="Resources\Api\User.cs" />
+        <Compile Include="Resources\Api\VersionDetails.cs" />
         <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
