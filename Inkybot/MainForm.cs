@@ -18,8 +18,8 @@ namespace Inkybot
         private Task<bool> tokenRefresh;
 
         public MainForm() {
-            Debug.WriteLine(Application.LocalUserAppDataPath);
             InitializeComponent();
+            
             ocrIndicatorPanel.BringToFront();
             InitializeDofusClient();
 

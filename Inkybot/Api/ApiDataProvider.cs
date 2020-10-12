@@ -20,6 +20,7 @@ namespace Inkybot.Api
         public event EventHandler<FetchedUserEventArgs> UserFetched;
 
         private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e) {
+            Connection?.Terminate();
             Connection = e.connection;
         }
 

@@ -47,10 +47,10 @@ namespace Inkybot
         private void Init() {
             if (init) return;
             engine = new TesseractEngine(
-                @"A:\Projects\RiderProjects\bot\Inkybot\tessdata",
+                @"A:\Projects\RiderProjects\inkybot\Inkybot\tessdata",
                 "eng",
                 EngineMode.TesseractOnly,
-                @"A:\Projects\RiderProjects\bot\Inkybot\tessdata\config\config");
+                @"A:\Projects\RiderProjects\inkybot\Inkybot\tessdata\config\config");
 
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;

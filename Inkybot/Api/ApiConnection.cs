@@ -24,6 +24,10 @@ namespace Inkybot.Api
             refreshTokenTimer.Start();
         }
 
+        public void Terminate() {
+            refreshTokenTimer.Dispose();
+        }
+
         public Task RefreshTask { private set; get; }
 
         public HttpClient Request() {

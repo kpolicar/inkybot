@@ -9,15 +9,10 @@ namespace Inkybot
 {
     public partial class MainForm
     {
-        private Timer subscriptionCheckTimer;
 
         private void InitAuth() {
             Load += AuthenticatedForm_Load;
             VisibleChanged += AuthenticatedForm_VisibleChanged;
-            subscriptionCheckTimer = new Timer {
-                Interval = 5000
-            };
-            subscriptionCheckTimer.Tick += OnSubscriptionCheckTimer;
         }
 
         private void AuthenticatedForm_Load(object sender, EventArgs eventArgs) {
@@ -50,7 +45,7 @@ namespace Inkybot
             try {
                 var user = await api.User();
                 if (!user.is_subscribed)
-                    DoLoginDialog();
+                    throw new UserNotSubscribedException();
             } catch (Exception exception) {
                 var message = exception switch {
                     HttpRequestException _ => "Something went wrong!",

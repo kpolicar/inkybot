@@ -47,10 +47,14 @@ namespace Inkybot
         }
 
         private async void LoginForm_Load(object sender, EventArgs e) {
-            var newestVersion = await api.NewestVersion();
-            var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
-            if (currentVersionNumber != newestVersion.number)
-                newVersionLabel.Show();
+            try {
+                var newestVersion = await api.NewestVersion();
+                var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
+                if (currentVersionNumber != newestVersion.number)
+                    newVersionLabel.Show();
+            } catch (Exception exception) {
+                
+            }
         }
     }
 }

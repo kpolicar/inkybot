@@ -17,7 +17,6 @@ namespace Inkybot.Adapters
                 var changes = Regex.Matches(mageEntry, @"(-?\d+) ?(%? ?[A-z ]+[A-z])");
                 var sinkChange = Regex.Match(mageEntry, @"[+-] ?sink");
 
-
                 var statChanges = changes.Cast<Match>().Select(change => {
                         var grouped = change.Groups;
                         var (value, name) = (grouped[1].Value, grouped[2].Value);

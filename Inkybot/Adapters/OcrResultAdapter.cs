@@ -10,7 +10,7 @@ namespace Inkybot.Adapters
 
             spellCorrect = new SymSpell();
             spellCorrect.LoadDictionary(
-                @"A:\Projects\RiderProjects\bot\Inkybot\frequency_dictionary_en_82_765.txt", 0, 1);
+                @"A:\Projects\RiderProjects\inkybot\Inkybot\frequency_dictionary_en_82_765.txt", 0, 1);
             init = true;
         }
     }

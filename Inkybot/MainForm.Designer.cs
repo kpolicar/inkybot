@@ -50,6 +50,7 @@ namespace Inkybot
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.ocrIndicatorPanel = new TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
+            this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.sidebarPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
@@ -288,6 +289,12 @@ namespace Inkybot
             this.paintTimer.Interval = 10;
             this.paintTimer.Tick += new System.EventHandler(this.paintOcrIndicators);
             // 
+            // 
+            // subscriptionCheckTimer
+            // 
+            this.subscriptionCheckTimer.Interval = 5000;
+            this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -344,5 +351,6 @@ namespace Inkybot
         private System.Windows.Forms.Panel sidebarPanel;
         private TransparentPanel ocrIndicatorPanel;
         private System.Windows.Forms.Timer paintTimer;
+        private System.Windows.Forms.Timer subscriptionCheckTimer;
     }
 }
