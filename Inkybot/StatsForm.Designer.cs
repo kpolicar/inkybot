@@ -58,7 +58,7 @@ namespace Inkybot
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(146, 47);
             this.startButton.TabIndex = 2;
-            this.startButton.Text = "BEGIN MAGE  ";
+            this.startButton.Text = "CONTINUE";
             this.startButton.UseVisualStyleBackColor = false;
             // 
             // resetButton
@@ -93,21 +93,21 @@ namespace Inkybot
             // 
             this.TargetColumn.HeaderText = "Target";
             this.TargetColumn.Name = "TargetColumn";
-            this.TargetColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            this.TargetColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // ValueColumn
             // 
             this.ValueColumn.HeaderText = "Value";
             this.ValueColumn.Name = "ValueColumn";
             this.ValueColumn.ReadOnly = true;
-            this.ValueColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            this.ValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // StatColumn
             // 
             this.StatColumn.HeaderText = "Stat";
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
-            this.StatColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            this.StatColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // dataGridView1
             // 
@@ -158,6 +158,7 @@ namespace Inkybot
             // 
             // StatsForm
             // 
+            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));

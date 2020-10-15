@@ -12,6 +12,7 @@ namespace Inkybot
 {
     public partial class MainForm : Form
     {
+        private readonly StatsForm statsForm;
         private readonly ApiDataProvider api;
         private readonly DofusMagingJob magingJob;
 
@@ -49,6 +50,10 @@ namespace Inkybot
             g.DrawRectangle(pen, DofusScreenScan.HistoryBounds);
             pen.Dispose();
             g.Dispose();
+        }
+
+        private void statsButton_Click(object sender, EventArgs e) {
+            statsForm.Show();
         }
     }
 }

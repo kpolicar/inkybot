@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Events;
 
@@ -34,5 +35,12 @@ namespace Inkybot
 
 
         private delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
+
+        private void StatsForm_VisibleChanged(object sender, EventArgs e) {
+            if (!Visible) return;
+            
+            dataProvider.FetchData();
+            dataProvider.Stats();
+        }
     }
 }

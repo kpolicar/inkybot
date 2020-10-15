@@ -35,6 +35,7 @@ namespace Inkybot
             this.dofusClientPanel = new System.Windows.Forms.Panel();
             this.sidebarPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
+            this.statsButton = new System.Windows.Forms.Button();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -87,6 +88,7 @@ namespace Inkybot
             // 
             this.buttonsPanel.AutoSize = true;
             this.buttonsPanel.BackColor = System.Drawing.Color.Transparent;
+            this.buttonsPanel.Controls.Add(this.statsButton);
             this.buttonsPanel.Controls.Add(this.primaryButtonsPanel);
             this.buttonsPanel.Controls.Add(this.secondaryButtonsPanel);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -94,6 +96,23 @@ namespace Inkybot
             this.buttonsPanel.Name = "buttonsPanel";
             this.buttonsPanel.Size = new System.Drawing.Size(113, 407);
             this.buttonsPanel.TabIndex = 8;
+            // 
+            // statsButton
+            // 
+            this.statsButton.AutoSize = true;
+            this.statsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.statsButton.FlatAppearance.BorderSize = 0;
+            this.statsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.statsButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.statsButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.statsButton.Location = new System.Drawing.Point(0, 67);
+            this.statsButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.statsButton.Name = "statsButton";
+            this.statsButton.Size = new System.Drawing.Size(113, 61);
+            this.statsButton.TabIndex = 5;
+            this.statsButton.Text = "STATS";
+            this.statsButton.UseVisualStyleBackColor = false;
+            this.statsButton.Click += new System.EventHandler(this.statsButton_Click);
             // 
             // primaryButtonsPanel
             // 
@@ -321,6 +340,8 @@ namespace Inkybot
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Button statsButton;
 
         private System.Windows.Forms.Label loggedInAsLabel;
 

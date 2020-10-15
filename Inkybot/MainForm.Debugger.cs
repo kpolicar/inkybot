@@ -6,7 +6,6 @@ namespace Inkybot
 {
     public partial class MainForm
     {
-        private readonly StatsForm statsForm;
         private bool debugging;
         private IKeyboardMouseEvents m_GlobalHook;
 
@@ -23,7 +22,6 @@ namespace Inkybot
         private void StartDebugging() {
             ocrIndicatorPanel.Show();
             sidebarPanel.BringToFront();
-            statsForm.Show();
             mousePositionLabel.Show();
 
             m_GlobalHook = Hook.GlobalEvents();
@@ -32,7 +30,6 @@ namespace Inkybot
 
         private void StopDebugging() {
             ocrIndicatorPanel.Hide();
-            statsForm.Hide();
             mousePositionLabel.Hide();
             m_GlobalHook.Dispose();
         }
