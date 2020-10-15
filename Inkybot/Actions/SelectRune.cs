@@ -1,4 +1,6 @@
-﻿namespace Inkybot.Actions
+﻿using System.Threading;
+
+namespace Inkybot.Actions
 {
     public class SelectRune : MouseAction
     {
@@ -18,7 +20,10 @@
                 if (rune.stat.DisplayName != itemStats[row].stat.DisplayName)
                     continue;
 
-                mouse.DoubleClick(1065 + column * 55, 320 + row * 39);
+                mouse.Drag(1065 + column * 55, 320 + row * 39, 925, 167);
+                Thread.Sleep(500);
+                mouse.Click(1055, 125);
+                System.Diagnostics.Debug.WriteLine($"Rune changed to {rune.stat.DisplayName}");
             }
         }
     }

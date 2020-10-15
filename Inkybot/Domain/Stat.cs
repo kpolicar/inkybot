@@ -3,8 +3,8 @@
     public class Stat
     {
         public static readonly Stat[] Stats = {
-            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 400),
-            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 300),
+            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 375),
+            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 286),
             new Stat("Pods", 404, 0.25f, 0.125f, 150, 350),
 
             ElementStatData("Strength"),
@@ -94,7 +94,7 @@
         }
 
         private static Stat ElementStatData(string DisplayName) {
-            return new Stat(DisplayName, 101, 1f, 1f, 20, 50);
+            return new Stat(DisplayName, 101, 1f, 1f, 20, 48);
         }
 
         private static Stat FlatElementResistanceStatData(string elementDisplayName) {

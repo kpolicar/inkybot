@@ -77,6 +77,7 @@ namespace Inkybot
             this.sidebarPanel.Controls.Add(this.buttonsPanel);
             this.sidebarPanel.Controls.Add(this.mageInfoPanel);
             this.sidebarPanel.Controls.Add(this.userInfoPanel);
+            this.sidebarPanel.Controls.Add(this.mousePositionLabel);
             this.sidebarPanel.Location = new System.Drawing.Point(0, 0);
             this.sidebarPanel.Name = "sidebarPanel";
             this.sidebarPanel.Size = new System.Drawing.Size(113, 590);
@@ -171,7 +172,6 @@ namespace Inkybot
             // 
             this.mageInfoPanel.AutoSize = true;
             this.mageInfoPanel.BackColor = System.Drawing.Color.Transparent;
-            this.mageInfoPanel.Controls.Add(this.mousePositionLabel);
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
             this.mageInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;

@@ -30,7 +30,7 @@ namespace Inkybot
         }
 
         private void DoInitialMageAction() {
-            var action = DoAction();
+            var action = job.previousAction = DoAction();
 
             if (action is Combine) job.state = DofusMagingJobState.STANDARD;
             Thread.Sleep(300);
@@ -79,7 +79,7 @@ namespace Inkybot
 
         private IAction DoAction() {
             var itemStats = job.dataProvider.Stats();
-            var action = job.magus.ResolveAction(itemStats);
+            var action = job.magus.ResolveAction(itemStats, job.previousAction);
             job.actions.Execute(action);
             return action;
         }

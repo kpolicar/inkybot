@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Inkybot
 {
@@ -58,6 +59,23 @@ namespace Inkybot
 
         [DllImport("User32.dll")]
         public static extern IntPtr GetDC(IntPtr hwnd);
+        
+        
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostMessage(IntPtr hWnd, int Msg, Keys wParam, IntPtr lParam);
+        [DllImport("user32.dll")]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+
+        public static int MakeLParam(int LoWord, int HiWord)
+        {
+            return (int)((HiWord << 16) | (LoWord & 0xFFFF));
+        }
+        
+        public const int WM_MOUSEMOVE = 0x0200;
+        public const int WM_LBUTTONDOWN = 0x0201;
+        public const int WM_LBUTTONUP = 0x0202;
+
 
         public struct Rect
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Events;
 
@@ -17,7 +18,7 @@ namespace Inkybot
         public Thread job;
         internal DofusMagingAI magus;
         internal IAction previousAction;
-        internal ItemHistoryAnalysis previousHistory;
+        internal ItemHistoryAnalysis? previousHistory;
         private float sink;
         internal DofusMagingJobState state;
 
@@ -73,9 +74,10 @@ namespace Inkybot
             try {
                 while (IsMaging) new DofusMagingJobTick(this).Execute();
             } catch (Exception e) {
-                StopMage();
                 Debug.WriteLine("EXCEPTION: " + e.Message);
                 Debug.WriteLine(e.StackTrace);
+            } finally {
+                StopMage();
             }
         }
     }

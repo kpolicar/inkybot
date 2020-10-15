@@ -17,36 +17,33 @@ namespace Inkybot
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
             var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
-            actionHandler.ActionExecuted += OnActionExecuted;
         }
 
         public void SetConfig(Config config) {
             this.config = config;
         }
 
-        public IAction ResolveAction(Item.ItemStat[] itemStats) {
+        public IAction ResolveAction(Item.ItemStat[] itemStats, IAction previousAction) {
             var itemMage = itemStats
                 .DefaultIfEmpty(itemStats.First())
                 .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat))))
                 .OrderByDescending(StatPriority)
                 .FirstOrDefault(item => !item.WillOvermage);
 
+            System.Diagnostics.Debug.WriteLine(
+                $"Max of {itemMage.stat.stat.DisplayName} is {itemMage.stat.max}, stat will overmage: {itemMage.WillOvermage}"
+                );
             // Todo: add condition based on remaining sink
             if (itemMage.stat.max <= itemMage.stat.value)
                 return actions.Finish();
 
-            var previous = actionHistory.LastOrDefault();
-
-            if (previous == null ||
-                previous is Combine ||
-                previous is Combine && (previous as Combine).target.stat.DisplayName != itemMage.stat.stat.DisplayName)
+            if (previousAction == null ||
+                previousAction is Combine &&
+                ((previousAction as Combine).target.stat.DisplayName != itemMage.stat.stat.DisplayName ||
+                (previousAction as Combine).target.type != itemMage.rune.type))
                 return actions.SelectRune(itemMage.rune);
-
+            
             return actions.Combine(itemMage.rune);
-        }
-
-        public void OnActionExecuted(object sender, ActionExecutedEventArgs args) {
-            actionHistory.Add(args.action);
         }
 
         private Rune.Type ResolveRuneType(Item.ItemStat itemStat) {

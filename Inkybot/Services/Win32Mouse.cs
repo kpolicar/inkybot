@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using Inkybot.Contracts;
+using Tesseract;
 
 namespace Inkybot.Services
 {
@@ -9,33 +11,24 @@ namespace Inkybot.Services
         private IntPtr relativeToControl;
 
         public void Click(int x, int y) {
-            MoveCursor(x, y);
-            Thread.Sleep(50);
+            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
+            Thread.Sleep(100);
+            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x+1, y-1));
+        }
 
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
-            Thread.Sleep(10);
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
+        public void Drag(int x, int y, int tX, int tY) {
+            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
+            Thread.Sleep(50);
+            
+            Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(tX, tY));
+            Thread.Sleep(100);
+            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(tX, tY));
         }
 
         public void DoubleClick(int x, int y) {
-            MoveCursor(x, y);
-            Thread.Sleep(50);
-
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
-            Thread.Sleep(10);
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
-
-            Thread.Sleep(50);
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftDown);
-            Thread.Sleep(10);
-            Win32.MouseOperations.MouseEvent(Win32.MouseOperations.MouseEventFlags.LeftUp);
-        }
-
-        public void MoveCursor(int x, int y) {
-            var windowPostion = new Win32.Rect();
-            Win32.GetWindowRect(relativeToControl, ref windowPostion);
-
-            Win32.MouseOperations.SetCursorPos(windowPostion.Left + x, windowPostion.Top + y);
+            Click(x,y);
+            Thread.Sleep(100);
+            Click(x-2,y+1);
         }
 
         public void SetRelativeToHandle(IntPtr handle) {
