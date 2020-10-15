@@ -28,6 +28,7 @@ namespace Inkybot
             mouse.SetRelativeToHandle(hWndDocked);
 
             statsForm = new StatsForm(this);
+            statsForm.Show();
             api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             MainFormDomainEvents();

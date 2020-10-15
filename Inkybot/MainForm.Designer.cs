@@ -41,14 +41,14 @@ namespace Inkybot
             this.debugButton = new System.Windows.Forms.Button();
             this.helpButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
-            this.mousePositionLabel = new System.Windows.Forms.Label();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
             this.userInfoPanel = new System.Windows.Forms.Panel();
             this.subscribedInfoLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
             this.loggedInAsLabel = new System.Windows.Forms.Label();
-            this.ocrIndicatorPanel = new TransparentPanel();
+            this.mousePositionLabel = new System.Windows.Forms.Label();
+            this.ocrIndicatorPanel = new Inkybot.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.sidebarPanel.SuspendLayout();
@@ -178,23 +178,8 @@ namespace Inkybot
             this.mageInfoPanel.Location = new System.Drawing.Point(0, 503);
             this.mageInfoPanel.Name = "mageInfoPanel";
             this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 5);
-            this.mageInfoPanel.Size = new System.Drawing.Size(113, 87);
+            this.mageInfoPanel.Size = new System.Drawing.Size(113, 57);
             this.mageInfoPanel.TabIndex = 7;
-            // 
-            // mousePositionLabel
-            // 
-            this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (60)))), ((int) (((byte) (60)))), ((int) (((byte) (60)))));
-            this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mousePositionLabel.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.mousePositionLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.mousePositionLabel.Location = new System.Drawing.Point(0, 52);
-            this.mousePositionLabel.Name = "mousePositionLabel";
-            this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.mousePositionLabel.Size = new System.Drawing.Size(113, 30);
-            this.mousePositionLabel.TabIndex = 8;
-            this.mousePositionLabel.Text = "(0,0)";
-            this.mousePositionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.mousePositionLabel.Visible = false;
             // 
             // sinkValueLabel
             // 
@@ -271,6 +256,21 @@ namespace Inkybot
             this.loggedInAsLabel.TabIndex = 4;
             this.loggedInAsLabel.Text = "LOGGED IN AS";
             // 
+            // mousePositionLabel
+            // 
+            this.mousePositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (60)))), ((int) (((byte) (60)))), ((int) (((byte) (60)))));
+            this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.mousePositionLabel.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.mousePositionLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.mousePositionLabel.Location = new System.Drawing.Point(0, 560);
+            this.mousePositionLabel.Name = "mousePositionLabel";
+            this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.mousePositionLabel.Size = new System.Drawing.Size(113, 30);
+            this.mousePositionLabel.TabIndex = 8;
+            this.mousePositionLabel.Text = "(0,0)";
+            this.mousePositionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.mousePositionLabel.Visible = false;
+            // 
             // ocrIndicatorPanel
             // 
             this.ocrIndicatorPanel.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
@@ -288,7 +288,6 @@ namespace Inkybot
             // 
             this.paintTimer.Interval = 10;
             this.paintTimer.Tick += new System.EventHandler(this.paintOcrIndicators);
-            // 
             // 
             // subscriptionCheckTimer
             // 
