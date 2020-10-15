@@ -22,17 +22,19 @@ namespace Inkybot
     {
         public Dictionary<Stat, StatConfig> stats = new Dictionary<Stat, StatConfig>();
 
-        public Config() {
-            ResetDefaults();
+        public Config(Item.ItemStat[] itemStats) {
+            ResetDefaults(itemStats);
         }
 
         public StatConfig For(Item.ItemStat itemStat) {
             return stats[itemStat.stat];
         }
 
-        public void ResetDefaults() {
-            foreach (var stat in Stat.Stats)
-                stats[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, stat.maximum);
+        public void ResetDefaults(Item.ItemStat[] itemStats) {
+            foreach (var itemStat in itemStats) {
+                var stat = itemStat.stat;
+                stats[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, itemStat.max);
+            }
         }
     }
 }

@@ -29,7 +29,8 @@ namespace Inkybot
             } else {
                 dataGridView1.Rows.Clear();
 
-                foreach (var stat in e.stats) dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value);
+                foreach (var stat in e.stats)
+                    dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value, magingJob.Config.For(stat).maximum);
             }
         }
 

@@ -26,7 +26,7 @@ namespace Inkybot
         public IAction ResolveAction(Item.ItemStat[] itemStats, IAction previousAction) {
             var itemMage = itemStats
                 .DefaultIfEmpty(itemStats.First())
-                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat))))
+                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref config))
                 .OrderByDescending(StatPriority)
                 .FirstOrDefault(item => !item.WillOvermage);
 
@@ -64,14 +64,17 @@ namespace Inkybot
         {
             public readonly Item.ItemStat stat;
             public readonly Rune rune;
+            private readonly Config mageConfig;
 
-            public bool WillOvermage => stat.value + rune.IncreaseInValue > stat.max;
+            public bool WillOvermage => stat.value + rune.IncreaseInValue > mageConfig.For(stat).maximum;
 
-            public ItemMage(Item.ItemStat stat, Rune rune) {
+            public ItemMage(ItemStat stat, Rune rune, ref Config mageConfig) {
                 this.stat = stat;
                 this.rune = rune;
+                this.mageConfig = mageConfig;
             }
 
+            // Todo: should you change priority based on item stat max or config stat max?
             public int NumberOfRunesNeededForFullMage =>
                 (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
         }

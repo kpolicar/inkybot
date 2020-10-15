@@ -10,7 +10,8 @@ namespace Inkybot
     public class DofusMagingJob
     {
         internal ActionHandler actions;
-        public readonly Config Config;
+
+        public Config Config;
 
         internal DofusDataProvider dataProvider;
         internal IItemHistoryAnalyzer history;
@@ -26,7 +27,6 @@ namespace Inkybot
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
-            magus.SetConfig(Config = new Config());
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
         }
 
@@ -59,10 +59,18 @@ namespace Inkybot
             Sink = 0f;
             previousAction = null;
             previousHistory = null;
+            
+            dataProvider.FetchData();
+            var stats = dataProvider.Stats();
+            ChangeConfig(new Config(stats));
 
             job = new Thread(DoMage);
             job.Start();
             Started?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ChangeConfig(Config config) {
+            magus.SetConfig(Config = config);
         }
 
         public void StopMage() {
