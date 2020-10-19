@@ -67,8 +67,8 @@ namespace Inkybot
         private delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
 
         private void StatsForm_VisibleChanged(object sender, EventArgs e) {
-            if (!Visible) return;
-            
+            if (!Visible || magingJob.IsMaging) return;
+
             dataProvider.FetchData();
             dataProvider.Stats();
         }

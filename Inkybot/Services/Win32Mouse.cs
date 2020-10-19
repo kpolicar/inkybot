@@ -11,8 +11,10 @@ namespace Inkybot.Services
         private IntPtr relativeToControl;
 
         public void Click(int x, int y) {
+            Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
             Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             Thread.Sleep(100);
+            Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
             Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x+1, y-1));
         }
 
@@ -22,6 +24,7 @@ namespace Inkybot.Services
             
             Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(tX, tY));
             Thread.Sleep(100);
+            Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(tX, tY));
             Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(tX, tY));
         }
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Inkybot.Events;
 using Inkybot.Contracts;
+using Inkybot.Exceptions;
 using Tesseract;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
@@ -89,11 +90,16 @@ namespace Inkybot
             // Todo: add minimum rect
             bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
 
-            var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
-            bitmap.Save(fstream, ImageFormat.Bmp);
-            fstream.Dispose();
+            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
+            //bitmap.Save(fstream, ImageFormat.Bmp);
+            //fstream.Dispose();
 
-            var ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
+            Page ocrResult;
+            try {
+                ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
+            } catch (InvalidOperationException exception) {
+                throw new OcrEngineNotReadyYetException("", exception);
+            }
 
             var results = Regex
                 .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
@@ -115,7 +121,12 @@ namespace Inkybot
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
 
-            var ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
+            Page ocrResult;
+            try {
+                ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
+            } catch (InvalidOperationException exception) {
+                throw new OcrEngineNotReadyYetException("", exception);
+            }
 
             using (var iter = ocrResult.GetIterator()) {
                 iter.Begin();
@@ -133,9 +144,9 @@ namespace Inkybot
                 ? Image.FromFile(@"C:\Users\Klemen\Desktop\ex.bmp")
                 : (Bitmap) screen.CaptureWindow(handle);
 
-            var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
-            bitmap.Save(fstream, ImageFormat.Bmp);
-            fstream.Dispose();
+            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
+            //bitmap.Save(fstream, ImageFormat.Bmp);
+            //fstream.Dispose();
 
             return (Bitmap) bitmap;
         }

@@ -29,6 +29,9 @@ namespace Inkybot.Adapters
         }
 
         private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
+            if (historyEntrySegments.Count != 3)
+                throw new CouldNotSegmentMageHistoryLineException("");
+                
             var (value, name) = (historyEntrySegments[1].Value, historyEntrySegments[2].Value);
 
             var stat = GetStatFromName(name);
@@ -43,8 +46,6 @@ namespace Inkybot.Adapters
 
         private MatchCollection SegmentMageHistoryEntry(string historyLine) {
             var segments = Regex.Matches(historyLine, @"(-?\d+) ?(%? ?[A-z ]+[A-z])");
-            if (segments.Count != 2) 
-                throw new CouldNotSegmentMageHistoryLineException("");
             return segments;
         }
     }

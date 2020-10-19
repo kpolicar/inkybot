@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace Inkybot
 {
@@ -106,6 +105,7 @@ namespace Inkybot
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.Size = new System.Drawing.Size(535, 316);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.StatsForm_OnChangeValue);
             // 
             // StatsForm
             // 

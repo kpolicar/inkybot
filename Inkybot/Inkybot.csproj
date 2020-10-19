@@ -102,6 +102,7 @@
         <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
         <Compile Include="Exceptions\MagingException.cs" />
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />
+        <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />
         <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>

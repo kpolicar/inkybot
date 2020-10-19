@@ -58,16 +58,6 @@ namespace Inkybot
         public void BeginMage() {
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
 
-            state = DofusMagingJobState.DOING_FIRST_COMBINE;
-            IsMaging = true;
-            Sink = 0f;
-            previousAction = null;
-            previousHistory = null;
-            
-            dataProvider.FetchData();
-            var stats = dataProvider.Stats();
-            configManager.EnforceConfigSetForStats(stats);
-
             job = new Thread(DoMage);
             job.Start();
             Started?.Invoke(this, EventArgs.Empty);
@@ -78,8 +68,21 @@ namespace Inkybot
             Stopped?.Invoke(this, EventArgs.Empty);
         }
 
+        private void PrepareMage() {
+            state = DofusMagingJobState.DOING_FIRST_COMBINE;
+            IsMaging = true;
+            Sink = 0f;
+            previousAction = null;
+            previousHistory = null;
+            
+            dataProvider.FetchData();
+            var stats = dataProvider.Stats();
+            configManager.EnforceConfigSetForStats(stats);
+        }
+
         private void DoMage() {
             try {
+                PrepareMage();
                 while (IsMaging) new DofusMagingJobTick(this).Execute();
             } catch (Exception e) {
                 Debug.WriteLine("EXCEPTION: " + e.Message);

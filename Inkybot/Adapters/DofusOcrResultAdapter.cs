@@ -26,6 +26,7 @@ namespace Inkybot.Adapters
                 name = SpellCorrectStatName(name);
                 return Stat.Stats.First(statData => statData.DisplayName == name);
             } catch (Exception exception) {
+                Debug.WriteLine(name);
                 throw new CouldNotResolveStatNameException("", exception);
             }
         }

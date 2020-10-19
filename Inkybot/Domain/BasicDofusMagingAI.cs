@@ -34,6 +34,7 @@ namespace Inkybot
         }
 
         public IAction ResolveAction(ItemStat[] itemStats, IAction previousAction) {
+            // Todo: fix
             var itemMage = itemStats
                 .DefaultIfEmpty(itemStats.First())
                 .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref config))
@@ -41,7 +42,7 @@ namespace Inkybot
                 .FirstOrDefault(item => !item.WillOvermage);
 
             Debug.WriteLine(
-                $"Max of {itemMage.stat.stat.DisplayName} is {itemMage.stat.max}, stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.stat.stat.DisplayName} is {config.For(itemMage.stat).maximum}, stat will overmage: {itemMage.WillOvermage}"
                 );
             // Todo: add condition based on remaining sink
             if (itemMage.stat.max <= itemMage.stat.value)
@@ -49,7 +50,7 @@ namespace Inkybot
 
             if (previousAction == null ||
                 previousAction is Combine &&
-                ((previousAction as Combine).target.stat.DisplayName != itemMage.stat.stat.DisplayName ||
+                ((previousAction as Combine).target.stat != itemMage.stat.stat ||
                 (previousAction as Combine).target.type != itemMage.rune.type))
                 return actions.SelectRune(itemMage.rune);
             
