@@ -4,6 +4,7 @@ using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Events;
+using Inkybot.Services;
 using static Inkybot.Item;
 
 namespace Inkybot
@@ -12,11 +13,18 @@ namespace Inkybot
     {
         private readonly List<IAction> actionHistory = new List<IAction>();
         private readonly ActionFactory actions;
+        private readonly ConfigManager configManager;
         private Config config;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
             var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
+            var configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            configManager.ConfigChanged += OnConfigChanged;
+        }
+
+        public void OnConfigChanged(object sender, ConfigChangedEventArgs eventArgs) {
+            this.config = config;
         }
 
         public void SetConfig(Config config) {

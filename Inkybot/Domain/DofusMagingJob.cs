@@ -4,6 +4,7 @@ using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Events;
+using Inkybot.Services;
 
 namespace Inkybot
 {
@@ -22,12 +23,15 @@ namespace Inkybot
         internal ItemHistoryAnalysis? previousHistory;
         private float sink;
         internal DofusMagingJobState state;
+        private ConfigManager configManager;
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
+            configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            configManager.ConfigChanged += OnConfigChanged;
         }
 
         public bool IsMaging { get; private set; }
@@ -62,15 +66,11 @@ namespace Inkybot
             
             dataProvider.FetchData();
             var stats = dataProvider.Stats();
-            ChangeConfig(new Config(stats));
+            configManager.EnforceConfigSetForStats(stats);
 
             job = new Thread(DoMage);
             job.Start();
             Started?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void ChangeConfig(Config config) {
-            magus.SetConfig(Config = config);
         }
 
         public void StopMage() {
@@ -87,6 +87,10 @@ namespace Inkybot
             } finally {
                 StopMage();
             }
+        }
+        
+        public void OnConfigChanged(object sender, ConfigChangedEventArgs eventArgs) {
+            StopMage();
         }
     }
 }

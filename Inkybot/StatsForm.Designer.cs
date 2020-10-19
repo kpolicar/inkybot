@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace Inkybot
 {
@@ -158,6 +157,7 @@ namespace Inkybot
             // 
             // StatsForm
             // 
+            this.Closing += new CancelEventHandler(this.StatsForm_Closing);
             this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

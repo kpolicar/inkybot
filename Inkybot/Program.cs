@@ -20,6 +20,7 @@ namespace Inkybot
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
             Services.AddService(typeof(Mouse), new Win32Mouse());
             Services.AddService(typeof(ActionFactory), new MouseActionFactory());
+            Services.AddService(typeof(ConfigManager), new ConfigManager());
             Services.AddService(typeof(ActionHandler), new ActionHandler());
             Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
             Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());

@@ -195,7 +195,7 @@ namespace Inkybot
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(142, 20);
             this.passwordTextBox.TabIndex = 4;
-            this.passwordTextBox.Text = "password";
+            this.passwordTextBox.Text = "12345678";
             this.passwordTextBox.UseSystemPasswordChar = true;
             // 
             // label3

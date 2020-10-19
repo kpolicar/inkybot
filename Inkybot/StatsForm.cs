@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Events;
+using Inkybot.Services;
 
 namespace Inkybot
 {
@@ -12,16 +14,31 @@ namespace Inkybot
         private readonly DofusDataProvider dataProvider;
         private DofusMagingJob magingJob;
         private MainForm mainForm;
+        private ConfigManager configManager;
+
+        private Item.ItemStat[] _stats;
+        private Item.ItemStat[] Stats {
+            get => _stats;
+            set => UpdateDataGridView(_stats = value);
+        }
+
+        private Config _config;
+        private Config Config {
+            get => _config;
+            set => _config = value;
+        }
 
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.FetchedStats += StatsUpdated;
+            configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            dataProvider.FetchedStats += (sender, args) => Stats = args.stats;
         }
 
         private void StatsUpdated(object sender, StatsEventArgs e) {
+            configManager.EnforceConfigSetForStats(e.stats);
             if (!Visible) return;
             
             // InvokeRequired required compares the thread ID of the
@@ -31,26 +48,30 @@ namespace Inkybot
                 StatsUpdatedCallback d = StatsUpdated;
                 Invoke(d, sender, e);
             } else {
-                EnforceDataGridMatchesStats(e.stats);
+                UpdateDataGridView(e.stats);
             }
         }
 
-        private void EnforceDataGridMatchesStats(Item.ItemStat[] itemStats) {
-            if (DataGridMatchesStats(itemStats)) return;
-            
-            magingJob.ChangeConfig(new Config(itemStats));
-            RebuildDataGridView(itemStats);
+        private void UpdateDataGridView(Item.ItemStat[] itemStats) {
+            if (!DataGridViewMatchesItem(itemStats)) {
+                RebuildDataGridView(itemStats);
+            } else {
+                for (var i = 0; i < itemStats.Length; i++) {
+                    dataGridView1[1,i].Value = itemStats[i].value;
+                }
+            }
         }
 
-        private bool DataGridMatchesStats(Item.ItemStat[] itemStats) {
+        private bool DataGridViewMatchesItem(Item.ItemStat[] itemStats) {
             if (itemStats.Length != dataGridView1.Rows.Count) return false;
-            
-            var i = 0;
-            foreach (DataGridViewRow row in dataGridView1.Rows) {
-                if (row.ToString() != itemStats[i].stat.DisplayName)
+
+            for (var i = 0; i < itemStats.Length; i++) {
+                if (itemStats[i].stat.DisplayName != dataGridView1[0,i].Value.ToString()) {
                     return false;
-                ++i;
+                }
             }
+
+
             return true;
         }
 
@@ -67,9 +88,14 @@ namespace Inkybot
             if (!Visible) return;
             
             dataProvider.FetchData();
-            var stats = dataProvider.Stats();
+            dataProvider.Stats();
             //magingJob.ChangeConfig(new Config(stats));
             // magingJob.Config.For(stat).maximum
+        }
+
+        private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
+            cancelEventArgs.Cancel = true;
+            Hide();
         }
     }
 }

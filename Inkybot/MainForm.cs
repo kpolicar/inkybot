@@ -12,7 +12,7 @@ namespace Inkybot
 {
     public partial class MainForm : Form
     {
-        private readonly StatsForm statsForm;
+        private StatsForm statsForm;
         private readonly ApiDataProvider api;
         private readonly DofusMagingJob magingJob;
 
@@ -29,7 +29,7 @@ namespace Inkybot
             mouse.SetRelativeToHandle(hWndDocked);
 
             statsForm = new StatsForm(this);
-            statsForm.Show();
+            
             api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             MainFormDomainEvents();
@@ -53,7 +53,8 @@ namespace Inkybot
         }
 
         private void statsButton_Click(object sender, EventArgs e) {
-            statsForm.Show();
+            if (!statsForm.Visible) statsForm.Show();
+            else statsForm.Hide();
         }
     }
 }

@@ -94,6 +94,8 @@
         <Compile Include="DofusPathForm.Designer.cs">
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Domain\ServiceBinder.cs" />
+        <Compile Include="Events\ConfigChangedEventArgs.cs" />
         <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
@@ -150,6 +152,7 @@
         <Compile Include="Resources\Api\AuthDetails.cs" />
         <Compile Include="Resources\Api\User.cs" />
         <Compile Include="Resources\Api\VersionDetails.cs" />
+        <Compile Include="Services\ConfigManager.cs" />
         <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
