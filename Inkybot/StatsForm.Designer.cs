@@ -32,61 +32,12 @@ namespace Inkybot
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
-            this.startButton = new System.Windows.Forms.Button();
-            this.resetButton = new System.Windows.Forms.Button();
-            this.buttonsPanel = new System.Windows.Forms.Panel();
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.buttonsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // startButton
-            // 
-            this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.startButton.AutoSize = true;
-            this.startButton.BackColor = System.Drawing.Color.Black;
-            this.startButton.FlatAppearance.BorderSize = 0;
-            this.startButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.startButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.startButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.startButton.Location = new System.Drawing.Point(386, 3);
-            this.startButton.Margin = new System.Windows.Forms.Padding(0);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(146, 47);
-            this.startButton.TabIndex = 2;
-            this.startButton.Text = "CONTINUE";
-            this.startButton.UseVisualStyleBackColor = false;
-            // 
-            // resetButton
-            // 
-            this.resetButton.AutoSize = true;
-            this.resetButton.BackColor = System.Drawing.Color.Black;
-            this.resetButton.FlatAppearance.BorderSize = 0;
-            this.resetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.resetButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.resetButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.resetButton.Location = new System.Drawing.Point(3, 3);
-            this.resetButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(85, 47);
-            this.resetButton.TabIndex = 3;
-            this.resetButton.Text = "RESET";
-            this.resetButton.UseVisualStyleBackColor = false;
-            // 
-            // buttonsPanel
-            // 
-            this.buttonsPanel.AutoSize = true;
-            this.buttonsPanel.Controls.Add(this.resetButton);
-            this.buttonsPanel.Controls.Add(this.startButton);
-            this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonsPanel.Location = new System.Drawing.Point(0, 327);
-            this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Padding = new System.Windows.Forms.Padding(3);
-            this.buttonsPanel.Size = new System.Drawing.Size(535, 53);
-            this.buttonsPanel.TabIndex = 4;
             // 
             // TargetColumn
             // 
@@ -152,32 +103,24 @@ namespace Inkybot
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dataGridView1.Size = new System.Drawing.Size(535, 380);
+            this.dataGridView1.Size = new System.Drawing.Size(535, 316);
             this.dataGridView1.TabIndex = 0;
             // 
             // StatsForm
             // 
-            this.Closing += new CancelEventHandler(this.StatsForm_Closing);
-            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.ClientSize = new System.Drawing.Size(535, 380);
-            this.Controls.Add(this.buttonsPanel);
+            this.ClientSize = new System.Drawing.Size(535, 316);
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "StatsForm";
             this.Text = "Stats - Inkybot";
-            this.buttonsPanel.ResumeLayout(false);
-            this.buttonsPanel.PerformLayout();
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
+            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
-
-        private System.Windows.Forms.Panel buttonsPanel;
-        private System.Windows.Forms.Button resetButton;
-        private System.Windows.Forms.Button startButton;
 
         #endregion
 
