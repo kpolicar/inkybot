@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Inkybot.Actions;
+using Inkybot.Exceptions;
 
 namespace Inkybot
 {
@@ -79,6 +80,9 @@ namespace Inkybot
 
         private IAction DoAction() {
             var itemStats = job.dataProvider.Stats();
+            if (itemStats.Length <= 0)
+                throw new NoItemToMageFoundException("");
+            
             var action = job.magus.ResolveAction(itemStats, job.previousAction);
             job.actions.Execute(action);
             return action;

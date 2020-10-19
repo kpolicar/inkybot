@@ -22,9 +22,12 @@ namespace Inkybot
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+        }
+
+        private void StatsForm_Loaded(object sender, EventArgs e) {
             dataProvider.FetchedStats += OnStatsFetched;
         }
-        
+
         private void OnStatsFetched(object sender, StatsEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 UpdateDataGridView(e.stats);
@@ -68,8 +71,6 @@ namespace Inkybot
             
             dataProvider.FetchData();
             dataProvider.Stats();
-            //magingJob.ChangeConfig(new Config(stats));
-            // magingJob.Config.For(stat).maximum
         }
 
         private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {

@@ -33,7 +33,7 @@ namespace Inkybot
             this.config = config;
         }
 
-        public IAction ResolveAction(Item.ItemStat[] itemStats, IAction previousAction) {
+        public IAction ResolveAction(ItemStat[] itemStats, IAction previousAction) {
             var itemMage = itemStats
                 .DefaultIfEmpty(itemStats.First())
                 .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref config))

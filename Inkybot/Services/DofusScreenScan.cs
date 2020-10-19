@@ -30,6 +30,7 @@ namespace Inkybot
     public class DofusScreenScan
     {
         public static readonly Rectangle HistoryBounds = new Rectangle(352, 137, 590-352, 835-137);
+        public static readonly Rectangle StatBounds = new Rectangle(645, 300, 980-645, 39*12);
         
         private static ScreenCapture screen;
         private static TesseractEngine engine;
@@ -85,9 +86,8 @@ namespace Inkybot
 
         private string[] ScanRegion(Rectangle bounds, string name) {
             var bitmap = screen.cropAtRect(screenshot, bounds);
+            // Todo: add minimum rect
             bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
-            //bitmap = screen.Sharpen((Bitmap)bitmap);
-
 
             var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
             bitmap.Save(fstream, ImageFormat.Bmp);
