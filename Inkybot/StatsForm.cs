@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Events;
@@ -20,6 +22,8 @@ namespace Inkybot
         }
 
         private void StatsUpdated(object sender, StatsEventArgs e) {
+            if (!Visible) return;
+            
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
@@ -27,13 +31,35 @@ namespace Inkybot
                 StatsUpdatedCallback d = StatsUpdated;
                 Invoke(d, sender, e);
             } else {
-                dataGridView1.Rows.Clear();
-
-                foreach (var stat in e.stats)
-                    dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value, magingJob.Config.For(stat).maximum);
+                EnforceDataGridMatchesStats(e.stats);
             }
         }
 
+        private void EnforceDataGridMatchesStats(Item.ItemStat[] itemStats) {
+            if (DataGridMatchesStats(itemStats)) return;
+            
+            magingJob.ChangeConfig(new Config(itemStats));
+            RebuildDataGridView(itemStats);
+        }
+
+        private bool DataGridMatchesStats(Item.ItemStat[] itemStats) {
+            if (itemStats.Length != dataGridView1.Rows.Count) return false;
+            
+            var i = 0;
+            foreach (DataGridViewRow row in dataGridView1.Rows) {
+                if (row.ToString() != itemStats[i].stat.DisplayName)
+                    return false;
+                ++i;
+            }
+            return true;
+        }
+
+        private void RebuildDataGridView(Item.ItemStat[] itemStats) {
+            dataGridView1.Rows.Clear();
+            
+            foreach (var stat in itemStats)
+                dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value, stat.max);
+        }
 
         private delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
 
@@ -41,7 +67,9 @@ namespace Inkybot
             if (!Visible) return;
             
             dataProvider.FetchData();
-            dataProvider.Stats();
+            var stats = dataProvider.Stats();
+            //magingJob.ChangeConfig(new Config(stats));
+            // magingJob.Config.For(stat).maximum
         }
     }
 }
