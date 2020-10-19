@@ -16,44 +16,24 @@ namespace Inkybot
         private MainForm mainForm;
         private ConfigManager configManager;
 
-        private Item.ItemStat[] _stats;
-        private Item.ItemStat[] Stats {
-            get => _stats;
-            set => UpdateDataGridView(_stats = value);
-        }
-
-        private Config _config;
-        private Config Config {
-            get => _config;
-            set => _config = value;
-        }
-
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
             this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            dataProvider.FetchedStats += (sender, args) => Stats = args.stats;
+            dataProvider.FetchedStats += OnStatsFetched;
         }
-
-        private void StatsUpdated(object sender, StatsEventArgs e) {
-            configManager.EnforceConfigSetForStats(e.stats);
-            if (!Visible) return;
-            
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (dataGridView1.InvokeRequired) {
-                StatsUpdatedCallback d = StatsUpdated;
-                Invoke(d, sender, e);
-            } else {
+        
+        private void OnStatsFetched(object sender, StatsEventArgs e) {
+            Invoke(new MethodInvoker(delegate {
                 UpdateDataGridView(e.stats);
-            }
+            }));
         }
 
         private void UpdateDataGridView(Item.ItemStat[] itemStats) {
             if (!DataGridViewMatchesItem(itemStats)) {
+                configManager.ResetConfig(itemStats);
                 RebuildDataGridView(itemStats);
             } else {
                 for (var i = 0; i < itemStats.Length; i++) {
@@ -71,14 +51,13 @@ namespace Inkybot
                 }
             }
 
-
             return true;
         }
 
         private void RebuildDataGridView(Item.ItemStat[] itemStats) {
             dataGridView1.Rows.Clear();
             
-            foreach (var stat in itemStats)
+            foreach (var stat in itemStats) 
                 dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value, stat.max);
         }
 
@@ -96,6 +75,18 @@ namespace Inkybot
         private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
+        }
+
+        private void StatsForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
+            if (e.ColumnIndex != 2) return;
+            var row = dataGridView1.Rows[e.RowIndex];
+            
+            var stat = Stat.Stats.First(stat => stat.DisplayName == row.Cells[0].Value.ToString());
+            
+            var max = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
+            var statConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, max);
+
+            configManager.ChangeStatConfig(stat, statConfig);
         }
     }
 }

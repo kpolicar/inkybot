@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Events;
@@ -31,7 +32,7 @@ namespace Inkybot
 
         public Item.ItemStat[] Stats() {
             var scanResults = scan.Stats();
-            var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
+            var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats().ToArray();
             FetchedStats?.Invoke(this, new StatsEventArgs(stats));
 
             return lastScanResults = stats;

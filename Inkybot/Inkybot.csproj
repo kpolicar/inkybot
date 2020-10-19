@@ -97,6 +97,10 @@
         <Compile Include="Domain\ServiceBinder.cs" />
         <Compile Include="Events\ConfigChangedEventArgs.cs" />
         <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
+        <Compile Include="Exceptions\CouldNotResolveStatNameException.cs" />
+        <Compile Include="Exceptions\CouldNotResolveStatValueException.cs" />
+        <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
+        <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>

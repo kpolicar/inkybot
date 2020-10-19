@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Contracts;
@@ -23,8 +24,9 @@ namespace Inkybot
             configManager.ConfigChanged += OnConfigChanged;
         }
 
-        public void OnConfigChanged(object sender, ConfigChangedEventArgs eventArgs) {
-            this.config = config;
+        public void OnConfigChanged(object sender, ConfigChangedEventArgs args) {
+            Debug.WriteLine("Config changed!");
+            config = args.config;
         }
 
         public void SetConfig(Config config) {
@@ -38,7 +40,7 @@ namespace Inkybot
                 .OrderByDescending(StatPriority)
                 .FirstOrDefault(item => !item.WillOvermage);
 
-            System.Diagnostics.Debug.WriteLine(
+            Debug.WriteLine(
                 $"Max of {itemMage.stat.stat.DisplayName} is {itemMage.stat.max}, stat will overmage: {itemMage.WillOvermage}"
                 );
             // Todo: add condition based on remaining sink

@@ -41,5 +41,13 @@ namespace Inkybot.Services
             return comparison.All(comparison =>
                        comparison.Record1.stat.DisplayName == comparison.Record2.DisplayName);
         }
+
+        public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
+            config.stats[stat] = statConfig;
+            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(config));
+            foreach (var keyValuePair in config.stats) {
+                Debug.WriteLine(keyValuePair.Key.DisplayName);
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace Inkybot
                 Debug.WriteLine("change in sink: " + record.ChangeInSink);
                 return record.ChangeInSink;
             } catch (InvalidOperationException ex) {
-                throw new CouldNotResolveSinkException();
+                throw new CouldNotResolveSinkException("", ex);
             }
         }
     }

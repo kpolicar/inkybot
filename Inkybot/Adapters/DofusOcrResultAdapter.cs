@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters
 {
@@ -17,6 +19,15 @@ namespace Inkybot.Adapters
             if (string.Join(" ", terms) != name)
                 Debug.WriteLine("OCR error, original:" + name + ", fixed:" + string.Join(" ", terms));
             return string.Join(" ", terms);
+        }
+        
+        protected Stat GetStatFromName(string name) {
+            try {
+                name = SpellCorrectStatName(name);
+                return Stat.Stats.First(statData => statData.DisplayName == name);
+            } catch (Exception exception) {
+                throw new CouldNotResolveStatNameException("", exception);
+            }
         }
     }
 }

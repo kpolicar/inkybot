@@ -9,7 +9,7 @@ namespace Inkybot
 {
     internal static class Program
     {
-        public static bool debug = true;
+        public static bool debug = false;
         public static ServiceContainer Services = new ServiceContainer();
 
         /// <summary>

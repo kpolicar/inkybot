@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters
 {
@@ -16,29 +17,35 @@ namespace Inkybot.Adapters
 
         public IEnumerable<MageHistoryRecord> ToMageHistoryRecords() {
             return historyLines.Select(mageEntry => {
-                var changes = Regex.Matches(mageEntry, @"(-?\d+) ?(%? ?[A-z ]+[A-z])");
-                var sinkChange = Regex.Match(mageEntry, @"[+-] ?sink");
+                var changes = SegmentMageHistoryEntry(mageEntry);
+                var sinkHasChanged = Regex.IsMatch(mageEntry, @"[+-] ?sink");
 
-                var statChanges = changes.Cast<Match>().Select(change => {
-                        var grouped = change.Groups;
-                        var (value, name) = (grouped[1].Value, grouped[2].Value);
-                        name = SpellCorrectStatName(name);
+                var statChanges = changes
+                    .Cast<Match>()
+                    .Select(change => HistoryEntrySegmentToStatChange(change.Groups));
 
-                        Stat stat;
-                        try {
-                            stat = Stat.Stats.First(statData => statData.DisplayName == name);
-                        } catch (Exception e) {
-                            Debug.WriteLine($"Error mapping {name} = {value} to stat!");
-                            throw;
-                        }
-                        var valuee = int.Parse(value);
-
-                        return new StatChanged(stat, valuee);
-                    }
-                );
-
-                return new MageHistoryRecord(statChanges, sinkChange.Success);
+                return new MageHistoryRecord(statChanges, sinkHasChanged);
             });
+        }
+
+        private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
+            var (value, name) = (historyEntrySegments[1].Value, historyEntrySegments[2].Value);
+
+            var stat = GetStatFromName(name);
+
+            int parsedValue;
+            if (!int.TryParse(value, out parsedValue)) {
+                throw new CouldNotResolveStatValueException("");
+            }
+
+            return new StatChanged(stat, parsedValue);
+        }
+
+        private MatchCollection SegmentMageHistoryEntry(string historyLine) {
+            var segments = Regex.Matches(historyLine, @"(-?\d+) ?(%? ?[A-z ]+[A-z])");
+            if (segments.Count != 2) 
+                throw new CouldNotSegmentMageHistoryLineException("");
+            return segments;
         }
     }
 }
