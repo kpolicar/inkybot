@@ -51,6 +51,7 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 toastLabel.Text = e.exception.Message;
                 toastPanel.Show();
+                toastPanel.BringToFront();
             }));
         }
 

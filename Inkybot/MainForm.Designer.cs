@@ -81,14 +81,14 @@ namespace Inkybot
             this.toastPanel.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.toastPanel.AutoSize = true;
             this.toastPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.toastPanel.BackColor = System.Drawing.SystemColors.Desktop;
+            this.toastPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.toastPanel.Controls.Add(this.toastIconPictureBox);
             this.toastPanel.Controls.Add(this.toastLabel);
             this.toastPanel.Controls.Add(this.toastPanelCloseButton);
-            this.toastPanel.Location = new System.Drawing.Point(703, 6);
+            this.toastPanel.Location = new System.Drawing.Point(697, 6);
             this.toastPanel.Name = "toastPanel";
-            this.toastPanel.Padding = new System.Windows.Forms.Padding(5);
-            this.toastPanel.Size = new System.Drawing.Size(368, 48);
+            this.toastPanel.Padding = new System.Windows.Forms.Padding(8);
+            this.toastPanel.Size = new System.Drawing.Size(374, 54);
             this.toastPanel.TabIndex = 0;
             // 
             // toastIconPictureBox
@@ -96,7 +96,7 @@ namespace Inkybot
             this.toastIconPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.toastIconPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.toastIconPictureBox.Image = ((System.Drawing.Image) (resources.GetObject("toastIconPictureBox.Image")));
-            this.toastIconPictureBox.Location = new System.Drawing.Point(8, 8);
+            this.toastIconPictureBox.Location = new System.Drawing.Point(11, 11);
             this.toastIconPictureBox.Name = "toastIconPictureBox";
             this.toastIconPictureBox.Size = new System.Drawing.Size(33, 31);
             this.toastIconPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -108,7 +108,7 @@ namespace Inkybot
             this.toastLabel.AutoSize = true;
             this.toastLabel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.toastLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.toastLabel.Location = new System.Drawing.Point(47, 5);
+            this.toastLabel.Location = new System.Drawing.Point(50, 8);
             this.toastLabel.Name = "toastLabel";
             this.toastLabel.Padding = new System.Windows.Forms.Padding(3, 12, 30, 12);
             this.toastLabel.Size = new System.Drawing.Size(291, 38);
@@ -121,7 +121,7 @@ namespace Inkybot
             this.toastPanelCloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.toastPanelCloseButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.toastPanelCloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.toastPanelCloseButton.Location = new System.Drawing.Point(344, 8);
+            this.toastPanelCloseButton.Location = new System.Drawing.Point(347, 11);
             this.toastPanelCloseButton.Name = "toastPanelCloseButton";
             this.toastPanelCloseButton.Size = new System.Drawing.Size(16, 16);
             this.toastPanelCloseButton.TabIndex = 8;
@@ -132,7 +132,7 @@ namespace Inkybot
             // 
             this.sidebarPanel.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
             this.sidebarPanel.AutoSize = true;
-            this.sidebarPanel.BackColor = System.Drawing.SystemColors.Desktop;
+            this.sidebarPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.sidebarPanel.Controls.Add(this.buttonsPanel);
             this.sidebarPanel.Controls.Add(this.mageInfoPanel);
             this.sidebarPanel.Controls.Add(this.userInfoPanel);
@@ -384,6 +384,7 @@ namespace Inkybot
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Inkybot";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.toastPanel.ResumeLayout(false);
             this.toastPanel.PerformLayout();

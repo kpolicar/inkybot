@@ -58,7 +58,7 @@ namespace Inkybot
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.Desktop;
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.splitContainer1.Panel1.Controls.Add(this.logoPictureBox);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
@@ -136,7 +136,7 @@ namespace Inkybot
             // 
             // pathChangeButton
             // 
-            this.pathChangeButton.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.pathChangeButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.pathChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pathChangeButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.pathChangeButton.ForeColor = System.Drawing.SystemColors.Control;
@@ -173,6 +173,7 @@ namespace Inkybot
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DofusPathForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Inkybot - Select Path";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
