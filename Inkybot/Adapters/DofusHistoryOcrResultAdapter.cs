@@ -30,7 +30,7 @@ namespace Inkybot.Adapters
 
         private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
             if (historyEntrySegments.Count != 3)
-                throw new CouldNotSegmentMageHistoryLineException("");
+                throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
                 
             var (value, name) = (historyEntrySegments[1].Value, historyEntrySegments[2].Value);
 
@@ -38,7 +38,7 @@ namespace Inkybot.Adapters
 
             int parsedValue;
             if (!int.TryParse(value, out parsedValue)) {
-                throw new CouldNotResolveStatValueException("");
+                throw new CouldNotResolveStatValueException($"Error occured trying to resolve stat value for '{name}'");
             }
 
             return new StatChanged(stat, parsedValue);

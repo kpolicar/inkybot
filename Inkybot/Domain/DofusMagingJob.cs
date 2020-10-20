@@ -10,6 +10,8 @@ namespace Inkybot
 {
     public class DofusMagingJob
     {
+        public event EventHandler<MagingJobErrorEventArgs> Error;
+
         internal ActionHandler actions;
 
         public Config Config;
@@ -84,9 +86,8 @@ namespace Inkybot
             try {
                 PrepareMage();
                 while (IsMaging) new DofusMagingJobTick(this).Execute();
-            } catch (Exception e) {
-                Debug.WriteLine("EXCEPTION: " + e.Message);
-                Debug.WriteLine(e.StackTrace);
+            } catch (Exception exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } finally {
                 StopMage();
             }

@@ -32,7 +32,7 @@ namespace Inkybot.Adapters
 
                 return (min, max, value);
             } catch (Exception exception) {
-                throw new CouldNotResolveStatValueException("", exception);
+                throw new CouldNotResolveStatValueException($"Error occured resolving value for stat {result.name}", exception);
             }
         }
     }

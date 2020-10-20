@@ -94,12 +94,7 @@ namespace Inkybot
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
 
-            Page ocrResult;
-            try {
-                ocrResult = engine.Process(bitmap, PageSegMode.SingleBlock);
-            } catch (InvalidOperationException exception) {
-                throw new OcrEngineNotReadyYetException("", exception);
-            }
+            var ocrResult = ProcessImage(bitmap, PageSegMode.SingleBlock);
 
             var results = Regex
                 .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
@@ -108,6 +103,14 @@ namespace Inkybot
             ocrResult.Dispose();
 
             return results.ToArray();
+        }
+
+        private Page ProcessImage(Bitmap image, PageSegMode? pageSegMode = null) {
+            try {
+                return engine.Process(image, pageSegMode);
+            } catch (InvalidOperationException exception) {
+                throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.", exception);
+            }
         }
 
         private string ScanLine(Rectangle bounds, string name) {
@@ -121,12 +124,7 @@ namespace Inkybot
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
 
-            Page ocrResult;
-            try {
-                ocrResult = engine.Process(bitmap, PageSegMode.SingleLine);
-            } catch (InvalidOperationException exception) {
-                throw new OcrEngineNotReadyYetException("", exception);
-            }
+            var ocrResult = ProcessImage(bitmap, PageSegMode.SingleBlock);
 
             using (var iter = ocrResult.GetIterator()) {
                 iter.Begin();

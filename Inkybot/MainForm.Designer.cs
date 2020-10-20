@@ -98,7 +98,7 @@ namespace Inkybot
             this.toastIconPictureBox.Image = ((System.Drawing.Image) (resources.GetObject("toastIconPictureBox.Image")));
             this.toastIconPictureBox.Location = new System.Drawing.Point(8, 8);
             this.toastIconPictureBox.Name = "toastIconPictureBox";
-            this.toastIconPictureBox.Size = new System.Drawing.Size(33, 30);
+            this.toastIconPictureBox.Size = new System.Drawing.Size(33, 31);
             this.toastIconPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.toastIconPictureBox.TabIndex = 7;
             this.toastIconPictureBox.TabStop = false;

@@ -81,7 +81,7 @@ namespace Inkybot
         private IAction DoAction() {
             var itemStats = job.dataProvider.Stats();
             if (itemStats.Length <= 0)
-                throw new NoItemToMageFoundException("");
+                throw new NoItemToMageFoundException("Could not gather item stats from screen");
             
             var action = job.magus.ResolveAction(itemStats, job.previousAction);
             job.actions.Execute(action);

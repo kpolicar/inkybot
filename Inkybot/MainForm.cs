@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Events;
 using Inkybot.Services;
 
 
@@ -34,6 +35,7 @@ namespace Inkybot
             
             api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            magingJob.Error += OnMagingError;
             MainFormDomainEvents();
             MainFormEvents();
             api.UserFetched += OnUserDetailsUpdated;
@@ -42,6 +44,13 @@ namespace Inkybot
             Closing += (sender, args) => {
                 if (debugging) StopDebugging();
             };
+        }
+
+        private void OnMagingError(object sender, MagingJobErrorEventArgs e) {
+            Invoke(new MethodInvoker(delegate {
+                toastLabel.Text = e.exception.Message;
+                toastPanel.Show();
+            }));
         }
 
         private void paintOcrIndicators(object sender, EventArgs eventArgs) {
