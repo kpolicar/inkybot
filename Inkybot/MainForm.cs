@@ -20,6 +20,8 @@ namespace Inkybot
 
         public MainForm() {
             InitializeComponent();
+            toastPanel.Hide();
+            mageInfoPanel.Hide();
             
             ocrIndicatorPanel.BringToFront();
             InitializeDofusClient();
@@ -55,6 +57,10 @@ namespace Inkybot
         private void statsButton_Click(object sender, EventArgs e) {
             if (!statsForm.Visible) statsForm.Show();
             else statsForm.Hide();
+        }
+
+        private void toastPanelCloseButton_Click(object sender, EventArgs e) {
+            toastPanel.Hide();
         }
     }
 }

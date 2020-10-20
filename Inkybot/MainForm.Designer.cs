@@ -33,6 +33,10 @@ namespace Inkybot
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dofusClientPanel = new System.Windows.Forms.Panel();
+            this.toastPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.toastIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.toastLabel = new System.Windows.Forms.Label();
+            this.toastPanelCloseButton = new System.Windows.Forms.Button();
             this.sidebarPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.statsButton = new System.Windows.Forms.Button();
@@ -52,6 +56,8 @@ namespace Inkybot
             this.ocrIndicatorPanel = new Inkybot.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
+            this.toastPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
@@ -69,6 +75,58 @@ namespace Inkybot
             this.dofusClientPanel.Name = "dofusClientPanel";
             this.dofusClientPanel.Size = new System.Drawing.Size(1083, 590);
             this.dofusClientPanel.TabIndex = 0;
+            // 
+            // toastPanel
+            // 
+            this.toastPanel.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.toastPanel.AutoSize = true;
+            this.toastPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.toastPanel.BackColor = System.Drawing.SystemColors.Desktop;
+            this.toastPanel.Controls.Add(this.toastIconPictureBox);
+            this.toastPanel.Controls.Add(this.toastLabel);
+            this.toastPanel.Controls.Add(this.toastPanelCloseButton);
+            this.toastPanel.Location = new System.Drawing.Point(703, 6);
+            this.toastPanel.Name = "toastPanel";
+            this.toastPanel.Padding = new System.Windows.Forms.Padding(5);
+            this.toastPanel.Size = new System.Drawing.Size(368, 48);
+            this.toastPanel.TabIndex = 0;
+            // 
+            // toastIconPictureBox
+            // 
+            this.toastIconPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.toastIconPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.toastIconPictureBox.Image = ((System.Drawing.Image) (resources.GetObject("toastIconPictureBox.Image")));
+            this.toastIconPictureBox.Location = new System.Drawing.Point(8, 8);
+            this.toastIconPictureBox.Name = "toastIconPictureBox";
+            this.toastIconPictureBox.Size = new System.Drawing.Size(33, 30);
+            this.toastIconPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.toastIconPictureBox.TabIndex = 7;
+            this.toastIconPictureBox.TabStop = false;
+            // 
+            // toastLabel
+            // 
+            this.toastLabel.AutoSize = true;
+            this.toastLabel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.toastLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.toastLabel.Location = new System.Drawing.Point(47, 5);
+            this.toastLabel.Name = "toastLabel";
+            this.toastLabel.Padding = new System.Windows.Forms.Padding(3, 12, 30, 12);
+            this.toastLabel.Size = new System.Drawing.Size(291, 38);
+            this.toastLabel.TabIndex = 5;
+            this.toastLabel.Text = "There has been an error processing the image";
+            // 
+            // toastPanelCloseButton
+            // 
+            this.toastPanelCloseButton.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("toastPanelCloseButton.BackgroundImage")));
+            this.toastPanelCloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.toastPanelCloseButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.toastPanelCloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.toastPanelCloseButton.Location = new System.Drawing.Point(344, 8);
+            this.toastPanelCloseButton.Name = "toastPanelCloseButton";
+            this.toastPanelCloseButton.Size = new System.Drawing.Size(16, 16);
+            this.toastPanelCloseButton.TabIndex = 8;
+            this.toastPanelCloseButton.UseVisualStyleBackColor = true;
+            this.toastPanelCloseButton.Click += new System.EventHandler(this.toastPanelCloseButton_Click);
             // 
             // sidebarPanel
             // 
@@ -318,6 +376,7 @@ namespace Inkybot
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1083, 590);
+            this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
             this.Controls.Add(this.ocrIndicatorPanel);
@@ -326,6 +385,9 @@ namespace Inkybot
             this.Name = "MainForm";
             this.Text = "Inkybot";
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
+            this.toastPanel.ResumeLayout(false);
+            this.toastPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).EndInit();
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);
@@ -340,6 +402,10 @@ namespace Inkybot
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.PictureBox toastIconPictureBox;
+        private System.Windows.Forms.Label toastLabel;
+        private System.Windows.Forms.Button toastPanelCloseButton;
 
         private System.Windows.Forms.Button statsButton;
 
@@ -368,6 +434,7 @@ namespace Inkybot
         #endregion
 
         private System.Windows.Forms.Panel dofusClientPanel;
+        private System.Windows.Forms.FlowLayoutPanel toastPanel;
         private System.Windows.Forms.Panel sidebarPanel;
         private TransparentPanel ocrIndicatorPanel;
         private System.Windows.Forms.Timer paintTimer;
