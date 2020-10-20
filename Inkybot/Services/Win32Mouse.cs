@@ -15,7 +15,7 @@ namespace Inkybot.Services
             Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             Thread.Sleep(100);
             Win32.PostMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
-            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x+1, y-1));
+            Win32.PostMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x, y));
         }
 
         public void Drag(int x, int y, int tX, int tY) {
@@ -31,7 +31,7 @@ namespace Inkybot.Services
         public void DoubleClick(int x, int y) {
             Click(x,y);
             Thread.Sleep(100);
-            Click(x-2,y+1);
+            Click(x,y);
         }
 
         public void SetRelativeToHandle(IntPtr handle) {

@@ -2,12 +2,10 @@
 
 namespace Inkybot.Events
 {
-    public class MagingJobErrorEventArgs : EventArgs
+    public class MagingJobErrorEventArgs : ExceptionEventArgs
     {
-        public readonly Exception exception;
-
-        public MagingJobErrorEventArgs(Exception exception) {
-            this.exception = exception;
+        public MagingJobErrorEventArgs(Exception exception) : base(exception)
+        {
         }
     }
 }

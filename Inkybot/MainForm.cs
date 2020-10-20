@@ -35,7 +35,8 @@ namespace Inkybot
             
             api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            magingJob.Error += OnMagingError;
+            magingJob.Error += OnError;
+            statsForm.Error += OnError;
             MainFormDomainEvents();
             MainFormEvents();
             api.UserFetched += OnUserDetailsUpdated;
@@ -46,7 +47,7 @@ namespace Inkybot
             };
         }
 
-        private void OnMagingError(object sender, MagingJobErrorEventArgs e) {
+        private void OnError(object sender, ExceptionEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toastLabel.Text = e.exception.Message;
                 toastPanel.Show();

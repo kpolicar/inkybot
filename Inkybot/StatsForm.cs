@@ -11,6 +11,7 @@ namespace Inkybot
 {
     public partial class StatsForm : Form
     {
+        public event EventHandler<ExceptionEventArgs> Error;
         private readonly DofusDataProvider dataProvider;
         private DofusMagingJob magingJob;
         private MainForm mainForm;
@@ -69,8 +70,12 @@ namespace Inkybot
         private void StatsForm_VisibleChanged(object sender, EventArgs e) {
             if (!Visible || magingJob.IsMaging) return;
 
-            dataProvider.FetchData();
-            dataProvider.Stats();
+            try {
+                dataProvider.FetchData();
+                dataProvider.Stats();
+            } catch (Exception exception) {
+                Error?.Invoke(this, new ExceptionEventArgs(exception));
+            }
         }
 
         private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {

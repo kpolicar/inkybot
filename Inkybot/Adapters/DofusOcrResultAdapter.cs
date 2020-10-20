@@ -27,7 +27,7 @@ namespace Inkybot.Adapters
                 return Stat.Stats.First(statData => statData.DisplayName == name);
             } catch (Exception exception) {
                 Debug.WriteLine(name);
-                throw new CouldNotResolveStatNameException($"Error occured trying to resolve stat name {name}", exception);
+                throw new CouldNotResolveStatNameException($"Error occured trying to resolve stat name \"{name}\"", exception);
             }
         }
     }

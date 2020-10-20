@@ -38,7 +38,7 @@ namespace Inkybot.Adapters
 
             int parsedValue;
             if (!int.TryParse(value, out parsedValue)) {
-                throw new CouldNotResolveStatValueException($"Error occured trying to resolve stat value for '{name}'");
+                throw new CouldNotResolveStatValueException($"Error occured trying to resolve stat value for \"{name}\"");
             }
 
             return new StatChanged(stat, parsedValue);
