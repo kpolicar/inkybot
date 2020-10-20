@@ -39,12 +39,12 @@ namespace Inkybot
             this.toastPanelCloseButton = new System.Windows.Forms.Button();
             this.sidebarPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
-            this.statsButton = new System.Windows.Forms.Button();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
+            this.statsButton = new System.Windows.Forms.Button();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.debugButton = new System.Windows.Forms.Button();
             this.helpButton = new System.Windows.Forms.Button();
+            this.debugButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
@@ -146,42 +146,24 @@ namespace Inkybot
             // 
             this.buttonsPanel.AutoSize = true;
             this.buttonsPanel.BackColor = System.Drawing.Color.Transparent;
-            this.buttonsPanel.Controls.Add(this.statsButton);
             this.buttonsPanel.Controls.Add(this.primaryButtonsPanel);
             this.buttonsPanel.Controls.Add(this.secondaryButtonsPanel);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonsPanel.Location = new System.Drawing.Point(0, 96);
             this.buttonsPanel.Name = "buttonsPanel";
             this.buttonsPanel.Size = new System.Drawing.Size(113, 407);
-            this.buttonsPanel.TabIndex = 8;
-            // 
-            // statsButton
-            // 
-            this.statsButton.AutoSize = true;
-            this.statsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.statsButton.FlatAppearance.BorderSize = 0;
-            this.statsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.statsButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.statsButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.statsButton.Location = new System.Drawing.Point(0, 67);
-            this.statsButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.statsButton.Name = "statsButton";
-            this.statsButton.Size = new System.Drawing.Size(113, 61);
-            this.statsButton.TabIndex = 5;
-            this.statsButton.Text = "STATS";
-            this.statsButton.UseVisualStyleBackColor = false;
-            this.statsButton.Click += new System.EventHandler(this.statsButton_Click);
+            this.buttonsPanel.TabIndex = 1;
             // 
             // primaryButtonsPanel
             // 
-            this.primaryButtonsPanel.AutoSize = true;
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
+            this.primaryButtonsPanel.Controls.Add(this.statsButton);
             this.primaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.primaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.primaryButtonsPanel.Location = new System.Drawing.Point(0, 0);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
-            this.primaryButtonsPanel.Size = new System.Drawing.Size(113, 64);
-            this.primaryButtonsPanel.TabIndex = 4;
+            this.primaryButtonsPanel.Size = new System.Drawing.Size(113, 128);
+            this.primaryButtonsPanel.TabIndex = 1;
             // 
             // toggleMageButton
             // 
@@ -195,38 +177,38 @@ namespace Inkybot
             this.toggleMageButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
-            this.toggleMageButton.TabIndex = 0;
+            this.toggleMageButton.TabIndex = 1;
             this.toggleMageButton.Text = "START\r\n(F2)";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 
+            // statsButton
+            // 
+            this.statsButton.AutoSize = true;
+            this.statsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.statsButton.FlatAppearance.BorderSize = 0;
+            this.statsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.statsButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.statsButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.statsButton.Location = new System.Drawing.Point(0, 64);
+            this.statsButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.statsButton.Name = "statsButton";
+            this.statsButton.Size = new System.Drawing.Size(113, 61);
+            this.statsButton.TabIndex = 2;
+            this.statsButton.Text = "STATS";
+            this.statsButton.UseVisualStyleBackColor = false;
+            this.statsButton.Click += new System.EventHandler(this.statsButton_Click);
+            // 
             // secondaryButtonsPanel
             // 
-            this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
+            this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
             this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 292);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
             this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
-            this.secondaryButtonsPanel.TabIndex = 3;
-            // 
-            // debugButton
-            // 
-            this.debugButton.AutoSize = true;
-            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.debugButton.FlatAppearance.BorderSize = 0;
-            this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.debugButton.Location = new System.Drawing.Point(0, 70);
-            this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.debugButton.Name = "debugButton";
-            this.debugButton.Size = new System.Drawing.Size(113, 45);
-            this.debugButton.TabIndex = 2;
-            this.debugButton.Text = "DEBUG";
-            this.debugButton.UseVisualStyleBackColor = false;
-            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
+            this.secondaryButtonsPanel.TabIndex = 2;
             // 
             // helpButton
             // 
@@ -236,14 +218,31 @@ namespace Inkybot
             this.helpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.helpButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.helpButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.helpButton.Location = new System.Drawing.Point(0, 22);
+            this.helpButton.Location = new System.Drawing.Point(0, 70);
             this.helpButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.helpButton.Name = "helpButton";
             this.helpButton.Size = new System.Drawing.Size(113, 45);
-            this.helpButton.TabIndex = 1;
+            this.helpButton.TabIndex = 3;
             this.helpButton.Text = "HELP";
             this.helpButton.UseVisualStyleBackColor = false;
             this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
+            // 
+            // debugButton
+            // 
+            this.debugButton.AutoSize = true;
+            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.debugButton.FlatAppearance.BorderSize = 0;
+            this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.debugButton.Location = new System.Drawing.Point(0, 22);
+            this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.debugButton.Name = "debugButton";
+            this.debugButton.Size = new System.Drawing.Size(113, 45);
+            this.debugButton.TabIndex = 4;
+            this.debugButton.Text = "DEBUG";
+            this.debugButton.UseVisualStyleBackColor = false;
+            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // mageInfoPanel
             // 
@@ -392,7 +391,6 @@ namespace Inkybot
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);
-            this.buttonsPanel.PerformLayout();
             this.primaryButtonsPanel.ResumeLayout(false);
             this.primaryButtonsPanel.PerformLayout();
             this.secondaryButtonsPanel.ResumeLayout(false);
