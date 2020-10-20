@@ -44,7 +44,7 @@ namespace Inkybot.Api
 
         public async Task<bool> RefreshToken() {
             var client = new HttpClient();
-            const string url = Server.BaseUrl + "/oauth/token";
+            var url =  $"{Server.AuthUrl}/token";
 
             var form_params = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},

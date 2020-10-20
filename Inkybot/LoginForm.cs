@@ -39,7 +39,7 @@ namespace Inkybot
                     return;
                 }
             } catch (HttpRequestException requestException) {
-                errorMessage.Text = "Something went wrong on our end.\nPlease try again later.";
+                errorMessage.Text = "Could not connect to server.\nPlease try again later.";
                 return;
             }
 
@@ -52,9 +52,22 @@ namespace Inkybot
                 var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
                 if (currentVersionNumber != newestVersion.number)
                     newVersionLabel.Show();
-            } catch (Exception exception) {
+            } 
+            catch (Exception exception) {
                 
             }
+        }
+
+        private void linkLabel1_LinkClicked_1(object sender, EventArgs eventArgs) {
+            Process.Start($"{Server.BaseUrl}/register");
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Process.Start($"{Server.BaseUrl}");
+        }
+
+        private void newVersionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Process.Start($"{Server.BaseUrl}/latest");
         }
     }
 }

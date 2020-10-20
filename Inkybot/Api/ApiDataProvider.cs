@@ -35,7 +35,7 @@ namespace Inkybot.Api
             await WaitForStableConnection();
 
             var client = Connection.Request();
-            var response = await client.GetAsync("/api/user");
+            var response = await client.GetAsync($"{Server.ApiUrl}/user");
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;
@@ -47,7 +47,7 @@ namespace Inkybot.Api
 
         public async Task<VersionDetails> NewestVersion() {
             var client = new HttpClient();
-            var response = await client.GetAsync(Server.BaseUrl + "/api/client-version");
+            var response = await client.GetAsync($"{Server.ApiUrl}/version");
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;

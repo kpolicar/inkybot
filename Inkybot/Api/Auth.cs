@@ -14,7 +14,7 @@ namespace Inkybot.Api
 
         public static async Task<ApiConnection?> Login(string username, string password) {
             var client = new HttpClient();
-            const string url = Server.BaseUrl + "/oauth/token";
+            var url =  $"{Server.AuthUrl}/token";
 
             var form_params = new Dictionary<string, string> {
                 {"grant_type", "password"},

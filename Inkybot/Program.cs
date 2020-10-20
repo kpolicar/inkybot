@@ -8,12 +8,16 @@ using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Services;
+using static System.Configuration.ConfigurationManager;
 
 namespace Inkybot
 {
     internal static class Program
     {
-        public static bool debug = false;
+        public static readonly bool Debug = AppSettings["debug"] == "true";
+        public static readonly string Url = 
+            Debug ? AppSettings["url"] : AppSettings["debug_url"];
+
         public static ServiceContainer Services = new ServiceContainer();
 
         /// <summary>
