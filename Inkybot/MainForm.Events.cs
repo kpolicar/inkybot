@@ -47,9 +47,7 @@ namespace Inkybot
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
-            var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
-
-            System.Diagnostics.Process.Start($"https://inkybot.me/v{currentVersionNumber}/help");
+            System.Diagnostics.Process.Start($"https://inkybot.me/v{Program.Version}/help");
         }
     }
 }

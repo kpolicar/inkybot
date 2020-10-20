@@ -8,6 +8,7 @@ using System.Timers;
 using Inkybot.Resources.Api;
 using Newtonsoft.Json;
 using Timer = System.Windows.Forms.Timer;
+using static System.Configuration.ConfigurationManager;
 
 namespace Inkybot.Api
 {
@@ -49,8 +50,8 @@ namespace Inkybot.Api
             var form_params = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},
                 {"refresh_token", authDetails.refresh_token},
-                {"client_id", "2"},
-                {"client_secret", "***REMOVED***"},
+                {"client_id", !Program.Debug ? AppSettings["password_grant_id"] : AppSettings["debug_password_grant_id"]},
+                {"client_secret", !Program.Debug ? AppSettings["password_grant_secret"] : AppSettings["debug_password_grant_secret"]},
                 {"scope", ""}
             };
             var content = new FormUrlEncodedContent(form_params);

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Resources.Api;
 using Newtonsoft.Json;
+using static System.Configuration.ConfigurationManager;
 
 namespace Inkybot.Api
 {
@@ -20,8 +21,8 @@ namespace Inkybot.Api
                 {"grant_type", "password"},
                 {"username", username},
                 {"password", password},
-                {"client_id", "2"},
-                {"client_secret", "***REMOVED***"},
+                {"client_id", AppSettings["password_grant_id"]},
+                {"client_secret", AppSettings["password_grant_secret"]},
                 {"scope", ""}
             };
             var content = new FormUrlEncodedContent(form_params);

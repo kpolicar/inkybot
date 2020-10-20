@@ -47,7 +47,7 @@ namespace Inkybot.Api
 
         public async Task<VersionDetails> NewestVersion() {
             var client = new HttpClient();
-            var response = await client.GetAsync($"{Server.ApiUrl}/version");
+            var response = await client.GetAsync(Server.ApiUrl);
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;

@@ -25,6 +25,7 @@ namespace Inkybot
         }
 
         private async void button1_Click(object sender, EventArgs e) {
+            errorMessage.Text = "";
             try {
                 var connection = await AuthManager.Login(usernameTextBox.Text, passwordTextBox.Text);
 
@@ -49,8 +50,7 @@ namespace Inkybot
         private async void LoginForm_Load(object sender, EventArgs e) {
             try {
                 var newestVersion = await api.NewestVersion();
-                var currentVersionNumber = System.Configuration.ConfigurationManager.AppSettings["version"];
-                if (currentVersionNumber != newestVersion.number)
+                if (Program.VersionNumber != newestVersion.number)
                     newVersionLabel.Show();
             } 
             catch (Exception exception) {

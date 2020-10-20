@@ -6,6 +6,7 @@ namespace Inkybot.Resources.Api
     public class VersionDetails
     {
         public string name;
+        public string endpoint;
         public string number;
     }
 }
