@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Inkybot.Exceptions;
 
 namespace Inkybot
 {
@@ -26,14 +27,22 @@ namespace Inkybot
             this.sinkChanged = sinkChanged;
         }
 
-        public float ChangeInSink =>
-            !sinkChanged
-                ? 0f
-                : fell.Sum(statChange => -statChange.SinkModifier)
-                  - attempted.SinkModifier;
+        public float ChangeInSink {
+            get {
+                if (sinkChanged)
+                    return 0f;
+                if (!attempted.HasValue)
+                    throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
+                
+                return ChangeInSinkFromFallen - attempted.Value.SinkModifier;
+            }
+        }
 
-        public StatChanged attempted =>
-            changed.First(change => change.value >= 0);
+        public float ChangeInSinkFromFallen =>
+            fell.Sum(statChange => -statChange.SinkModifier);
+
+        public StatChanged? attempted =>
+            changed.FirstOrDefault(change => change.value >= 0);
 
         public StatChanged[] fell =>
             changed.Where(change => change.value < 0).ToArray();

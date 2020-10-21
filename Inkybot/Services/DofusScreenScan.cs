@@ -138,9 +138,7 @@ namespace Inkybot
         }
 
         public Bitmap TakeScreenshot() {
-            var bitmap = Program.Debug
-                ? Image.FromFile(@"C:\Users\Klemen\Desktop\ex.bmp")
-                : (Bitmap) screen.CaptureWindow(handle);
+            var bitmap = (Bitmap) screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);

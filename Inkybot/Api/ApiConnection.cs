@@ -56,6 +56,8 @@ namespace Inkybot.Api
             };
             var content = new FormUrlEncodedContent(form_params);
             var response = await client.PostAsync(url, content);
+            Debug.WriteLine("Response:");
+            Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
 
             if (!response.IsSuccessStatusCode)
                 return false;

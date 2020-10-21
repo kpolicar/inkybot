@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Timers;
 using Inkybot.Actions;
 using Inkybot.Exceptions;
 
@@ -48,6 +49,8 @@ namespace Inkybot
         }
 
         private void DoHistoryCheckForChanges() {
+            if (!job.historyCheckTimeout.Enabled) job.historyCheckTimeout.Start();
+            
             var itemHistory = job.history.Analyse(job.dataProvider.History());
 
             var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
@@ -55,23 +58,40 @@ namespace Inkybot
             if (!historyHasChanged) {
                 Thread.Sleep(50);
             } else {
-                ChangeSinkFromLastAction(itemHistory);
+                var historyRecord = itemHistory.history.Last();
+                ChangeSinkFromLastAction(historyRecord);
+                EnforceValidPreviousActionResult(historyRecord);
                 job.state = DofusMagingJobState.STANDARD;
+                job.historyCheckTimeout.Stop();
             }
         }
 
+        // Todo: We can also check if the expected result is correct by comparing sink change.
+        private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
+            var statLanded = lastHistoryRecord.attempted?.stat;
+            if (statLanded == null) return;
+            
+            var previousCombine = (Combine) job.previousAction;
+            var expectedStat = previousCombine.target.stat;
 
-        private void ChangeSinkFromLastAction(ItemHistoryAnalysis itemHistory) {
+            if (statLanded != expectedStat)
+                throw new UnexpectedMageResultException(
+                    $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
+                    $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
+        }
+
+
+        private void ChangeSinkFromLastAction(MageHistoryRecord lastHistoryRecord) {
             try {
-                job.Sink += itemHistory.history.Last().ChangeInSink;
-            } catch (Exception e) {
+                job.Sink += lastHistoryRecord.ChangeInSink;
+            } catch (CouldNotResolveSinkException e) {
+                
                 var previousCombine = (Combine) job.previousAction;
-                job.Sink += itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) -
-                            previousCombine.target.Sink;
+                job.Sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink;
+                
                 Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
                 Debug.WriteLine("sink change:" +
-                                (itemHistory.history.Last().fell.Sum(statChange => -statChange.SinkModifier) -
-                                 previousCombine.target.Sink));
+                                (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink));
             }
 
             job.Sink = Math.Max(0f, job.Sink);

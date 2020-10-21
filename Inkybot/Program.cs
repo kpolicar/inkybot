@@ -16,7 +16,7 @@ namespace Inkybot
     {
         public static readonly bool Debug = AppSettings["debug"] == "true";
         public static readonly string Url = 
-            Debug ? AppSettings["url"] : AppSettings["debug_url"];
+            Debug ? AppSettings["debug_url"] : AppSettings["url"];
         public static readonly string VersionNumber = AppSettings["version_number"];
         public static readonly string Version = AppSettings["version"];
 

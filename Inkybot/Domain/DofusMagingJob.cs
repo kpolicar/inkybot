@@ -4,7 +4,9 @@ using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 using Inkybot.Services;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Inkybot
 {
@@ -26,6 +28,7 @@ namespace Inkybot
         private float sink;
         internal DofusMagingJobState state;
         private ConfigManager configManager;
+        internal Timer historyCheckTimeout;
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
@@ -34,6 +37,18 @@ namespace Inkybot
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             configManager.ConfigChanged += OnConfigChanged;
+            
+            historyCheckTimeout = new Timer();
+            historyCheckTimeout.Interval = 3000;
+            historyCheckTimeout.Tick += HandleHistoryCheckTimeout;
+            historyCheckTimeout.Enabled = false;
+        }
+
+        private void HandleHistoryCheckTimeout(object sender, EventArgs e) {
+            Debug.WriteLine("ops");
+            throw new HistoryChangeCheckTimeoutException(
+                "Mage history was expected to change within 3 seconds, but did not. " +
+                "This may be the result of a poor internet connection");
         }
 
         public bool IsMaging { get; private set; }
@@ -88,6 +103,7 @@ namespace Inkybot
                 while (IsMaging) new DofusMagingJobTick(this).Execute();
             } catch (Exception exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                Debug.WriteLine(exception.StackTrace);
             } finally {
                 StopMage();
             }

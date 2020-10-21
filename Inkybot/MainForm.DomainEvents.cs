@@ -34,7 +34,7 @@ namespace Inkybot
         private void OnUserDetailsUpdated(object sender, FetchedUserEventArgs e) {
             var user = e.user;
             usernameLabel.Text = user.name;
-            subscribedInfoLabel.Text = "Subscribed to:\n" + user.subscribed_to;
+            subscribedInfoLabel.Text = "Subscribed to:\n" + user.subscribed_to!.Value.ToString("dd/MM/yyyy");
         }
     }
 }
