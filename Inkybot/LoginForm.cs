@@ -67,7 +67,7 @@ namespace Inkybot
         }
 
         private void newVersionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Process.Start($"{Server.BaseUrl}/latest");
+            Process.Start($"{Server.BaseUrl}/release/latest");
         }
     }
 }

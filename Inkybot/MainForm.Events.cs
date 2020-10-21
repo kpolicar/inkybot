@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Gma.System.MouseKeyHook;
+using static System.Configuration.ConfigurationManager;
+
 
 namespace Inkybot
 {
@@ -43,11 +46,13 @@ namespace Inkybot
         }
         
         private void toggleMageButton_Click(object sender, EventArgs e) {
+            if (api.Connection == null) return;
+            
             magingJob.BeginMage(!magingJob.IsMaging);
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
-            System.Diagnostics.Process.Start($"https://inkybot.me/v{Program.Version}/help");
+            Process.Start($"{Server.BaseUrl}/release/{AppSettings["version_endpoint"]}");
         }
     }
 }
