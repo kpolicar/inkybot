@@ -369,7 +369,7 @@ namespace Inkybot
             // 
             this.subscriptionCheckTimer.Interval = 25000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
-            // 
+            //     
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

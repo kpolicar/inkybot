@@ -21,8 +21,8 @@ namespace Inkybot.Api
                 {"grant_type", "password"},
                 {"username", username},
                 {"password", password},
-                {"client_id", AppSettings["password_grant_id"]},
-                {"client_secret", AppSettings["password_grant_secret"]},
+                {"client_id", !Program.Debug ? AppSettings["password_grant_id"] : AppSettings["debug_password_grant_id"]},
+                {"client_secret", !Program.Debug ? AppSettings["password_grant_secret"] : AppSettings["debug_password_grant_secret"]},
                 {"scope", ""}
             };
             var content = new FormUrlEncodedContent(form_params);
