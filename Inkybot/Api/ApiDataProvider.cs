@@ -37,9 +37,6 @@ namespace Inkybot.Api
             var client = Connection.Request();
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
             
-            Debug.WriteLine("Response:");
-            Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
-            
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 
 namespace Inkybot
 {

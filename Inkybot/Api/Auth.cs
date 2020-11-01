@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
@@ -21,8 +22,8 @@ namespace Inkybot.Api
                 {"grant_type", "password"},
                 {"username", username},
                 {"password", password},
-                {"client_id", !Program.Debug ? AppSettings["password_grant_id"] : AppSettings["debug_password_grant_id"]},
-                {"client_secret", !Program.Debug ? AppSettings["password_grant_secret"] : AppSettings["debug_password_grant_secret"]},
+                {"client_id", Program.GrantId},
+                {"client_secret", Program.GrantSecret},
                 {"scope", ""}
             };
             var content = new FormUrlEncodedContent(form_params);

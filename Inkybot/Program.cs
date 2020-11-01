@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if false
+#define DEBUG
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
@@ -14,14 +18,22 @@ namespace Inkybot
 {
     internal static class Program
     {
-        public static readonly bool Debug = AppSettings["debug"] == "true";
-        public static readonly string Url = 
-            Debug ? AppSettings["debug_url"] : AppSettings["url"];
-        public static readonly string VersionNumber = AppSettings["version_number"];
-        public static readonly string Version = AppSettings["version"];
-
+        #if DEBUG
+            public const string Url = "http://inkybot.test";
+            public const string GrantId = "2";
+            public const string GrantSecret = "***REMOVED***";
+        #else
+            public const string Url = "https://inkybot.me";
+            public const string GrantId = "2";
+            public const string GrantSecret = "***REMOVED***";
+        #endif
+        public const string VersionNumber = "1";
+        public const string Version = "v0.1 Beta";
+        public const string VersionEndpoint = "v0.1beta";
+        
 
         public static ServiceContainer Services = new ServiceContainer();
+        
 
         /// <summary>
         ///     The main entry point for the application.

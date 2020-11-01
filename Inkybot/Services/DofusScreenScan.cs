@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -47,25 +48,25 @@ namespace Inkybot
         }
 
         private void Init() {
-            if (init) return;
+            //if (init) return;
             engine = new TesseractEngine(
                 @"A:\Projects\RiderProjects\inkybot\Inkybot\tessdata",
                 "eng",
                 EngineMode.TesseractOnly,
                 @"A:\Projects\RiderProjects\inkybot\Inkybot\tessdata\config\config");
-
+            
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;
         }
 
         public StatLineScanResult[] Stats() {
             var Results = new List<StatLineScanResult>();
-            var (x, y) = (645, 300);
+            var (x, y) = (645, 301);
 
             var isResultValid = true;
             for (var yOffset = 0; isResultValid; yOffset += 39) {
-                var result = ScanLine(new Rectangle(x, y + yOffset, 980 - x, 39), "stats" + yOffset);
-
+                var result = ScanLine(new Rectangle(x, y + yOffset+5, 980 - x, 39-10), "stats" + yOffset);
+                
                 var separated = Regex.Match(result, @"^(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)$").Groups;
 
                 isResultValid = separated.Count == 5;
@@ -89,6 +90,7 @@ namespace Inkybot
             var bitmap = screen.cropAtRect(screenshot, bounds);
             // Todo: add minimum rect
             bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
+            bitmap = screen.Sharpen(bitmap);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);
@@ -109,6 +111,7 @@ namespace Inkybot
             try {
                 return engine.Process(image, pageSegMode);
             } catch (InvalidOperationException exception) {
+                Console.WriteLine(exception.Message);
                 throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.", exception);
             }
         }
@@ -117,7 +120,6 @@ namespace Inkybot
             var scannedLine = "";
             var bitmap = screen.cropAtRect(screenshot, bounds);
             bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
-            //bitmap = screen.Sharpen((Bitmap)bitmap);
 
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\"+name+".bmp");
@@ -138,6 +140,7 @@ namespace Inkybot
         }
 
         public Bitmap TakeScreenshot() {
+            //var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\ex.bmp");
             var bitmap = (Bitmap) screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");

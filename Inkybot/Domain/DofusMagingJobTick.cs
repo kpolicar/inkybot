@@ -68,8 +68,11 @@ namespace Inkybot
 
         // Todo: We can also check if the expected result is correct by comparing sink change.
         private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
-            var statLanded = lastHistoryRecord.attempted?.stat;
-            if (statLanded == null) return;
+            var attempted = lastHistoryRecord.attempted;
+            var statLanded = attempted.stat;
+            if (attempted.Equals(default(StatChanged)) || statLanded == null) {
+                return;
+            }
             
             var previousCombine = (Combine) job.previousAction;
             var expectedStat = previousCombine.target.stat;

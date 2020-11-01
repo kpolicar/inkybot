@@ -20,11 +20,11 @@
             ElementStatData("Agility"),
             ElementStatData("Chance"),
 
-            new Stat("CriticalResistance", 50, 2f, 1f),
+            new Stat("Critical Resistance", 50, 2f, 1f),
             new Stat("Pushback Resistance", 50, 2f, 1f),
 
             new Stat("Power", 50, 2f, 2f, 15, 40),
-            new Stat("Trap Power", 50, 2f, 2f, 15, 40),
+            new Stat("Power (traps)", 50, 2f, 2f, 15, 40),
 
             FlatElementResistanceStatData("Neutral"),
             FlatElementResistanceStatData("Earth"),
@@ -47,7 +47,7 @@
             new Stat("Critical Damage", 20, 5f, 3f, 10),
             new Stat("Pushback Damage", 20, 5f, 3f, 10),
             new Stat("Trap Damage", 20, 5f, 5f, 10),
-            new Stat("Hunting", 1, 5f, 5f),
+            new Stat("Hunting weapon", 1, 5f, 5f),
 
             PerElementResistanceStatData("Neutral"),
             PerElementResistanceStatData("Earth"),
@@ -61,15 +61,15 @@
             ParryStatData("MP"),
             ParryStatData("AP"),
 
-            new Stat("Heal", 10, 10f, 5f),
+            new Stat("Heals", 10, 10f, 5f),
             new Stat("% Critical", 10, 10f, 5f),
             new Stat("Reflect", 10, 10f, 10f),
 
-            PerModifiersStatData("Spell Damage"),
-            PerModifiersStatData("Ranged Resistance"),
-            PerModifiersStatData("Weapon Damage"),
-            PerModifiersStatData("Melee Damage"),
-            PerModifiersStatData("Melee Resistance"),
+            PerModifiersStatData("% Spell Damage"),
+            PerModifiersStatData("% Ranged Resistance"),
+            PerModifiersStatData("% Weapon Damage"),
+            PerModifiersStatData("% Melee Damage"),
+            PerModifiersStatData("% Melee Resistance"),
 
             new Stat("Damage", 5, 20f, 20f),
             new Stat("Summons", 3, 30f, 35f),

@@ -31,17 +31,17 @@ namespace Inkybot
             get {
                 if (sinkChanged)
                     return 0f;
-                if (!attempted.HasValue)
+                if (attempted.Equals(default(StatChanged)))
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
                 
-                return ChangeInSinkFromFallen - attempted.Value.SinkModifier;
+                return ChangeInSinkFromFallen - attempted.SinkModifier;
             }
         }
 
         public float ChangeInSinkFromFallen =>
             fell.Sum(statChange => -statChange.SinkModifier);
 
-        public StatChanged? attempted =>
+        public StatChanged attempted =>
             changed.FirstOrDefault(change => change.value >= 0);
 
         public StatChanged[] fell =>

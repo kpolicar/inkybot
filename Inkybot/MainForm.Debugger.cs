@@ -22,6 +22,7 @@ namespace Inkybot
         private void StartDebugging() {
             ocrIndicatorPanel.Show();
             sidebarPanel.BringToFront();
+            ocrIndicatorPanel.BringToFront();
             mousePositionLabel.Show();
 
             m_GlobalHook = Hook.GlobalEvents();

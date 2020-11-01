@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using Gma.System.MouseKeyHook;
 using Inkybot.Events;
 
 namespace Inkybot

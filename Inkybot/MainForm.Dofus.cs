@@ -22,6 +22,7 @@ namespace Inkybot
                 }
             }
 
+            //pDofus = Process.Start("notepad.exe");
             pDofus = Process.Start(Properties.Settings.Default.dofusPath);
             WindowHelpers.DockProcess(pDofus, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);

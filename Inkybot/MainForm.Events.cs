@@ -2,9 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
-using Inkybot.Events;
-using Inkybot.Exceptions;
-using Gma.System.MouseKeyHook;
 using static System.Configuration.ConfigurationManager;
 
 
@@ -52,7 +49,7 @@ namespace Inkybot
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
-            Process.Start($"{Server.BaseUrl}/release/{AppSettings["version_endpoint"]}");
+            Process.Start($"{Server.BaseUrl}/release/{Program.VersionEndpoint}");
         }
     }
 }

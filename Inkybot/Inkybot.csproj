@@ -32,14 +32,11 @@
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <ApplicationIcon>../icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="InputSimulatorStandard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\InputSimulatorStandard.1.0.0\lib\netstandard2.0\InputSimulatorStandard.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
