@@ -181,7 +181,6 @@ namespace Inkybot
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(189, 20);
             this.usernameTextBox.TabIndex = 2;
-            this.usernameTextBox.Text = "naltamer14@gmail.com";
             // 
             // label4
             // 
@@ -201,7 +200,6 @@ namespace Inkybot
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(189, 20);
             this.passwordTextBox.TabIndex = 4;
-            this.passwordTextBox.Text = "12345678";
             this.passwordTextBox.UseSystemPasswordChar = true;
             // 
             // button1
