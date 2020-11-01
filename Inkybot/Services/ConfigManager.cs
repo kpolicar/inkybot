@@ -18,7 +18,7 @@ namespace Inkybot.Services
         }
 
         private void StatsUpdated(object sender, StatsEventArgs e) {
-            //EnforceConfigSetForStats(e.stats);
+            EnforceConfigSetForStats(e.stats);
         }
 
         public void ResetConfig(Item.ItemStat[] itemStats) {

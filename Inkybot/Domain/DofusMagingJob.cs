@@ -87,7 +87,6 @@ namespace Inkybot
 
         private void PrepareMage() {
             state = DofusMagingJobState.DOING_FIRST_COMBINE;
-            IsMaging = true;
             Sink = 0f;
             previousAction = null;
             previousHistory = null;
@@ -95,6 +94,7 @@ namespace Inkybot
             dataProvider.FetchData();
             var stats = dataProvider.Stats();
             configManager.EnforceConfigSetForStats(stats);
+            IsMaging = true;
         }
 
         private void DoMage() {
