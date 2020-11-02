@@ -157,6 +157,12 @@
         <Compile Include="MainForm.Events.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="OcrDebugForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="OcrDebugForm.Designer.cs">
+          <DependentUpon>OcrDebugForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="Resources\Api\AuthDetails.cs" />
         <Compile Include="Resources\Api\User.cs" />
         <Compile Include="Resources\Api\VersionDetails.cs" />
@@ -199,6 +205,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="OcrDebugForm.resx">
+          <DependentUpon>OcrDebugForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
