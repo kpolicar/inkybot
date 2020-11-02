@@ -20,9 +20,7 @@ namespace Inkybot.Actions
                 if (rune.stat.DisplayName != itemStats[row].stat.DisplayName)
                     continue;
 
-                mouse.Drag(1065 + column * 55, 320 + row * 39, 925, 167);
-                Thread.Sleep(500);
-                mouse.Click(1055, 125);
+                mouse.CtrlDoubleClick(1065 + column * 55, 320 + row * 39);
                 System.Diagnostics.Debug.WriteLine($"Rune changed to {rune.stat.DisplayName}");
             }
         }

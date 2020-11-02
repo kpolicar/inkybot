@@ -66,6 +66,8 @@ namespace Inkybot
         public static extern bool PostMessage(IntPtr hWnd, int Msg, Keys wParam, IntPtr lParam);
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         public static int MakeLParam(int LoWord, int HiWord)
         {
@@ -75,6 +77,8 @@ namespace Inkybot
         public const int WM_MOUSEMOVE = 0x0200;
         public const int WM_LBUTTONDOWN = 0x0201;
         public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_KEYDOWN = 0x0100;
+        public const int WM_KEYUP = 0x0101;
 
 
         public struct Rect

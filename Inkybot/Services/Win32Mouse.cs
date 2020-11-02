@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.Threading;
+using System.Windows.Forms;
 using Inkybot.Contracts;
-using Tesseract;
 
 namespace Inkybot.Services
 {
@@ -32,6 +31,14 @@ namespace Inkybot.Services
             Click(x,y);
             Thread.Sleep(100);
             Click(x,y);
+        }
+        
+        public void CtrlDoubleClick(int x, int y) {
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
+            DoubleClick(x, y);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
         }
 
         public void SetRelativeToHandle(IntPtr handle) {
