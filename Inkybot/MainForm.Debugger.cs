@@ -37,10 +37,12 @@ namespace Inkybot
 
 
         private void GlobalHookMouseMoveExt(object sender, MouseEventArgs e) {
+            var full = dofusClientPanel.Size;
             var pos = dofusClientPanel.PointToClient(e.Location);
             if (pos.X < 0 || pos.X > dofusClientPanel.Size.Width || pos.Y < 0 || pos.Y > dofusClientPanel.Size.Height)
                 return;
-            mousePositionLabel.Text = $@"x: {pos.X}, y: {pos.Y}";
+            mousePositionLabel.Text = $@"x: {pos.X}, y: {pos.Y}"+"\n";
+            mousePositionLabel.Text += $@"w: {full.Width}, h: {full.Height}";
         }
     }
 }

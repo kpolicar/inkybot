@@ -151,7 +151,7 @@ namespace Inkybot
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonsPanel.Location = new System.Drawing.Point(0, 96);
             this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Size = new System.Drawing.Size(113, 407);
+            this.buttonsPanel.Size = new System.Drawing.Size(113, 365);
             this.buttonsPanel.TabIndex = 1;
             // 
             // primaryButtonsPanel
@@ -205,7 +205,7 @@ namespace Inkybot
             this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
-            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 292);
+            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 250);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
             this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
             this.secondaryButtonsPanel.TabIndex = 2;
@@ -251,7 +251,7 @@ namespace Inkybot
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
             this.mageInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.mageInfoPanel.Location = new System.Drawing.Point(0, 503);
+            this.mageInfoPanel.Location = new System.Drawing.Point(0, 461);
             this.mageInfoPanel.Name = "mageInfoPanel";
             this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 5);
             this.mageInfoPanel.Size = new System.Drawing.Size(113, 57);
@@ -338,10 +338,10 @@ namespace Inkybot
             this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.mousePositionLabel.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.mousePositionLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.mousePositionLabel.Location = new System.Drawing.Point(0, 560);
+            this.mousePositionLabel.Location = new System.Drawing.Point(0, 518);
             this.mousePositionLabel.Name = "mousePositionLabel";
             this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.mousePositionLabel.Size = new System.Drawing.Size(113, 30);
+            this.mousePositionLabel.Size = new System.Drawing.Size(113, 72);
             this.mousePositionLabel.TabIndex = 8;
             this.mousePositionLabel.Text = "(0,0)";
             this.mousePositionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -369,7 +369,7 @@ namespace Inkybot
             // 
             this.subscriptionCheckTimer.Interval = 25000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
-            //     
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
