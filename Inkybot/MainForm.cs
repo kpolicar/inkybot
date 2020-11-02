@@ -64,9 +64,12 @@ namespace Inkybot
             var xOffset = 0d;
             var yOffset = 0d;
             var perfectRatio = 0.8d; // h/w
-
+            var ratio = h/w;
+            
+            
             var pW = h / perfectRatio;
             xOffset = (w - pW) / 2;
+            xOffset = ratio < perfectRatio ? xOffset : 0;
             var pX1 = (int) (0.24362*(w + xOffset));
             var pX2 = (int) (0.51802*(w + xOffset));
 
