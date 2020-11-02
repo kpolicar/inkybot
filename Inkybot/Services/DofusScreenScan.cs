@@ -134,9 +134,9 @@ namespace Inkybot
                 iter.Begin();
 
                 var text = "" + iter.GetText(PageIteratorLevel.TextLine);
-                ocrResult.Dispose();
                 scannedLine = Regex.Replace(text, @"\t|\n|\r", "");
             }
+            ocrResult.Dispose();
 
             return scannedLine;
         }
