@@ -71,5 +71,9 @@ namespace Inkybot
         private void newVersionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start($"{Server.BaseUrl}/release/latest");
         }
+
+        private void dofusPathLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            new DofusPathForm().ShowDialog(this);
+        }
     }
 }

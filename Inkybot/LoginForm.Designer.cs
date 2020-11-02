@@ -46,6 +46,7 @@ namespace Inkybot
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.errorMessage = new System.Windows.Forms.Label();
+            this.dofusPathLink = new System.Windows.Forms.LinkLabel();
             this.newVersionLabel = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -155,6 +156,7 @@ namespace Inkybot
             this.flowLayoutPanel1.Controls.Add(this.label5);
             this.flowLayoutPanel1.Controls.Add(this.linkLabel1);
             this.flowLayoutPanel1.Controls.Add(this.errorMessage);
+            this.flowLayoutPanel1.Controls.Add(this.dofusPathLink);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(20, 33);
@@ -181,7 +183,6 @@ namespace Inkybot
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(189, 20);
             this.usernameTextBox.TabIndex = 2;
-            this.usernameTextBox.Text = Properties.Settings.Default.email;
             // 
             // label4
             // 
@@ -257,6 +258,21 @@ namespace Inkybot
             this.errorMessage.TabIndex = 7;
             this.errorMessage.Text = "An error has occured!";
             // 
+            // dofusPathLink
+            // 
+            this.dofusPathLink.ActiveLinkColor = System.Drawing.Color.Black;
+            this.dofusPathLink.AutoSize = true;
+            this.dofusPathLink.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dofusPathLink.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.dofusPathLink.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
+            this.dofusPathLink.Location = new System.Drawing.Point(23, 207);
+            this.dofusPathLink.Name = "dofusPathLink";
+            this.dofusPathLink.Size = new System.Drawing.Size(189, 13);
+            this.dofusPathLink.TabIndex = 8;
+            this.dofusPathLink.TabStop = true;
+            this.dofusPathLink.Text = "Change Dofus Directory";
+            this.dofusPathLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.dofusPathLink_LinkClicked);
+            // 
             // newVersionLabel
             // 
             this.newVersionLabel.ActiveLinkColor = System.Drawing.Color.Black;
@@ -300,6 +316,8 @@ namespace Inkybot
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.LinkLabel dofusPathLink;
 
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 
