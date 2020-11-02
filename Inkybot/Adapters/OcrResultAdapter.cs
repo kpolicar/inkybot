@@ -1,3 +1,4 @@
+
 namespace Inkybot.Adapters
 {
     public abstract class OcrResultAdapter
@@ -9,8 +10,11 @@ namespace Inkybot.Adapters
             if (init) return;
 
             spellCorrect = new SymSpell();
-            spellCorrect.LoadDictionary(
-                @"A:\Projects\RiderProjects\inkybot\Inkybot\frequency_dictionary_en_82_765.txt", 0, 1);
+            
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var dictionaryFile = assembly.GetManifestResourceStream("Inkybot.dictionary_dofus.txt");
+            
+            spellCorrect.LoadDictionary(dictionaryFile, 0, 1);
             init = true;
         }
     }

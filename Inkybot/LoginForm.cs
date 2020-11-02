@@ -44,6 +44,8 @@ namespace Inkybot
                 return;
             }
 
+            Properties.Settings.Default.email = usernameTextBox.Text;
+            Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
         }
 

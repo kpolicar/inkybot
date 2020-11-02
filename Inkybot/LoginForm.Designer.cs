@@ -172,7 +172,7 @@ namespace Inkybot
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(189, 13);
             this.label3.TabIndex = 1;
-            this.label3.Text = "USERNAME";
+            this.label3.Text = "EMAIL";
             // 
             // usernameTextBox
             // 
@@ -181,6 +181,7 @@ namespace Inkybot
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(189, 20);
             this.usernameTextBox.TabIndex = 2;
+            this.usernameTextBox.Text = Properties.Settings.Default.email;
             // 
             // label4
             // 
