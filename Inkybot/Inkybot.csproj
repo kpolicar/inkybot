@@ -133,6 +133,7 @@
         <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Helpers\Responsive.cs" />
+        <Compile Include="Helpers\System.cs" />
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>

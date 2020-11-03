@@ -57,7 +57,7 @@ namespace Inkybot
 
         private void OnError(object sender, ExceptionEventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toastLabel.Text = e.exception.Message;
+                toastLabel.Text = e.Message;
                 toastPanel.Show();
                 toastPanel.BringToFront();
             }));

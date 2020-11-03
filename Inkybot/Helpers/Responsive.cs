@@ -3,7 +3,7 @@ using Tesseract;
 
 namespace Inkybot.Helpers
 {
-    public class Responsive
+    public static class Responsive
     {
         
         const double perfectRatio = 0.8;

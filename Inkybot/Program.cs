@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Principal;
+using System.Threading;
 using System.Web.UI.MobileControls;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -27,9 +29,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "1";
-        public const string Version = "v0.1 Beta";
-        public const string VersionEndpoint = "v0.1beta";
+        public const string VersionNumber = "2";
+        public const string Version = "v0.2 Beta";
+        public const string VersionEndpoint = "v0.2beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();

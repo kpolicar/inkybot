@@ -9,7 +9,7 @@ namespace Inkybot.Adapters
         public OcrResultAdapter() {
             if (init) return;
 
-            spellCorrect = new SymSpell(16, 4, 7, 1, 5);
+            spellCorrect = new SymSpell(16, 3);
             
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             var dictionaryFile = assembly.GetManifestResourceStream("Inkybot.dictionary_dofus.txt");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Security.Principal;
 using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
@@ -32,6 +33,7 @@ namespace Inkybot
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
+            actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
@@ -101,7 +103,11 @@ namespace Inkybot
                 PrepareMage();
                 while (IsMaging) new DofusMagingJobTick(this).Execute();
             } catch (Exception exception) {
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                
+                var additionalInfo = !Helpers.System.IsRunnningAsAdmin() ?
+                    "Please try running Inkybot as an administrator." : "";
+                
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 Debug.WriteLine(exception.StackTrace);
             } finally {
                 StopMage();

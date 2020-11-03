@@ -135,15 +135,7 @@ namespace Inkybot
             
 
             using (var ocrResult = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
-                Debug.WriteLine(ocrResult.GetText());
                 return ocrResult.GetText().Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
-                var results = Regex
-                    .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
-                    .Select(result => result.Replace("\n", " "));
-
-                ocrResult.Dispose();
-
-                return results.ToArray();
             }
         }
 
