@@ -24,6 +24,7 @@ namespace Inkybot
             InitializeComponent();
             toastPanel.Hide();
             mageInfoPanel.Hide();
+            debugScreenshotButton.Hide();
             
             ocrIndicatorPanel.BringToFront();
             InitializeDofusClient();
@@ -87,15 +88,6 @@ namespace Inkybot
             g.DrawRectangle(pen, DofusScreenScan.HistoryBounds);
             pen.Dispose();
             g.Dispose();
-        }
-
-        private void statsButton_Click(object sender, EventArgs e) {
-            if (!statsForm.Visible) statsForm.Show();
-            else statsForm.Hide();
-        }
-
-        private void toastPanelCloseButton_Click(object sender, EventArgs e) {
-            toastPanel.Hide();
         }
     }
 }

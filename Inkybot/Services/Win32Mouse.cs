@@ -34,9 +34,14 @@ namespace Inkybot.Services
         }
         
         public void CtrlDoubleClick(int x, int y) {
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.Control, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.LControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
             DoubleClick(x, y);
+            Thread.Sleep(100);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.Control, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.LControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
         }

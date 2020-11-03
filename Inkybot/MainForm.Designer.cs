@@ -45,6 +45,7 @@ namespace Inkybot
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.helpButton = new System.Windows.Forms.Button();
             this.debugButton = new System.Windows.Forms.Button();
+            this.debugScreenshotButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
@@ -151,7 +152,7 @@ namespace Inkybot
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonsPanel.Location = new System.Drawing.Point(0, 96);
             this.buttonsPanel.Name = "buttonsPanel";
-            this.buttonsPanel.Size = new System.Drawing.Size(113, 365);
+            this.buttonsPanel.Size = new System.Drawing.Size(113, 393);
             this.buttonsPanel.TabIndex = 1;
             // 
             // primaryButtonsPanel
@@ -178,7 +179,7 @@ namespace Inkybot
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
             this.toggleMageButton.TabIndex = 1;
-            this.toggleMageButton.Text = "START\r\n(F2)";
+            this.toggleMageButton.Text = "START";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 
@@ -203,11 +204,12 @@ namespace Inkybot
             // 
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
             this.secondaryButtonsPanel.Controls.Add(this.debugButton);
+            this.secondaryButtonsPanel.Controls.Add(this.debugScreenshotButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
-            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 250);
+            this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 235);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
-            this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 115);
+            this.secondaryButtonsPanel.Size = new System.Drawing.Size(113, 158);
             this.secondaryButtonsPanel.TabIndex = 2;
             // 
             // helpButton
@@ -218,7 +220,7 @@ namespace Inkybot
             this.helpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.helpButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.helpButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.helpButton.Location = new System.Drawing.Point(0, 70);
+            this.helpButton.Location = new System.Drawing.Point(0, 113);
             this.helpButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.helpButton.Name = "helpButton";
             this.helpButton.Size = new System.Drawing.Size(113, 45);
@@ -235,7 +237,7 @@ namespace Inkybot
             this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.debugButton.Location = new System.Drawing.Point(0, 22);
+            this.debugButton.Location = new System.Drawing.Point(0, 65);
             this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.debugButton.Name = "debugButton";
             this.debugButton.Size = new System.Drawing.Size(113, 45);
@@ -244,6 +246,23 @@ namespace Inkybot
             this.debugButton.UseVisualStyleBackColor = false;
             this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
+            // debugScreenshotButton
+            // 
+            this.debugScreenshotButton.AutoSize = true;
+            this.debugScreenshotButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.debugScreenshotButton.FlatAppearance.BorderSize = 0;
+            this.debugScreenshotButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugScreenshotButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.debugScreenshotButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.debugScreenshotButton.Location = new System.Drawing.Point(0, 17);
+            this.debugScreenshotButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.debugScreenshotButton.Name = "debugScreenshotButton";
+            this.debugScreenshotButton.Size = new System.Drawing.Size(113, 45);
+            this.debugScreenshotButton.TabIndex = 5;
+            this.debugScreenshotButton.Text = "SCREENSHOT";
+            this.debugScreenshotButton.UseVisualStyleBackColor = false;
+            this.debugScreenshotButton.Click += new System.EventHandler(this.debugScreenshotButton_Click);
+            // 
             // mageInfoPanel
             // 
             this.mageInfoPanel.AutoSize = true;
@@ -251,7 +270,7 @@ namespace Inkybot
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
             this.mageInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.mageInfoPanel.Location = new System.Drawing.Point(0, 461);
+            this.mageInfoPanel.Location = new System.Drawing.Point(0, 489);
             this.mageInfoPanel.Name = "mageInfoPanel";
             this.mageInfoPanel.Padding = new System.Windows.Forms.Padding(0, 15, 0, 5);
             this.mageInfoPanel.Size = new System.Drawing.Size(113, 57);
@@ -338,12 +357,12 @@ namespace Inkybot
             this.mousePositionLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.mousePositionLabel.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.mousePositionLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.mousePositionLabel.Location = new System.Drawing.Point(0, 518);
+            this.mousePositionLabel.Location = new System.Drawing.Point(0, 546);
             this.mousePositionLabel.Name = "mousePositionLabel";
             this.mousePositionLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.mousePositionLabel.Size = new System.Drawing.Size(113, 72);
+            this.mousePositionLabel.Size = new System.Drawing.Size(113, 44);
             this.mousePositionLabel.TabIndex = 8;
-            this.mousePositionLabel.Text = "(0,0)";
+            this.mousePositionLabel.Text = "(0,0)\r\n(0,0)";
             this.mousePositionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.mousePositionLabel.Visible = false;
             // 
@@ -401,6 +420,8 @@ namespace Inkybot
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Button debugScreenshotButton;
 
         private System.Windows.Forms.PictureBox toastIconPictureBox;
         private System.Windows.Forms.Label toastLabel;

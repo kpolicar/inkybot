@@ -18,14 +18,14 @@ namespace Inkybot
         
         private void OnMagingStopped(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Text = "Start\n(F2)";
+                toggleMageButton.Text = "Start";
                 mageInfoPanel.Hide();
             }));
         }
 
         private void OnMagingStarted(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Text = "Stop\n(F2)";
+                toggleMageButton.Text = "Stop";
                 mageInfoPanel.Show();
             }));
         }

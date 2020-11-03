@@ -27,7 +27,9 @@ namespace Inkybot
         }
 
         public IEnumerable<MageHistoryRecord> History() {
-            var scanResults = scan.History();
+            var scanResults = scan.History()
+                .Select(line => line.Replace("\n", " "))
+                .ToArray();
             var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
 
             return historyResults;

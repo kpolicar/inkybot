@@ -12,10 +12,10 @@ namespace Inkybot
         private void debugButton_Click(object sender, EventArgs e) {
             if (debugging = !debugging) {
                 StartDebugging();
-                debugButton.Text = "Stop Debug";
+                debugButton.Text = "STOP DEBUG";
             } else {
                 StopDebugging();
-                debugButton.Text = "Debug";
+                debugButton.Text = "DEBUG";
             }
         }
 
@@ -24,6 +24,7 @@ namespace Inkybot
             sidebarPanel.BringToFront();
             ocrIndicatorPanel.BringToFront();
             mousePositionLabel.Show();
+            debugScreenshotButton.Show();
 
             m_GlobalHook = Hook.GlobalEvents();
             m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
@@ -32,6 +33,7 @@ namespace Inkybot
         private void StopDebugging() {
             ocrIndicatorPanel.Hide();
             mousePositionLabel.Hide();
+            debugScreenshotButton.Hide();
             m_GlobalHook.Dispose();
         }
 

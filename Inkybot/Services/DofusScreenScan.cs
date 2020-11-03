@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
@@ -14,37 +15,24 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot
 {
-    public struct StatLineScanResult
-    {
-        public string name;
-        public string value;
-        public string min;
-        public string max;
-
-        public StatLineScanResult(string name, string value, string min, string max) {
-            this.name = name;
-            this.value = value;
-            this.min = min;
-            this.max = max;
-        }
-    }
-
     public class DofusScreenScan
     {
         public static readonly Rectangle HistoryBounds = new Rectangle(352, 137, 590-352, 835-137);
-        public static readonly Rectangle StatBounds = new Rectangle(645, 300, 980-645, 39*12);
+        public static readonly Rectangle StatBounds = new Rectangle(645, 300, 980-645, 39*14);
         
         private static ScreenCapture screen;
         private static TesseractEngine engine;
         private static bool init;
         private readonly IntPtr handle;
-        private readonly Bitmap screenshot;
+        private readonly Image screenshot;
         private TextInfo text;
+        private bool saveToDisk;
 
-        public DofusScreenScan(IntPtr hwnd) {
+        public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
             Init();
             handle = hwnd;
             screenshot = TakeScreenshot();
+            this.saveToDisk = saveToDisk;
         }
 
         private void Init() {
@@ -61,52 +49,81 @@ namespace Inkybot
             init = true;
         }
 
-        public StatLineScanResult[] Stats() {
-            var Results = new List<StatLineScanResult>();
-            var (x, y) = (645, 301);
-
-            var isResultValid = true;
-            for (var yOffset = 0; isResultValid; yOffset += 39) {
-                var result = ScanLine(new Rectangle(x, y + yOffset+5, 980 - x, 39-10), "stats" + yOffset);
-                
-                var separated = Regex.Match(result, @"^(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)$").Groups;
-
-                isResultValid = separated.Count == 5;
-                if (!isResultValid) continue;
-
-                var (min, max, value, name) =
-                    (separated[1].Value, separated[2].Value, separated[3].Value, separated[4].Value);
-                Results.Add(new StatLineScanResult(name, value, min, max));
-            }
-
-            return Results.ToArray();
-        }
-
-        public string[] History() {
-            var scanned = ScanRegion(HistoryBounds, "history");
+        public string[] Stats() {
+            var scanned = ScanRegion(StatBounds, "\n");
+            Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }
 
-        private string[] ScanRegion(Rectangle bounds, string name) {
-            var bitmap = screen.cropAtRect(screenshot, bounds);
-            // Todo: add minimum rect
-            bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
-            bitmap = screen.Sharpen(bitmap);
+        public string[] History() {
+            var scanned = ScanRegion(HistoryBounds, "\n\n");
+
+            return scanned;
+        }
+
+        private Image PreprocessRunesImage(Image image, Rectangle bounds) {
+            return DoPreprocess(image, bounds, image => {
+                image.Resize(new Percentage(300));
+                image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
+            });
+        }
+
+        private Image PreprocessImage(Image image, Rectangle bounds) {
+            return DoPreprocess(image, bounds, image => {
+                image.ColorSpace = ColorSpace.Gray;
+
+                image.Sharpen();
+                image.BlackThreshold(new Percentage(30));
+                image.WhiteThreshold(new Percentage(30));
+            });
+        }
+
+        private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
+            using (var ms = new MemoryStream()) {
+                image.Save(ms, ImageFormat.Bmp);
+                ms.Position = 0;
+                    
+                using (var newImage = new MagickImage(ms)) {
+                    var b = bounds;
+                    
+                    // Resize each image in the collection to a width of 200. When zero is specified for the height
+                    // the height will be calculated with the aspect ratio.
+                    newImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
+                    newImage.Resize(new Percentage(300));
+
+                    steps(newImage);
+                    
+                    newImage.Write(ms);
+                    if (saveToDisk)
+                        newImage.Write(Directory.GetCurrentDirectory()+"\\debug\\images\\"+Path.GetRandomFileName()+".png");
+                    
+                    var outImage = Image.FromStream(ms);
+
+                    return outImage;
+                }
+            }
+
+        }
+
+        private string[] ScanRegion(Rectangle bounds, string delimiter) {
+            var image = PreprocessImage(screenshot, bounds);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
+            
 
-            var ocrResult = ProcessImage(bitmap, PageSegMode.SingleBlock);
+            using (var ocrResult = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
+                return ocrResult.GetText().Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
+                var results = Regex
+                    .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
+                    .Select(result => result.Replace("\n", " "));
 
-            var results = Regex
-                .Split(ocrResult.GetText(), "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
-                .Select(result => result.Replace("\n", " "));
+                ocrResult.Dispose();
 
-            ocrResult.Dispose();
-
-            return results.ToArray();
+                return results.ToArray();
+            }
         }
 
         private Page ProcessImage(Bitmap image, PageSegMode? pageSegMode = null) {
@@ -118,38 +135,15 @@ namespace Inkybot
             }
         }
 
-        private string ScanLine(Rectangle bounds, string name) {
-            var scannedLine = "";
-            var bitmap = screen.cropAtRect(screenshot, bounds);
-            bitmap = screen.ResizeImage(bitmap, bitmap.Width * 2, bitmap.Height * 2);
-
-
-            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\"+name+".bmp");
-            //bitmap.Save(fstream, ImageFormat.Bmp);
-            //fstream.Dispose();
-
-            var ocrResult = ProcessImage(bitmap, PageSegMode.SingleBlock);
-
-            using (var iter = ocrResult.GetIterator()) {
-                iter.Begin();
-
-                var text = "" + iter.GetText(PageIteratorLevel.TextLine);
-                scannedLine = Regex.Replace(text, @"\t|\n|\r", "");
-            }
-            ocrResult.Dispose();
-
-            return scannedLine;
-        }
-
-        public Bitmap TakeScreenshot() {
+        public Image TakeScreenshot() {
             //var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\ex.bmp");
-            var bitmap = (Bitmap) screen.CaptureWindow(handle);
+            var bitmap = screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
 
-            return (Bitmap) bitmap;
+            return bitmap;
         }
     }
 }

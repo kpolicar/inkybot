@@ -12,36 +12,6 @@ namespace Inkybot
     /// </summary>
     public class Win32ScreenCapture : ScreenCapture
     {
-        public Bitmap cropAtRect(Bitmap b, Rectangle r) {
-            var nb = new Bitmap(r.Width, r.Height);
-            using (var g = Graphics.FromImage(nb)) {
-                g.DrawImage(b, -r.X, -r.Y);
-                return nb;
-            }
-        }
-
-        public Bitmap ResizeImage(Image image, int width, int height) {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage)) {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes()) {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
-
         /// <summary>
         ///     Creates an Image object containing a screen shot of a specific window
         /// </summary>
@@ -74,80 +44,6 @@ namespace Inkybot
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
             return img;
-        }
-
-        public Bitmap Sharpen(Bitmap image) {
-            var sharpenImage = (Bitmap) image.Clone();
-
-            var filterWidth = 3;
-            var filterHeight = 3;
-            var width = image.Width;
-            var height = image.Height;
-
-            // Create sharpening filter.
-            var filter = new double[filterWidth, filterHeight];
-            filter[0, 0] = filter[0, 1] =
-                filter[0, 2] = filter[1, 0] = filter[1, 2] = filter[2, 0] = filter[2, 1] = filter[2, 2] = -1;
-            filter[1, 1] = 9;
-
-            var factor = 1.0;
-            var bias = 0.0;
-
-            var result = new Color[image.Width, image.Height];
-
-            // Lock image bits for read/write.
-            var pbits = sharpenImage.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite,
-                PixelFormat.Format24bppRgb);
-
-            // Declare an array to hold the bytes of the bitmap.
-            var bytes = pbits.Stride * height;
-            var rgbValues = new byte[bytes];
-
-            // Copy the RGB values into the array.
-            Marshal.Copy(pbits.Scan0, rgbValues, 0, bytes);
-
-            int rgb;
-            // Fill the color array with the new sharpened color values.
-            for (var x = 0; x < width; ++x)
-            for (var y = 0; y < height; ++y) {
-                double red = 0.0, green = 0.0, blue = 0.0;
-
-                for (var filterX = 0; filterX < filterWidth; filterX++) {
-                    for (var filterY = 0; filterY < filterHeight; filterY++) {
-                        var imageX = (x - filterWidth / 2 + filterX + width) % width;
-                        var imageY = (y - filterHeight / 2 + filterY + height) % height;
-
-                        rgb = imageY * pbits.Stride + 3 * imageX;
-
-                        red += rgbValues[rgb + 2] * filter[filterX, filterY];
-                        green += rgbValues[rgb + 1] * filter[filterX, filterY];
-                        blue += rgbValues[rgb + 0] * filter[filterX, filterY];
-                    }
-
-                    var r = Math.Min(Math.Max((int) (factor * red + bias), 0), 255);
-                    var g = Math.Min(Math.Max((int) (factor * green + bias), 0), 255);
-                    var b = Math.Min(Math.Max((int) (factor * blue + bias), 0), 255);
-
-                    result[x, y] = Color.FromArgb(r, g, b);
-                }
-            }
-
-            // Update the image with the sharpened pixels.
-            for (var x = 0; x < width; ++x)
-            for (var y = 0; y < height; ++y) {
-                rgb = y * pbits.Stride + 3 * x;
-
-                rgbValues[rgb + 2] = result[x, y].R;
-                rgbValues[rgb + 1] = result[x, y].G;
-                rgbValues[rgb + 0] = result[x, y].B;
-            }
-
-            // Copy the RGB values back to the bitmap.
-            Marshal.Copy(rgbValues, 0, pbits.Scan0, bytes);
-            // Release image bits.
-            sharpenImage.UnlockBits(pbits);
-
-            return sharpenImage;
         }
 
         /// <summary>

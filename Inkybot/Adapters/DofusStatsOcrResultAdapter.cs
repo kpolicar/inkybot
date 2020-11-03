@@ -2,38 +2,57 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters
 {
     public class DofusStatsOcrResultAdapter : DofusOcrResultAdapter
     {
-        private readonly StatLineScanResult[] statLines;
+        private readonly string[] statLines;
 
-        public DofusStatsOcrResultAdapter(StatLineScanResult[] statLines) {
+        public DofusStatsOcrResultAdapter(string[] statLines) {
             this.statLines = statLines;
         }
 
         public IEnumerable<Item.ItemStat> ToItemStats() {
-            return statLines.Select(result => {
+            return statLines.Select(mageEntry => {
+                var changes = SegmentMageHistoryEntry(mageEntry);
 
-                var stat = GetStatFromName(result.name);
-                var (min, max, value) = GetMinMaxValueFromScanResult(result);
-
-                return new Item.ItemStat(stat, value, min, max);
+                return HistoryEntrySegmentToStatChange(changes.Groups);
             });
         }
 
-        private (int min, int max, int value) GetMinMaxValueFromScanResult(StatLineScanResult result) {
+        private (int min, int max, int value) GetMinMaxValueFromScanResult(GroupCollection historyEntrySegments) {
             try {
-                var min = result.min != "-" ? int.Parse(result.min) : 0;
-                var max = result.max != "-" ? int.Parse(result.max) : 0;
-                var value = result.value.Length > 0 ? int.Parse(result.value) : 0;
+                var (min, max, value) =
+                    (historyEntrySegments[1].Value, historyEntrySegments[2].Value, historyEntrySegments[3].Value);
+                
+                var parsedMin = min != "-" ? int.Parse(min) : 0;
+                var parsedMax = max != "-" ? int.Parse(max) : 0;
+                var parsedValue = value.Length > 0 ? int.Parse(value) : 0;
 
-                return (min, max, value);
+                return (parsedMin, parsedMax, parsedValue);
             } catch (Exception exception) {
-                throw new CouldNotResolveStatValueException($"Error occured resolving value for stat {result.name}", exception);
+                throw new CouldNotResolveStatValueException($"Error occured resolving value for stat {historyEntrySegments[4].Value}", exception);
             }
+        }
+        
+        private Item.ItemStat HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
+            if (historyEntrySegments.Count != 5)
+                throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
+
+            var (min, max, value) = GetMinMaxValueFromScanResult(historyEntrySegments);
+
+            var name = historyEntrySegments[4].Value;
+            var stat = GetStatFromName(name);
+
+            return new Item.ItemStat(stat, value, min, max);
+        }
+
+        private Match SegmentMageHistoryEntry(string historyLine) {
+            var segments = Regex.Match(historyLine, @"^(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)$");
+            return segments;
         }
     }
 }
