@@ -179,7 +179,7 @@ namespace Inkybot
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.Size = new System.Drawing.Size(113, 61);
             this.toggleMageButton.TabIndex = 1;
-            this.toggleMageButton.Text = "START";
+            this.toggleMageButton.Text = "START\r\n(F2)";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 

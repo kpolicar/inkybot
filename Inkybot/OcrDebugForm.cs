@@ -20,10 +20,10 @@ namespace Inkybot
             InitializeComponent();
             
             engine = new TesseractEngine(
-                "./tessdata",
+                "./Resources/Tesseract",
                 "eng",
                 EngineMode.TesseractOnly,
-                new []{ "./tessdata/config" }, new Dictionary<string, object> {
+                null, new Dictionary<string, object> {
                     {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
         }

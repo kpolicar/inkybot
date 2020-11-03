@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ImageMagick;
 using Inkybot.Events;
@@ -38,7 +39,7 @@ namespace Inkybot
         private void Init() {
             if (init) return;
             engine = new TesseractEngine(
-                "./tessdata",
+                "./Resources/Tesseract",
                 "eng",
                 EngineMode.TesseractOnly,
                 null, new Dictionary<string, object> {
@@ -95,8 +96,11 @@ namespace Inkybot
                     steps(newImage);
                     
                     newImage.Write(ms);
-                    if (saveToDisk)
-                        newImage.Write(Directory.GetCurrentDirectory()+"\\debug\\images\\"+Path.GetRandomFileName()+".png");
+                    if (saveToDisk) {
+                        var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"/debug/images/";
+                        Directory.CreateDirectory(folderPath);
+                        newImage.Write(folderPath+Path.GetRandomFileName()+".png");
+                    }
                     
                     var outImage = Image.FromStream(ms);
 
