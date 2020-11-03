@@ -11,6 +11,7 @@ using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
+using Inkybot.Helpers;
 using Tesseract;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
@@ -18,8 +19,23 @@ namespace Inkybot
 {
     public class DofusScreenScan
     {
-        public static readonly Rectangle HistoryBounds = new Rectangle(352, 137, 590-352, 835-137);
-        public static readonly Rectangle StatBounds = new Rectangle(645, 300, 980-645, 39*14);
+        public static readonly Responsive.Measurement HistoryBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(346, 120, 590, 835),
+            Width = 1920,
+            Height = 1017
+        };
+
+        public static readonly Responsive.Measurement StatBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(630, 307, 973, 836),
+            Width = 1920,
+            Height = 1017
+        };
+        
+        public Rectangle HistoryBounds =>
+            Responsive.ResponsiveRectangle(HistoryBoundsMeasurement, screenshot.Width, screenshot.Height);
+
+        public Rectangle StatBounds =>
+            Responsive.ResponsiveRectangle(StatBoundsMeasurement, screenshot.Width, screenshot.Height);
         
         private static ScreenCapture screen;
         private static TesseractEngine engine;

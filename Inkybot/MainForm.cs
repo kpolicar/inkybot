@@ -61,18 +61,16 @@ namespace Inkybot
         
         private void paintOcrIndicators(object sender, EventArgs eventArgs) {
             var g = ocrIndicatorPanel.CreateGraphics();
+            var width = ocrIndicatorPanel.Width;
+            var height = ocrIndicatorPanel.Height;
 
             var pen = new Pen(Color.Red, 2);
 
-            var drawRect = Responsive.ResponsiveRectangle(new Responsive.Measurement {
-                Rectangle = Rect.FromCoords(187, 343, 398, 667),
-                Width =  777,
-                Height = 933
-            }, ocrIndicatorPanel.Width, ocrIndicatorPanel.Height);
+            var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatBoundsMeasurement, width, height);
+            var historyRect = Responsive.ResponsiveRectangle(DofusScreenScan.HistoryBoundsMeasurement, width, height);
             
-            //var statsRect = new Rectangle(626, 300, 980 - 626, 39 * 14);
-            g.DrawRectangle(pen, drawRect);
-            //g.DrawRectangle(pen, DofusScreenScan.HistoryBounds);
+            g.DrawRectangle(pen, statRect);
+            g.DrawRectangle(pen, historyRect);
             pen.Dispose();
             g.Dispose();
         }
