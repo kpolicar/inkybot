@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Events;
@@ -34,6 +35,9 @@ namespace Inkybot
             Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
             var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
             mouse.SetRelativeToHandle(hWndDocked);
+            
+            var actions = (MouseActionFactory) Program.Services.GetService(typeof(ActionFactory));
+            actions.setRelativeToControl(dofusClientPanel);
 
             statsForm = new StatsForm(this);
             

@@ -32,7 +32,6 @@ namespace Inkybot
 
         public DofusMagingJob() {
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
-            actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));

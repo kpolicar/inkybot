@@ -12,14 +12,12 @@ namespace Inkybot
 {
     public class BasicDofusMagingAI : DofusMagingAI
     {
-        private readonly List<IAction> actionHistory = new List<IAction>();
         private readonly ActionFactory actions;
         private readonly ConfigManager configManager;
         private Config config;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
-            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             var configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             configManager.ConfigChanged += OnConfigChanged;
         }
@@ -52,9 +50,10 @@ namespace Inkybot
             if (previousAction == null ||
                 previousAction is Combine &&
                 ((previousAction as Combine).target.stat != itemMage.stat.stat ||
-                (previousAction as Combine).target.type != itemMage.rune.type))
+                (previousAction as Combine).target.type != itemMage.rune.type)) {
                 return actions.SelectRune(itemMage.rune);
-            
+            }
+
             return actions.Combine(itemMage.rune);
         }
 
