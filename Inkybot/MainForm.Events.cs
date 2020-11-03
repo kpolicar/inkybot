@@ -13,14 +13,7 @@ namespace Inkybot
         }
         
         private void InitializeKeyboardShortcuts() {
-            KeyboardHook.Init();
-            KeyboardHook.KeyPressed += (sender, e) => {
-                if (e.KeyCode == Keys.F2)
-                    toggleMageButton_Click(sender, e);
-            };
-
             Closing += (sender, e) => {
-                KeyboardHook.Release();
                 magingJob.StopMage();
             };
         }
