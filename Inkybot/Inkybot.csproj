@@ -121,6 +121,7 @@
         <Compile Include="Events\ConfigChangedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
+        <Compile Include="Events\PathChangedEventArgs.cs" />
         <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
         <Compile Include="Exceptions\CouldNotResolveStatNameException.cs" />
         <Compile Include="Exceptions\CouldNotResolveStatValueException.cs" />
@@ -166,11 +167,11 @@
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
         <Compile Include="KeyboardHook.cs" />
-        <Compile Include="LoginForm.cs">
+        <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
         </Compile>
-        <Compile Include="LoginForm.Designer.cs">
-          <DependentUpon>LoginForm.cs</DependentUpon>
+        <Compile Include="WelcomeDialogue.Designer.cs">
+          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Debugger.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
@@ -227,8 +228,8 @@
         <EmbeddedResource Include="DofusPathForm.resx">
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="LoginForm.resx">
-          <DependentUpon>LoginForm.cs</DependentUpon>
+        <EmbeddedResource Include="WelcomeDialogue.resx">
+          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>

@@ -3,25 +3,23 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Api;
+using Inkybot.Events;
 
 namespace Inkybot
 {
-    public partial class LoginForm : Form
+    public partial class WelcomeDialogue : Form
     {
+        public event EventHandler<PathChangedEventArgs> PathChanged; 
         private readonly ApiDataProvider api;
 
-        public LoginForm(string errorMessage) : this() {
+        public WelcomeDialogue(MainForm mainForm, string errorMessage) : this() {
             api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
             this.errorMessage.Text = errorMessage;
         }
 
-        public LoginForm() {
+        public WelcomeDialogue() {
             InitializeComponent();
             newVersionLabel.Hide();
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            throw new NotImplementedException();
         }
 
         private async void button1_Click(object sender, EventArgs e) {
@@ -73,7 +71,9 @@ namespace Inkybot
         }
 
         private void dofusPathLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            new DofusPathForm().ShowDialog(this);
+            var changedPath = new DofusPathForm().ShowDialog(this);
+            if (changedPath == DialogResult.OK)
+                PathChanged?.Invoke(this, new PathChangedEventArgs());
         }
     }
 }

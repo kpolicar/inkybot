@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Inkybot
 {
-    partial class LoginForm
+    partial class WelcomeDialogue
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
@@ -301,7 +301,7 @@ namespace Inkybot
             this.Location = new System.Drawing.Point(15, 15);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "LoginForm";
+            this.Name = "WelcomeDialogue";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Inkybot - Login";
             this.Load += new System.EventHandler(this.LoginForm_Load);

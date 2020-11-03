@@ -13,6 +13,11 @@ namespace Inkybot
         private IntPtr hWndDocked;
         
         private void InitializeDofusClient() {
+            if (pDofus != null && !pDofus.HasExited) {
+                pDofus.Kill();
+                hWndDocked = IntPtr.Zero;
+            }
+            
             if (Properties.Settings.Default.dofusPath == "") {
                 var result = new DofusPathForm().ShowDialog(this);
                 if (result != DialogResult.OK) {
