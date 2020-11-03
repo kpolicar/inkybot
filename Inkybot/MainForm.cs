@@ -8,6 +8,7 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Events;
 using Inkybot.Services;
+using Tesseract;
 
 
 namespace Inkybot
@@ -56,17 +57,61 @@ namespace Inkybot
                 toastPanel.BringToFront();
             }));
         }
+        
+        //const double perfectRatio = 0.8;
 
-        private Rectangle TransformBounds1(int p1x, int p1y, int p2x, int p2y, int w, int h) {
-            var p1y_ratio = p1y / h;
-            var p1x_ratio = p1x / w;
+        public struct RatioRect
+        {
+            public double x;
+            public double y;
+            public double width;
+            public double height;
+            
+            public RatioRect(double x, double y, double width, double height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+            }
+        }
+
+        private RatioRect PointsToRatioRect(int p1x, int p1y, int p2x, int p2y, int w, int h) {
+            
+            var perfectRatio = 0.8d; // h/w
+            var ratio = 1f*h/w;
+            
+            double gameW = w;
+            var xOffset = 0d;
+            if (ratio < perfectRatio) {
+                gameW = h / perfectRatio;
+                xOffset = (w - gameW) / 2;
+                
+                p1x -= (int) xOffset;
+                p2x -= (int) xOffset;
+            }
+            
+            double gameH = h;
+            var yOffset = 0d;
+            if (ratio > perfectRatio) {
+                gameH = w * perfectRatio;
+                yOffset = (h - gameH) / 2;
+                
+                p1y -= (int) yOffset;
+                p2y -= (int) yOffset;
+            }
+            
+            //Debug.WriteLine($"gameW:{gameW}, xOffset:{xOffset}, w: {w}, p1x: {p1x}");
+
+
+            var p1x_ratio = 1d * p1x / gameW;
+            var p1y_ratio = 1d * p1y / gameH;
             var rw = p2x - p1x;
             var rh = p2y - p1y;
             
-            var rw_ratio = rw / w;
-            var rh_ratio = rh / h;
+            var rw_ratio = 1d * rw / gameW;
+            var rh_ratio = 1d * rh / gameH;
             
-            return new Rectangle(
+            return new RatioRect(
                 p1x_ratio,
                 p1y_ratio,
                 rw_ratio,
@@ -74,7 +119,8 @@ namespace Inkybot
                 );
         }
 
-        private Rectangle TransformBounds(Rectangle bounds) {
+        // Convert a ratio rect to the rectangle that will be drawn on screen (responsive)
+        private Rectangle RatioRectToScreenRect(RatioRect bounds) {
             var dimensions = ocrIndicatorPanel.Size;
             var w = 1d * dimensions.Width;
             var h = 1d * dimensions.Height;
@@ -97,10 +143,10 @@ namespace Inkybot
 
 
             return new Rectangle(
-                (int) (bounds.X*gameW + xOffset), 
-                (int) (bounds.Y*gameH + yOffset),
-                (int) (bounds.Width*gameW),
-                (int) (bounds.Height*gameH));
+                (int) (bounds.x*gameW + xOffset), 
+                (int) (bounds.y*gameH + yOffset),
+                (int) (bounds.width*gameW),
+                (int) (bounds.height*gameH));
         }
         
         private void paintOcrIndicators(object sender, EventArgs eventArgs) {
@@ -108,19 +154,10 @@ namespace Inkybot
             var dimensions = ocrIndicatorPanel.Size;
             var w = 1d * dimensions.Width;
             var h = 1d * dimensions.Height;
-            //var xOffset = 0d;
             var perfectRatio = 0.8d; // h/w
             var ratio = h/w;
             
             
-            //var pW = h / perfectRatio;
-            //xOffset = (w - pW) / 2;
-            //xOffset = ratio < perfectRatio ? xOffset : 0;
-            //var pX1 = (int) (0.24362*(w + xOffset));
-            //var pX2 = (int) (0.51802*(w + xOffset));
-            
-            //if (ratio > perfectRatio)
-            //    Debug.WriteLine("ratio broken");
             var gameH = h;
             var yOffset = 0d;
             if (ratio > perfectRatio) {
@@ -137,16 +174,22 @@ namespace Inkybot
 
 
             var pen = new Pen(Color.Red, 2);
-            var statsRect = new Rectangle(
-                //(int) (0.35582*(w + xOffset)), 
-                (int) (0.24362*gameW + xOffset), 
-                (int) (0.29841*gameH + yOffset),
-                //(int) (0.1534*w),
-                (int) (0.2744*gameW),
-                (int) (0.53050*gameH));
+            //var statsRect = new Rectangle(
+            //    //(int) (0.35582*(w + xOffset)), 
+            //    (int) (0.24362*gameW + xOffset), 
+            //    (int) (0.29841*gameH + yOffset),
+            //    //(int) (0.1534*w),
+            //    (int) (0.2744*gameW),
+            //    (int) (0.53050*gameH));
+
+            var statBounds = DofusScreenScan.StatBounds;
+            var statsRect = PointsToRatioRect(187, 343, 398, 667, 777, 933);
+            //var statsRect = PointsToRatioRect(634, 303, 980, 842, 1920, 1017);
+            //var statsRect = PointsToRatioRect(302, 303, 638, 830, 1257, 1008);
+            var drawRect = RatioRectToScreenRect(statsRect);
             
             //var statsRect = new Rectangle(626, 300, 980 - 626, 39 * 14);
-            g.DrawRectangle(pen, statsRect);
+            g.DrawRectangle(pen, drawRect);
             //g.DrawRectangle(pen, DofusScreenScan.HistoryBounds);
             pen.Dispose();
             g.Dispose();
