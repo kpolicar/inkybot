@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Events;
@@ -70,12 +71,16 @@ namespace Inkybot
         private void StatsForm_VisibleChanged(object sender, EventArgs e) {
             if (!Visible || magingJob.IsMaging) return;
 
-            try {
-                dataProvider.FetchData();
-                dataProvider.Stats();
-            } catch (Exception exception) {
-                Error?.Invoke(this, new ExceptionEventArgs(exception));
-            }
+            var fetchStats = new ThreadStart(delegate {
+                try {
+                    dataProvider.FetchData();
+                    dataProvider.Stats();
+                } catch (Exception exception) {
+                    Error?.Invoke(this, new ExceptionEventArgs(exception));
+                }
+            });
+            
+            new Thread(fetchStats).Start();
         }
 
         private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {

@@ -203,8 +203,8 @@ namespace Inkybot
             // secondaryButtonsPanel
             // 
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
-            this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Controls.Add(this.debugScreenshotButton);
+            this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.secondaryButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
             this.secondaryButtonsPanel.Location = new System.Drawing.Point(0, 235);
