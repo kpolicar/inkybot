@@ -19,6 +19,7 @@ namespace Inkybot
 
         public WelcomeDialogue() {
             InitializeComponent();
+            usernameTextBox.Text = Properties.Settings.Default.email;
             newVersionLabel.Hide();
         }
 

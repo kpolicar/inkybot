@@ -85,8 +85,10 @@ namespace Inkybot
             previousAction = null;
             previousHistory = null;
             
+            IsMaging = true;
             dataProvider.FetchData();
             var stats = dataProvider.Stats();
+            IsMaging = false; // We dont want to stop maging on the initial config change 
             configManager.EnforceConfigSetForStats(stats);
             IsMaging = true;
         }

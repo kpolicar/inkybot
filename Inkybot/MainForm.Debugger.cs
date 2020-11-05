@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Gma.System.MouseKeyHook;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 
@@ -10,7 +9,9 @@ namespace Inkybot
     public partial class MainForm
     {
         private bool debugging;
-        private IKeyboardMouseEvents m_GlobalHook;
+        #if DEBUG
+        private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
+        #endif
 
         private void debugButton_Click(object sender, EventArgs e) {
             if (debugging = !debugging) {
@@ -24,7 +25,9 @@ namespace Inkybot
 
         private void StartDebugging() {
             sidebarPanel.BringToFront();
+            #if DEBUG
             mousePositionLabel.Show();
+            #endif
             debugScreenshotButton.Show();
             Resize += onWindowResize;
             
@@ -48,8 +51,10 @@ namespace Inkybot
             
             OnResize(EventArgs.Empty);
 
+            #if DEBUG
             m_GlobalHook = Hook.GlobalEvents();
             m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
+            #endif
         }
 
         private void onWindowResize(object sender, EventArgs e) {
@@ -94,7 +99,9 @@ namespace Inkybot
         private void StopDebugging() {
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
+            #if DEBUG
             m_GlobalHook.Dispose();
+            #endif
             Resize -= onWindowResize;
             
             ocrIndicatorStatsRectangleLeftVertical.Hide();
@@ -108,6 +115,7 @@ namespace Inkybot
         }
 
 
+        #if DEBUG
         private void GlobalHookMouseMoveExt(object sender, MouseEventArgs e) {
             var full = dofusClientPanel.Size;
             var pos = dofusClientPanel.PointToClient(e.Location);
@@ -116,5 +124,6 @@ namespace Inkybot
             mousePositionLabel.Text = $@"x: {pos.X}, y: {pos.Y}"+"\n";
             mousePositionLabel.Text += $@"w: {full.Width}, h: {full.Height}";
         }
+        #endif
     }
 }
