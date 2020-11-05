@@ -68,14 +68,15 @@ namespace Inkybot
         }
 
         public string[] Stats() {
-            var scanned = ScanRegion(StatBounds, "\n");
-            Debug.WriteLine(string.Join("\n", scanned));
+            var scanned = ScanRegion(StatBounds);
+            //Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }
 
         public string[] History() {
-            var scanned = ScanRegion(HistoryBounds, "\n\n");
+            var scanned = ScanRegion(HistoryBounds);
+            //Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }
@@ -127,16 +128,21 @@ namespace Inkybot
 
         }
 
-        private string[] ScanRegion(Rectangle bounds, string delimiter) {
+        private string[] ScanRegion(Rectangle bounds) {
             var image = PreprocessImage(screenshot, bounds);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
             
+            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
 
-            using (var ocrResult = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
-                return ocrResult.GetText().Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
+                var scanned = ocrPage.GetText();
+                var delimiter = scanned.Contains("\n\n") ? "\n\n" : "\n";
+
+                return scanned.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(text => text.Replace("\n", " "))
+                    .ToArray();
             }
         }
 

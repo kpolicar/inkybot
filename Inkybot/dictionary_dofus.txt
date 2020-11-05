@@ -43,3 +43,4 @@ weapon 43
 HP 44
 restored 45
 to 46
+Failure 47

@@ -6,6 +6,8 @@ namespace Inkybot
 {
     public struct StatChanged
     {
+        public static StatChanged Failure => new StatChanged(default, 0);
+        
         public Stat stat;
         public int value;
 
@@ -29,7 +31,7 @@ namespace Inkybot
 
         public float ChangeInSink {
             get {
-                if (sinkChanged)
+                if (!sinkChanged)
                     return 0f;
                 if (attempted.Equals(default(StatChanged)))
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");

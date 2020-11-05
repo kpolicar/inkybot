@@ -46,7 +46,6 @@ namespace Inkybot
         }
 
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
-
             var takeScreenshot = new ThreadStart(delegate {
                 var scan = new DofusScreenScan(hWndDocked, true);
                 scan.History();

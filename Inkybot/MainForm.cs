@@ -21,8 +21,6 @@ namespace Inkybot
         private readonly ApiDataProvider api;
         private readonly DofusMagingJob magingJob;
 
-        private Task<bool> tokenRefresh;
-
         public MainForm() {
             InitializeComponent();
             toastPanel.Hide();

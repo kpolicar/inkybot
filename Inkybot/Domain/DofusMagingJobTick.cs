@@ -19,9 +19,6 @@ namespace Inkybot
         public void Execute() {
             job.dataProvider.FetchData();
             switch (job.state) {
-                case DofusMagingJobState.DOING_FIRST_COMBINE:
-                    DoInitialMageAction();
-                    break;
                 case DofusMagingJobState.STANDARD:
                     DoMainMageAction();
                     break;
@@ -29,13 +26,6 @@ namespace Inkybot
                     DoHistoryCheckForChanges();
                     break;
             }
-        }
-
-        private void DoInitialMageAction() {
-            var action = job.previousAction = DoAction();
-
-            if (action is Combine) job.state = DofusMagingJobState.STANDARD;
-            Thread.Sleep(300);
         }
 
         private void DoMainMageAction() {
@@ -49,14 +39,17 @@ namespace Inkybot
         }
 
         private void DoHistoryCheckForChanges() {
-            if (!job.historyCheckTimeout.Enabled) job.historyCheckTimeout.Start();
+            if (!job.historyCheckTimeout.IsRunning)
+                job.historyCheckTimeout.Restart();
+            if (job.historyCheckTimeout.ElapsedMilliseconds > 5000)
+                HandleHistoryCheckTimeout();
             
             var itemHistory = job.history.Analyse(job.dataProvider.History());
 
             var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
 
             if (!historyHasChanged) {
-                Thread.Sleep(50);
+                Thread.Sleep(300);
             } else {
                 var historyRecord = itemHistory.history.Last();
                 ChangeSinkFromLastAction(historyRecord);
@@ -64,6 +57,13 @@ namespace Inkybot
                 job.state = DofusMagingJobState.STANDARD;
                 job.historyCheckTimeout.Stop();
             }
+        }
+
+        private void HandleHistoryCheckTimeout() {
+            job.historyCheckTimeout.Stop();
+            throw new HistoryChangeCheckTimeoutException(
+                "Mage history was expected to change within 5 seconds, but did not. " +
+                "This may be the result of a poor internet connection");
         }
 
         // Todo: We can also check if the expected result is correct by comparing sink change.
