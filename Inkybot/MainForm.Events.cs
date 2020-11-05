@@ -19,17 +19,6 @@ namespace Inkybot
             };
         }
         
-        private void ocrIndicatorPanel_VisibleChanged(object sender, EventArgs e) {
-            if (ocrIndicatorPanel.Visible)
-                paintTimer.Start();
-            else
-                paintTimer.Stop();
-        }
-
-        private void ocrIndicatorPanel_Click(object sender, EventArgs e) {
-            ocrIndicatorPanel.Hide();
-        }
-
         private void MainForm_VisibleChanged(object sender, EventArgs e) {
             if (!Visible && magingJob.IsMaging)
                 magingJob.StopMage();

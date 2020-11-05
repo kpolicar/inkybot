@@ -111,7 +111,6 @@
         <Compile Include="Api\Auth.cs">
           <Link>Api\Auth.cs</Link>
         </Compile>
-        <Compile Include="Controls\Rectangle.cs" />
         <Compile Include="Debugging\WelcomeDialogue.cs" />
         <Compile Include="DofusPathForm.cs">
           <SubType>Form</SubType>

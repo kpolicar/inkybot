@@ -29,7 +29,6 @@ namespace Inkybot
             mageInfoPanel.Hide();
             debugScreenshotButton.Hide();
             
-            ocrIndicatorPanel.BringToFront();
             InitializeDofusClient();
 
             Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
@@ -61,22 +60,6 @@ namespace Inkybot
                 toastPanel.Show();
                 toastPanel.BringToFront();
             }));
-        }
-        
-        private void paintOcrIndicators(object sender, EventArgs eventArgs) {
-            var g = ocrIndicatorPanel.CreateGraphics();
-            var width = ocrIndicatorPanel.Width;
-            var height = ocrIndicatorPanel.Height;
-
-            var pen = new Pen(Color.Red, 2);
-
-            var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatBoundsMeasurement, width, height);
-            var historyRect = Responsive.ResponsiveRectangle(DofusScreenScan.HistoryBoundsMeasurement, width, height);
-            
-            g.DrawRectangle(pen, statRect);
-            g.DrawRectangle(pen, historyRect);
-            pen.Dispose();
-            g.Dispose();
         }
     }
 }
