@@ -33,6 +33,7 @@ namespace Inkybot
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dofusClientPanel = new System.Windows.Forms.Panel();
+            this.ocrIndicatorPanelRect1 = new System.Windows.Forms.Panel();
             this.toastPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toastIconPictureBox = new System.Windows.Forms.PictureBox();
             this.toastLabel = new System.Windows.Forms.Label();
@@ -44,8 +45,8 @@ namespace Inkybot
             this.statsButton = new System.Windows.Forms.Button();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.helpButton = new System.Windows.Forms.Button();
-            this.debugButton = new System.Windows.Forms.Button();
             this.debugScreenshotButton = new System.Windows.Forms.Button();
+            this.debugButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
@@ -57,6 +58,7 @@ namespace Inkybot
             this.ocrIndicatorPanel = new Inkybot.Controls.TransparentPanel();
             this.paintTimer = new System.Windows.Forms.Timer(this.components);
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
+            this.dofusClientPanel.SuspendLayout();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
@@ -70,12 +72,21 @@ namespace Inkybot
             // dofusClientPanel
             // 
             this.dofusClientPanel.AutoSize = true;
+            this.dofusClientPanel.Controls.Add(this.ocrIndicatorPanelRect1);
             this.dofusClientPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dofusClientPanel.Location = new System.Drawing.Point(0, 0);
             this.dofusClientPanel.Margin = new System.Windows.Forms.Padding(0);
             this.dofusClientPanel.Name = "dofusClientPanel";
             this.dofusClientPanel.Size = new System.Drawing.Size(1083, 590);
             this.dofusClientPanel.TabIndex = 0;
+            // 
+            // ocrIndicatorPanelRect1
+            // 
+            this.ocrIndicatorPanelRect1.BackColor = System.Drawing.Color.Black;
+            this.ocrIndicatorPanelRect1.Location = new System.Drawing.Point(186, 95);
+            this.ocrIndicatorPanelRect1.Name = "ocrIndicatorPanelRect1";
+            this.ocrIndicatorPanelRect1.Size = new System.Drawing.Size(2, 446);
+            this.ocrIndicatorPanelRect1.TabIndex = 0;
             // 
             // toastPanel
             // 
@@ -229,23 +240,6 @@ namespace Inkybot
             this.helpButton.UseVisualStyleBackColor = false;
             this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
             // 
-            // debugButton
-            // 
-            this.debugButton.AutoSize = true;
-            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.debugButton.FlatAppearance.BorderSize = 0;
-            this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.debugButton.Location = new System.Drawing.Point(0, 65);
-            this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.debugButton.Name = "debugButton";
-            this.debugButton.Size = new System.Drawing.Size(113, 45);
-            this.debugButton.TabIndex = 4;
-            this.debugButton.Text = "DEBUG";
-            this.debugButton.UseVisualStyleBackColor = false;
-            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
-            // 
             // debugScreenshotButton
             // 
             this.debugScreenshotButton.AutoSize = true;
@@ -254,7 +248,7 @@ namespace Inkybot
             this.debugScreenshotButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.debugScreenshotButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.debugScreenshotButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.debugScreenshotButton.Location = new System.Drawing.Point(0, 17);
+            this.debugScreenshotButton.Location = new System.Drawing.Point(0, 65);
             this.debugScreenshotButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.debugScreenshotButton.Name = "debugScreenshotButton";
             this.debugScreenshotButton.Size = new System.Drawing.Size(113, 45);
@@ -262,6 +256,23 @@ namespace Inkybot
             this.debugScreenshotButton.Text = "SCREENSHOT";
             this.debugScreenshotButton.UseVisualStyleBackColor = false;
             this.debugScreenshotButton.Click += new System.EventHandler(this.debugScreenshotButton_Click);
+            // 
+            // debugButton
+            // 
+            this.debugButton.AutoSize = true;
+            this.debugButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.debugButton.FlatAppearance.BorderSize = 0;
+            this.debugButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.debugButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.debugButton.Location = new System.Drawing.Point(0, 17);
+            this.debugButton.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.debugButton.Name = "debugButton";
+            this.debugButton.Size = new System.Drawing.Size(113, 45);
+            this.debugButton.TabIndex = 4;
+            this.debugButton.Text = "DEBUG";
+            this.debugButton.UseVisualStyleBackColor = false;
+            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // mageInfoPanel
             // 
@@ -404,6 +415,7 @@ namespace Inkybot
             this.Text = "Inkybot";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
+            this.dofusClientPanel.ResumeLayout(false);
             this.toastPanel.ResumeLayout(false);
             this.toastPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).EndInit();
@@ -420,6 +432,8 @@ namespace Inkybot
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Panel ocrIndicatorPanelRect1;
 
         private System.Windows.Forms.Button debugScreenshotButton;
 

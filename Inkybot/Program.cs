@@ -1,8 +1,4 @@
-﻿#if false
-#define DEBUG
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;

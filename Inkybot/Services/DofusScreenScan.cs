@@ -13,6 +13,7 @@ using Inkybot.Contracts;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot

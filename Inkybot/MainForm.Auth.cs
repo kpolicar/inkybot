@@ -33,7 +33,10 @@ namespace Inkybot
             
             var form = new WelcomeDialogue(this, message);
             form.PathChanged += (sender, args) => InitializeDofusClient();
-            
+            #if DEBUG
+            Debugging.WelcomeDialogue.Bind(form);
+            #endif
+
             var result = form.ShowDialog(this);
             var loginSuccess = result == DialogResult.OK;
 

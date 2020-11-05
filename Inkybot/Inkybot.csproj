@@ -111,6 +111,8 @@
         <Compile Include="Api\Auth.cs">
           <Link>Api\Auth.cs</Link>
         </Compile>
+        <Compile Include="Controls\Rectangle.cs" />
+        <Compile Include="Debugging\WelcomeDialogue.cs" />
         <Compile Include="DofusPathForm.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -132,6 +134,7 @@
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />
         <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
+        <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
         <Compile Include="MainForm.Auth.cs">
