@@ -63,6 +63,7 @@ namespace Inkybot
         }
 
         public void BeginMage() {
+            if (IsMaging) return;
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
 
             job = new Thread(DoMage);
@@ -71,6 +72,8 @@ namespace Inkybot
         }
 
         public void StopMage() {
+            if (!IsMaging) return;
+            
             IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
             historyCheckTimeout.Reset();

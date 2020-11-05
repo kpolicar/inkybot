@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
@@ -43,7 +44,6 @@ namespace Inkybot
         private static bool init;
         private readonly IntPtr handle;
         private readonly Image screenshot;
-        private TextInfo text;
         private bool saveToDisk;
 
         public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
@@ -68,14 +68,22 @@ namespace Inkybot
         }
 
         public string[] Stats() {
-            var scanned = ScanRegion(StatBounds);
+            var scanned = ScanRegion(StatBounds,
+            text => {
+                return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            });
             //Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }
 
         public string[] History() {
-            var scanned = ScanRegion(HistoryBounds);
+            var scanned = ScanRegion(
+                HistoryBounds,
+                text => {
+                    var delimiter = text.Contains("\n\n") ? "\n\n" : "\n";
+                    return text.Split(new[] {delimiter}, StringSplitOptions.RemoveEmptyEntries);
+                });
             //Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
@@ -128,7 +136,7 @@ namespace Inkybot
 
         }
 
-        private string[] ScanRegion(Rectangle bounds) {
+        private string[] ScanRegion(Rectangle bounds, Func<string, string[]> split) {
             var image = PreprocessImage(screenshot, bounds);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
@@ -138,9 +146,9 @@ namespace Inkybot
             using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
 
                 var scanned = ocrPage.GetText();
-                var delimiter = scanned.Contains("\n\n") ? "\n\n" : "\n";
+                var textLines = split(scanned);
 
-                return scanned.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries)
+                return textLines
                     .Select(text => text.Replace("\n", " "))
                     .ToArray();
             }

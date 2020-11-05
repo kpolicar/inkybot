@@ -17,9 +17,9 @@ namespace Inkybot.Adapters
 
         public IEnumerable<Item.ItemStat> ToItemStats() {
             return statLines.Select(mageEntry => {
-                var changes = SegmentMageHistoryEntry(mageEntry);
+                var changes = SegmentItemStatLine(mageEntry);
 
-                return HistoryEntrySegmentToStatChange(changes.Groups);
+                return StatLineToItemStat(changes.Groups);
             });
         }
 
@@ -38,9 +38,9 @@ namespace Inkybot.Adapters
             }
         }
         
-        private Item.ItemStat HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
+        private Item.ItemStat StatLineToItemStat(GroupCollection historyEntrySegments) {
             if (historyEntrySegments.Count != 5)
-                throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
+                throw new CouldNotSegmentStatLineException("Error occured trying to segment stat line");
 
             var (min, max, value) = GetMinMaxValueFromScanResult(historyEntrySegments);
 
@@ -50,8 +50,8 @@ namespace Inkybot.Adapters
             return new Item.ItemStat(stat, value, min, max);
         }
 
-        private Match SegmentMageHistoryEntry(string historyLine) {
-            var segments = Regex.Match(historyLine, @"^(\d+) (\d+) (\d*) ?(%? ?[A-z ]+)$");
+        private Match SegmentItemStatLine(string historyLine) {
+            var segments = Regex.Match(historyLine, @"^(\d+|-) (\d+|-) (\d*) ?(%? ?[A-z ]+)$");
             return segments;
         }
     }

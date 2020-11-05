@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading;
 using System.Timers;
 using Inkybot.Actions;
+using Inkybot.Contracts;
 using Inkybot.Exceptions;
 
 namespace Inkybot
 {
     internal class DofusMagingJobTick
     {
+        private readonly ActionFactory actions;
         private readonly DofusMagingJob job;
 
         public DofusMagingJobTick(DofusMagingJob job) {
             this.job = job;
+            actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
         }
 
         public void Execute() {
@@ -34,8 +37,15 @@ namespace Inkybot
 
             var action = job.previousAction = DoAction();
 
-            if (action is Combine) job.state = DofusMagingJobState.EXECUTING_COMBINE;
             Thread.Sleep(300);
+            if (action is Combine combine) {
+                job.state = DofusMagingJobState.EXECUTING_COMBINE;
+                PersistRuneOnTable(combine);
+            }
+        }
+
+        private void PersistRuneOnTable(Combine action) {
+            job.actions.Execute(actions.SelectRune(action.target));
         }
 
         private void DoHistoryCheckForChanges() {
