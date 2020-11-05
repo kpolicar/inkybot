@@ -49,7 +49,7 @@ namespace Inkybot.Adapters
         }
 
         private MatchCollection SegmentMageHistoryEntry(string historyLine) {
-            var segments = Regex.Matches(historyLine, @"(-?\d+) ?(%? ?[A-z ]+[A-z])");
+            var segments = Regex.Matches(historyLine, @"(-?\d+) ?(%? ?[A-z( ]+[A-z)])");
             return segments;
         }
 

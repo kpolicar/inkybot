@@ -12,6 +12,10 @@ namespace Inkybot
 {
     public class DofusMagingJob
     {
+        public event EventHandler Started;
+        public event EventHandler Stopped;
+        public event EventHandler<MagingJobFinishedEventArgs> Finished;
+        public event EventHandler<SinkChangedEventArgs> SinkChanged;
         public event EventHandler<MagingJobErrorEventArgs> Error;
 
         internal ActionHandler actions;
@@ -51,10 +55,6 @@ namespace Inkybot
             }
         }
 
-        public event EventHandler Started;
-        public event EventHandler Stopped;
-        public event EventHandler<SinkChangedEventArgs> SinkChanged;
-
         public void BeginMage(bool begin) {
             if (begin)
                 BeginMage();
@@ -88,6 +88,9 @@ namespace Inkybot
             IsMaging = true;
             dataProvider.FetchData();
             var stats = dataProvider.Stats();
+            // Someone could've stopped maging during stats gather
+            if (!IsMaging)
+                return;
             IsMaging = false; // We dont want to stop maging on the initial config change 
             configManager.EnforceConfigSetForStats(stats);
             IsMaging = true;
@@ -107,6 +110,8 @@ namespace Inkybot
             } finally {
                 StopMage();
             }
+            
+            Finished?.Invoke(this, new MagingJobFinishedEventArgs());
         }
         
         public void OnConfigChanged(object sender, ConfigChangedEventArgs eventArgs) {

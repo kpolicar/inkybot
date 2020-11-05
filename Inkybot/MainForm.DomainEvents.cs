@@ -9,6 +9,7 @@ namespace Inkybot
         private void MainFormDomainEvents() {
             magingJob.Started += OnMagingStarted;
             magingJob.Stopped += OnMagingStopped;
+            magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
         }
 
@@ -18,14 +19,21 @@ namespace Inkybot
         
         private void OnMagingStopped(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Text = "Start";
+                toggleMageButton.Text = "START";
+                toggleMageButton.Enabled = false;
                 mageInfoPanel.Hide();
+            }));
+        }
+
+        private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
+            Invoke(new MethodInvoker(delegate {
+                toggleMageButton.Enabled = true;
             }));
         }
 
         private void OnMagingStarted(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Text = "Stop";
+                toggleMageButton.Text = "STOP";
                 mageInfoPanel.Show();
             }));
         }

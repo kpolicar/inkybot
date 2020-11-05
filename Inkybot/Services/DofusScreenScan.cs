@@ -22,7 +22,7 @@ namespace Inkybot
     public class DofusScreenScan
     {
         public static readonly Responsive.Measurement HistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 120, 590, 835),
+            Rectangle = Rect.FromCoords(346, 117, 590, 835),
             Width = 1920,
             Height = 1017
         };
@@ -72,7 +72,7 @@ namespace Inkybot
             text => {
                 return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             });
-            //Debug.WriteLine(string.Join("\n", scanned));
+            Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }
@@ -81,10 +81,12 @@ namespace Inkybot
             var scanned = ScanRegion(
                 HistoryBounds,
                 text => {
-                    var delimiter = text.Contains("\n\n") ? "\n\n" : "\n";
-                    return text.Split(new[] {delimiter}, StringSplitOptions.RemoveEmptyEntries);
+                    
+                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
+                        .Select(result => result.Replace("\n", " "))
+                        .ToArray();
                 });
-            //Debug.WriteLine(string.Join("\n", scanned));
+            Debug.WriteLine(string.Join("\n", scanned));
 
             return scanned;
         }

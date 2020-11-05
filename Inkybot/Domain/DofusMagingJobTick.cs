@@ -21,6 +21,7 @@ namespace Inkybot
 
         public void Execute() {
             job.dataProvider.FetchData();
+
             switch (job.state) {
                 case DofusMagingJobState.STANDARD:
                     DoMainMageAction();
@@ -32,12 +33,9 @@ namespace Inkybot
         }
 
         private void DoMainMageAction() {
-            var itemHistory = job.history.Analyse(job.dataProvider.History());
-            job.previousHistory = itemHistory;
-
             var action = job.previousAction = DoAction();
 
-            Thread.Sleep(300);
+            // Have to check if user has stopped maging during this sleep
             if (action is Combine combine) {
                 job.state = DofusMagingJobState.EXECUTING_COMBINE;
                 PersistRuneOnTable(combine);
@@ -73,7 +71,7 @@ namespace Inkybot
             job.historyCheckTimeout.Stop();
             throw new HistoryChangeCheckTimeoutException(
                 "Mage history was expected to change within 5 seconds, but did not. " +
-                "This may be the result of a poor internet connection");
+                "This may be the result of a poor internet connection or you may have run out of runes.");
         }
 
         // Todo: We can also check if the expected result is correct by comparing sink change.
@@ -115,8 +113,14 @@ namespace Inkybot
             var itemStats = job.dataProvider.Stats();
             if (itemStats.Length <= 0)
                 throw new NoItemToMageFoundException("Could not gather item stats from screen");
-            
+
             var action = job.magus.ResolveAction(itemStats, job.previousAction);
+            
+            if (action is Combine) {
+                var itemHistory = job.history.Analyse(job.dataProvider.History());
+                job.previousHistory = itemHistory;
+            }
+            
             job.actions.Execute(action);
             return action;
         }

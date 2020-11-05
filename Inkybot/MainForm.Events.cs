@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Actions;
+using Inkybot.Exceptions;
 
 
 namespace Inkybot
@@ -48,11 +50,24 @@ namespace Inkybot
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
             var takeScreenshot = new ThreadStart(delegate {
                 var scan = new DofusScreenScan(hWndDocked, true);
-                scan.History();
-                scan.Stats();
+
+                for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
+                    try {
+                        scan.History();
+                        scan.Stats();
+                        break;
+                    } catch (OcrEngineNotReadyYetException) {
+                    }
+                    numOfTries++;
+                }
+
+                Invoke(new MethodInvoker(delegate {
+                    debugScreenshotButton.Enabled = true;
+                }));
             });
             
             new Thread(takeScreenshot).Start();
+            debugScreenshotButton.Enabled = false;
         }
     }
 }

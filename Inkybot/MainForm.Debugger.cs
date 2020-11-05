@@ -52,7 +52,7 @@ namespace Inkybot
             OnResize(EventArgs.Empty);
 
             #if DEBUG
-            m_GlobalHook = Hook.GlobalEvents();
+            m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
             m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
             #endif
         }
@@ -77,7 +77,7 @@ namespace Inkybot
             
             ocrIndicatorStatsRectangleBottomHorizontal.Top = statRect.Bottom;
             ocrIndicatorStatsRectangleBottomHorizontal.Left = statRect.Left;
-            ocrIndicatorStatsRectangleBottomHorizontal.Width = statRect.Width+3;
+            ocrIndicatorStatsRectangleBottomHorizontal.Width = statRect.Width+2;
 
             ocrIndicatorHistoryRectangleLeftVertical.Top = historyRect.Top;
             ocrIndicatorHistoryRectangleLeftVertical.Left = historyRect.Left;

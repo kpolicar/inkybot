@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 
+#if DEBUG
 namespace Inkybot.Debugging
 {
     public class WelcomeDialogue
@@ -18,3 +19,4 @@ namespace Inkybot.Debugging
         }
     }
 }
+#endif

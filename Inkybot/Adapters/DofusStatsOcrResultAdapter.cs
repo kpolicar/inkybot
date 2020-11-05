@@ -51,7 +51,7 @@ namespace Inkybot.Adapters
         }
 
         private Match SegmentItemStatLine(string historyLine) {
-            var segments = Regex.Match(historyLine, @"^(\d+|-) (\d+|-) (\d*) ?(%? ?[A-z ]+)$");
+            var segments = Regex.Match(historyLine, @"^(\d+|-) (\d+|-) (\d*) ?(%? ?[A-z() ]+)$");
             return segments;
         }
     }

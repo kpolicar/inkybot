@@ -379,75 +379,75 @@ namespace Inkybot
             // 
             // ocrIndicatorStatsRectangleLeftVertical
             // 
-            this.ocrIndicatorStatsRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorStatsRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorStatsRectangleLeftVertical.Location = new System.Drawing.Point(100, 100);
             this.ocrIndicatorStatsRectangleLeftVertical.Name = "ocrIndicatorStatsRectangleLeftVertical";
-            this.ocrIndicatorStatsRectangleLeftVertical.Size = new System.Drawing.Size(3, 100);
+            this.ocrIndicatorStatsRectangleLeftVertical.Size = new System.Drawing.Size(2, 100);
             this.ocrIndicatorStatsRectangleLeftVertical.TabIndex = 0;
             this.ocrIndicatorStatsRectangleLeftVertical.Visible = false;
             
             // 
             // ocrIndicatorStatsRectangleRightVertical
             // 
-            this.ocrIndicatorStatsRectangleRightVertical.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorStatsRectangleRightVertical.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorStatsRectangleRightVertical.Location = new System.Drawing.Point(200, 100);
             this.ocrIndicatorStatsRectangleRightVertical.Name = "ocrIndicatorStatsRectangleRightVertical";
-            this.ocrIndicatorStatsRectangleRightVertical.Size = new System.Drawing.Size(3, 100);
+            this.ocrIndicatorStatsRectangleRightVertical.Size = new System.Drawing.Size(2, 100);
             this.ocrIndicatorStatsRectangleRightVertical.TabIndex = 0;
             this.ocrIndicatorStatsRectangleRightVertical.Visible = false;
             // 
             // ocrIndicatorStatsRectangleTopHorizontal
             // 
-            this.ocrIndicatorStatsRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorStatsRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorStatsRectangleTopHorizontal.Location = new System.Drawing.Point(100, 100);
             this.ocrIndicatorStatsRectangleTopHorizontal.Name = "ocrIndicatorStatsRectangleTopHorizontal";
-            this.ocrIndicatorStatsRectangleTopHorizontal.Size = new System.Drawing.Size(100, 3);
+            this.ocrIndicatorStatsRectangleTopHorizontal.Size = new System.Drawing.Size(100, 2);
             this.ocrIndicatorStatsRectangleTopHorizontal.TabIndex = 0;
             this.ocrIndicatorStatsRectangleTopHorizontal.Visible = false;
             // 
             // ocrIndicatorStatsRectangleBottomHorizontal
             // 
-            this.ocrIndicatorStatsRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorStatsRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorStatsRectangleBottomHorizontal.Location = new System.Drawing.Point(100, 200);
             this.ocrIndicatorStatsRectangleBottomHorizontal.Name = "ocrIndicatorStatsRectangleBottomHorizontal";
-            this.ocrIndicatorStatsRectangleBottomHorizontal.Size = new System.Drawing.Size(103, 3);
+            this.ocrIndicatorStatsRectangleBottomHorizontal.Size = new System.Drawing.Size(102, 2);
             this.ocrIndicatorStatsRectangleBottomHorizontal.TabIndex = 0;
             this.ocrIndicatorStatsRectangleBottomHorizontal.Visible = false;
             // 
             // ocrIndicatorHistoryRectangleLeftVertical
             // 
-            this.ocrIndicatorHistoryRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorHistoryRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorHistoryRectangleLeftVertical.Location = new System.Drawing.Point(100, 100);
             this.ocrIndicatorHistoryRectangleLeftVertical.Name = "ocrIndicatorHistoryRectangleLeftVertical";
-            this.ocrIndicatorHistoryRectangleLeftVertical.Size = new System.Drawing.Size(3, 100);
+            this.ocrIndicatorHistoryRectangleLeftVertical.Size = new System.Drawing.Size(2, 100);
             this.ocrIndicatorHistoryRectangleLeftVertical.TabIndex = 0;
             this.ocrIndicatorHistoryRectangleLeftVertical.Visible = false;
             
             // 
             // ocrIndicatorHistoryRectangleRightVertical
             // 
-            this.ocrIndicatorHistoryRectangleRightVertical.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorHistoryRectangleRightVertical.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorHistoryRectangleRightVertical.Location = new System.Drawing.Point(200, 100);
             this.ocrIndicatorHistoryRectangleRightVertical.Name = "ocrIndicatorHistoryRectangleRightVertical";
-            this.ocrIndicatorHistoryRectangleRightVertical.Size = new System.Drawing.Size(3, 100);
+            this.ocrIndicatorHistoryRectangleRightVertical.Size = new System.Drawing.Size(2, 100);
             this.ocrIndicatorHistoryRectangleRightVertical.TabIndex = 0;
             this.ocrIndicatorHistoryRectangleRightVertical.Visible = false;
             // 
             // ocrIndicatorHistoryRectangleTopHorizontal
             // 
-            this.ocrIndicatorHistoryRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorHistoryRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorHistoryRectangleTopHorizontal.Location = new System.Drawing.Point(100, 100);
             this.ocrIndicatorHistoryRectangleTopHorizontal.Name = "ocrIndicatorHistoryRectangleTopHorizontal";
-            this.ocrIndicatorHistoryRectangleTopHorizontal.Size = new System.Drawing.Size(100, 3);
+            this.ocrIndicatorHistoryRectangleTopHorizontal.Size = new System.Drawing.Size(100, 2);
             this.ocrIndicatorHistoryRectangleTopHorizontal.TabIndex = 0;
             this.ocrIndicatorHistoryRectangleTopHorizontal.Visible = false;
             // 
             // ocrIndicatorHistoryRectangleBottomHorizontal
             // 
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Desktop;
+            this.ocrIndicatorHistoryRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Control;
             this.ocrIndicatorHistoryRectangleBottomHorizontal.Location = new System.Drawing.Point(100, 200);
             this.ocrIndicatorHistoryRectangleBottomHorizontal.Name = "ocrIndicatorHistoryRectangleBottomHorizontal";
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.Size = new System.Drawing.Size(103, 3);
+            this.ocrIndicatorHistoryRectangleBottomHorizontal.Size = new System.Drawing.Size(102, 2);
             this.ocrIndicatorHistoryRectangleBottomHorizontal.TabIndex = 0;
             this.ocrIndicatorHistoryRectangleBottomHorizontal.Visible = false;
             // 
