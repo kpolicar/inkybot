@@ -93,6 +93,12 @@
         <Compile Include="Api\Auth.cs">
           <Link>Api\Auth.cs</Link>
         </Compile>
+        <Compile Include="Controls\Rectangle.cs">
+          <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Controls\Rectangle.Designer.cs">
+          <DependentUpon>Rectangle.cs</DependentUpon>
+        </Compile>
         <Compile Include="Debugging\WelcomeDialogue.cs" />
         <Compile Include="DofusPathForm.cs">
           <SubType>Form</SubType>
@@ -129,7 +135,6 @@
         <Compile Include="Contracts\IItemHistoryAnalyzer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Mouse.cs" />
-        <Compile Include="Controls\TransparentPanel.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />

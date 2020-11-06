@@ -31,23 +31,11 @@ namespace Inkybot
             debugScreenshotButton.Show();
             Resize += onWindowResize;
             
-            ocrIndicatorStatsRectangleLeftVertical.Show();
-            ocrIndicatorStatsRectangleRightVertical.Show();
-            ocrIndicatorStatsRectangleTopHorizontal.Show();
-            ocrIndicatorStatsRectangleBottomHorizontal.Show();
-            ocrIndicatorHistoryRectangleLeftVertical.Show();
-            ocrIndicatorHistoryRectangleRightVertical.Show();
-            ocrIndicatorHistoryRectangleTopHorizontal.Show();
-            ocrIndicatorHistoryRectangleBottomHorizontal.Show();
+            historyOcrIndicatorRectangle.Show();
+            statsOcrIndicatorRectangle.Show();
             
-            ocrIndicatorStatsRectangleLeftVertical.BringToFront();
-            ocrIndicatorStatsRectangleRightVertical.BringToFront();
-            ocrIndicatorStatsRectangleTopHorizontal.BringToFront();
-            ocrIndicatorStatsRectangleBottomHorizontal.BringToFront();
-            ocrIndicatorHistoryRectangleLeftVertical.BringToFront();
-            ocrIndicatorHistoryRectangleRightVertical.BringToFront();
-            ocrIndicatorHistoryRectangleTopHorizontal.BringToFront();
-            ocrIndicatorHistoryRectangleBottomHorizontal.BringToFront();
+            historyOcrIndicatorRectangle.BringToFront();
+            statsOcrIndicatorRectangle.BringToFront();
             
             OnResize(EventArgs.Empty);
 
@@ -63,37 +51,8 @@ namespace Inkybot
             var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatBoundsMeasurement, width, height);
             var historyRect = Responsive.ResponsiveRectangle(DofusScreenScan.HistoryBoundsMeasurement, width, height);
 
-            ocrIndicatorStatsRectangleLeftVertical.Top = statRect.Top;
-            ocrIndicatorStatsRectangleLeftVertical.Left = statRect.Left;
-            ocrIndicatorStatsRectangleLeftVertical.Height = statRect.Height;
-            
-            ocrIndicatorStatsRectangleRightVertical.Top = statRect.Top;
-            ocrIndicatorStatsRectangleRightVertical.Left = statRect.Right;
-            ocrIndicatorStatsRectangleRightVertical.Height = statRect.Height;
-            
-            ocrIndicatorStatsRectangleTopHorizontal.Top = statRect.Top;
-            ocrIndicatorStatsRectangleTopHorizontal.Left = statRect.Left;
-            ocrIndicatorStatsRectangleTopHorizontal.Width = statRect.Width;
-            
-            ocrIndicatorStatsRectangleBottomHorizontal.Top = statRect.Bottom;
-            ocrIndicatorStatsRectangleBottomHorizontal.Left = statRect.Left;
-            ocrIndicatorStatsRectangleBottomHorizontal.Width = statRect.Width+2;
-
-            ocrIndicatorHistoryRectangleLeftVertical.Top = historyRect.Top;
-            ocrIndicatorHistoryRectangleLeftVertical.Left = historyRect.Left;
-            ocrIndicatorHistoryRectangleLeftVertical.Height = historyRect.Height;
-            
-            ocrIndicatorHistoryRectangleRightVertical.Top = historyRect.Top;
-            ocrIndicatorHistoryRectangleRightVertical.Left = historyRect.Right;
-            ocrIndicatorHistoryRectangleRightVertical.Height = historyRect.Height;
-            
-            ocrIndicatorHistoryRectangleTopHorizontal.Top = historyRect.Top;
-            ocrIndicatorHistoryRectangleTopHorizontal.Left = historyRect.Left;
-            ocrIndicatorHistoryRectangleTopHorizontal.Width = historyRect.Width;
-            
-            ocrIndicatorHistoryRectangleBottomHorizontal.Top = historyRect.Bottom;
-            ocrIndicatorHistoryRectangleBottomHorizontal.Left = historyRect.Left;
-            ocrIndicatorHistoryRectangleBottomHorizontal.Width = historyRect.Width+3;
+            statsOcrIndicatorRectangle.Bounds = statRect;
+            historyOcrIndicatorRectangle.Bounds = historyRect;
         }
         
         private void StopDebugging() {
@@ -104,14 +63,8 @@ namespace Inkybot
             #endif
             Resize -= onWindowResize;
             
-            ocrIndicatorStatsRectangleLeftVertical.Hide();
-            ocrIndicatorStatsRectangleRightVertical.Hide();
-            ocrIndicatorStatsRectangleTopHorizontal.Hide();
-            ocrIndicatorStatsRectangleBottomHorizontal.Hide();
-            ocrIndicatorHistoryRectangleLeftVertical.Hide();
-            ocrIndicatorHistoryRectangleRightVertical.Hide();
-            ocrIndicatorHistoryRectangleTopHorizontal.Hide();
-            ocrIndicatorHistoryRectangleBottomHorizontal.Hide();
+            historyOcrIndicatorRectangle.Hide();
+            statsOcrIndicatorRectangle.Hide();
         }
 
 

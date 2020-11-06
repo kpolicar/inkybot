@@ -31,7 +31,7 @@ namespace Inkybot.Api
             
             if (!response.IsSuccessStatusCode)
                 return null;
-
+            
             var result = response.Content.ReadAsStringAsync().Result;
             var authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             var connection = new ApiConnection(authDetails);

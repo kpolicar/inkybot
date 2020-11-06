@@ -54,14 +54,8 @@ namespace Inkybot
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.mousePositionLabel = new System.Windows.Forms.Label();
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
-            this.ocrIndicatorStatsRectangleLeftVertical = new System.Windows.Forms.Panel();
-            this.ocrIndicatorStatsRectangleRightVertical = new System.Windows.Forms.Panel();
-            this.ocrIndicatorStatsRectangleTopHorizontal = new System.Windows.Forms.Panel();
-            this.ocrIndicatorStatsRectangleBottomHorizontal = new System.Windows.Forms.Panel();
-            this.ocrIndicatorHistoryRectangleLeftVertical = new System.Windows.Forms.Panel();
-            this.ocrIndicatorHistoryRectangleRightVertical = new System.Windows.Forms.Panel();
-            this.ocrIndicatorHistoryRectangleTopHorizontal = new System.Windows.Forms.Panel();
-            this.ocrIndicatorHistoryRectangleBottomHorizontal = new System.Windows.Forms.Panel();
+            this.statsOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
+            this.historyOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
             this.dofusClientPanel.SuspendLayout();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
@@ -377,79 +371,23 @@ namespace Inkybot
             this.subscriptionCheckTimer.Interval = 25000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
             // 
-            // ocrIndicatorStatsRectangleLeftVertical
+            // statsOcrIndicatorRectangle
             // 
-            this.ocrIndicatorStatsRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorStatsRectangleLeftVertical.Location = new System.Drawing.Point(100, 100);
-            this.ocrIndicatorStatsRectangleLeftVertical.Name = "ocrIndicatorStatsRectangleLeftVertical";
-            this.ocrIndicatorStatsRectangleLeftVertical.Size = new System.Drawing.Size(2, 100);
-            this.ocrIndicatorStatsRectangleLeftVertical.TabIndex = 0;
-            this.ocrIndicatorStatsRectangleLeftVertical.Visible = false;
-            
+            this.statsOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
+            this.statsOcrIndicatorRectangle.Location = new System.Drawing.Point(323, 89);
+            this.statsOcrIndicatorRectangle.Name = "statsOcrIndicatorRectangle";
+            this.statsOcrIndicatorRectangle.Size = new System.Drawing.Size(284, 284);
+            this.statsOcrIndicatorRectangle.TabIndex = 0;
+            this.statsOcrIndicatorRectangle.Visible = false;
             // 
-            // ocrIndicatorStatsRectangleRightVertical
+            // historyOcrIndicatorRectangle
             // 
-            this.ocrIndicatorStatsRectangleRightVertical.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorStatsRectangleRightVertical.Location = new System.Drawing.Point(200, 100);
-            this.ocrIndicatorStatsRectangleRightVertical.Name = "ocrIndicatorStatsRectangleRightVertical";
-            this.ocrIndicatorStatsRectangleRightVertical.Size = new System.Drawing.Size(2, 100);
-            this.ocrIndicatorStatsRectangleRightVertical.TabIndex = 0;
-            this.ocrIndicatorStatsRectangleRightVertical.Visible = false;
-            // 
-            // ocrIndicatorStatsRectangleTopHorizontal
-            // 
-            this.ocrIndicatorStatsRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorStatsRectangleTopHorizontal.Location = new System.Drawing.Point(100, 100);
-            this.ocrIndicatorStatsRectangleTopHorizontal.Name = "ocrIndicatorStatsRectangleTopHorizontal";
-            this.ocrIndicatorStatsRectangleTopHorizontal.Size = new System.Drawing.Size(100, 2);
-            this.ocrIndicatorStatsRectangleTopHorizontal.TabIndex = 0;
-            this.ocrIndicatorStatsRectangleTopHorizontal.Visible = false;
-            // 
-            // ocrIndicatorStatsRectangleBottomHorizontal
-            // 
-            this.ocrIndicatorStatsRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorStatsRectangleBottomHorizontal.Location = new System.Drawing.Point(100, 200);
-            this.ocrIndicatorStatsRectangleBottomHorizontal.Name = "ocrIndicatorStatsRectangleBottomHorizontal";
-            this.ocrIndicatorStatsRectangleBottomHorizontal.Size = new System.Drawing.Size(102, 2);
-            this.ocrIndicatorStatsRectangleBottomHorizontal.TabIndex = 0;
-            this.ocrIndicatorStatsRectangleBottomHorizontal.Visible = false;
-            // 
-            // ocrIndicatorHistoryRectangleLeftVertical
-            // 
-            this.ocrIndicatorHistoryRectangleLeftVertical.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorHistoryRectangleLeftVertical.Location = new System.Drawing.Point(100, 100);
-            this.ocrIndicatorHistoryRectangleLeftVertical.Name = "ocrIndicatorHistoryRectangleLeftVertical";
-            this.ocrIndicatorHistoryRectangleLeftVertical.Size = new System.Drawing.Size(2, 100);
-            this.ocrIndicatorHistoryRectangleLeftVertical.TabIndex = 0;
-            this.ocrIndicatorHistoryRectangleLeftVertical.Visible = false;
-            
-            // 
-            // ocrIndicatorHistoryRectangleRightVertical
-            // 
-            this.ocrIndicatorHistoryRectangleRightVertical.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorHistoryRectangleRightVertical.Location = new System.Drawing.Point(200, 100);
-            this.ocrIndicatorHistoryRectangleRightVertical.Name = "ocrIndicatorHistoryRectangleRightVertical";
-            this.ocrIndicatorHistoryRectangleRightVertical.Size = new System.Drawing.Size(2, 100);
-            this.ocrIndicatorHistoryRectangleRightVertical.TabIndex = 0;
-            this.ocrIndicatorHistoryRectangleRightVertical.Visible = false;
-            // 
-            // ocrIndicatorHistoryRectangleTopHorizontal
-            // 
-            this.ocrIndicatorHistoryRectangleTopHorizontal.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorHistoryRectangleTopHorizontal.Location = new System.Drawing.Point(100, 100);
-            this.ocrIndicatorHistoryRectangleTopHorizontal.Name = "ocrIndicatorHistoryRectangleTopHorizontal";
-            this.ocrIndicatorHistoryRectangleTopHorizontal.Size = new System.Drawing.Size(100, 2);
-            this.ocrIndicatorHistoryRectangleTopHorizontal.TabIndex = 0;
-            this.ocrIndicatorHistoryRectangleTopHorizontal.Visible = false;
-            // 
-            // ocrIndicatorHistoryRectangleBottomHorizontal
-            // 
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.BackColor = System.Drawing.SystemColors.Control;
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.Location = new System.Drawing.Point(100, 200);
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.Name = "ocrIndicatorHistoryRectangleBottomHorizontal";
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.Size = new System.Drawing.Size(102, 2);
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.TabIndex = 0;
-            this.ocrIndicatorHistoryRectangleBottomHorizontal.Visible = false;
+            this.historyOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
+            this.historyOcrIndicatorRectangle.Location = new System.Drawing.Point(323, 89);
+            this.historyOcrIndicatorRectangle.Name = "statsOcrIndicatorRectangle";
+            this.historyOcrIndicatorRectangle.Size = new System.Drawing.Size(284, 284);
+            this.historyOcrIndicatorRectangle.TabIndex = 0;
+            this.historyOcrIndicatorRectangle.Visible = false;
             // 
             // MainForm
             // 
@@ -459,17 +397,8 @@ namespace Inkybot
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
-            
-            this.Controls.Add(this.ocrIndicatorStatsRectangleLeftVertical);
-            this.Controls.Add(this.ocrIndicatorStatsRectangleRightVertical);
-            this.Controls.Add(this.ocrIndicatorStatsRectangleTopHorizontal);
-            this.Controls.Add(this.ocrIndicatorStatsRectangleBottomHorizontal);
-            
-            this.Controls.Add(this.ocrIndicatorHistoryRectangleLeftVertical);
-            this.Controls.Add(this.ocrIndicatorHistoryRectangleRightVertical);
-            this.Controls.Add(this.ocrIndicatorHistoryRectangleTopHorizontal);
-            this.Controls.Add(this.ocrIndicatorHistoryRectangleBottomHorizontal);
-            
+            this.Controls.Add(this.statsOcrIndicatorRectangle);
+            this.Controls.Add(this.historyOcrIndicatorRectangle);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -494,15 +423,8 @@ namespace Inkybot
             this.PerformLayout();
         }
 
-        private System.Windows.Forms.Panel ocrIndicatorStatsRectangleLeftVertical;
-        private System.Windows.Forms.Panel ocrIndicatorStatsRectangleRightVertical;
-        private System.Windows.Forms.Panel ocrIndicatorStatsRectangleTopHorizontal;
-        private System.Windows.Forms.Panel ocrIndicatorStatsRectangleBottomHorizontal;
-
-        private System.Windows.Forms.Panel ocrIndicatorHistoryRectangleLeftVertical;
-        private System.Windows.Forms.Panel ocrIndicatorHistoryRectangleRightVertical;
-        private System.Windows.Forms.Panel ocrIndicatorHistoryRectangleTopHorizontal;
-        private System.Windows.Forms.Panel ocrIndicatorHistoryRectangleBottomHorizontal;
+        private Inkybot.Controls.Rectangle statsOcrIndicatorRectangle;
+        private Inkybot.Controls.Rectangle historyOcrIndicatorRectangle;
 
         private System.Windows.Forms.Button debugScreenshotButton;
 
