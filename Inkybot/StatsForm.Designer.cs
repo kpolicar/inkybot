@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Inkybot
 {
@@ -21,6 +22,17 @@ namespace Inkybot
             base.Dispose(disposing);
         }
 
+        private void InitializeCustomComponents() {
+            exoCellStyle = new DataGridViewCellStyle();
+            exoCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            exoCellStyle.BackColor = System.Drawing.Color.FromArgb(20, 20, 20);
+            exoCellStyle.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            exoCellStyle.ForeColor = System.Drawing.SystemColors.Control;
+            exoCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            exoCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(20, 20, 20);
+            exoCellStyle.WrapMode = DataGridViewTriState.True;
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -34,7 +46,7 @@ namespace Inkybot
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StatColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.addExoButton = new System.Windows.Forms.Button();
@@ -57,15 +69,15 @@ namespace Inkybot
             // 
             // StatColumn
             // 
+            this.StatColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.StatColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StatColumn.HeaderText = "Stat";
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
-            this.StatColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -161,10 +173,11 @@ namespace Inkybot
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 
         #endregion
-
+        
+        private DataGridViewCellStyle exoCellStyle;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ValueColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn StatColumn;
     }
 }

@@ -13,14 +13,14 @@ namespace Inkybot.Domain.Repositories
             Stats = stats;
         }
         
-        public ItemStat[] Standard =>
+        public ItemStat[] StandardStats =>
             Stats.Where(stat => !stat.Exo).ToArray();
         
-        public ItemStat[] Exos =>
+        public ItemStat[] ExoStats =>
             Stats.Where(stat => stat.Exo).ToArray();
 
         public IEnumerator<ItemStat> GetEnumerator() {
-            return (IEnumerator<ItemStat>) Stats.GetEnumerator();
+            return Stats.Select(stat => stat).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

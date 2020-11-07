@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
+using Inkybot.Resources;
 using Inkybot.Services;
 
 namespace Inkybot
@@ -18,13 +19,17 @@ namespace Inkybot
         private DofusMagingJob magingJob;
         private MainForm mainForm;
         private ConfigManager configManager;
+        private bool hasExoRows;
 
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
+            InitializeCustomComponents();
             this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+
+            StatColumn.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
@@ -49,22 +54,41 @@ namespace Inkybot
         }
 
         private bool DataGridViewMatchesItem(ItemStatRepository itemStats) {
-            if (itemStats.Length != dataGridView1.Rows.Count) return false;
+            var configuredCount = dataGridView1.Rows.Count;
+            if (itemStats.Length > configuredCount)
+                return false;
 
-            for (var i = 0; i < itemStats.Length; i++) {
-                if (itemStats[i].stat.DisplayName != dataGridView1[0,i].Value.ToString()) {
+            for (var i = 0; i < configuredCount; i++) {
+                var row = dataGridView1.Rows[i];
+                var itemStat = (ItemStatRow) row.Tag;
+                
+                if (i >= itemStats.Length) {
+                    if (itemStat.Exo)
+                        continue;
+                    return false;
+                }
+                
+                if (itemStats[i].stat != itemStat.Stat) {
                     return false;
                 }
             }
+            
 
             return true;
         }
 
         private void RebuildDataGridView(ItemStatRepository itemStats) {
             dataGridView1.Rows.Clear();
-            
-            foreach (var stat in itemStats) 
-                dataGridView1.Rows.Add(stat.stat.DisplayName, stat.value, stat.max);
+            hasExoRows = false;
+
+            foreach (var itemStat in itemStats) {
+                dataGridView1.Rows.Add(itemStat.stat.DisplayName, itemStat.value, itemStat.max);
+                var index = dataGridView1.Rows.Count-1;
+                var row = dataGridView1.Rows[index];
+                row.Tag = new ItemStatRow(itemStat);
+                
+                hasExoRows = itemStat.Exo || hasExoRows;
+            }
         }
 
         private delegate void StatsUpdatedCallback(object sender, StatsEventArgs e);
@@ -78,6 +102,8 @@ namespace Inkybot
                     dataProvider.Stats();
                 } catch (Exception exception) {
                     Error?.Invoke(this, new ExceptionEventArgs(exception));
+                    Debug.WriteLine(exception.Message);
+                    Debug.WriteLine(exception.StackTrace);
                 }
             });
             
@@ -102,7 +128,43 @@ namespace Inkybot
         }
 
         private void addExoButton_Click(object sender, EventArgs e) {
+            AddExoRow();
+        }
+
+        private void AddExoRow() {
+            dataGridView1.Rows.Add(Stat.Stats.First().DisplayName, 0, 0);
             
+            var index = dataGridView1.Rows.Count-1;
+            var row = dataGridView1.Rows[index];
+            row.Tag = new ItemStatRow();
+            row.DefaultCellStyle = exoCellStyle;
+            
+            var statCell = row.Cells[0] as DataGridViewComboBoxCell;
+            statCell.ReadOnly = false;
+            statCell.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
+        }
+        
+        private class ItemStatRow
+        {
+            public readonly Stat Stat;
+            public readonly bool Exo;
+
+            public ItemStatRow() {
+                Exo = true;
+            }
+
+            public ItemStatRow(ItemStat itemStat) {
+                Stat = itemStat.stat;
+                Exo = itemStat.Exo;
+            }
+
+            public static bool operator ==(ItemStatRow operand1, ItemStatRow operand2) {
+                return operand1.Stat == operand2.Stat && operand1.Exo == operand2.Exo;
+            }
+
+            public static bool operator !=(ItemStatRow operand1, ItemStatRow operand2) {
+                return !(operand1 == operand2);
+            }
         }
     }
 }
