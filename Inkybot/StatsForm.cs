@@ -29,7 +29,7 @@ namespace Inkybot
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
 
-            StatColumn.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
+            ExoStatColumn.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
@@ -48,18 +48,18 @@ namespace Inkybot
                 RebuildDataGridView(itemStats);
             } else {
                 for (var i = 0; i < itemStats.Length; i++) {
-                    dataGridView1[1,i].Value = itemStats[i].value;
+                    statsDataGridView[1,i].Value = itemStats[i].value;
                 }
             }
         }
 
         private bool DataGridViewMatchesItem(ItemStatRepository itemStats) {
-            var configuredCount = dataGridView1.Rows.Count;
+            var configuredCount = statsDataGridView.Rows.Count;
             if (itemStats.Length > configuredCount)
                 return false;
 
             for (var i = 0; i < configuredCount; i++) {
-                var row = dataGridView1.Rows[i];
+                var row = statsDataGridView.Rows[i];
                 var itemStat = (ItemStatRow) row.Tag;
                 
                 if (i >= itemStats.Length) {
@@ -78,13 +78,13 @@ namespace Inkybot
         }
 
         private void RebuildDataGridView(ItemStatRepository itemStats) {
-            dataGridView1.Rows.Clear();
+            statsDataGridView.Rows.Clear();
             hasExoRows = false;
 
             foreach (var itemStat in itemStats) {
-                dataGridView1.Rows.Add(itemStat.stat.DisplayName, itemStat.value, itemStat.max);
-                var index = dataGridView1.Rows.Count-1;
-                var row = dataGridView1.Rows[index];
+                statsDataGridView.Rows.Add(itemStat.stat.DisplayName, itemStat.value, itemStat.max);
+                var index = statsDataGridView.Rows.Count-1;
+                var row = statsDataGridView.Rows[index];
                 row.Tag = new ItemStatRow(itemStat);
                 
                 hasExoRows = itemStat.Exo || hasExoRows;
@@ -117,7 +117,7 @@ namespace Inkybot
 
         private void StatsForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
             if (e.ColumnIndex != 2) return;
-            var row = dataGridView1.Rows[e.RowIndex];
+            var row = statsDataGridView.Rows[e.RowIndex];
             
             var stat = Stat.Stats.First(stat => stat.DisplayName == row.Cells[0].Value.ToString());
             
@@ -132,10 +132,10 @@ namespace Inkybot
         }
 
         private void AddExoRow() {
-            dataGridView1.Rows.Add(Stat.Stats.First().DisplayName, 0, 0);
+            statsDataGridView.Rows.Add(Stat.Stats.First().DisplayName, 0, 0);
             
-            var index = dataGridView1.Rows.Count-1;
-            var row = dataGridView1.Rows[index];
+            var index = statsDataGridView.Rows.Count-1;
+            var row = statsDataGridView.Rows[index];
             row.Tag = new ItemStatRow();
             row.DefaultCellStyle = exoCellStyle;
             
