@@ -1,13 +1,14 @@
 ﻿using System;
+using Inkybot.Domain.Repositories;
 
 namespace Inkybot.Events
 {
     public class StatsEventArgs : EventArgs
     {
-        public readonly Item.ItemStat[] stats;
+        public readonly ItemStatRepository stats;
 
 
-        public StatsEventArgs(Item.ItemStat[] stats) {
+        public StatsEventArgs(ItemStatRepository stats) {
             this.stats = stats;
         }
     }

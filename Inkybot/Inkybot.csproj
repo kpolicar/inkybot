@@ -111,6 +111,7 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
+        <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\ServiceBinder.cs" />
         <Compile Include="Events\ConfigChangedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
@@ -153,7 +154,7 @@
         <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\MageHistoryRecord.cs" />
         <Compile Include="Domain\Rune.cs" />
-        <Compile Include="Domain\Item.cs" />
+        <Compile Include="Domain\ItemStat.cs" />
         <Compile Include="Domain\Server.cs" />
         <Compile Include="Domain\Stat.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />

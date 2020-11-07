@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 
 namespace Inkybot.Contracts
@@ -8,7 +9,7 @@ namespace Inkybot.Contracts
     {
         public event EventHandler<StatsEventArgs> FetchedStats;
 
-        Item.ItemStat[] Stats();
+        ItemStatRepository Stats();
         void FetchData();
         IEnumerable<MageHistoryRecord> History();
     }

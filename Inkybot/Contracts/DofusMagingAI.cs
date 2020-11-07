@@ -1,8 +1,10 @@
-﻿namespace Inkybot.Contracts
+﻿using Inkybot.Domain.Repositories;
+
+namespace Inkybot.Contracts
 {
     public interface DofusMagingAI
     {
-        IAction ResolveAction(Item.ItemStat[] itemStats, IAction previousAction);
+        IAction ResolveAction(ItemStatRepository itemStats, IAction previousAction);
         void SetConfig(Config config);
     }
 }

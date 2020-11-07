@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Services;
 
@@ -36,7 +37,7 @@ namespace Inkybot
             }));
         }
 
-        private void UpdateDataGridView(Item.ItemStat[] itemStats) {
+        private void UpdateDataGridView(ItemStatRepository itemStats) {
             if (!DataGridViewMatchesItem(itemStats)) {
                 configManager.ResetConfig(itemStats);
                 RebuildDataGridView(itemStats);
@@ -47,7 +48,7 @@ namespace Inkybot
             }
         }
 
-        private bool DataGridViewMatchesItem(Item.ItemStat[] itemStats) {
+        private bool DataGridViewMatchesItem(ItemStatRepository itemStats) {
             if (itemStats.Length != dataGridView1.Rows.Count) return false;
 
             for (var i = 0; i < itemStats.Length; i++) {
@@ -59,7 +60,7 @@ namespace Inkybot
             return true;
         }
 
-        private void RebuildDataGridView(Item.ItemStat[] itemStats) {
+        private void RebuildDataGridView(ItemStatRepository itemStats) {
             dataGridView1.Rows.Clear();
             
             foreach (var stat in itemStats) 
@@ -98,6 +99,10 @@ namespace Inkybot
             var statConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, max);
 
             configManager.ChangeStatConfig(stat, statConfig);
+        }
+
+        private void addExoButton_Click(object sender, EventArgs e) {
+            
         }
     }
 }

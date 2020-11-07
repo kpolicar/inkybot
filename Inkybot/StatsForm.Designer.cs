@@ -36,7 +36,10 @@ namespace Inkybot
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.addExoButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).BeginInit();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TargetColumn
@@ -69,11 +72,11 @@ namespace Inkybot
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.dataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -97,7 +100,7 @@ namespace Inkybot
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (64)))), ((int) (((byte) (64)))), ((int) (((byte) (64)))));
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F);
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (64)))), ((int) (((byte) (64)))), ((int) (((byte) (64)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
@@ -107,22 +110,55 @@ namespace Inkybot
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.StatsForm_OnChangeValue);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.addExoButton);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 276);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(535, 40);
+            this.flowLayoutPanel1.TabIndex = 2;
+            // 
+            // addExoButton
+            // 
+            this.addExoButton.AutoSize = true;
+            this.addExoButton.BackColor = System.Drawing.Color.Black;
+            this.addExoButton.FlatAppearance.BorderSize = 0;
+            this.addExoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.addExoButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.addExoButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.addExoButton.Location = new System.Drawing.Point(0, 0);
+            this.addExoButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.addExoButton.Name = "addExoButton";
+            this.addExoButton.Size = new System.Drawing.Size(113, 40);
+            this.addExoButton.TabIndex = 2;
+            this.addExoButton.Text = "ADD EXO";
+            this.addExoButton.UseVisualStyleBackColor = false;
+            this.addExoButton.Click += new System.EventHandler(this.addExoButton_Click);
+            // 
             // StatsForm
             // 
-            this.Load += new System.EventHandler(this.StatsForm_Loaded);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.ClientSize = new System.Drawing.Size(535, 316);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "StatsForm";
             this.Text = "Stats - Inkybot";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
+            this.Load += new System.EventHandler(this.StatsForm_Loaded);
             this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).EndInit();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Button addExoButton;
+
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 
         #endregion
 

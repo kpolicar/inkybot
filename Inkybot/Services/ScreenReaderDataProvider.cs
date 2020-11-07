@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 
@@ -13,7 +14,7 @@ namespace Inkybot
     public class ScreenReaderDataProvider : DofusDataProvider
     {
         private readonly IntPtr handle;
-        public Item.ItemStat[] lastScanResults;
+        public ItemStatRepository lastScanResults;
         private DofusScreenScan scan;
         
         public ScreenReaderDataProvider(IntPtr handle) {
@@ -35,9 +36,9 @@ namespace Inkybot
             return historyResults;
         }
 
-        public Item.ItemStat[] Stats() {
+        public ItemStatRepository Stats() {
             var scanResults = scan.Stats();
-            var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats().ToArray();
+            var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
             FetchedStats?.Invoke(this, new StatsEventArgs(stats));
 
             return lastScanResults = stats;

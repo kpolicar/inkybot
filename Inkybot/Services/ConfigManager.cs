@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 
 namespace Inkybot.Services
@@ -21,18 +22,18 @@ namespace Inkybot.Services
             EnforceConfigSetForStats(e.stats);
         }
 
-        public void ResetConfig(Item.ItemStat[] itemStats) {
+        public void ResetConfig(ItemStatRepository itemStats) {
             config = new Config(itemStats);
             ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(config));
         }
 
-        public void EnforceConfigSetForStats(Item.ItemStat[] stats) {
+        public void EnforceConfigSetForStats(ItemStatRepository stats) {
             if (!ConfigIsSetForStats(stats)) {
                 ResetConfig(stats);
             }
         }
 
-        private bool ConfigIsSetForStats(Item.ItemStat[] stats) {
+        private bool ConfigIsSetForStats(ItemStatRepository stats) {
             if (config == null || stats.Length != config.stats.Count) return false;
             
             var comparison = stats.Zip(config.stats.Keys,

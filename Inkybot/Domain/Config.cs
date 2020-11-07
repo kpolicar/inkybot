@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Inkybot.Domain.Repositories;
 
 namespace Inkybot
 {
@@ -21,19 +22,24 @@ namespace Inkybot
     public class Config
     {
         public Dictionary<Stat, StatConfig> stats = new Dictionary<Stat, StatConfig>();
+        public Dictionary<Stat, StatConfig> exos = new Dictionary<Stat, StatConfig>();
 
-        public Config(Item.ItemStat[] itemStats) {
+        public Config(ItemStatRepository itemStats) {
             ResetDefaults(itemStats);
         }
 
-        public StatConfig For(Item.ItemStat itemStat) {
+        public StatConfig For(ItemStat itemStat) {
+            if (exos.ContainsKey(itemStat.stat))
+                return exos[itemStat.stat];
+            
             return stats[itemStat.stat];
         }
 
-        public void ResetDefaults(Item.ItemStat[] itemStats) {
+        public void ResetDefaults(ItemStatRepository itemStats) {
             foreach (var itemStat in itemStats) {
                 var stat = itemStat.stat;
                 stats[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, itemStat.max);
+                exos = new Dictionary<Stat, StatConfig>();
             }
         }
     }

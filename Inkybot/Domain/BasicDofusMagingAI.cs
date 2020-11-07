@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Services;
-using static Inkybot.Item;
 
 namespace Inkybot
 {
@@ -31,14 +31,14 @@ namespace Inkybot
             this.config = config;
         }
 
-        public IAction ResolveAction(ItemStat[] itemStats, IAction previousAction) {
+        public IAction ResolveAction(ItemStatRepository itemStats, IAction previousAction) {
             // Todo: fix
             var itemMage = itemStats
                 .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref config))
                 .OrderByDescending(StatPriority)
                 .Cast<ItemMage?>()
                 .FirstOrDefault(item => !item!.Value.WillOvermage)
-                .GetValueOrDefault(new ItemMage(itemStats[0], new Rune(itemStats[0].stat, ResolveRuneType(itemStats[0])), ref config));
+                .GetValueOrDefault(new ItemMage(itemStats.First(), new Rune(itemStats.First().stat, ResolveRuneType(itemStats.First())), ref config));
 
             Debug.WriteLine(
                 $"Max of {itemMage.stat.stat.DisplayName} is {config.For(itemMage.stat).maximum}, stat will overmage: {itemMage.WillOvermage}"
@@ -57,7 +57,7 @@ namespace Inkybot
             return actions.Combine(itemMage.rune);
         }
 
-        private Rune.Type ResolveRuneType(Item.ItemStat itemStat) {
+        private Rune.Type ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config.For(itemStat);
 
             if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) return Rune.Type.Ra;
@@ -73,7 +73,7 @@ namespace Inkybot
 
         private struct ItemMage
         {
-            public readonly Item.ItemStat stat;
+            public readonly ItemStat stat;
             public readonly Rune rune;
             private readonly Config mageConfig;
 

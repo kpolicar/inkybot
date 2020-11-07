@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Domain.Repositories;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters
@@ -15,12 +16,12 @@ namespace Inkybot.Adapters
             this.statLines = statLines;
         }
 
-        public IEnumerable<Item.ItemStat> ToItemStats() {
-            return statLines.Select(mageEntry => {
+        public ItemStatRepository ToItemStats() {
+            return new ItemStatRepository(statLines.Select(mageEntry => {
                 var changes = SegmentItemStatLine(mageEntry);
 
                 return StatLineToItemStat(changes.Groups);
-            });
+            }).ToArray());
         }
 
         private (int min, int max, int value) GetMinMaxValueFromScanResult(GroupCollection historyEntrySegments) {
@@ -38,7 +39,7 @@ namespace Inkybot.Adapters
             }
         }
         
-        private Item.ItemStat StatLineToItemStat(GroupCollection historyEntrySegments) {
+        private ItemStat StatLineToItemStat(GroupCollection historyEntrySegments) {
             if (historyEntrySegments.Count != 5)
                 throw new CouldNotSegmentStatLineException("Error occured trying to segment stat line");
 
@@ -47,7 +48,7 @@ namespace Inkybot.Adapters
             var name = historyEntrySegments[4].Value;
             var stat = GetStatFromName(name);
 
-            return new Item.ItemStat(stat, value, min, max);
+            return new ItemStat(stat, value, min, max);
         }
 
         private Match SegmentItemStatLine(string historyLine) {
