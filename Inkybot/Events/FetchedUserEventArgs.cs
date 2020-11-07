@@ -1,5 +1,5 @@
 ﻿using System;
-using Inkybot.Resources.Api;
+using Inkybot.Api.Resources;
 
 namespace Inkybot.Events
 {

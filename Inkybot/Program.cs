@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Events;
 using Inkybot.Services;
 using static System.Configuration.ConfigurationManager;
 
@@ -44,13 +45,26 @@ namespace Inkybot
             Services.AddService(typeof(ActionHandler), new ActionHandler());
             Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
             Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
-            Services.AddService(typeof(ApiDataProvider), new ApiDataProvider());
+            Services.AddService(typeof(ApiClient), new ApiClient());
             Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
+            
+            BindNotifications();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
             Application.Run(new MainForm());
+        }
+
+        private static void BindNotifications() {
+            var actions = (ActionHandler) Services.GetService(typeof(ActionHandler));
+            var magingJob = (DofusMagingJob) Services.GetService(typeof(DofusMagingJob));
+            var notified = new[] { new ApiNotifier() };
+
+            foreach (var notifier in notified) {
+                actions!.ActionExecuted += notifier.Notify;
+                magingJob!.Error += notifier.Notify;
+            }
         }
     }
 }

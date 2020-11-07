@@ -4,16 +4,16 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Exceptions;
-using Inkybot.Resources.Api;
+using Inkybot.Api.Resources;
 using Newtonsoft.Json;
 
 namespace Inkybot.Api
 {
-    public class ApiDataProvider
+    public class ApiClient
     {
         public ApiConnection? Connection { private set; get; }
 
-        public ApiDataProvider() {
+        public ApiClient() {
             AuthManager.ConnectionChanged += OnConnectionChanged;
         }
 
@@ -53,6 +53,20 @@ namespace Inkybot.Api
 
             var result = response.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<VersionDetails>(result);
+        }
+
+        public async Task NotifyFinished() {
+            await WaitForStableConnection();
+            
+            var client = Connection.Request();
+            client.PostAsync($"{Server.ApiUrl}/notify/finished", new StringContent(""));
+        }
+
+        public async Task NotifyError() {
+            await WaitForStableConnection();
+            
+            var client = Connection.Request();
+            client.PostAsync($"{Server.ApiUrl}/notify/error", new StringContent(""));
         }
     }
 }

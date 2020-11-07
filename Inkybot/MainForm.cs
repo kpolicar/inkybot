@@ -19,7 +19,7 @@ namespace Inkybot
     public partial class MainForm : Form
     {
         private StatsForm statsForm;
-        private readonly ApiDataProvider api;
+        private readonly ApiClient api;
         private readonly DofusMagingJob magingJob;
 
         public MainForm() {
@@ -39,7 +39,7 @@ namespace Inkybot
 
             statsForm = new StatsForm(this);
             
-            api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
+            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magingJob.Error += OnError;
             statsForm.Error += OnError;

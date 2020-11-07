@@ -1,6 +1,6 @@
 using System;
 
-namespace Inkybot.Resources.Api
+namespace Inkybot.Api.Resources
 {
     [Serializable]
     public class VersionDetails

@@ -10,10 +10,10 @@ namespace Inkybot
     public partial class WelcomeDialogue : Form
     {
         public event EventHandler<PathChangedEventArgs> PathChanged; 
-        private readonly ApiDataProvider api;
+        private readonly ApiClient api;
 
         public WelcomeDialogue(MainForm mainForm, string errorMessage) : this() {
-            api = (ApiDataProvider) Program.Services.GetService(typeof(ApiDataProvider));
+            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             this.errorMessage.Text = errorMessage;
         }
 

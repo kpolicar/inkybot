@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Timers;
-using Inkybot.Resources.Api;
+using Inkybot.Api.Resources;
 using Newtonsoft.Json;
 using Timer = System.Windows.Forms.Timer;
 using static System.Configuration.ConfigurationManager;

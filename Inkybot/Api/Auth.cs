@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
-using Inkybot.Resources.Api;
+using Inkybot.Api.Resources;
 using Newtonsoft.Json;
 using static System.Configuration.ConfigurationManager;
 
