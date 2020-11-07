@@ -46,7 +46,7 @@ namespace Inkybot
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StatColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.addExoButton = new System.Windows.Forms.Button();
@@ -70,11 +70,10 @@ namespace Inkybot
             // 
             // StatColumn
             // 
-            this.StatColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
-            this.StatColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StatColumn.HeaderText = "Stat";
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
+            this.StatColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // dataGridView1
             // 
@@ -154,6 +153,7 @@ namespace Inkybot
             // exoStatComboBox
             // 
             this.exoStatComboBox.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.exoStatComboBox.ForeColor = System.Drawing.SystemColors.Control;
             this.exoStatComboBox.FormattingEnabled = true;
             this.exoStatComboBox.Location = new System.Drawing.Point(116, 3);
             this.exoStatComboBox.Name = "exoStatComboBox";
@@ -193,6 +193,6 @@ namespace Inkybot
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ValueColumn;
-        private System.Windows.Forms.DataGridViewComboBoxColumn StatColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
     }
 }

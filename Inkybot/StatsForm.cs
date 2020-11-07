@@ -19,7 +19,6 @@ namespace Inkybot
         private DofusMagingJob magingJob;
         private MainForm mainForm;
         private ConfigManager configManager;
-        private ItemStatRepository itemStats;
 
         public StatsForm(MainForm mainForm) {
             InitializeComponent();
@@ -36,14 +35,15 @@ namespace Inkybot
         }
 
         private void OnStatsFetched(object sender, StatsEventArgs e) {
-            itemStats = e.stats;
-            Invoke(new MethodInvoker(UpdateDataGridView));
+            Invoke(new MethodInvoker(() => {
+                UpdateDataGridView(e.stats);
+            }));
         }
 
-        private void UpdateDataGridView() {
-            if (!DataGridViewMatchesItem()) {
+        private void UpdateDataGridView(ItemStatRepository itemStats) {
+            if (!DataGridViewMatchesItem(itemStats)) {
                 configManager.ResetConfig(itemStats);
-                RebuildDataGridView();
+                RebuildDataGridView(itemStats);
             } else {
                 for (var i = 0; i < itemStats.Length; i++) {
                     dataGridView1[1,i].Value = itemStats[i].value;
@@ -51,42 +51,26 @@ namespace Inkybot
             }
         }
 
-        private ItemStatRow OnRow(int index) {
-            var row = dataGridView1.Rows[index];
-            return (ItemStatRow) row.Tag;
-        }
-
-        private ItemStat InRepository(int index) {
-            return itemStats[index];
-        }
-
-        private void SkipFallenExoRows(ref int rowIndex, int repoIndex) {
-            while (OnRow(rowIndex).Exo && !InRepository(repoIndex).Exo && rowIndex < dataGridView1.Rows.Count) {
-                rowIndex++;
-            }
-        }
-
-        private bool DataGridViewMatchesItem() {
+        private bool DataGridViewMatchesItem(ItemStatRepository itemStats) {
             var configuredCount = dataGridView1.Rows.Count;
             // All the current stats must always be configured
             if (itemStats.Length > configuredCount)
                 return false;
 
-            for (int rowIndex = 0, repoIndex = 0; rowIndex < configuredCount; rowIndex++, repoIndex++) {
+            for (var i = 0; i < configuredCount; i++) {
+                var inRepository = itemStats[i];
+                var row = dataGridView1.Rows[i];
+                var onRow = (ItemStatRow) row.Tag;
 
-                SkipFallenExoRows(ref rowIndex, repoIndex);
-                if (rowIndex < configuredCount)
-                    break;
-                
                 // If there are more configured stats, they must be exos
-                if (rowIndex >= itemStats.Length) {
-                    if (OnRow(rowIndex).Exo)
+                if (i >= itemStats.Length) {
+                    if (onRow.Exo)
                         continue;
                     return false;
                 }
                     
                     
-                if (OnRow(rowIndex).Stat != InRepository(repoIndex).stat) {
+                if (onRow.Stat != inRepository.stat) {
                     return false;
                 }
             }
@@ -95,7 +79,7 @@ namespace Inkybot
             return true;
         }
 
-        private void RebuildDataGridView() {
+        private void RebuildDataGridView(ItemStatRepository itemStats) {
             dataGridView1.Rows.Clear();
 
             foreach (var itemStat in itemStats) {
@@ -103,6 +87,8 @@ namespace Inkybot
                 var index = dataGridView1.Rows.Count-1;
                 var row = dataGridView1.Rows[index];
                 row.Tag = new ItemStatRow(itemStat);
+                if (itemStat.Exo)
+                    row.DefaultCellStyle = exoCellStyle;
             }
         }
 
@@ -143,6 +129,20 @@ namespace Inkybot
             configManager.ChangeStatConfig(stat, statConfig);
         }
 
+        private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            if (Stat.Stats.Any(stat => stat.DisplayName == exoStatComboBox.Text))
+                addExoButton.Enabled = true;
+        }
+
+        private void addExoButton_Click(object sender, EventArgs e) {
+            Debug.WriteLine(exoStatComboBox.Text);
+            dataGridView1.Rows.Add(exoStatComboBox.Text, 0, 0);
+            var index = dataGridView1.Rows.Count-1;
+            var row = dataGridView1.Rows[index];
+            row.Tag = new ItemStatRow();
+            row.DefaultCellStyle = exoCellStyle;
+        }
+
         private class ItemStatRow
         {
             public readonly Stat Stat;
@@ -164,14 +164,6 @@ namespace Inkybot
             public static bool operator !=(ItemStatRow operand1, ItemStatRow operand2) {
                 return !(operand1 == operand2);
             }
-        }
-
-        private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            
-        }
-
-        private void addExoButton_Click(object sender, EventArgs e) {
-            throw new NotImplementedException();
         }
     }
 }
