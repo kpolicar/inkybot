@@ -11,6 +11,7 @@ using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
 
 
 namespace Inkybot
@@ -46,7 +47,7 @@ namespace Inkybot
             MainFormEvents();
             api.UserFetched += OnUserDetailsUpdated;
             InitAuth();
-
+            
             Closing += (sender, args) => {
                 if (debugging) StopDebugging();
             };

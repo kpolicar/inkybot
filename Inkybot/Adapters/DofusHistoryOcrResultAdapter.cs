@@ -54,7 +54,7 @@ namespace Inkybot.Adapters
         }
 
         private bool IsHistoryEntryMageFailure(string historyEntry) {
-            var spellCorrected = spellCorrect.Lookup(historyEntry, SymSpell.Verbosity.Top).FirstOrDefault();
+            var spellCorrected = spellCorrect.Lookup(historyEntry, SymSpell.Verbosity.Closest).FirstOrDefault();
 
             return spellCorrected != null && spellCorrected.term == "Failure";
         }

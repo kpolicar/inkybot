@@ -33,6 +33,8 @@ namespace Inkybot
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ocrResultsLabel = new System.Windows.Forms.Label();
             this.timerLabel = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,11 +78,29 @@ namespace Inkybot
             this.timerLabel.TabIndex = 4;
             this.timerLabel.Text = "0:00s\r\n0:00s";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(29, 114);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(129, 20);
+            this.textBox1.TabIndex = 5;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(26, 142);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(131, 27);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "label1";
+            // 
             // OcrDebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(793, 631);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.timerLabel);
             this.Controls.Add(this.ocrResultsLabel);
             this.Controls.Add(this.pictureBox1);
@@ -89,7 +109,11 @@ namespace Inkybot
             this.Text = "OcrTest";
             ((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox1;
 
         private System.Windows.Forms.Label ocrResultsLabel;
         private System.Windows.Forms.Label timerLabel;

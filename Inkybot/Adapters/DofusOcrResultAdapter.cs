@@ -9,16 +9,12 @@ namespace Inkybot.Adapters
     public abstract class DofusOcrResultAdapter : OcrResultAdapter
     {
         protected static string SpellCorrectStatName(string name) {
-            var terms = Regex.Split(name, " ")
-                .Select(term =>
-                    Regex.IsMatch(term, @"[\-\+\%]")
-                        ? term
-                        : spellCorrect.Lookup(term, SymSpell.Verbosity.Top).First().term)
-                .ToArray();
+            
+            var spellCorrected = spellCorrect.Lookup(name, SymSpell.Verbosity.Closest).First().term;
 
-            if (string.Join(" ", terms) != name)
-                Debug.WriteLine("OCR error, original:" + name + ", fixed:" + string.Join(" ", terms));
-            return string.Join(" ", terms);
+            if (spellCorrected != name)
+                Debug.WriteLine($"OCR error, original: {name}, fixed: {spellCorrected}");
+            return spellCorrected;
         }
         
         protected Stat GetStatFromName(string name) {

@@ -106,6 +106,7 @@
         <Compile Include="DofusPathForm.Designer.cs">
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\ServiceBinder.cs" />
         <Compile Include="Events\ConfigChangedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
@@ -159,6 +160,16 @@
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
         <Compile Include="KeyboardHook.cs" />
+        <Compile Include="Resources\MagingDictionary.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>MagingDictionary.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Resources\StatDictionary.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>StatDictionary.resx</DependentUpon>
+        </Compile>
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -220,6 +231,14 @@
         <EmbeddedResource Include="DofusPathForm.resx">
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </EmbeddedResource>
+        <EmbeddedResource Include="Resources\MagingDictionary.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Resources\StatDictionary.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
         <EmbeddedResource Include="WelcomeDialogue.resx">
           <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
@@ -251,9 +270,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="dictionary_dofus.txt" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="Resources\Tesseract\eng.traineddata">

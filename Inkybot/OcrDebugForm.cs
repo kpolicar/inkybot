@@ -15,6 +15,7 @@ namespace Inkybot
     public partial class OcrDebugForm : Form
     {
         private TesseractEngine engine;
+        private SymSpell spellCorrect;
 
         public OcrDebugForm() {
             InitializeComponent();
@@ -26,6 +27,12 @@ namespace Inkybot
                 null, new Dictionary<string, object> {
                     {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
+            
+            
+            
+            spellCorrect = new SymSpell(16, 6);
+            
+            Dictionary.LoadInto(spellCorrect);
         }
         
         private void tesseract() {
@@ -101,6 +108,19 @@ namespace Inkybot
             var timeelapsed = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
             timerLabel.Text += "\n"+timeelapsed;
             //ironocr();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e) {
+            var input = textBox1.Text;
+            var term = spellCorrect.Lookup(input, SymSpell.Verbosity.Closest).FirstOrDefault();
+
+            string outp;
+            if (term != null)
+                outp = term.term;
+            else
+                outp = "null";
+
+            label1.Text = outp;
         }
     }
 }
