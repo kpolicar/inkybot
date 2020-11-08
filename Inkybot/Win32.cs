@@ -66,9 +66,9 @@ namespace Inkybot
         public static extern bool PostMessage(IntPtr hWnd, int Msg, Keys wParam, IntPtr lParam);
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", CharSet=CharSet.Ansi, SetLastError=true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
+        
         public static int MakeLParam(int LoWord, int HiWord)
         {
             return (int)((HiWord << 16) | (LoWord & 0xFFFF));

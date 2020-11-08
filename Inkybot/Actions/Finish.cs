@@ -18,7 +18,7 @@ namespace Inkybot.Actions
         public override void Execute() {
             var target = GetCursorTarget(FinishItemMeasurement);
             
-            mouse.DoubleClick(target.X, target.Y);
+            Input.DoubleClick(target.X, target.Y);
             var magus = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magus.StopMage();
         }

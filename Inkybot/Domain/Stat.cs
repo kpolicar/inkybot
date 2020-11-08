@@ -13,20 +13,20 @@ namespace Inkybot
         }
         
         public static readonly Stat[] Stats = {
-            new Stat("Initiative", 1010, 0.1f, 0.05f, 200, 375),
-            new Stat("Vitality", 505, 0.2f, 0.1f, 120, 286),
-            new Stat("Pods", 404, 0.25f, 0.125f, 150, 350),
+            new Stat("Initiative", "ini", 1010, 0.1f, 0.05f, 200, 375),
+            new Stat("Vitality", "vit", 505, 0.2f, 0.1f, 120, 286),
+            new Stat("Pods", "pod", 404, 0.25f, 0.125f, 150, 350),
 
-            ElementStatData("Strength"),
-            ElementStatData("Intelligence"),
-            ElementStatData("Agility"),
-            ElementStatData("Chance"),
+            ElementStatData("Strength", "stre"),
+            ElementStatData("Intelligence", "int"),
+            ElementStatData("Agility", "agi"),
+            ElementStatData("Chance", "cha"),
 
-            new Stat("Critical Resistance", 50, 2f, 1f),
-            new Stat("Pushback Resistance", 50, 2f, 1f),
+            new Stat("Critical Resistance", "cri res", 50, 2f, 1f),
+            new Stat("Pushback Resistance", "psh res", 50, 2f, 1f),
 
-            new Stat("Power", 50, 2f, 2f, 15, 40),
-            new Stat("Power (traps)", 50, 2f, 2f, 15, 40),
+            new Stat("Power", "pow", 50, 2f, 2f, 15, 40),
+            new Stat("Power (traps)", "tra per", 50, 2f, 2f, 15, 40),
 
             FlatElementResistanceStatData("Neutral"),
             FlatElementResistanceStatData("Earth"),
@@ -34,11 +34,11 @@ namespace Inkybot
             FlatElementResistanceStatData("Air"),
             FlatElementResistanceStatData("Water"),
 
-            new Stat("Wisdom", 33, 3f, 2f, 10, 25),
-            new Stat("Prospecting", 33, 3f, 2f, 10),
+            new Stat("Wisdom", "wis", 33, 3f, 2f, 10, 25),
+            new Stat("Prospecting", "prospe", 33, 3f, 2f, 10),
 
-            EvadeStatData("Lock"),
-            EvadeStatData("Dodge"),
+            EvadeStatData("Lock", "loc"),
+            EvadeStatData("Dodge", "dod"),
 
             ElementDamageStatData("Neutral"),
             ElementDamageStatData("Earth"),
@@ -46,10 +46,10 @@ namespace Inkybot
             ElementDamageStatData("Air"),
             ElementDamageStatData("Water"),
 
-            new Stat("Critical Damage", 20, 5f, 3f, 10),
-            new Stat("Pushback Damage", 20, 5f, 3f, 10),
-            new Stat("Trap Damage", 20, 5f, 5f, 10),
-            new Stat("Hunting weapon", 1, 5f, 5f),
+            new Stat("Critical Damage", "cri dam", 20, 5f, 3f, 10),
+            new Stat("Pushback Damage", "psh dam", 20, 5f, 3f, 10),
+            new Stat("Trap Damage", "tra", 20, 5f, 5f, 10),
+            new Stat("Hunting weapon", "hunting", 1, 5f, 5f),
 
             PerElementResistanceStatData("Neutral"),
             PerElementResistanceStatData("Earth"),
@@ -63,39 +63,43 @@ namespace Inkybot
             ParryStatData("MP"),
             ParryStatData("AP"),
 
-            new Stat("Heals", 10, 10f, 5f),
-            new Stat("% Critical", 10, 10f, 5f),
-            new Stat("Reflect", 10, 10f, 10f),
+            new Stat("Heals", "hea", 10, 10f, 5f),
+            new Stat("% Critical", "cri", 10, 10f, 5f),
+            new Stat("Reflect", "dam ref", 10, 10f, 10f),
 
-            PerModifiersStatData("% Spell Damage"),
-            PerModifiersStatData("% Ranged Resistance"),
-            PerModifiersStatData("% Weapon Damage"),
-            PerModifiersStatData("% Melee Damage"),
-            PerModifiersStatData("% Melee Resistance"),
+            PerModifiersStatData("% Spell Damage", "spe dam"),
+            PerModifiersStatData("% Weapon Damage", "we dam per"),
+            PerModifiersStatData("% Melee Damage", "me dam per"),
+            PerModifiersStatData("% Ranged Damage", "ra dam per"),
+            PerModifiersStatData("% Ranged Resistance", "ra res per"),
+            PerModifiersStatData("% Melee Resistance", "me res per"),
 
-            new Stat("Damage", 5, 20f, 20f),
-            new Stat("Summons", 3, 30f, 35f),
-            new Stat("Range", 1, 51f, 25f),
-            new Stat("MP", 1, 90f, 45f),
-            new Stat("AP", 1, 100f, 50f)
+            new Stat("Damage", "dam", 5, 20f, 20f),
+            new Stat("Summons", "summo", 3, 30f, 35f),
+            new Stat("Range", "range",1, 51f, 25f),
+            new Stat("MP", "mp",1, 90f, 45f),
+            new Stat("AP", "ap",1, 100f, 50f)
         };
 
         public readonly int changeToPaRuneThreshold;
         public readonly int changeToRaRuneThreshold;
 
         public readonly string DisplayName;
+        public readonly string RuneName;
         public readonly int maximum;
         public readonly float negSinkValue;
         public readonly float sinkValue;
 
 
         private Stat(string DisplayName,
+            string RuneName,
             int maximum,
             float sinkValue,
             float negSinkValue,
             int changeToPaRuneThreshold = int.MinValue,
             int changeToRaRuneThreshold = int.MinValue) {
             this.DisplayName = DisplayName;
+            this.RuneName = RuneName + " rune";
             this.maximum = maximum;
             this.sinkValue = sinkValue;
             this.negSinkValue = negSinkValue;
@@ -103,36 +107,36 @@ namespace Inkybot
             this.changeToRaRuneThreshold = changeToRaRuneThreshold;
         }
 
-        private static Stat ElementStatData(string DisplayName) {
-            return new Stat(DisplayName, 101, 1f, 1f, 20, 48);
+        private static Stat ElementStatData(string DisplayName, string RuneName) {
+            return new Stat(DisplayName, RuneName, 101, 1f, 1f, 20, 48);
         }
 
         private static Stat FlatElementResistanceStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName + " Resistance", 50, 2f, 2f, 15);
+            return new Stat(elementDisplayName + " Resistance", elementDisplayName + " res", 50, 2f, 2f, 15);
         }
 
         private static Stat ElementDamageStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName + " Damage", 20, 5f, 2.5f, 10);
+            return new Stat(elementDisplayName + " Damage", elementDisplayName + " dam", 20, 5f, 2.5f, 10);
         }
 
         private static Stat PerElementResistanceStatData(string elementDisplayName) {
-            return new Stat("% " + elementDisplayName + " Resistance", 16, 6f, 3f);
+            return new Stat("% " + elementDisplayName + " Resistance", elementDisplayName + " res per", 16, 6f, 3f);
         }
 
         private static Stat ReductionStatData(string DisplayName) {
-            return new Stat(DisplayName + " Reduction", 14, 7f, 4f, 10);
+            return new Stat(DisplayName + " Reduction", DisplayName + " red",14, 7f, 4f, 10);
         }
 
         private static Stat ParryStatData(string DisplayName) {
-            return new Stat(DisplayName + " Parry", 14, 7f, 4f, 10);
+            return new Stat(DisplayName + " Parry", DisplayName + " res",14, 7f, 4f, 10);
         }
 
-        private static Stat EvadeStatData(string DisplayName) {
-            return new Stat(DisplayName, 25, 4f, 2f, 10);
+        private static Stat EvadeStatData(string DisplayName, string RuneName) {
+            return new Stat(DisplayName, RuneName, 25, 4f, 2f, 10);
         }
 
-        private static Stat PerModifiersStatData(string DisplayName) {
-            return new Stat(DisplayName, 6, 15f, 8f);
+        private static Stat PerModifiersStatData(string DisplayName, string RuneName) {
+            return new Stat(DisplayName, RuneName, 6, 15f, 8f);
         }
     }
 }

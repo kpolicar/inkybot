@@ -7,12 +7,12 @@ namespace Inkybot.Actions
 {
     public abstract class MouseAction : IAction
     {
-        protected Mouse mouse;
+        protected Input Input;
         protected ScreenReaderDataProvider screenDataProvider;
         protected Control targetControl;
 
         public MouseAction(Control targetControl) {
-            mouse = (Mouse) Program.Services.GetService(typeof(Mouse));
+            Input = (Input) Program.Services.GetService(typeof(Input));
             screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             this.targetControl = targetControl;
         }

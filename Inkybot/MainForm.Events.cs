@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Actions;
+using Inkybot.Contracts;
 using Inkybot.Exceptions;
+using Inkybot.Services;
 
 
 namespace Inkybot

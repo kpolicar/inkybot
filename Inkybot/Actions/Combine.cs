@@ -22,7 +22,7 @@ namespace Inkybot.Actions
 
         public override void Execute() {
             var target = GetCursorTarget(FinishItemMeasurement);
-            mouse.Click(target.X, target.Y);
+            Input.Click(target.X, target.Y);
         }
     }
 }

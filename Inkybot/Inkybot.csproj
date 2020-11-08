@@ -143,7 +143,7 @@
         <Compile Include="Contracts\DofusMagingAI.cs" />
         <Compile Include="Contracts\IItemHistoryAnalyzer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
-        <Compile Include="Contracts\Mouse.cs" />
+        <Compile Include="Contracts\Input.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\ItemConfig.cs" />
@@ -227,7 +227,7 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Services\Win32Mouse.cs" />
+        <Compile Include="Services\Win32Input.cs" />
         <Compile Include="WindowHelpers.cs" />
         <EmbeddedResource Include="DebugForm.resx">
           <DependentUpon>StatsForm.cs</DependentUpon>

@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 
 namespace Inkybot.Services
 {
-    public class Win32Mouse : Mouse
+    public class Win32Input : Input
     {
         private IntPtr relativeToControl;
 
@@ -33,31 +37,46 @@ namespace Inkybot.Services
             Click(x,y);
         }
 
-        public void TypeMessage(string Message)
-        {
-            for (int i = 0; i < Message.Length; i++)
-            {
-                var character = (IntPtr) Message[i];
-                Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, character, IntPtr.Zero);
-                Win32.PostMessage(relativeToControl, Win32.WM_CHAR, character, IntPtr.Zero);
-                Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, character, IntPtr.Zero);
-                Thread.Sleep(200);
+        public void TypeMessage(string message) {
+            foreach (var character in message) {
+                Win32.PostMessage(relativeToControl, 
+                    Win32.WM_CHAR, 
+                    (IntPtr) character, 
+                    IntPtr.Zero);
+                Thread.Sleep(100);
             }
+            
+            Win32.PostMessage(relativeToControl, 
+                Win32.WM_KEYUP, 
+                (IntPtr) Keys.Right, 
+                IntPtr.Zero);
         }
         
         public void CtrlDoubleClick(int x, int y) {
-            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.Control, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
             DoubleClick(x, y);
             Thread.Sleep(100);
-            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.Control, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
         }
 
         public void SetRelativeToHandle(IntPtr handle) {
             relativeToControl = handle;
+        }
+
+        public void SelectAll() {
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
+            Thread.Sleep(50);
+            Win32.PostMessage(relativeToControl, 
+                Win32.WM_KEYDOWN, 
+                (IntPtr) 'A', 
+                IntPtr.Zero);
+            Thread.Sleep(50);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
+            
         }
     }
 }

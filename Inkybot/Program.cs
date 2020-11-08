@@ -40,7 +40,7 @@ namespace Inkybot
         private static void Main() {
             Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
-            Services.AddService(typeof(Mouse), new Win32Mouse());
+            Services.AddService(typeof(Input), new Win32Input());
             Services.AddService(typeof(ActionFactory), new MouseActionFactory());
             Services.AddService(typeof(ConfigManager), new ConfigManager());
             Services.AddService(typeof(ActionHandler), new ActionHandler());

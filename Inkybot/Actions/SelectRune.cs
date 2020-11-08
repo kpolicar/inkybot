@@ -8,6 +8,17 @@ namespace Inkybot.Actions
 {
     public class SelectRune : MouseAction
     {
+        public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1320, 775, 1320, 775),
+            Width = 1920,
+            Height = 1017
+        };
+        public static readonly Responsive.Measurement FirstItemInInventoryMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1284, 186, 1284, 186),
+            Width = 1920,
+            Height = 1017
+        };
+        
         public static readonly Responsive.Measurement SelectRuneMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1052, 307, 1186, 812),
             Width = 1920,
@@ -49,9 +60,25 @@ namespace Inkybot.Actions
                     continue;
 
                 var pos = RunePosition(column, row);
-                mouse.CtrlDoubleClick(pos.X, pos.Y);
+                Input.CtrlDoubleClick(pos.X, pos.Y);
                 System.Diagnostics.Debug.WriteLine($"Rune changed to {rune.stat.DisplayName}");
+                return;
             }
+
+            var searchTextBoxPosition = GetCursorTarget(InventorySearchTextBox);
+            Input.Click(searchTextBoxPosition.X, searchTextBoxPosition.Y);
+            
+            Thread.Sleep(500);
+            Input.SelectAll();
+            Thread.Sleep(50);
+            
+            Input.TypeMessage("Air res per rune");
+            Thread.Sleep(2000);
+            
+            var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
+            Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
+            
+            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {rune.stat.DisplayName}");
         }
         
         private Point RunePosition(int column, int row) {

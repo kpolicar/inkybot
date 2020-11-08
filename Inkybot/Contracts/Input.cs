@@ -2,11 +2,13 @@
 
 namespace Inkybot.Contracts
 {
-    public interface Mouse
+    public interface Input
     {
         void Drag(int x, int y, int tX, int tY);
         void Click(int x, int y);
         void DoubleClick(int x, int y);
         void CtrlDoubleClick(int x, int y);
+        void SelectAll();
+        void TypeMessage(string message);
     }
 }

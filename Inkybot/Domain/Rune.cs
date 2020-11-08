@@ -17,6 +17,16 @@
             Ra
         }
 
+        public string DisplayName {
+            get {
+                var prefix = type switch {
+                    Type.Sm => "",
+                    Type.Pa => "Pa ",
+                    Type.Ra => "Ra ",
+                };
+                return prefix + stat.RuneName;
+            }
+        }
         public Stat stat;
         public Type type;
 
