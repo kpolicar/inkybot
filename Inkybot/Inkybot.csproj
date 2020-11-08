@@ -112,6 +112,9 @@
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\Item.cs" />
+        <Compile Include="Domain\ItemMage.cs">
+          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\ServiceBinder.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />

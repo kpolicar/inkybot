@@ -36,7 +36,6 @@ namespace Inkybot
                         itemStat.stat,
                         new Rune(itemStat.stat, ResolveRuneType(itemStat)),
                         itemConfig.For(itemStat),
-                        itemConfig.For(itemStat).maximum,
                         itemStat.value
                         ));
                 
@@ -57,16 +56,12 @@ namespace Inkybot
                 .Select(statConfig =>
                 new ItemMage(
                     statConfig.Key,
-                    new Rune(statConfig.Key, Rune.Type.Ra),
+                    new Rune(statConfig.Key, statConfig.Value.StrongestRuneType),
                     statConfig.Value,
-                    0,
                     item.Stats[statConfig.Key].value
                 ));
                 
             var prioritized = priorityFunction(potentialItemMages);
-            foreach (var itemMage in prioritized) {
-                Debug.WriteLine("exo will overmage: "+itemMage.WillOvermage);
-            }
 
             var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
             if (proposed.Equals(default(ItemMage)))
@@ -119,7 +114,6 @@ namespace Inkybot
             var itemConfig = this.itemConfig.For(itemStat);
 
             if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) return Rune.Type.Ra;
-
             if (itemConfig.CanUsePaRunes && itemStat.value > itemConfig.ChangeToPaRuneValue) return Rune.Type.Pa;
 
             return Rune.Type.Sm;
@@ -131,29 +125,6 @@ namespace Inkybot
 
         private int ExoPriority(ItemMage itemMage) {
             return (int) itemMage.Rune.Sink;
-        }
-
-        private struct ItemMage
-        {
-            public readonly Stat Stat;
-            public readonly Rune Rune;
-            public readonly StatConfig MageConfig;
-            public readonly int Value;
-            public readonly int Max;
-            
-            public int NumberOfRunesNeededForFullMage =>
-                (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue);
-            
-            public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
-
-            
-            public ItemMage(Stat stat, Rune rune, StatConfig mageConfig, int max, int value) {
-                Stat = stat;
-                Rune = rune;
-                MageConfig = mageConfig;
-                Max = mageConfig.maximum;
-                Value = value;
-            }
         }
     }
 }

@@ -13,6 +13,15 @@ namespace Inkybot
 
         public bool CanUsePaRunes => ChangeToPaRuneValue != int.MinValue;
         public bool CanUseRaRunes => ChangeToRaRuneValue != int.MinValue;
+        
+        public Rune.Type StrongestRuneType {
+            get {
+                if (CanUsePaRunes) return Rune.Type.Ra;
+                if (CanUsePaRunes) return Rune.Type.Pa;
+
+                return Rune.Type.Sm;
+            }
+        }
 
         public StatConfig(int ChangeToPaRuneValue, int ChangeToRaRuneValue, int maximum) {
             this.ChangeToPaRuneValue = ChangeToPaRuneValue;
