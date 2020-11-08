@@ -36,6 +36,7 @@ namespace Inkybot
         }
 
         private void OnConfigChanged(object sender, ConfigChangedEventArgs e) {
+            Debug.WriteLine("config changed!");
             Invoke(new MethodInvoker(() => {
                 RebuildDataGridView(e.ItemConfig);
             }));
@@ -68,7 +69,7 @@ namespace Inkybot
                 var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
                     
                 if (updatingFallenExos) {
-                    if (configManager.Config.For(stat).maximum == 0) {
+                    if (configManager.ItemConfig.For(stat).maximum == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -135,6 +136,10 @@ namespace Inkybot
         private void StatsForm_VisibleChanged(object sender, EventArgs e) {
             if (!Visible || magingJob.IsMaging) return;
 
+            RefreshStats();
+        }
+        
+        private void RefreshStats() {
             var fetchStats = new ThreadStart(delegate {
                 try {
                     dataProvider.FetchData();
@@ -201,6 +206,10 @@ namespace Inkybot
             public static bool operator !=(ItemStatRow operand1, ItemStatRow operand2) {
                 return !(operand1 == operand2);
             }
+        }
+
+        private void clearExosButton_Click(object sender, EventArgs e) {
+            configManager.RemoveExos();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Inkybot.Services
     {
         public event EventHandler<ConfigChangedEventArgs> ConfigChanged;
 
-        public ItemConfig Config {
+        public ItemConfig ItemConfig {
             get;
             private set;
         }
@@ -28,39 +28,54 @@ namespace Inkybot.Services
 
         private void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
-                Config.Config.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
+                ItemConfig.Config.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
             foreach (var stat in fallenUnconfiguredStats) {
-                Config.Config.Remove(stat);
+                ItemConfig.Config.Remove(stat);
             }
             if (fallenUnconfiguredStats.Length > 0)
-                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, true));
+                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
+        }
+
+        public void RemoveExos() {
+            var configuredExoStats = (from itemConfig in ItemConfig.Config 
+                where !(from standardStat in ItemConfig.Item.Stats.StandardStats.Select(itemStat => itemStat.stat) 
+                    select standardStat).Contains(itemConfig.Key) 
+                select itemConfig.Key).ToArray();
+            
+            foreach (var stat in configuredExoStats) {
+                ItemConfig.Config.Remove(stat);
+            }
+            if (configuredExoStats.Length > 0)
+                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
         }
 
         public void ResetConfig(Item item) {
-            Config = new ItemConfig(item);
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, true));
+            ItemConfig = new ItemConfig(item);
+            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
         }
 
         public void EnforceConfigSetForItem(Item item) {
             if (!ConfigIsSetForItem(item)) {
-                Debug.WriteLine("resetting");
                 ResetConfig(item);
             }
         }
 
         private bool ConfigIsSetForItem(Item item) {
-            return Config != null && Config.IsConfiguredForItem(item);
+            return ItemConfig != null && ItemConfig.IsConfiguredForItem(item);
         }
 
         public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
-            var structureChanged = !Config.Config.ContainsKey(stat);
-            Config.Config[stat] = statConfig;
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, structureChanged));
+            var isNewStatConfiguration = !ItemConfig.Config.ContainsKey(stat);
+            if (!isNewStatConfiguration && statConfig == ItemConfig.Config[stat])
+                return;
             
-            foreach (var keyValuePair in Config.Config) {
+            ItemConfig.Config[stat] = statConfig;
+            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, isNewStatConfiguration));
+            
+            foreach (var keyValuePair in ItemConfig.Config) {
                 Debug.WriteLine(keyValuePair.Key.DisplayName);
             }
         }

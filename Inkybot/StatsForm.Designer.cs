@@ -51,6 +51,7 @@ namespace Inkybot
             this.actionsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.addExoButton = new System.Windows.Forms.Button();
             this.exoStatComboBox = new System.Windows.Forms.ComboBox();
+            this.clearExosButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -126,6 +127,7 @@ namespace Inkybot
             // 
             this.actionsPanel.Controls.Add(this.addExoButton);
             this.actionsPanel.Controls.Add(this.exoStatComboBox);
+            this.actionsPanel.Controls.Add(this.clearExosButton);
             this.actionsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.actionsPanel.Location = new System.Drawing.Point(0, 276);
             this.actionsPanel.Name = "actionsPanel";
@@ -161,6 +163,23 @@ namespace Inkybot
             this.exoStatComboBox.TabIndex = 3;
             this.exoStatComboBox.SelectedIndexChanged += new System.EventHandler(this.exoStatComboBox_SelectedIndexChanged);
             // 
+            // clearExosButton
+            // 
+            this.clearExosButton.AutoSize = true;
+            this.clearExosButton.BackColor = System.Drawing.Color.Black;
+            this.clearExosButton.FlatAppearance.BorderSize = 0;
+            this.clearExosButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearExosButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.clearExosButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.clearExosButton.Location = new System.Drawing.Point(278, 0);
+            this.clearExosButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.clearExosButton.Name = "clearExosButton";
+            this.clearExosButton.Size = new System.Drawing.Size(113, 40);
+            this.clearExosButton.TabIndex = 4;
+            this.clearExosButton.Text = "CLEAR EXOS";
+            this.clearExosButton.UseVisualStyleBackColor = false;
+            this.clearExosButton.Click += new System.EventHandler(this.clearExosButton_Click);
+            // 
             // StatsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -180,6 +199,8 @@ namespace Inkybot
             this.actionsPanel.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Button clearExosButton;
 
         private System.Windows.Forms.ComboBox exoStatComboBox;
 

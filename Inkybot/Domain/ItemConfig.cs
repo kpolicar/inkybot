@@ -19,6 +19,16 @@ namespace Inkybot
             this.ChangeToRaRuneValue = ChangeToRaRuneValue;
             this.maximum = maximum;
         }
+        
+        public static bool operator == (StatConfig op1, StatConfig op2) {
+            return op1.ChangeToPaRuneValue == op2.ChangeToPaRuneValue &&
+                   op1.ChangeToRaRuneValue == op2.ChangeToRaRuneValue &&
+                   op1.maximum == op2.maximum;
+        }
+
+        public static bool operator !=(StatConfig op1, StatConfig op2) {
+            return !(op1 == op1);
+        }
     }
 
     public class ItemConfig
