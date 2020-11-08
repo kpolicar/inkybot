@@ -79,6 +79,7 @@ namespace Inkybot
         public const int WM_LBUTTONUP = 0x0202;
         public const int WM_KEYDOWN = 0x0100;
         public const int WM_KEYUP = 0x0101;
+        public const int WM_CHAR = 0x0102;
 
 
         public struct Rect

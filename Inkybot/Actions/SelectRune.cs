@@ -38,14 +38,14 @@ namespace Inkybot.Actions
                 }
             }
         }
-
+        
         public override void Execute() {
             
             var itemStats = screenDataProvider.lastScanResults;
             var column = (int) rune.type;
 
             for (var row = 0; row < itemStats.Length; row++) {
-                if (rune.stat.DisplayName != itemStats[row].stat.DisplayName)
+                if (rune.stat != itemStats[row].stat)
                     continue;
 
                 var pos = RunePosition(column, row);
