@@ -168,7 +168,6 @@
         <Compile Include="Events\FetchedUserEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
-        <Compile Include="KeyboardHook.cs" />
         <Compile Include="Resources\MagingDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
