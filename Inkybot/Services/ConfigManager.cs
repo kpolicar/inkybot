@@ -9,7 +9,7 @@ namespace Inkybot.Services
 {
     public class ConfigManager
     {
-        public event EventHandler<ConfigChangedEventArgs> ConfigChanged;
+        public event EventHandler<ConfigModifiedEventArgs> ConfigModified;
 
         public ItemConfig ItemConfig {
             get;
@@ -36,25 +36,25 @@ namespace Inkybot.Services
                 ItemConfig.Config.Remove(stat);
             }
             if (fallenUnconfiguredStats.Length > 0)
-                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
+                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, false, true));
         }
 
         public void RemoveExos() {
-            var configuredExoStats = (from itemConfig in ItemConfig.Config 
-                where !(from standardStat in ItemConfig.Item.Stats.StandardStats.Select(itemStat => itemStat.stat) 
-                    select standardStat).Contains(itemConfig.Key) 
-                select itemConfig.Key).ToArray();
+            var configuredExoStats = ItemConfig
+                .Exos
+                .Select(config => config.Key)
+                .ToArray();
             
             foreach (var stat in configuredExoStats) {
                 ItemConfig.Config.Remove(stat);
             }
             if (configuredExoStats.Length > 0)
-                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
+                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, true));
         }
 
         public void ResetConfig(Item item) {
             ItemConfig = new ItemConfig(item);
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, true));
+            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, true));
         }
 
         public void EnforceConfigSetForItem(Item item) {
@@ -73,7 +73,7 @@ namespace Inkybot.Services
                 return;
             
             ItemConfig.Config[stat] = statConfig;
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(ItemConfig, isNewStatConfiguration));
+            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, isNewStatConfiguration));
             
             foreach (var keyValuePair in ItemConfig.Config) {
                 Debug.WriteLine(keyValuePair.Key.DisplayName);

@@ -28,5 +28,6 @@ namespace Inkybot.Domain.Repositories
         }
 
         public ItemStat this[int i] => Stats.ElementAt(i);
+        public ItemStat this[Stat stat] => Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
     }
 }

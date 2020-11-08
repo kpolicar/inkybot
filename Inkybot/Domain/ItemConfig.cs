@@ -35,6 +35,17 @@ namespace Inkybot
     {
         public readonly Item Item;
         public readonly Dictionary<Stat, StatConfig> Config = new Dictionary<Stat, StatConfig>();
+        
+        public KeyValuePair<Stat, StatConfig>[] Exos {
+            get {
+                var configuredExoStats = from itemConfig in Config 
+                    where !(from standardStat in Item.Stats.StandardStats.Select(itemStat => itemStat.stat) 
+                        select standardStat).Contains(itemConfig.Key) 
+                    select itemConfig;
+
+                return configuredExoStats.ToArray();
+            }
+        }
 
         public ItemConfig(Item item) {
             Item = item;

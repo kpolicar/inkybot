@@ -44,11 +44,11 @@ namespace Inkybot
             Services.AddService(typeof(ActionFactory), new MouseActionFactory());
             Services.AddService(typeof(ConfigManager), new ConfigManager());
             Services.AddService(typeof(ActionHandler), new ActionHandler());
-            Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
             Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
             Services.AddService(typeof(ApiClient), new ApiClient());
             Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
-            
+            Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
+
             BindNotifications();
 
             Application.EnableVisualStyles();

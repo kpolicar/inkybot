@@ -35,12 +35,11 @@ namespace Inkybot
         internal Stopwatch historyCheckTimeout;
 
         public DofusMagingJob() {
-            magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            configManager.ConfigChanged += OnConfigChanged;
+            configManager.ConfigModified += OnConfigModified;
             
             historyCheckTimeout = new Stopwatch();
         }
@@ -65,6 +64,7 @@ namespace Inkybot
         public void BeginMage() {
             if (IsMaging) return;
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
 
             job = new Thread(DoMage);
             job.Start();
@@ -114,8 +114,9 @@ namespace Inkybot
             Finished?.Invoke(this, new MagingJobFinishedEventArgs());
         }
         
-        public void OnConfigChanged(object sender, ConfigChangedEventArgs eventArgs) {
-            StopMage();
+        public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
+            if (e.Changed)
+                StopMage();
         }
     }
 }

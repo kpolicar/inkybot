@@ -13,48 +13,106 @@ namespace Inkybot
     public class BasicDofusMagingAI : DofusMagingAI
     {
         private readonly ActionFactory actions;
-        private readonly ConfigManager configManager;
         private ItemConfig itemConfig;
+        private float sink;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
+            
             var configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            configManager.ConfigChanged += OnConfigChanged;
+            configManager!.ConfigModified += (sender, args) => itemConfig = args.ItemConfig;
+            
+            var magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            magingJob!.SinkChanged += (sender, args) => sink = args.sink;
         }
 
-        public void OnConfigChanged(object sender, ConfigChangedEventArgs args) {
-            itemConfig = args.ItemConfig;
-        }
+        private ItemMage? ResolveItemMageByPriority(
+                IEnumerable<ItemStat> stats, Func<IEnumerable<ItemMage>,
+                IOrderedEnumerable<ItemMage>> priorityFunction)
+        {
+            var potentialItemMages = stats
+                .Select(itemStat =>
+                    new ItemMage(
+                        itemStat.stat,
+                        new Rune(itemStat.stat, ResolveRuneType(itemStat)),
+                        itemConfig.For(itemStat),
+                        itemConfig.For(itemStat).maximum,
+                        itemStat.value
+                        ));
+                
+            var prioritized = priorityFunction(potentialItemMages);
 
-        public void SetConfig(ItemConfig itemConfig) {
-            this.itemConfig = itemConfig;
+            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
+            if (proposed.Equals(default(ItemMage)))
+                return null;
+            return proposed;
+        }
+        
+        private ItemMage? ResolveItemMageByPriority(
+                Item item,
+                KeyValuePair<Stat, StatConfig>[] statsToExo,
+                Func<IEnumerable<ItemMage>, IOrderedEnumerable<ItemMage>> priorityFunction)
+        {
+            var potentialItemMages = statsToExo
+                .Select(statConfig =>
+                new ItemMage(
+                    statConfig.Key,
+                    new Rune(statConfig.Key, Rune.Type.Ra),
+                    statConfig.Value,
+                    0,
+                    item.Stats[statConfig.Key].value
+                ));
+                
+            var prioritized = priorityFunction(potentialItemMages);
+            foreach (var itemMage in prioritized) {
+                Debug.WriteLine("exo will overmage: "+itemMage.WillOvermage);
+            }
+
+            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
+            if (proposed.Equals(default(ItemMage)))
+                return null;
+            return proposed;
         }
 
         public IAction ResolveAction(Item item, IAction previousAction) {
             var stats = item.Stats;
-            // Todo: fix
-            var itemMage = stats
-                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref itemConfig))
-                .OrderByDescending(StatPriority)
-                .Cast<ItemMage?>()
-                .FirstOrDefault(itemMage => !itemMage!.Value.WillOvermage)
-                .GetValueOrDefault(new ItemMage(stats.Stats.First(), new Rune(stats.First().stat, ResolveRuneType(stats.First())), ref itemConfig));
+            Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
+            if (item.Stats.ExoStats.Length > 0)
+                Debug.WriteLine("Are you sure you want to continue maging??");
+
+            var proposedItemMage = ResolveItemMageByPriority(
+                stats.StandardStats, 
+                mages => mages.OrderByDescending(StatPriority));
+
+            if (proposedItemMage == null) {
+                Debug.WriteLine("no more standard mages");
+                var statsToExo = itemConfig.Exos;
+                
+                proposedItemMage = ResolveItemMageByPriority(
+                    item,
+                    statsToExo, 
+                    mages => mages.OrderBy(ExoPriority));
+                
+                if (proposedItemMage == null) 
+                    return actions.Finish();
+                
+                Debug.WriteLine("Ready for EXO!");
+            }
+
+            var itemMage = proposedItemMage!.Value;
 
             Debug.WriteLine(
-                $"Max of {itemMage.stat.stat.DisplayName} is {itemConfig.For(itemMage.stat).maximum}, stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.maximum}, stat will overmage: {itemMage.WillOvermage}"
                 );
-            // Todo: add condition based on remaining sink
-            if (itemMage.WillOvermage)
-                return actions.Finish();
 
             if (previousAction == null ||
                 previousAction is Combine &&
-                ((previousAction as Combine).target.stat != itemMage.stat.stat ||
-                (previousAction as Combine).target.type != itemMage.rune.type)) {
-                return actions.SelectRune(itemMage.rune);
+                ((previousAction as Combine).target.stat != itemMage.Stat ||
+                (previousAction as Combine).target.type != itemMage.Rune.type)) {
+                return actions.SelectRune(itemMage.Rune);
             }
 
-            return actions.Combine(itemMage.rune);
+            return actions.Combine(itemMage.Rune);
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
@@ -71,23 +129,31 @@ namespace Inkybot
             return itemMage.NumberOfRunesNeededForFullMage;
         }
 
+        private int ExoPriority(ItemMage itemMage) {
+            return (int) itemMage.Rune.Sink;
+        }
+
         private struct ItemMage
         {
-            public readonly ItemStat stat;
-            public readonly Rune rune;
-            private readonly ItemConfig mageItemConfig;
-
-            public bool WillOvermage => stat.value + rune.IncreaseInValue > mageItemConfig.For(stat).maximum;
-
-            public ItemMage(ItemStat stat, Rune rune, ref ItemConfig mageItemConfig) {
-                this.stat = stat;
-                this.rune = rune;
-                this.mageItemConfig = mageItemConfig;
-            }
-
-            // Todo: should you change priority based on item stat max or config stat max?
+            public readonly Stat Stat;
+            public readonly Rune Rune;
+            public readonly StatConfig MageConfig;
+            public readonly int Value;
+            public readonly int Max;
+            
             public int NumberOfRunesNeededForFullMage =>
-                (int) Math.Ceiling((stat.max - stat.value) / (float) rune.IncreaseInValue);
+                (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue);
+            
+            public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
+
+            
+            public ItemMage(Stat stat, Rune rune, StatConfig mageConfig, int max, int value) {
+                Stat = stat;
+                Rune = rune;
+                MageConfig = mageConfig;
+                Max = mageConfig.maximum;
+                Value = value;
+            }
         }
     }
 }

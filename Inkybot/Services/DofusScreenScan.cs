@@ -171,12 +171,12 @@ namespace Inkybot
             }
         }
 
-        private static int times = 0;
+        //private static int times = 0;
 
         public Image TakeScreenshot() {
-            times = times >= 3 ? times : ++times;
-            var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\"+times+".png");
-            //var bitmap = screen.CaptureWindow(handle);
+            //times = times >= 3 ? times : ++times;
+            //var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\"+times+".png");
+            var bitmap = screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);

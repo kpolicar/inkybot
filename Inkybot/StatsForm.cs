@@ -27,16 +27,15 @@ namespace Inkybot
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             actionsPanel.Hide();
-            configManager.ConfigChanged += OnConfigChanged;
-            dataProvider.FetchedItem += OnStatsFetched;
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
             exoStatComboBox.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
+            configManager.ConfigModified += OnConfigModified;
+            dataProvider.FetchedItem += OnStatsFetched;
         }
 
-        private void OnConfigChanged(object sender, ConfigChangedEventArgs e) {
-            Debug.WriteLine("config changed!");
+        private void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             Invoke(new MethodInvoker(() => {
                 RebuildDataGridView(e.ItemConfig);
             }));

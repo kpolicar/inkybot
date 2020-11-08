@@ -114,7 +114,7 @@
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\ServiceBinder.cs" />
-        <Compile Include="Events\ConfigChangedEventArgs.cs" />
+        <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
