@@ -1,5 +1,3 @@
-using static System.Configuration.ConfigurationManager;
-
 namespace Inkybot
 {
     public class Server
