@@ -51,6 +51,12 @@ namespace Inkybot
             handle = hwnd;
             screenshot = TakeScreenshot();
             this.saveToDisk = saveToDisk;
+            
+            if (saveToDisk) {
+                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"/debug/images/";
+                Directory.CreateDirectory(folderPath);
+                screenshot.Save(folderPath+Path.GetRandomFileName()+".png");
+            }
         }
 
         private void Init() {
@@ -165,9 +171,12 @@ namespace Inkybot
             }
         }
 
+        private static int times = 0;
+
         public Image TakeScreenshot() {
-            //var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\ex.bmp");
-            var bitmap = screen.CaptureWindow(handle);
+            times = times >= 3 ? times : ++times;
+            var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\"+times+".png");
+            //var bitmap = screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
             //bitmap.Save(fstream, ImageFormat.Bmp);

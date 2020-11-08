@@ -38,6 +38,7 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         private static void Main() {
+            Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
             Services.AddService(typeof(Mouse), new Win32Mouse());
             Services.AddService(typeof(ActionFactory), new MouseActionFactory());

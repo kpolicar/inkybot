@@ -20,7 +20,7 @@ namespace Inkybot
 
         internal ActionHandler actions;
 
-        public Config Config;
+        public ItemConfig ItemConfig;
 
         internal DofusDataProvider dataProvider;
         internal IItemHistoryAnalyzer history;
@@ -87,12 +87,12 @@ namespace Inkybot
             
             IsMaging = true;
             dataProvider.FetchData();
-            var stats = dataProvider.Stats();
+            var item = dataProvider.Item();
             // Someone could've stopped maging during stats gather
             if (!IsMaging)
                 return;
             IsMaging = false; // We dont want to stop maging on the initial config change 
-            configManager.EnforceConfigSetForStats(stats);
+            configManager.EnforceConfigSetForItem(item);
             IsMaging = true;
         }
 

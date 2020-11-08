@@ -110,11 +110,11 @@ namespace Inkybot
 
 
         private IAction DoAction() {
-            var itemStats = job.dataProvider.Stats();
-            if (itemStats.Length <= 0)
+            var item = job.dataProvider.Item();
+            if (item.IsInvalid)
                 throw new NoItemToMageFoundException("Could not gather item stats from screen");
 
-            var action = job.magus.ResolveAction(itemStats, job.previousAction);
+            var action = job.magus.ResolveAction(item, job.previousAction);
             
             if (action is Combine) {
                 var itemHistory = job.history.Analyse(job.dataProvider.History());

@@ -9,44 +9,58 @@ namespace Inkybot.Services
 {
     public class ConfigManager
     {
-        private Config config;
-        private DofusDataProvider dataProvider;
         public event EventHandler<ConfigChangedEventArgs> ConfigChanged;
-        
-        public void ItemChanged() {
-            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.FetchedStats += StatsUpdated;
+
+        public ItemConfig Config {
+            get;
+            private set;
         }
 
-        private void StatsUpdated(object sender, StatsEventArgs e) {
-            EnforceConfigSetForStats(e.stats);
+        public ConfigManager() {
+            var dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider.FetchedItem += StatsUpdated;
         }
 
-        public void ResetConfig(ItemStatRepository itemStats) {
-            config = new Config(itemStats);
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(config));
+        private void StatsUpdated(object sender, ItemEventArgs e) {
+            EnforceConfigSetForItem(e.Item);
+            RemoveFallenUnconfiguredStats(e.Item);
         }
 
-        public void EnforceConfigSetForStats(ItemStatRepository stats) {
-            if (!ConfigIsSetForStats(stats)) {
-                ResetConfig(stats);
+        private void RemoveFallenUnconfiguredStats(Item item) {
+            var fallenUnconfiguredStats =
+                Config.Config.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
+                    .Select(statConfig => statConfig.Key)
+                    .ToArray();
+
+            foreach (var stat in fallenUnconfiguredStats) {
+                Config.Config.Remove(stat);
+            }
+            if (fallenUnconfiguredStats.Length > 0)
+                ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, true));
+        }
+
+        public void ResetConfig(Item item) {
+            Config = new ItemConfig(item);
+            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, true));
+        }
+
+        public void EnforceConfigSetForItem(Item item) {
+            if (!ConfigIsSetForItem(item)) {
+                Debug.WriteLine("resetting");
+                ResetConfig(item);
             }
         }
 
-        private bool ConfigIsSetForStats(ItemStatRepository stats) {
-            if (config == null || stats.Length != config.stats.Count) return false;
-            
-            var comparison = stats.Zip(config.stats.Keys,
-                (record1, record2) => new {Record1 = record1, Record2 = record2});
-
-            return comparison.All(comparison =>
-                       comparison.Record1.stat.DisplayName == comparison.Record2.DisplayName);
+        private bool ConfigIsSetForItem(Item item) {
+            return Config != null && Config.IsConfiguredForItem(item);
         }
 
         public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
-            config.stats[stat] = statConfig;
-            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(config));
-            foreach (var keyValuePair in config.stats) {
+            var structureChanged = !Config.Config.ContainsKey(stat);
+            Config.Config[stat] = statConfig;
+            ConfigChanged?.Invoke(this, new ConfigChangedEventArgs(Config, structureChanged));
+            
+            foreach (var keyValuePair in Config.Config) {
                 Debug.WriteLine(keyValuePair.Key.DisplayName);
             }
         }

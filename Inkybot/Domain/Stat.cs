@@ -1,4 +1,6 @@
-﻿namespace Inkybot
+﻿using System.Linq;
+
+namespace Inkybot
 {
     public class Stat
     {

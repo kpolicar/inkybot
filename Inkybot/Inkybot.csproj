@@ -111,6 +111,7 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
+        <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\ServiceBinder.cs" />
         <Compile Include="Events\ConfigChangedEventArgs.cs" />
@@ -143,7 +144,7 @@
         <Compile Include="Contracts\Mouse.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
-        <Compile Include="Domain\Config.cs" />
+        <Compile Include="Domain\ItemConfig.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\DofusMagingJobState.cs">
           <DependentUpon>DofusMagingJob.cs</DependentUpon>
@@ -160,7 +161,7 @@
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
         <Compile Include="Events\ApiConnectionChangedEventArgs.cs" />
         <Compile Include="Events\SinkChangedEventArgs.cs" />
-        <Compile Include="Events\StatsEventArgs.cs" />
+        <Compile Include="Events\ItemEventArgs.cs" />
         <Compile Include="Events\FetchedUserEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />

@@ -13,17 +13,18 @@ namespace Inkybot
 {
     public class ScreenReaderDataProvider : DofusDataProvider
     {
-        private readonly IntPtr handle;
+        public event EventHandler<ItemEventArgs> FetchedItem;
+        private IntPtr handle;
         public ItemStatRepository lastScanResults;
         private DofusScreenScan scan;
-        
-        public ScreenReaderDataProvider(IntPtr handle) {
+
+        public void BindTo(IntPtr handle) {
             this.handle = handle;
         }
 
-        public event EventHandler<StatsEventArgs> FetchedStats;
-
         public void FetchData() {
+            if (handle == IntPtr.Zero)
+                throw new SystemException();
             scan = new DofusScreenScan(handle);
         }
 
@@ -36,12 +37,13 @@ namespace Inkybot
             return historyResults;
         }
 
-        public ItemStatRepository Stats() {
+        public Item Item() {
             var scanResults = scan.Stats();
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
-            FetchedStats?.Invoke(this, new StatsEventArgs(stats));
+            var item = new Item(lastScanResults = stats);
+            FetchedItem?.Invoke(this, new ItemEventArgs(item));
 
-            return lastScanResults = stats;
+            return item;
         }
     }
 }

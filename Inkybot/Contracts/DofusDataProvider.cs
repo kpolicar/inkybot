@@ -7,9 +7,9 @@ namespace Inkybot.Contracts
 {
     public interface DofusDataProvider
     {
-        public event EventHandler<StatsEventArgs> FetchedStats;
+        public event EventHandler<ItemEventArgs> FetchedItem;
 
-        ItemStatRepository Stats();
+        Item Item();
         void FetchData();
         IEnumerable<MageHistoryRecord> History();
     }

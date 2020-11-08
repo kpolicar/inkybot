@@ -30,7 +30,8 @@ namespace Inkybot
             
             InitializeDofusClient();
 
-            Program.Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider(hWndDocked));
+            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider.BindTo(hWndDocked);
             var mouse = (Win32Mouse) Program.Services.GetService(typeof(Mouse));
             mouse.SetRelativeToHandle(hWndDocked);
             

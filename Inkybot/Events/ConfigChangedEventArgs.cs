@@ -4,10 +4,12 @@ namespace Inkybot.Events
 {
     public class ConfigChangedEventArgs : EventArgs
     {
-        public readonly Config config;
+        public readonly ItemConfig ItemConfig;
+        public readonly bool StructureChanged;
 
-        public ConfigChangedEventArgs(Config config) {
-            this.config = config;
+        public ConfigChangedEventArgs(ItemConfig itemConfig, bool structureChanged) {
+            this.ItemConfig = itemConfig;
+            this.StructureChanged = structureChanged;
         }
     }
 }

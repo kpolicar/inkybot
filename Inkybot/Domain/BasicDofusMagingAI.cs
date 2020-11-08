@@ -14,7 +14,7 @@ namespace Inkybot
     {
         private readonly ActionFactory actions;
         private readonly ConfigManager configManager;
-        private Config config;
+        private ItemConfig itemConfig;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
@@ -23,25 +23,25 @@ namespace Inkybot
         }
 
         public void OnConfigChanged(object sender, ConfigChangedEventArgs args) {
-            Debug.WriteLine("Config changed!");
-            config = args.config;
+            itemConfig = args.ItemConfig;
         }
 
-        public void SetConfig(Config config) {
-            this.config = config;
+        public void SetConfig(ItemConfig itemConfig) {
+            this.itemConfig = itemConfig;
         }
 
-        public IAction ResolveAction(ItemStatRepository itemStats, IAction previousAction) {
+        public IAction ResolveAction(Item item, IAction previousAction) {
+            var stats = item.Stats;
             // Todo: fix
-            var itemMage = itemStats
-                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref config))
+            var itemMage = stats
+                .Select(itemStat => new ItemMage(itemStat, new Rune(itemStat.stat, ResolveRuneType(itemStat)), ref itemConfig))
                 .OrderByDescending(StatPriority)
                 .Cast<ItemMage?>()
-                .FirstOrDefault(item => !item!.Value.WillOvermage)
-                .GetValueOrDefault(new ItemMage(itemStats.First(), new Rune(itemStats.First().stat, ResolveRuneType(itemStats.First())), ref config));
+                .FirstOrDefault(itemMage => !itemMage!.Value.WillOvermage)
+                .GetValueOrDefault(new ItemMage(stats.Stats.First(), new Rune(stats.First().stat, ResolveRuneType(stats.First())), ref itemConfig));
 
             Debug.WriteLine(
-                $"Max of {itemMage.stat.stat.DisplayName} is {config.For(itemMage.stat).maximum}, stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.stat.stat.DisplayName} is {itemConfig.For(itemMage.stat).maximum}, stat will overmage: {itemMage.WillOvermage}"
                 );
             // Todo: add condition based on remaining sink
             if (itemMage.WillOvermage)
@@ -58,7 +58,7 @@ namespace Inkybot
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
-            var itemConfig = config.For(itemStat);
+            var itemConfig = this.itemConfig.For(itemStat);
 
             if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) return Rune.Type.Ra;
 
@@ -75,14 +75,14 @@ namespace Inkybot
         {
             public readonly ItemStat stat;
             public readonly Rune rune;
-            private readonly Config mageConfig;
+            private readonly ItemConfig mageItemConfig;
 
-            public bool WillOvermage => stat.value + rune.IncreaseInValue > mageConfig.For(stat).maximum;
+            public bool WillOvermage => stat.value + rune.IncreaseInValue > mageItemConfig.For(stat).maximum;
 
-            public ItemMage(ItemStat stat, Rune rune, ref Config mageConfig) {
+            public ItemMage(ItemStat stat, Rune rune, ref ItemConfig mageItemConfig) {
                 this.stat = stat;
                 this.rune = rune;
-                this.mageConfig = mageConfig;
+                this.mageItemConfig = mageItemConfig;
             }
 
             // Todo: should you change priority based on item stat max or config stat max?
