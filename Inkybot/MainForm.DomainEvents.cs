@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Inkybot.Actions;
 using Inkybot.Events;
 
 namespace Inkybot
@@ -11,6 +12,19 @@ namespace Inkybot
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
+            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
+            actionHandler.ActionExecuted += OnMagingAction;
+        }
+
+        private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
+            if (e.action is Combine combine) {
+                if (combine.Exo) {
+                    int count; 
+                    var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
+                    count = parsed ? ++count : 0;
+                    exoAttemptsValueLabel.Text = count.ToString();
+                }
+            }
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
@@ -22,6 +36,8 @@ namespace Inkybot
                 toggleMageButton.Text = "START";
                 toggleMageButton.Enabled = false;
                 mageInfoPanel.Hide();
+                exoAttemptsLabel.Hide();
+                exoAttemptsValueLabel.Hide();
             }));
         }
 
@@ -33,6 +49,9 @@ namespace Inkybot
 
         private void OnMagingStarted(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
+                // Todo: check if is configured for exos
+                exoAttemptsLabel.Show();
+                exoAttemptsValueLabel.Show();
                 toggleMageButton.Text = "STOP";
                 mageInfoPanel.Show();
             }));

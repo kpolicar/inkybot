@@ -27,6 +27,8 @@ namespace Inkybot
             toastPanel.Hide();
             mageInfoPanel.Hide();
             debugScreenshotButton.Hide();
+            exoAttemptsLabel.Hide();
+            exoAttemptsValueLabel.Hide();
             
             InitializeDofusClient();
 
