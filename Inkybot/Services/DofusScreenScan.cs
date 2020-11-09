@@ -87,12 +87,15 @@ namespace Inkybot
             var scanned = ScanRegion(
                 HistoryBounds,
                 text => {
-                    
-                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink)))")
+                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+")
+                        .Where(s => s != string.Empty)
                         .Select(result => result.Replace("\n", " "))
                         .ToArray();
                 });
-            Debug.WriteLine(string.Join("\n", scanned));
+
+            foreach (var s in scanned) {
+                Debug.WriteLine(Regex.Escape(s));
+            }
 
             return scanned;
         }

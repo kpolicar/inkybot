@@ -38,7 +38,8 @@ namespace Inkybot
             // Have to check if user has stopped maging during this sleep
             if (action is Combine combine) {
                 job.state = DofusMagingJobState.EXECUTING_COMBINE;
-                PersistRuneOnTable(combine);
+                if (!combine.Exo)
+                    PersistRuneOnTable(combine);
             }
         }
 

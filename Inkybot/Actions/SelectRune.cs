@@ -8,6 +8,14 @@ namespace Inkybot.Actions
 {
     public class SelectRune : MouseAction
     {
+        public bool SelectedExoRune;
+        
+        public static readonly Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1492, 103, 1492, 103),
+            Width = 1920,
+            Height = 1017
+        };
+        
         public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1320, 775, 1320, 775),
             Width = 1920,
@@ -65,6 +73,15 @@ namespace Inkybot.Actions
                 return;
             }
 
+            var resourceCategoryPosition = GetCursorTarget(new Responsive.Measurement {
+                Rectangle = Rect.FromCoords(1492, 103, 1492, 103),
+                Width = 1920,
+                Height = 1017
+            });
+            Input.Click(resourceCategoryPosition.X, resourceCategoryPosition.Y);
+
+            Thread.Sleep(50);
+            
             var searchTextBoxPosition = GetCursorTarget(InventorySearchTextBox);
             Input.Click(searchTextBoxPosition.X, searchTextBoxPosition.Y);
             
@@ -72,11 +89,12 @@ namespace Inkybot.Actions
             Input.SelectAll();
             Thread.Sleep(50);
             
-            Input.TypeMessage("Air res per rune");
+            Input.TypeMessage(rune.DisplayName);
             Thread.Sleep(2000);
             
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
+            SelectedExoRune = true;
             
             System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {rune.stat.DisplayName}");
         }

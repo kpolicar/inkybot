@@ -99,7 +99,7 @@ namespace Inkybot
             int changeToPaRuneThreshold = int.MinValue,
             int changeToRaRuneThreshold = int.MinValue) {
             this.DisplayName = DisplayName;
-            this.RuneName = RuneName + " rune";
+            this.RuneName = RuneName;
             this.maximum = maximum;
             this.sinkValue = sinkValue;
             this.negSinkValue = negSinkValue;

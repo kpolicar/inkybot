@@ -6,6 +6,7 @@ using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 using Inkybot.Services;
 
 namespace Inkybot
@@ -28,7 +29,8 @@ namespace Inkybot
 
         private ItemMage? ResolveItemMageByPriority(
                 IEnumerable<ItemStat> stats, Func<IEnumerable<ItemMage>,
-                IOrderedEnumerable<ItemMage>> priorityFunction)
+                IOrderedEnumerable<ItemMage>> priorityFunction,
+                bool exo = false)
         {
             var potentialItemMages = stats
                 .Select(itemStat =>
@@ -36,7 +38,8 @@ namespace Inkybot
                         itemStat.stat,
                         new Rune(itemStat.stat, ResolveRuneType(itemStat)),
                         itemConfig.For(itemStat),
-                        itemStat.value
+                        itemStat.value,
+                        exo
                         ));
                 
             var prioritized = priorityFunction(potentialItemMages);
@@ -49,16 +52,18 @@ namespace Inkybot
         
         private ItemMage? ResolveItemMageByPriority(
                 Item item,
-                KeyValuePair<Stat, StatConfig>[] statsToExo,
-                Func<IEnumerable<ItemMage>, IOrderedEnumerable<ItemMage>> priorityFunction)
+                KeyValuePair<Stat, StatConfig>[] statsConfig,
+                Func<IEnumerable<ItemMage>, IOrderedEnumerable<ItemMage>> priorityFunction,
+                bool exo = false)
         {
-            var potentialItemMages = statsToExo
+            var potentialItemMages = statsConfig
                 .Select(statConfig =>
                 new ItemMage(
                     statConfig.Key,
                     new Rune(statConfig.Key, statConfig.Value.StrongestRuneType),
                     statConfig.Value,
-                    item.Stats[statConfig.Key].value
+                    item.Stats[statConfig.Key].value,
+                    exo
                 ));
                 
             var prioritized = priorityFunction(potentialItemMages);
@@ -69,45 +74,54 @@ namespace Inkybot
             return proposed;
         }
 
-        public IAction ResolveAction(Item item, IAction previousAction) {
-            var stats = item.Stats;
-            Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
-            if (item.Stats.ExoStats.Length > 0)
-                Debug.WriteLine("Are you sure you want to continue maging??");
+        private void HandleItemWithExistingExos() {
+            
+        }
 
-            var proposedItemMage = ResolveItemMageByPriority(
-                stats.StandardStats, 
+        private ItemMage? ResolveItemMage(Item item) {
+            return ResolveItemMageByPriority(
+                item.Stats.StandardStats, 
                 mages => mages.OrderByDescending(StatPriority));
+        }
 
-            if (proposedItemMage == null) {
-                Debug.WriteLine("no more standard mages");
-                var statsToExo = itemConfig.Exos;
+        private ItemMage? ResolveItemMageForExo(Item item) {
+            var statsToExo = itemConfig.Exos;
                 
-                proposedItemMage = ResolveItemMageByPriority(
-                    item,
-                    statsToExo, 
-                    mages => mages.OrderBy(ExoPriority));
-                
-                if (proposedItemMage == null) 
-                    return actions.Finish();
-                
-                Debug.WriteLine("Ready for EXO!");
-            }
+            return ResolveItemMageByPriority(
+                item,
+                statsToExo, 
+                mages => mages.OrderBy(ExoPriority),
+                true);
+        }
 
-            var itemMage = proposedItemMage!.Value;
+        public IAction ResolveAction(Item item, IAction previousAction) {
+            Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
+
+            var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);;
+            
+            if (proposedItemMage == null)
+                return actions.Finish();
+            
+            var itemMage = proposedItemMage.Value;
 
             Debug.WriteLine(
                 $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.maximum}, stat will overmage: {itemMage.WillOvermage}"
                 );
+            
+            var selectRune = new Func<IAction>(() => actions.SelectRune(itemMage.Rune));
 
-            if (previousAction == null ||
-                previousAction is Combine &&
-                ((previousAction as Combine).target.stat != itemMage.Stat ||
-                (previousAction as Combine).target.type != itemMage.Rune.type)) {
-                return actions.SelectRune(itemMage.Rune);
+            if (previousAction == null)
+                return selectRune();
+            
+            if (previousAction is Combine previousCombine) {
+                if (previousCombine.Exo)
+                    return selectRune();
+                    
+                if (previousCombine.target.stat == itemMage.Stat || previousCombine.target.type != itemMage.Rune.type)
+                    return selectRune();
             }
 
-            return actions.Combine(itemMage.Rune);
+            return actions.Combine(itemMage.Rune, itemMage.Exo);
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {

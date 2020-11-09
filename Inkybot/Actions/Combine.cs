@@ -12,12 +12,14 @@ namespace Inkybot.Actions
             Height = 1017
         };
         
+        public bool Exo;
         public Rune target;
         private Control targetControl;
 
-        public Combine(Control targetControl, Rune target) : base(targetControl) {
+        public Combine(Control targetControl, Rune target, bool exo) : base(targetControl) {
             this.targetControl = targetControl;
             this.target = target;
+            this.Exo = exo;
         }
 
         public override void Execute() {

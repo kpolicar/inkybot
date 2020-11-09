@@ -16,8 +16,8 @@ namespace Inkybot.Services
             return new Finish(targetControl);
         }
 
-        public IAction Combine(Rune target) {
-            return new Combine(targetControl, target);
+        public IAction Combine(Rune target, bool exo) {
+            return new Combine(targetControl, target, exo);
         }
 
         public IAction SelectRune(Rune rune) {

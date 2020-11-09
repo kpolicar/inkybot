@@ -29,12 +29,8 @@ namespace Inkybot.Adapters
         }
 
         private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
-            if (historyEntrySegments.Count != 3) {
-                if (!IsHistoryEntryMageFailure(historyEntrySegments[0].Value))
-                    throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
-                
-                return StatChanged.Failure;
-            }
+            if (historyEntrySegments.Count != 3)
+                throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
                 
             var (value, name) = (historyEntrySegments[1].Value, historyEntrySegments[2].Value);
 

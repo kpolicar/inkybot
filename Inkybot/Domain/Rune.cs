@@ -24,7 +24,7 @@
                     Type.Pa => "Pa ",
                     Type.Ra => "Ra ",
                 };
-                return prefix + stat.RuneName;
+                return prefix + stat.RuneName+ " rune";
             }
         }
         public Stat stat;
