@@ -77,8 +77,8 @@ namespace Inkybot
             new Stat("Damage", "dam", 5, 20f, 20f),
             new Stat("Summons", "summo", 3, 30f, 35f),
             new Stat("Range", "range",1, 51f, 25f),
-            new Stat("MP", "mp",1, 90f, 45f),
-            new Stat("AP", "ap",1, 100f, 50f)
+            new Stat("MP", "mp ga",1, 90f, 45f),
+            new Stat("AP", "ap ga",1, 100f, 50f)
         };
 
         public readonly int changeToPaRuneThreshold;
@@ -98,8 +98,8 @@ namespace Inkybot
             int maximum,
             float sinkValue,
             float negSinkValue,
-            int changeToPaRuneThreshold = int.MinValue,
-            int changeToRaRuneThreshold = int.MinValue,
+            int changeToPaRuneThreshold = int.MaxValue,
+            int changeToRaRuneThreshold = int.MaxValue,
             int maxValueSmRuneCanHit = -1,
             int maxValuePaRuneCanHit = -1) {
             this.DisplayName = DisplayName;

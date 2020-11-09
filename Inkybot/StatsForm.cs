@@ -166,7 +166,7 @@ namespace Inkybot
             var stat = statRow.Stat;
             
             var max = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
-            var statConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, max);
+            var statConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, max, stat.maxValueSmRuneCanHit, stat.maxValuePaRuneCanHit);
 
             configManager.ChangeStatConfig(stat, statConfig);
         }
@@ -178,7 +178,7 @@ namespace Inkybot
 
         private void addExoButton_Click(object sender, EventArgs e) {
             var stat = Stat.Stats.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, 0);
+            var exoConfig = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, 0, stat.maxValueSmRuneCanHit, stat.maxValuePaRuneCanHit);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }

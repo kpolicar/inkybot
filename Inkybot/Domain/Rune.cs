@@ -1,4 +1,6 @@
-﻿namespace Inkybot
+﻿using System;
+
+namespace Inkybot
 {
     public class Rune
     {
@@ -44,7 +46,7 @@
                 };
                 if (stat.sinkValue < 1) {
                     var increase = typeValue / stat.sinkValue;
-                    return (int) increase;
+                    return (int) Math.Ceiling(increase);
                 }
 
                 return typeValue;

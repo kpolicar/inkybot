@@ -30,21 +30,48 @@ namespace Inkybot
         private ItemMage? ResolveItemMageByPriority(
                 IEnumerable<ItemStat> stats, Func<IEnumerable<ItemMage>,
                 IOrderedEnumerable<ItemMage>> priorityFunction,
-                bool exo = false)
+                bool exo = false,
+                int runeTypeOffset = 0)
         {
             var potentialItemMages = stats
-                .Select(itemStat =>
-                    new ItemMage(
+                .Select(itemStat => {
+                    var runeType = ResolveRuneType(itemStat);
+                    runeType = runeType != Rune.Type.Sm ? runeType - runeTypeOffset : runeType;
+                    
+                    var rune = new Rune(itemStat.stat, runeType);
+                    
+                    return new ItemMage(
                         itemStat.stat,
-                        new Rune(itemStat.stat, ResolveRuneType(itemStat)),
+                        rune,
                         itemConfig.For(itemStat),
                         itemStat.value,
                         exo
-                        ));
+                    );
+                });
                 
             var prioritized = priorityFunction(potentialItemMages);
 
-            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
+            var proposed = prioritized.FirstOrDefault(itemMage => {
+                if (itemMage.WillOvermage)
+                    return false;
+                if (itemMage.Rune.type == Rune.Type.Sm && itemMage.Value > itemMage.MageConfig.MaxValueSmRuneCanHit)
+                    return false;
+                if (itemMage.Rune.type == Rune.Type.Pa && itemMage.Value > itemMage.MageConfig.MaxValuePaRuneCanHit)
+                    return false;
+
+                return true;
+            });
+
+            // Allow fallback to one offset
+            if (runeTypeOffset == 0 && proposed.Equals(default(ItemMage))) {
+                return ResolveItemMageByPriority(
+                    stats,
+                    priorityFunction,
+                    exo,
+                    1
+                    );
+            }
+            
             if (proposed.Equals(default(ItemMage)))
                 return null;
             return proposed;
@@ -117,7 +144,7 @@ namespace Inkybot
                 if (previousCombine.Exo)
                     return selectRune();
                     
-                if (previousCombine.target.stat == itemMage.Stat || previousCombine.target.type != itemMage.Rune.type)
+                if (previousCombine.target.stat != itemMage.Stat || previousCombine.target.type != itemMage.Rune.type)
                     return selectRune();
             }
 

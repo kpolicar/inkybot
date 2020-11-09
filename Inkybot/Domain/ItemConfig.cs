@@ -10,9 +10,11 @@ namespace Inkybot
         public readonly int ChangeToPaRuneValue;
         public readonly int ChangeToRaRuneValue;
         public readonly int maximum;
+        public readonly int MaxValueSmRuneCanHit;
+        public readonly int MaxValuePaRuneCanHit;
 
-        public bool CanUsePaRunes => ChangeToPaRuneValue != int.MinValue;
-        public bool CanUseRaRunes => ChangeToRaRuneValue != int.MinValue;
+        public bool CanUsePaRunes => ChangeToPaRuneValue != int.MaxValue;
+        public bool CanUseRaRunes => ChangeToRaRuneValue != int.MaxValue;
         
         public Rune.Type StrongestRuneType {
             get {
@@ -23,10 +25,12 @@ namespace Inkybot
             }
         }
 
-        public StatConfig(int ChangeToPaRuneValue, int ChangeToRaRuneValue, int maximum) {
+        public StatConfig(int ChangeToPaRuneValue, int ChangeToRaRuneValue, int maximum, int maxValueSmRuneCanHit, int maxValuePaRuneCanHit) {
             this.ChangeToPaRuneValue = ChangeToPaRuneValue;
             this.ChangeToRaRuneValue = ChangeToRaRuneValue;
             this.maximum = maximum;
+            this.MaxValueSmRuneCanHit = maxValueSmRuneCanHit;
+            this.MaxValuePaRuneCanHit = maxValuePaRuneCanHit;
         }
         
         public static bool operator == (StatConfig op1, StatConfig op2) {
@@ -72,7 +76,7 @@ namespace Inkybot
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                Config[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, itemStat.max);
+                Config[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, itemStat.max, stat.maxValueSmRuneCanHit, stat.maxValuePaRuneCanHit);
             }
         }
 
