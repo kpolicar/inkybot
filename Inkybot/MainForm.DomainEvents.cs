@@ -17,14 +17,14 @@ namespace Inkybot
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
-            if (e.action is Combine combine) {
-                if (combine.Exo) {
-                    int count; 
-                    var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
-                    count = parsed ? ++count : 0;
-                    exoAttemptsValueLabel.Text = count.ToString();
-                }
-            }
+            if (!(e.action is Combine combine) || !combine.Exo) return;
+            
+            Invoke(new MethodInvoker(delegate {
+                int count; 
+                var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
+                count = parsed ? ++count : 0;
+                exoAttemptsValueLabel.Text = count.ToString();
+            }));
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {

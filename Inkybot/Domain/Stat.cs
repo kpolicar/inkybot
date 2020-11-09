@@ -14,7 +14,7 @@ namespace Inkybot
         
         public static readonly Stat[] Stats = {
             new Stat("Initiative", "ini", 1010, 0.1f, 0.05f, 200, 375),
-            new Stat("Vitality", "vit", 505, 0.2f, 0.1f, 120, 286),
+            new Stat("Vitality", "vit", 505, 0.2f, 0.1f, 90, 286, 110, 310),
             new Stat("Pods", "pod", 404, 0.25f, 0.125f, 150, 350),
 
             ElementStatData("Strength", "stre"),
@@ -83,6 +83,8 @@ namespace Inkybot
 
         public readonly int changeToPaRuneThreshold;
         public readonly int changeToRaRuneThreshold;
+        public readonly int maxValueSmRuneCanHit;
+        public readonly int maxValuePaRuneCanHit;
 
         public readonly string DisplayName;
         public readonly string RuneName;
@@ -97,7 +99,9 @@ namespace Inkybot
             float sinkValue,
             float negSinkValue,
             int changeToPaRuneThreshold = int.MinValue,
-            int changeToRaRuneThreshold = int.MinValue) {
+            int changeToRaRuneThreshold = int.MinValue,
+            int maxValueSmRuneCanHit = -1,
+            int maxValuePaRuneCanHit = -1) {
             this.DisplayName = DisplayName;
             this.RuneName = RuneName;
             this.maximum = maximum;
@@ -105,10 +109,12 @@ namespace Inkybot
             this.negSinkValue = negSinkValue;
             this.changeToPaRuneThreshold = changeToPaRuneThreshold;
             this.changeToRaRuneThreshold = changeToRaRuneThreshold;
+            this.maxValueSmRuneCanHit = maxValueSmRuneCanHit != -1 ? maxValueSmRuneCanHit : changeToPaRuneThreshold;
+            this.maxValuePaRuneCanHit = maxValuePaRuneCanHit != -1 ? maxValuePaRuneCanHit : changeToRaRuneThreshold;
         }
 
         private static Stat ElementStatData(string DisplayName, string RuneName) {
-            return new Stat(DisplayName, RuneName, 101, 1f, 1f, 20, 48);
+            return new Stat(DisplayName, RuneName, 101, 1f, 1f, 20, 48, 28, 56);
         }
 
         private static Stat FlatElementResistanceStatData(string elementDisplayName) {
