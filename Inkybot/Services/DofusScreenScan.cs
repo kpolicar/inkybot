@@ -64,7 +64,7 @@ namespace Inkybot
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 "eng",
-                EngineMode.TesseractOnly,
+                EngineMode.Default,
                 null, new Dictionary<string, object> {
                     {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
@@ -87,7 +87,7 @@ namespace Inkybot
             var scanned = ScanRegion(
                 HistoryBounds,
                 text => {
-                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+")
+                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure)))")
                         .Where(s => s != string.Empty)
                         .Select(result => result.Replace("\n", " "))
                         .ToArray();
@@ -109,15 +109,16 @@ namespace Inkybot
 
         private Image PreprocessImage(Image image, Rectangle bounds) {
             return DoPreprocess(image, bounds, image => {
-                image.ColorSpace = ColorSpace.Gray;
 
-                image.Sharpen();
+                image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(30));
-                image.WhiteThreshold(new Percentage(30));
+                image.Negate();
             });
         }
 
         private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
+
+            
             using (var ms = new MemoryStream()) {
                 image.Save(ms, ImageFormat.Bmp);
                 ms.Position = 0;
@@ -128,6 +129,7 @@ namespace Inkybot
                     // Resize each image in the collection to a width of 200. When zero is specified for the height
                     // the height will be calculated with the aspect ratio.
                     newImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
+                    newImage.ColorSpace = ColorSpace.Gray;
                     newImage.Resize(new Percentage(300));
 
                     steps(newImage);
@@ -144,6 +146,7 @@ namespace Inkybot
                     return outImage;
                 }
             }
+            
 
         }
 
@@ -154,9 +157,10 @@ namespace Inkybot
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
             
-            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
+            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.Auto)) {
 
                 var scanned = ocrPage.GetText();
+                Debug.WriteLine(Regex.Escape(scanned));
                 var textLines = split(scanned);
 
                 return textLines
@@ -177,8 +181,10 @@ namespace Inkybot
         //private static int times = 0;
 
         public Image TakeScreenshot() {
+
             //times = times >= 3 ? times : ++times;
-            //var bitmap = Image.FromFile(@"C:\Users\Klemen\Desktop\"+times+".png");
+            //var bitmapp = Image.FromFile(@"C:\Users\Klemen\Desktop\debug.png");
+            //return bitmapp;
             var bitmap = screen.CaptureWindow(handle);
 
             //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");

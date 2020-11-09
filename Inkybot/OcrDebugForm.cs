@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ImageMagick;
 using Inkybot.Adapters;
+using Inkybot.Contracts;
 using Tesseract;
 
 namespace Inkybot
@@ -36,7 +37,11 @@ namespace Inkybot
         }
         
         private void tesseract() {
+            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider.FetchData();
+            dataProvider.History();
             
+            return;
             var fileDialogResult = openFileDialog1.ShowDialog();
 
             if (fileDialogResult != DialogResult.OK) return;
