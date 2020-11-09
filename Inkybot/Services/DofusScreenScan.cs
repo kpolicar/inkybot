@@ -157,7 +157,7 @@ namespace Inkybot
             //bitmap.Save(fstream, ImageFormat.Bmp);
             //fstream.Dispose();
             
-            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.Auto)) {
+            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
 
                 var scanned = ocrPage.GetText();
                 Debug.WriteLine(Regex.Escape(scanned));
@@ -183,7 +183,7 @@ namespace Inkybot
         public Image TakeScreenshot() {
 
             //times = times >= 3 ? times : ++times;
-            //var bitmapp = Image.FromFile(@"C:\Users\Klemen\Desktop\debug.png");
+            //var bitmapp = Image.FromFile(@"C:\Users\Klemen\Desktop\debug.png"); 
             //return bitmapp;
             var bitmap = screen.CaptureWindow(handle);
 

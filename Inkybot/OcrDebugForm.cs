@@ -39,7 +39,12 @@ namespace Inkybot
         private void tesseract() {
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchData();
-            dataProvider.History();
+            var history = new DofusMagingJob().history.Analyse(dataProvider.History());
+            foreach (var sad in history.history) {
+                foreach (var ex in sad.fell) {
+                       Debug.WriteLine(ex.stat.DisplayName + " " + ex.value);
+                }
+            }
             
             return;
             var fileDialogResult = openFileDialog1.ShowDialog();

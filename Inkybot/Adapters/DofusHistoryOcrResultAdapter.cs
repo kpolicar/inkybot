@@ -32,7 +32,8 @@ namespace Inkybot.Adapters
             if (historyEntrySegments.Count != 3)
                 throw new CouldNotSegmentMageHistoryLineException("Error occured trying to segment history line");
                 
-            var (value, name) = (historyEntrySegments[1].Value, historyEntrySegments[2].Value);
+            // in case there is a space after the minus sign, remove it
+            var (value, name) = (historyEntrySegments[1].Value.Replace(" ", ""), historyEntrySegments[2].Value);
 
             var stat = GetStatFromName(name);
 
@@ -45,7 +46,7 @@ namespace Inkybot.Adapters
         }
 
         private MatchCollection SegmentMageHistoryEntry(string historyLine) {
-            var segments = Regex.Matches(historyLine, @"(-?\d+) ?(%? ?[A-z( ]+[A-z)])");
+            var segments = Regex.Matches(historyLine, @"(-? ?\d+) ?(%? ?[A-z( ]+[A-z)])");
             return segments;
         }
 
