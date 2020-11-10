@@ -163,7 +163,7 @@
     <data name="critical_resistance" xml:space="preserve">
         <value>Critical Resistance</value>
     </data>
-    <data name="pushback _resistance" xml:space="preserve">
+    <data name="pushback_resistance" xml:space="preserve">
         <value>Pushback Resistance</value>
     </data>
     <data name="ranged_resistance" xml:space="preserve">

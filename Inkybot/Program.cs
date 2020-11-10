@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
@@ -54,7 +59,21 @@ namespace Inkybot
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
-            Application.Run(new MainForm());
+            //Application.Run(new MainForm());
+
+            var rm = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly());
+            
+            var resourceSet =
+                rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+            foreach (DictionaryEntry entry in resourceSet)
+            {
+                var stat = entry.Key.ToString();
+                    
+
+                var sa = (Inkybot.Config.StatConfig) Properties.Settings.Default["_" + stat.Replace("%", "per_")];
+                Debug.WriteLine(stat + " " + sa.MaxValueSmRuneCanHit);
+            }
         }
 
         private static void BindNotifications() {

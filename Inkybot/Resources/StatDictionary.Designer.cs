@@ -22,14 +22,14 @@ namespace Inkybot.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MagingDictionary {
+    internal class StatDictionary {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MagingDictionary() {
+        internal StatDictionary() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Inkybot.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.MagingDictionary", typeof(MagingDictionary).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.StatDictionary", typeof(StatDictionary).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,515 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure.
+        ///   Looks up a localized string similar to % Air Resistance.
         /// </summary>
-        internal static string failure {
+        internal static string _air_resistance {
             get {
-                return ResourceManager.GetString("failure", resourceCulture);
+                return ResourceManager.GetString("%air_resistance", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sink.
+        ///   Looks up a localized string similar to % Earth Resistance.
         /// </summary>
-        internal static string sink {
+        internal static string _earth_resistance {
             get {
-                return ResourceManager.GetString("sink", resourceCulture);
+                return ResourceManager.GetString("%earth_resistance", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to.
+        ///   Looks up a localized string similar to % Fire Resistance.
         /// </summary>
-        internal static string to {
+        internal static string _fire_resistance {
             get {
-                return ResourceManager.GetString("to", resourceCulture);
+                return ResourceManager.GetString("%fire_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock.
+        /// </summary>
+        internal static string _lock {
+            get {
+                return ResourceManager.GetString("lock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to % Neutral Resistance.
+        /// </summary>
+        internal static string _neutral_resistance {
+            get {
+                return ResourceManager.GetString("%neutral_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to % Water Resistance.
+        /// </summary>
+        internal static string _water_resistance {
+            get {
+                return ResourceManager.GetString("%water_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agility.
+        /// </summary>
+        internal static string agility {
+            get {
+                return ResourceManager.GetString("agility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Air Damage.
+        /// </summary>
+        internal static string air_damage {
+            get {
+                return ResourceManager.GetString("air_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Air Resistance.
+        /// </summary>
+        internal static string air_resistance {
+            get {
+                return ResourceManager.GetString("air_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Air Steal.
+        /// </summary>
+        internal static string air_steal {
+            get {
+                return ResourceManager.GetString("air_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AP.
+        /// </summary>
+        internal static string ap {
+            get {
+                return ResourceManager.GetString("ap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AP Parry.
+        /// </summary>
+        internal static string ap_parry {
+            get {
+                return ResourceManager.GetString("ap_parry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AP Reduction.
+        /// </summary>
+        internal static string ap_reduction {
+            get {
+                return ResourceManager.GetString("ap_reduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chance.
+        /// </summary>
+        internal static string chance {
+            get {
+                return ResourceManager.GetString("chance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to % Critical.
+        /// </summary>
+        internal static string critical {
+            get {
+                return ResourceManager.GetString("critical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critical Damage.
+        /// </summary>
+        internal static string critical_damage {
+            get {
+                return ResourceManager.GetString("critical_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critical Resistance.
+        /// </summary>
+        internal static string critical_resistance {
+            get {
+                return ResourceManager.GetString("critical_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Damage.
+        /// </summary>
+        internal static string damage {
+            get {
+                return ResourceManager.GetString("damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dodge.
+        /// </summary>
+        internal static string dodge {
+            get {
+                return ResourceManager.GetString("dodge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earth Damage.
+        /// </summary>
+        internal static string earth_damage {
+            get {
+                return ResourceManager.GetString("earth_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earth Resistance.
+        /// </summary>
+        internal static string earth_resistance {
+            get {
+                return ResourceManager.GetString("earth_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earth Steal.
+        /// </summary>
+        internal static string earth_steal {
+            get {
+                return ResourceManager.GetString("earth_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fire Damage.
+        /// </summary>
+        internal static string fire_damage {
+            get {
+                return ResourceManager.GetString("fire_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fire Resistance.
+        /// </summary>
+        internal static string fire_resistance {
+            get {
+                return ResourceManager.GetString("fire_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fire Steal.
+        /// </summary>
+        internal static string fire_steal {
+            get {
+                return ResourceManager.GetString("fire_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heals.
+        /// </summary>
+        internal static string heals {
+            get {
+                return ResourceManager.GetString("heals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HP Restored.
+        /// </summary>
+        internal static string hp_restored {
+            get {
+                return ResourceManager.GetString("hp_restored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hunting weapon.
+        /// </summary>
+        internal static string hunting_weapon {
+            get {
+                return ResourceManager.GetString("hunting_weapon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initiative.
+        /// </summary>
+        internal static string initiative {
+            get {
+                return ResourceManager.GetString("initiative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Intelligence.
+        /// </summary>
+        internal static string intelligence {
+            get {
+                return ResourceManager.GetString("intelligence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Melee Damage.
+        /// </summary>
+        internal static string melee_damage {
+            get {
+                return ResourceManager.GetString("melee_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Melee Resistance.
+        /// </summary>
+        internal static string melee_resistance {
+            get {
+                return ResourceManager.GetString("melee_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MP.
+        /// </summary>
+        internal static string mp {
+            get {
+                return ResourceManager.GetString("mp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MP Parry.
+        /// </summary>
+        internal static string mp_parry {
+            get {
+                return ResourceManager.GetString("mp_parry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MP Reduction.
+        /// </summary>
+        internal static string mp_reduction {
+            get {
+                return ResourceManager.GetString("mp_reduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neutral Damage.
+        /// </summary>
+        internal static string neutral_damage {
+            get {
+                return ResourceManager.GetString("neutral_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neutral Resistance.
+        /// </summary>
+        internal static string neutral_resistance {
+            get {
+                return ResourceManager.GetString("neutral_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neutral Steal.
+        /// </summary>
+        internal static string neutral_steal {
+            get {
+                return ResourceManager.GetString("neutral_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pods.
+        /// </summary>
+        internal static string pods {
+            get {
+                return ResourceManager.GetString("pods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power.
+        /// </summary>
+        internal static string power {
+            get {
+                return ResourceManager.GetString("power", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power (traps).
+        /// </summary>
+        internal static string power_traps {
+            get {
+                return ResourceManager.GetString("power_traps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prospecting.
+        /// </summary>
+        internal static string prospecting {
+            get {
+                return ResourceManager.GetString("prospecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pushback Damage.
+        /// </summary>
+        internal static string pushback_damage {
+            get {
+                return ResourceManager.GetString("pushback_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pushback Resistance.
+        /// </summary>
+        internal static string pushback_resistance {
+            get {
+                return ResourceManager.GetString("pushback_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Range.
+        /// </summary>
+        internal static string range {
+            get {
+                return ResourceManager.GetString("range", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ranged Damage.
+        /// </summary>
+        internal static string ranged_damage {
+            get {
+                return ResourceManager.GetString("ranged_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ranged Resistance.
+        /// </summary>
+        internal static string ranged_resistance {
+            get {
+                return ResourceManager.GetString("ranged_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spell Damage.
+        /// </summary>
+        internal static string spell_damage {
+            get {
+                return ResourceManager.GetString("spell_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strength.
+        /// </summary>
+        internal static string strength {
+            get {
+                return ResourceManager.GetString("strength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Summons.
+        /// </summary>
+        internal static string summons {
+            get {
+                return ResourceManager.GetString("summons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trap Damage.
+        /// </summary>
+        internal static string trap_damage {
+            get {
+                return ResourceManager.GetString("trap_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vitality.
+        /// </summary>
+        internal static string vitality {
+            get {
+                return ResourceManager.GetString("vitality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Water Damage.
+        /// </summary>
+        internal static string water_damage {
+            get {
+                return ResourceManager.GetString("water_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Water Resistance.
+        /// </summary>
+        internal static string water_resistance {
+            get {
+                return ResourceManager.GetString("water_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Water Steal.
+        /// </summary>
+        internal static string water_steal {
+            get {
+                return ResourceManager.GetString("water_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weapon Damage.
+        /// </summary>
+        internal static string weapon_damage {
+            get {
+                return ResourceManager.GetString("weapon_damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wisdom.
+        /// </summary>
+        internal static string wisdom {
+            get {
+                return ResourceManager.GetString("wisdom", resourceCulture);
             }
         }
     }

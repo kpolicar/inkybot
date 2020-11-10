@@ -101,6 +101,7 @@
         <Compile Include="ConfigForm.Designer.cs">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Config\StatConfig.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
         </Compile>
@@ -286,9 +287,6 @@
       <Content Include="Resources\Tesseract\eng.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Domain\Resources" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="..\packages\Tesseract.4.1.0-beta1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.0-beta1\build\Tesseract.targets')" />
