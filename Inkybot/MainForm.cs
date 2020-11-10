@@ -63,5 +63,9 @@ namespace Inkybot
                 toastPanel.BringToFront();
             }));
         }
+
+        private void configButton_Click(object sender, EventArgs e) {
+            
+        }
     }
 }
