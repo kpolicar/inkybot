@@ -21,6 +21,7 @@ namespace Inkybot
         private StatsForm statsForm;
         private readonly ApiClient api;
         private readonly DofusMagingJob magingJob;
+        private ConfigForm configForm;
 
         public MainForm() {
             InitializeComponent();
@@ -41,6 +42,7 @@ namespace Inkybot
             actions.setRelativeToControl(dofusClientPanel);
 
             statsForm = new StatsForm(this);
+            configForm = new ConfigForm();
             
             api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
@@ -65,7 +67,7 @@ namespace Inkybot
         }
 
         private void configButton_Click(object sender, EventArgs e) {
-            
+            var result = configForm.ShowDialog(this);
         }
     }
 }

@@ -20,7 +20,9 @@ namespace Inkybot
 
         public OcrDebugForm() {
             InitializeComponent();
-            
+        }
+        
+        private void tesseract() {
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 "eng",
@@ -29,14 +31,10 @@ namespace Inkybot
                     {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
             
-            
-            
             spellCorrect = new SymSpell(16, 6);
             
             Dictionary.LoadInto(spellCorrect);
-        }
-        
-        private void tesseract() {
+            
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchData();
             var history = new DofusMagingJob().history.Analyse(dataProvider.History());
