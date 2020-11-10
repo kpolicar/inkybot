@@ -18,6 +18,7 @@ namespace Inkybot.Adapters
 
         public ItemStatRepository ToItemStats() {
             return new ItemStatRepository(statLines.Select(mageEntry => {
+                Debug.WriteLine(mageEntry);
                 var changes = SegmentItemStatLine(mageEntry);
 
                 return StatLineToItemStat(changes.Groups);
@@ -41,7 +42,7 @@ namespace Inkybot.Adapters
         
         private ItemStat StatLineToItemStat(GroupCollection historyEntrySegments) {
             if (historyEntrySegments.Count != 5)
-                throw new CouldNotSegmentStatLineException("Error occured trying to segment stat line");
+                throw new CouldNotSegmentStatLineException($"Error occured trying to segment stat line");
 
             var (min, max, value) = GetMinMaxValueFromScanResult(historyEntrySegments);
 
@@ -52,7 +53,7 @@ namespace Inkybot.Adapters
         }
 
         private Match SegmentItemStatLine(string historyLine) {
-            var segments = Regex.Match(historyLine, @"^(\d+|-) (\d+|-) (\d*) ?(%? ?[A-z() ]+)$");
+            var segments = Regex.Match(historyLine, @"^(-?\d+|-) (-?\d+|-) (-?\d*) ?(%? ?[A-z() ]+)$");
             return segments;
         }
     }
