@@ -64,7 +64,7 @@ namespace Inkybot
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 "eng",
-                EngineMode.Default,
+                EngineMode.TesseractOnly,
                 null, new Dictionary<string, object> {
                     {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
