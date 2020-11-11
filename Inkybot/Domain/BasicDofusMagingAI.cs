@@ -160,7 +160,16 @@ namespace Inkybot
             return Rune.Type.Sm;
         }
 
+        private bool IsHighSinkItemMage(ItemMage itemMage) {
+            // Summon or higher
+            return itemMage.Rune.Sink >= 30;
+        }
+
         private int StatPriority(ItemMage itemMage) {
+            if (IsHighSinkItemMage(itemMage) && config.MageConfig.RestoreHighSinkStatsFirst) {
+                // 1000 ought to be enough to prioritize it over others
+                return (int) itemMage.Rune.Sink * 1000;
+            }
             return itemMage.NumberOfRunesNeededForFullMage;
         }
 

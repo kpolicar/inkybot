@@ -12,7 +12,7 @@ namespace Inkybot
         public readonly int Max => MageConfig.maximum;
             
         public int NumberOfRunesNeededForFullMage =>
-            (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue);
+            Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));
             
         public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
 

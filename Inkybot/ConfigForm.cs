@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -52,6 +53,16 @@ namespace Inkybot
                     stat.MaxValueAtWhichPaRuneCanLand = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
                     break;
             }
+        }
+
+        private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
+            Properties.Settings.Default.restoreHighSinkStatImmediately = restoreHighSinkStatsCheckbox.Checked;
+            Properties.Settings.Default.Save();
+        }
+        
+        private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
+            cancelEventArgs.Cancel = true;
+            Hide();
         }
     }
 }

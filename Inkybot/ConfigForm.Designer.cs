@@ -131,6 +131,8 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.TabIndex = 0;
             this.restoreHighSinkStatsCheckbox.Text = "Restore high sink stats immediately";
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
+            this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             // 
             // creditsNameLabel
             // 

@@ -44,6 +44,11 @@ namespace Inkybot
             if (!statsForm.Visible) statsForm.Show();
             else statsForm.Hide();
         }
+        
+        private void configButton_Click(object sender, EventArgs e) {
+            if (!configForm.Visible) configForm.Show();
+            else configForm.Hide();
+        }
 
         private void toastPanelCloseButton_Click(object sender, EventArgs e) {
             toastPanel.Hide();

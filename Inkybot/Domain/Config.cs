@@ -10,7 +10,7 @@ namespace Inkybot
         public readonly int maximum;
         public readonly int ChangeToPaRuneThreshold => stat.ChangeToPaRuneThreshold;
         public readonly int ChangeToRaRuneThreshold => stat.ChangeToRaRuneThreshold;
-        public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
+        public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichSmRuneCanLand;
         public readonly int MaxValueAtWhichPaRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
         private Stat stat;
 
