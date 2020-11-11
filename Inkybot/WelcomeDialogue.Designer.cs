@@ -42,6 +42,7 @@ namespace Inkybot
             this.usernameTextBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.passwordTextBox = new System.Windows.Forms.TextBox();
+            this.rememberPasswordCheckbox = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -152,6 +153,7 @@ namespace Inkybot
             this.flowLayoutPanel1.Controls.Add(this.usernameTextBox);
             this.flowLayoutPanel1.Controls.Add(this.label4);
             this.flowLayoutPanel1.Controls.Add(this.passwordTextBox);
+            this.flowLayoutPanel1.Controls.Add(this.rememberPasswordCheckbox);
             this.flowLayoutPanel1.Controls.Add(this.button1);
             this.flowLayoutPanel1.Controls.Add(this.label5);
             this.flowLayoutPanel1.Controls.Add(this.linkLabel1);
@@ -161,7 +163,7 @@ namespace Inkybot
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(20, 33);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(20, 30, 20, 30);
+            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(20, 20, 20, 0);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(269, 268);
             this.flowLayoutPanel1.TabIndex = 11;
             // 
@@ -170,7 +172,7 @@ namespace Inkybot
             this.label3.AutoSize = true;
             this.label3.Dock = System.Windows.Forms.DockStyle.Top;
             this.label3.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.label3.Location = new System.Drawing.Point(23, 30);
+            this.label3.Location = new System.Drawing.Point(23, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(189, 13);
             this.label3.TabIndex = 1;
@@ -179,7 +181,7 @@ namespace Inkybot
             // usernameTextBox
             // 
             this.usernameTextBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.usernameTextBox.Location = new System.Drawing.Point(23, 46);
+            this.usernameTextBox.Location = new System.Drawing.Point(23, 36);
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(189, 20);
             this.usernameTextBox.TabIndex = 2;
@@ -189,7 +191,7 @@ namespace Inkybot
             this.label4.AutoSize = true;
             this.label4.Dock = System.Windows.Forms.DockStyle.Top;
             this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.label4.Location = new System.Drawing.Point(23, 69);
+            this.label4.Location = new System.Drawing.Point(23, 59);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(189, 13);
             this.label4.TabIndex = 3;
@@ -198,11 +200,21 @@ namespace Inkybot
             // passwordTextBox
             // 
             this.passwordTextBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.passwordTextBox.Location = new System.Drawing.Point(23, 85);
+            this.passwordTextBox.Location = new System.Drawing.Point(23, 75);
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(189, 20);
             this.passwordTextBox.TabIndex = 4;
             this.passwordTextBox.UseSystemPasswordChar = true;
+            // 
+            // rememberPasswordCheckbox
+            // 
+            this.rememberPasswordCheckbox.AutoSize = true;
+            this.rememberPasswordCheckbox.Location = new System.Drawing.Point(23, 101);
+            this.rememberPasswordCheckbox.Name = "rememberPasswordCheckbox";
+            this.rememberPasswordCheckbox.Size = new System.Drawing.Size(121, 17);
+            this.rememberPasswordCheckbox.TabIndex = 9;
+            this.rememberPasswordCheckbox.Text = "Save my credentials";
+            this.rememberPasswordCheckbox.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -212,7 +224,7 @@ namespace Inkybot
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.button1.ForeColor = System.Drawing.SystemColors.Control;
-            this.button1.Location = new System.Drawing.Point(23, 117);
+            this.button1.Location = new System.Drawing.Point(23, 130);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(189, 33);
@@ -226,7 +238,7 @@ namespace Inkybot
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Top;
             this.label5.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.label5.Location = new System.Drawing.Point(23, 153);
+            this.label5.Location = new System.Drawing.Point(23, 166);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(189, 13);
             this.label5.TabIndex = 6;
@@ -239,7 +251,7 @@ namespace Inkybot
             this.linkLabel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.linkLabel1.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
-            this.linkLabel1.Location = new System.Drawing.Point(23, 166);
+            this.linkLabel1.Location = new System.Drawing.Point(23, 179);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(189, 13);
             this.linkLabel1.TabIndex = 5;
@@ -251,7 +263,7 @@ namespace Inkybot
             // 
             this.errorMessage.AutoSize = true;
             this.errorMessage.ForeColor = System.Drawing.Color.Maroon;
-            this.errorMessage.Location = new System.Drawing.Point(23, 194);
+            this.errorMessage.Location = new System.Drawing.Point(23, 207);
             this.errorMessage.Margin = new System.Windows.Forms.Padding(3, 15, 3, 0);
             this.errorMessage.Name = "errorMessage";
             this.errorMessage.Size = new System.Drawing.Size(109, 13);
@@ -265,7 +277,7 @@ namespace Inkybot
             this.dofusPathLink.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dofusPathLink.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.dofusPathLink.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
-            this.dofusPathLink.Location = new System.Drawing.Point(23, 207);
+            this.dofusPathLink.Location = new System.Drawing.Point(23, 220);
             this.dofusPathLink.Name = "dofusPathLink";
             this.dofusPathLink.Size = new System.Drawing.Size(189, 13);
             this.dofusPathLink.TabIndex = 8;
@@ -289,7 +301,7 @@ namespace Inkybot
             this.newVersionLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.newVersionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newVersionLabel_LinkClicked);
             // 
-            // LoginForm
+            // WelcomeDialogue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -316,6 +328,8 @@ namespace Inkybot
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.CheckBox rememberPasswordCheckbox;
 
         private System.Windows.Forms.LinkLabel dofusPathLink;
 

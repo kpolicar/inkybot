@@ -7,11 +7,12 @@ namespace Inkybot
 {
     public struct StatConfig
     {
-        public readonly int ChangeToPaRuneValue;
-        public readonly int ChangeToRaRuneValue;
         public readonly int maximum;
-        public readonly int MaxValueSmRuneCanHit;
-        public readonly int MaxValuePaRuneCanHit;
+        public readonly int ChangeToPaRuneValue => stat.ChangeToPaRuneThreshold;
+        public readonly int ChangeToRaRuneValue => stat.ChangeToRaRuneThreshold;
+        public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
+        public readonly int MaxValueAtWhichPaRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
+        private Stat stat;
 
         public bool CanUsePaRunes => ChangeToPaRuneValue != int.MaxValue;
         public bool CanUseRaRunes => ChangeToRaRuneValue != int.MaxValue;
@@ -25,17 +26,16 @@ namespace Inkybot
             }
         }
 
-        public StatConfig(int ChangeToPaRuneValue, int ChangeToRaRuneValue, int maximum, int maxValueSmRuneCanHit, int maxValuePaRuneCanHit) {
-            this.ChangeToPaRuneValue = ChangeToPaRuneValue;
-            this.ChangeToRaRuneValue = ChangeToRaRuneValue;
+        public StatConfig(Stat stat, int maximum) {
+            this.stat = stat;
             this.maximum = maximum;
-            this.MaxValueSmRuneCanHit = maxValueSmRuneCanHit;
-            this.MaxValuePaRuneCanHit = maxValuePaRuneCanHit;
         }
         
         public static bool operator == (StatConfig op1, StatConfig op2) {
             return op1.ChangeToPaRuneValue == op2.ChangeToPaRuneValue &&
                    op1.ChangeToRaRuneValue == op2.ChangeToRaRuneValue &&
+                   op1.MaxValueAtWhichSmRuneCanHit == op2.MaxValueAtWhichSmRuneCanHit &&
+                   op1.MaxValueAtWhichPaRuneCanHit == op2.MaxValueAtWhichPaRuneCanHit &&
                    op1.maximum == op2.maximum;
         }
 
@@ -76,7 +76,7 @@ namespace Inkybot
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                Config[stat] = new StatConfig(stat.ChangeToPaRuneThreshold, stat.ChangeToRaRuneThreshold, itemStat.max, stat.MaxValueAtWhichSmRuneCanLand, stat.MaxValueAtWhichPaRuneCanLand);
+                Config[stat] = new StatConfig(stat,  itemStat.max);
             }
         }
 

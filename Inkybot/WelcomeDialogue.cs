@@ -20,7 +20,9 @@ namespace Inkybot
         public WelcomeDialogue() {
             InitializeComponent();
             usernameTextBox.Text = Properties.Settings.Default.email;
+            passwordTextBox.Text = Properties.Settings.Default.password;
             newVersionLabel.Hide();
+            rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
         }
 
         private async void button1_Click(object sender, EventArgs e) {
@@ -44,6 +46,7 @@ namespace Inkybot
             }
 
             Properties.Settings.Default.email = usernameTextBox.Text;
+            Properties.Settings.Default.password = rememberPasswordCheckbox.Checked ? passwordTextBox.Text : "";
             Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
         }

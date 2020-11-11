@@ -54,9 +54,9 @@ namespace Inkybot
             var proposed = prioritized.FirstOrDefault(itemMage => {
                 if (itemMage.WillOvermage)
                     return false;
-                if (itemMage.Rune.type == Rune.Type.Sm && itemMage.Value > itemMage.MageConfig.MaxValueSmRuneCanHit)
+                if (itemMage.Rune.type == Rune.Type.Sm && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichSmRuneCanHit)
                     return false;
-                if (itemMage.Rune.type == Rune.Type.Pa && itemMage.Value > itemMage.MageConfig.MaxValuePaRuneCanHit)
+                if (itemMage.Rune.type == Rune.Type.Pa && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichPaRuneCanHit)
                     return false;
 
                 return true;
