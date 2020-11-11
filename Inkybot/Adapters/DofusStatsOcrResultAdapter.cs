@@ -21,7 +21,11 @@ namespace Inkybot.Adapters
                 Debug.WriteLine(mageEntry);
                 var changes = SegmentItemStatLine(mageEntry);
 
-                return StatLineToItemStat(changes.Groups);
+                try {
+                    return StatLineToItemStat(changes.Groups);
+                } catch (CouldNotSegmentStatLineException) {
+                    throw new CouldNotSegmentStatLineException($"Error occured trying to segment stat line: {mageEntry}");
+                }
             }).ToArray());
         }
 

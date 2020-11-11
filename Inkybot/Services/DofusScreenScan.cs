@@ -110,8 +110,10 @@ namespace Inkybot
         private Image PreprocessImage(Image image, Rectangle bounds) {
             return DoPreprocess(image, bounds, image => {
 
+                image.Sharpen();
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(30));
+                image.WhiteThreshold(new Percentage(35));
                 image.Negate();
             });
         }
