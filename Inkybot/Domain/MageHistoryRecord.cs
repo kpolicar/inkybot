@@ -11,7 +11,7 @@ namespace Inkybot
         public Stat stat;
         public int value;
 
-        public float SinkModifier => stat.sinkValue * value;
+        public float SinkModifier => stat.SinkValue * value;
 
         public StatChanged(Stat stat, int value) {
             this.stat = stat;

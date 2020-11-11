@@ -468,12 +468,12 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Config.StatConfig _critical {
+        public global::Inkybot.Config.StatConfig _per_critical {
             get {
-                return ((global::Inkybot.Config.StatConfig)(this["critical"]));
+                return ((global::Inkybot.Config.StatConfig)(this["per_critical"]));
             }
             set {
-                this["critical"] = value;
+                this["per_critical"] = value;
             }
         }
         [global::System.Configuration.UserScopedSettingAttribute()]
@@ -672,6 +672,17 @@ namespace Inkybot.Properties {
             }
             set {
                 this["pods"] = value;
+            }
+        }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
+        public global::Inkybot.Config.StatConfig _reflect {
+            get {
+                return ((global::Inkybot.Config.StatConfig)(this["reflect"]));
+            }
+            set {
+                this["reflect"] = value;
             }
         }
     }

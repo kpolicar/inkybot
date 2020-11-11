@@ -8,10 +8,10 @@ namespace Inkybot.Config
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     public class StatConfig
     {
-        public int ChangeToPaRuneThreshold { get; set; }
-        public int ChangeToRaRuneThreshold { get; set; }
-        public int MaxValueSmRuneCanHit { get; set; }
-        public int MaxValuePaRuneCanHit { get; set; }
+        public string ChangeToPaRuneThreshold { get; set; }
+        public string ChangeToRaRuneThreshold { get; set; }
+        public string MaxValueAtWhichSmRuneCanLand { get; set; }
+        public string MaxValueAtWhichPaRuneCanLand { get; set; }
         
     }
 }

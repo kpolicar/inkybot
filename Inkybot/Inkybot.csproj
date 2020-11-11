@@ -138,6 +138,7 @@
         <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Helpers\Debug.cs" />
+        <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
         <Compile Include="MainForm.Auth.cs">
@@ -176,6 +177,11 @@
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
           <DependentUpon>MagingDictionary.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Resources\RuneDictionary.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>RuneDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Resources\StatDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
@@ -247,6 +253,10 @@
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Include="Resources\RuneDictionary.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
         <EmbeddedResource Include="Resources\StatDictionary.resx">
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
@@ -269,6 +279,7 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
+        <None Include="App.config" />
         <None Include="packages.config" />
         <None Include="Properties\Settings.settings">
             <Generator>SettingsSingleFileGenerator</Generator>
@@ -279,9 +290,6 @@
             <DependentUpon>Settings.settings</DependentUpon>
             <DesignTimeSharedInput>True</DesignTimeSharedInput>
         </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="Resources\Tesseract\eng.traineddata">

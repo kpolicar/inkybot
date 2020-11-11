@@ -44,8 +44,8 @@ namespace Inkybot
                     Type.Pa => 3,
                     Type.Ra => 10
                 };
-                if (stat.sinkValue < 1) {
-                    var increase = typeValue / stat.sinkValue;
+                if (stat.SinkValue < 1) {
+                    var increase = typeValue / stat.SinkValue;
                     return (int) Math.Ceiling(increase);
                 }
 
@@ -53,6 +53,6 @@ namespace Inkybot
             }
         }
 
-        public float Sink => stat.sinkValue * IncreaseInValue;
+        public float Sink => stat.SinkValue * IncreaseInValue;
     }
 }

@@ -76,7 +76,7 @@ namespace Inkybot
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                Config[stat] = new StatConfig(stat.changeToPaRuneThreshold, stat.changeToRaRuneThreshold, itemStat.max, stat.maxValueSmRuneCanHit, stat.maxValuePaRuneCanHit);
+                Config[stat] = new StatConfig(stat.ChangeToPaRuneThreshold, stat.ChangeToRaRuneThreshold, itemStat.max, stat.MaxValueAtWhichSmRuneCanHit, stat.MaxValueAtWhichPaRuneCanHit);
             }
         }
 

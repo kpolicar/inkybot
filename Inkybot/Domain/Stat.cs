@@ -1,11 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using Inkybot.Helpers;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot
 {
     public class Stat
     {
         public static bool operator == (Stat operand1, Stat operand2) {
-            return operand1?.DisplayName == operand2?.DisplayName;
+            return operand1?.Identifier == operand2?.Identifier;
         }
             
         public static bool operator != (Stat operand1, Stat operand2) {
@@ -13,136 +20,162 @@ namespace Inkybot
         }
         
         public static readonly Stat[] Stats = {
-            new Stat("Initiative", "ini", 1010, 0.1f, 0.05f, 200, 375),
-            new Stat("Vitality", "vit", 505, 0.2f, 0.1f, 90, 286, 110, 310),
-            new Stat("Pods", "pod", 404, 0.25f, 0.125f, 150, 350),
+            new Stat("initiative", 1010, 0.1f, 0.05f),
+            new Stat("vitality", 505, 0.2f, 0.1f),
+            new Stat("pods", 404, 0.25f, 0.125f),
 
-            ElementStatData("Strength", "stre"),
-            ElementStatData("Intelligence", "int"),
-            ElementStatData("Agility", "agi"),
-            ElementStatData("Chance", "cha"),
+            ElementStatData("strength"),
+            ElementStatData("intelligence"),
+            ElementStatData("agility"),
+            ElementStatData("chance"),
 
-            new Stat("Critical Resistance", "cri res", 50, 2f, 1f),
-            new Stat("Pushback Resistance", "psh res", 50, 2f, 1f),
+            new Stat("critical_resistance", 50, 2f, 1f),
+            new Stat("pushback_resistance", 50, 2f, 1f),
 
-            new Stat("Power", "pow", 50, 2f, 2f, 15, 40),
-            new Stat("Power (traps)", "tra per", 50, 2f, 2f, 15, 40),
+            new Stat("power", 50, 2f, 2f),
+            new Stat("power_traps", 50, 2f, 2f),
 
-            FlatElementResistanceStatData("Neutral"),
-            FlatElementResistanceStatData("Earth"),
-            FlatElementResistanceStatData("Fire"),
-            FlatElementResistanceStatData("Air"),
-            FlatElementResistanceStatData("Water"),
+            FlatElementResistanceStatData("neutral"),
+            FlatElementResistanceStatData("earth"),
+            FlatElementResistanceStatData("fire"),
+            FlatElementResistanceStatData("air"),
+            FlatElementResistanceStatData("water"),
 
-            new Stat("Wisdom", "wis", 33, 3f, 2f, 10, 25),
-            new Stat("Prospecting", "prospe", 33, 3f, 2f, 10),
+            new Stat("wisdom", 33, 3f, 2f),
+            new Stat("prospecting",  33, 3f, 2f),
 
-            EvadeStatData("Lock", "loc"),
-            EvadeStatData("Dodge", "dod"),
+            EvadeStatData("lock"),
+            EvadeStatData("dodge"),
 
-            ElementDamageStatData("Neutral"),
-            ElementDamageStatData("Earth"),
-            ElementDamageStatData("Fire"),
-            ElementDamageStatData("Air"),
-            ElementDamageStatData("Water"),
+            ElementDamageStatData("neutral"),
+            ElementDamageStatData("earth"),
+            ElementDamageStatData("fire"),
+            ElementDamageStatData("air"),
+            ElementDamageStatData("water"),
 
-            new Stat("Critical Damage", "cri dam", 20, 5f, 3f, 10),
-            new Stat("Pushback Damage", "psh dam", 20, 5f, 3f, 10),
-            new Stat("Trap Damage", "tra", 20, 5f, 5f, 10),
-            new Stat("Hunting weapon", "hunting", 1, 5f, 5f),
+            new Stat("critical_damage", 20, 5f, 3f),
+            new Stat("pushback_damage", 20, 5f, 3f),
+            new Stat("trap_damage", 20, 5f, 5f),
+            new Stat("hunting_weapon",  1, 5f, 5f),
 
-            PerElementResistanceStatData("Neutral"),
-            PerElementResistanceStatData("Earth"),
-            PerElementResistanceStatData("Fire"),
-            PerElementResistanceStatData("Air"),
-            PerElementResistanceStatData("Water"),
+            PerElementResistanceStatData("neutral"),
+            PerElementResistanceStatData("earth"),
+            PerElementResistanceStatData("fire"),
+            PerElementResistanceStatData("air"),
+            PerElementResistanceStatData("water"),
 
-            ReductionStatData("MP"),
-            ReductionStatData("AP"),
+            ReductionStatData("mp"),
+            ReductionStatData("ap"),
 
-            ParryStatData("MP"),
-            ParryStatData("AP"),
+            ParryStatData("mp"),
+            ParryStatData("ap"),
 
-            new Stat("Heals", "hea", 10, 10f, 5f),
-            new Stat("% Critical", "cri", 10, 10f, 5f),
-            new Stat("Reflect", "dam ref", 10, 10f, 10f),
+            new Stat("heals", 10, 10f, 5f),
+            new Stat("per_critical", 10, 10f, 5f),
+            new Stat("reflect", 10, 10f, 10f),
 
-            PerModifiersStatData("% Spell Damage", "spe dam"),
-            PerModifiersStatData("% Weapon Damage", "we dam per"),
-            PerModifiersStatData("% Melee Damage", "me dam per"),
-            PerModifiersStatData("% Ranged Damage", "ra dam per"),
-            PerModifiersStatData("% Ranged Resistance", "ra res per"),
-            PerModifiersStatData("% Melee Resistance", "me res per"),
+            PerModifiersStatData("per_spell_damage"),
+            PerModifiersStatData("per_weapon_damage"),
+            PerModifiersStatData("per_melee_damage"),
+            PerModifiersStatData("per_ranged_damage"),
+            PerModifiersStatData("per_ranged_resistance"),
+            PerModifiersStatData("per_melee_resistance"),
 
-            new Stat("Damage", "dam", 5, 20f, 20f),
-            new Stat("Summons", "summo", 3, 30f, 35f),
-            new Stat("Range", "range",1, 51f, 25f),
-            new Stat("MP", "mp ga",1, 90f, 45f),
-            new Stat("AP", "ap ga",1, 100f, 50f)
+            new Stat("damage", 5, 20f, 20f),
+            new Stat("summons", 3, 30f, 30f),
+            new Stat("range", 1, 51f, 25f),
+            new Stat("mp", 1, 90f, 45f),
+            new Stat("ap", 1, 100f, 50f)
         };
 
-        public readonly int changeToPaRuneThreshold;
-        public readonly int changeToRaRuneThreshold;
-        public readonly int maxValueSmRuneCanHit;
-        public readonly int maxValuePaRuneCanHit;
+        public Config.StatConfig Config => (Config.StatConfig) Properties.Settings.Default["_"+Identifier];
+        
+        public int ChangeToPaRuneThreshold {
+            get {
+                var val = Numbers.Parse(Config.ChangeToPaRuneThreshold);
+                return val == 0 ? int.MaxValue : val;
+            }
+        }
+        public int ChangeToRaRuneThreshold {
+            get {
+                var val = Numbers.Parse(Config.ChangeToRaRuneThreshold);
+                return val == 0 ? int.MaxValue : val;
+            }
+        }
+        public int MaxValueAtWhichSmRuneCanHit {
+            get {
+                var val = Numbers.Parse(Config.MaxValueAtWhichSmRuneCanLand);
+                return val == 0 ? ChangeToPaRuneThreshold : val;
+            }
+        }
+        public int MaxValueAtWhichPaRuneCanHit {
+            get {
+                var val = Numbers.Parse(Config.MaxValueAtWhichPaRuneCanLand);
+                return val == 0 ? ChangeToRaRuneThreshold : val;
+            }
+        }
 
         public readonly string DisplayName;
+        public readonly string Identifier;
         public readonly string RuneName;
-        public readonly int maximum;
-        public readonly float negSinkValue;
-        public readonly float sinkValue;
+        public readonly int Maximum;
+        public readonly float NegSinkValue;
+        public readonly float SinkValue;
+        private static ResourceSet StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+        private static ResourceSet RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
+            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 
-        private Stat(string DisplayName,
-            string RuneName,
+        private Stat(string identifier,
             int maximum,
             float sinkValue,
-            float negSinkValue,
-            int changeToPaRuneThreshold = int.MaxValue,
-            int changeToRaRuneThreshold = int.MaxValue,
-            int maxValueSmRuneCanHit = -1,
-            int maxValuePaRuneCanHit = -1) {
-            this.DisplayName = DisplayName;
-            this.RuneName = RuneName;
-            this.maximum = maximum;
-            this.sinkValue = sinkValue;
-            this.negSinkValue = negSinkValue;
-            this.changeToPaRuneThreshold = changeToPaRuneThreshold;
-            this.changeToRaRuneThreshold = changeToRaRuneThreshold;
-            this.maxValueSmRuneCanHit = maxValueSmRuneCanHit != -1 ? maxValueSmRuneCanHit : changeToPaRuneThreshold;
-            this.maxValuePaRuneCanHit = maxValuePaRuneCanHit != -1 ? maxValuePaRuneCanHit : changeToRaRuneThreshold;
+            float negSinkValue) {
+            
+            StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            RuneDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+            DisplayName = StatDictionary.GetString(identifier);
+            RuneName = RuneDictionary.GetString(identifier);
+
+            Identifier = identifier;
+            Maximum = maximum;
+            SinkValue = sinkValue;
+            NegSinkValue = negSinkValue;
         }
 
-        private static Stat ElementStatData(string DisplayName, string RuneName) {
-            return new Stat(DisplayName, RuneName, 101, 1f, 1f, 20, 48, 28, 56);
+        private static Stat ElementStatData(string identifier) {
+            return new Stat(identifier, 101, 1f, 1f);
         }
 
-        private static Stat FlatElementResistanceStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName + " Resistance", elementDisplayName + " res", 50, 2f, 2f, 15);
+        private static Stat FlatElementResistanceStatData(string elementIdentifier) {
+            return new Stat(elementIdentifier + "_resistance", 50, 2f, 2f);
         }
 
-        private static Stat ElementDamageStatData(string elementDisplayName) {
-            return new Stat(elementDisplayName + " Damage", elementDisplayName + " dam", 20, 5f, 2.5f, 10);
+        private static Stat ElementDamageStatData(string elementIdentifier) {
+            return new Stat(elementIdentifier + "_damage", 20, 5f, 2.5f);
         }
 
-        private static Stat PerElementResistanceStatData(string elementDisplayName) {
-            return new Stat("% " + elementDisplayName + " Resistance", elementDisplayName + " res per", 16, 6f, 3f);
+        private static Stat PerElementResistanceStatData(string elementIdentifier) {
+            return new Stat("per_" + elementIdentifier + "_resistance", 16, 6f, 3f);
         }
 
-        private static Stat ReductionStatData(string DisplayName) {
-            return new Stat(DisplayName + " Reduction", DisplayName + " red",14, 7f, 4f, 10);
+        private static Stat ReductionStatData(string reductionIdentifier) {
+            return new Stat(reductionIdentifier + "_reduction", 14, 7f, 4f);
         }
 
-        private static Stat ParryStatData(string DisplayName) {
-            return new Stat(DisplayName + " Parry", DisplayName + " res",14, 7f, 4f, 10);
+        private static Stat ParryStatData(string parryIdentifier) {
+            return new Stat(parryIdentifier + "_parry", 14, 7f, 4f);
         }
 
-        private static Stat EvadeStatData(string DisplayName, string RuneName) {
-            return new Stat(DisplayName, RuneName, 25, 4f, 2f, 10);
+        private static Stat EvadeStatData(string identifier) {
+            return new Stat(identifier, 25, 4f, 2f);
         }
 
-        private static Stat PerModifiersStatData(string DisplayName, string RuneName) {
-            return new Stat(DisplayName, RuneName, 6, 15f, 8f);
+        private static Stat PerModifiersStatData(string identifier) {
+            return new Stat(identifier, 6, 15f, 8f);
         }
     }
 }

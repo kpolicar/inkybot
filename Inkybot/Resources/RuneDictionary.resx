@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <data name="ap" xml:space="preserve">
+        <value>ap ga</value>
+    </data>
+    <data name="mp" xml:space="preserve">
+        <value>mp ga</value>
+    </data>
+    <data name="range" xml:space="preserve">
+        <value>range</value>
+    </data>
+    <data name="vitality" xml:space="preserve">
+        <value>vit</value>
+    </data>
+    <data name="agility" xml:space="preserve">
+        <value>agi</value>
+    </data>
+    <data name="chance" xml:space="preserve">
+        <value>cha</value>
+    </data>
+    <data name="strength" xml:space="preserve">
+        <value>stre</value>
+    </data>
+    <data name="intelligence" xml:space="preserve">
+        <value>int</value>
+    </data>
+    <data name="power" xml:space="preserve">
+        <value>power</value>
+    </data>
+    <data name="critical" xml:space="preserve">
+        <value>crit</value>
+    </data>
+    <data name="wisdom" xml:space="preserve">
+        <value>wis</value>
+    </data>
+
+    <data name="ap_reduction" xml:space="preserve">
+        <value>ap red</value>
+    </data>
+    <data name="ap_parry" xml:space="preserve">
+        <value>ap res</value>
+    </data>
+    <data name="mp_reduction" xml:space="preserve">
+        <value>mp red</value>
+    </data>
+    <data name="mp_parry" xml:space="preserve">
+        <value>mp res</value>
+    </data>
+    <data name="heals" xml:space="preserve">
+        <value>hea</value>
+    </data>
+    <data name="lock" xml:space="preserve">
+        <value>loc</value>
+    </data>
+    <data name="dodge" xml:space="preserve">
+        <value>dod</value>
+    </data>
+    <data name="initiative" xml:space="preserve">
+        <value>ini</value>
+    </data>
+    <data name="summons" xml:space="preserve">
+        <value>summo</value>
+    </data>
+    <data name="prospecting" xml:space="preserve">
+        <value>prospe</value>
+    </data>
+    <data name="pods" xml:space="preserve">
+        <value>pod</value>
+    </data>
+
+    <data name="damage" xml:space="preserve">
+        <value>dam</value>
+    </data>
+    <data name="critical_damage" xml:space="preserve">
+        <value>cri dam</value>
+    </data>
+    <data name="neutral_damage" xml:space="preserve">
+        <value>neutral dam</value>
+    </data>
+    <data name="earth_damage" xml:space="preserve">
+        <value>earth dam</value>
+    </data>
+    <data name="fire_damage" xml:space="preserve">
+        <value>fire dam</value>
+    </data>
+    <data name="water_damage" xml:space="preserve">
+        <value>water dam</value>
+    </data>
+    <data name="air_damage" xml:space="preserve">
+        <value>air dam</value>
+    </data>
+    <data name="power_traps" xml:space="preserve">
+        <value>tra per</value>
+    </data>
+    <data name="trap_damage" xml:space="preserve">
+        <value>tra</value>
+    </data>
+    <data name="pushback_damage" xml:space="preserve">
+        <value>psh dam</value>
+    </data>
+    <data name="spell_damage" xml:space="preserve">
+        <value>spe dam per</value>
+    </data>
+    <data name="weapon_damage" xml:space="preserve">
+        <value>we dam per</value>
+    </data>
+    <data name="ranged_damage" xml:space="preserve">
+        <value>ra dam per</value>
+    </data>
+    <data name="melee_damage" xml:space="preserve">
+        <value>me dam per</value>
+    </data>
+
+    <data name="neutral_resistance" xml:space="preserve">
+        <value>neutral res</value>
+    </data>
+    <data name="%neutral_resistance" xml:space="preserve">
+        <value>neutral res per</value>
+    </data>
+    <data name="earth_resistance" xml:space="preserve">
+        <value>earth res</value>
+    </data>
+    <data name="%earth_resistance" xml:space="preserve">
+        <value>earth res per</value>
+    </data>
+    <data name="fire_resistance" xml:space="preserve">
+        <value>fire res</value>
+    </data>
+    <data name="%fire_resistance" xml:space="preserve">
+        <value>fire res per</value>
+    </data>
+    <data name="water_resistance" xml:space="preserve">
+        <value>water res</value>
+    </data>
+    <data name="%water_resistance" xml:space="preserve">
+        <value>water res per</value>
+    </data>
+    <data name="air_resistance" xml:space="preserve">
+        <value>air res</value>
+    </data>
+    <data name="%air_resistance" xml:space="preserve">
+        <value>air res per</value>
+    </data>
+    <data name="critical_resistance" xml:space="preserve">
+        <value>cri res</value>
+    </data>
+    <data name="pushback_resistance" xml:space="preserve">
+        <value>psh res</value>
+    </data>
+    <data name="ranged_resistance" xml:space="preserve">
+        <value>ra res per</value>
+    </data>
+    <data name="melee_resistance" xml:space="preserve">
+        <value>me res per</value>
+    </data>
+
+    <data name="neutral_steal" xml:space="preserve">
+        <value>Neutral Steal</value>
+    </data>
+    <data name="earth_steal" xml:space="preserve">
+        <value>Earth Steal</value>
+    </data>
+    <data name="fire_steal" xml:space="preserve">
+        <value>Fire Steal</value>
+    </data>
+    <data name="water_steal" xml:space="preserve">
+        <value>Water Steal</value>
+    </data>
+    <data name="air_steal" xml:space="preserve">
+        <value>Air Steal</value>
+    </data>
+    <data name="hp_restored" xml:space="preserve">
+        <value>HP Restored</value>
+    </data>
+    <data name="hunting_weapon" xml:space="preserve">
+        <value>hunting</value>
+    </data>
+</root>

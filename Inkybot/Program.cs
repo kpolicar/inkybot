@@ -59,21 +59,7 @@ namespace Inkybot
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
-            //Application.Run(new MainForm());
-
-            var rm = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly());
-            
-            var resourceSet =
-                rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-            foreach (DictionaryEntry entry in resourceSet)
-            {
-                var stat = entry.Key.ToString();
-                    
-
-                var sa = (Inkybot.Config.StatConfig) Properties.Settings.Default["_" + stat.Replace("%", "per_")];
-                Debug.WriteLine(stat + " " + sa.MaxValueSmRuneCanHit);
-            }
+            Application.Run(new MainForm());
         }
 
         private static void BindNotifications() {
