@@ -20,7 +20,7 @@ namespace Inkybot
 
         internal ActionHandler actions;
 
-        public ItemConfig ItemConfig;
+        public Config Config;
 
         internal DofusDataProvider dataProvider;
         internal IItemHistoryAnalyzer history;

@@ -130,7 +130,6 @@
         <Compile Include="ConfigForm.Designer.cs">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="Config\StatConfig.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
         </Compile>
@@ -149,6 +148,7 @@
         <Compile Include="Domain\ItemMage.cs">
           <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
         </Compile>
+        <Compile Include="Domain\MageConfig.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
@@ -181,7 +181,7 @@
         <Compile Include="Contracts\Input.cs" />
         <Compile Include="Domain\ActionHandler.cs" />
         <Compile Include="Domain\BasicDofusMagingAI.cs" />
-        <Compile Include="Domain\ItemConfig.cs" />
+        <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\DofusMagingJobState.cs">
           <DependentUpon>DofusMagingJob.cs</DependentUpon>
@@ -212,6 +212,7 @@
           <AutoGen>True</AutoGen>
           <DependentUpon>RuneDictionary.resx</DependentUpon>
         </Compile>
+        <Compile Include="Resources\StatConfig.cs" />
         <Compile Include="Resources\StatDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>

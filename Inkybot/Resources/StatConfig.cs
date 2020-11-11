@@ -1,9 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Configuration;
-using System.Xml.Serialization;
 
-namespace Inkybot.Config
+namespace Inkybot.Resources
 {
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     public class StatConfig

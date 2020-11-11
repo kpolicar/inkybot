@@ -7,11 +7,19 @@ using System.Resources;
 using System.Text.RegularExpressions;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
+using StatConfigResource = Inkybot.Resources.StatConfig;
 
 namespace Inkybot
 {
     public class Stat
     {
+        // ---- These must be specified at the top (they are used upon compilation)
+        private static ResourceSet StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+        private static ResourceSet RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
+            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+        // ----
+        
         public static bool operator == (Stat operand1, Stat operand2) {
             return operand1?.Identifier == operand2?.Identifier;
         }
@@ -89,7 +97,7 @@ namespace Inkybot
             new Stat("ap", 1, 100f, 50f)
         };
 
-        public Config.StatConfig Config => (Config.StatConfig) Properties.Settings.Default[Identifier];
+        public StatConfigResource Config => (StatConfigResource) Properties.Settings.Default[Identifier];
         
         public int ChangeToPaRuneThreshold {
             get {
@@ -138,22 +146,12 @@ namespace Inkybot
         public readonly int Maximum;
         public readonly float NegSinkValue;
         public readonly float SinkValue;
-        private static ResourceSet StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-        private static ResourceSet RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
-            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
 
         private Stat(string identifier,
             int maximum,
             float sinkValue,
             float negSinkValue) {
-            
-            StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            RuneDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
+                
             DisplayName = StatDictionary.GetString(identifier);
             RuneName = RuneDictionary.GetString(identifier);
 

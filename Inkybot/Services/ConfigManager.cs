@@ -11,7 +11,7 @@ namespace Inkybot.Services
     {
         public event EventHandler<ConfigModifiedEventArgs> ConfigModified;
 
-        public ItemConfig ItemConfig {
+        public Config Config {
             get;
             private set;
         }
@@ -28,33 +28,33 @@ namespace Inkybot.Services
 
         private void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
-                ItemConfig.Config.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
+                Config.StatsConfig.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
             foreach (var stat in fallenUnconfiguredStats) {
-                ItemConfig.Config.Remove(stat);
+                Config.StatsConfig.Remove(stat);
             }
             if (fallenUnconfiguredStats.Length > 0)
-                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, false, true));
+                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, false, true));
         }
 
         public void RemoveExos() {
-            var configuredExoStats = ItemConfig
+            var configuredExoStats = Config
                 .Exos
                 .Select(config => config.Key)
                 .ToArray();
             
             foreach (var stat in configuredExoStats) {
-                ItemConfig.Config.Remove(stat);
+                Config.StatsConfig.Remove(stat);
             }
             if (configuredExoStats.Length > 0)
-                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, true));
+                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, true));
         }
 
         public void ResetConfig(Item item) {
-            ItemConfig = new ItemConfig(item);
-            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, true));
+            Config = new Config(item);
+            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, true));
         }
 
         public void EnforceConfigSetForItem(Item item) {
@@ -64,18 +64,18 @@ namespace Inkybot.Services
         }
 
         private bool ConfigIsSetForItem(Item item) {
-            return ItemConfig != null && ItemConfig.IsConfiguredForItem(item);
+            return Config != null && Config.IsConfiguredForItem(item);
         }
 
         public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
-            var isNewStatConfiguration = !ItemConfig.Config.ContainsKey(stat);
-            if (!isNewStatConfiguration && statConfig == ItemConfig.Config[stat])
+            var isNewStatConfiguration = !Config.StatsConfig.ContainsKey(stat);
+            if (!isNewStatConfiguration && statConfig == Config.StatsConfig[stat])
                 return;
             
-            ItemConfig.Config[stat] = statConfig;
-            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(ItemConfig, true, isNewStatConfiguration));
+            Config.StatsConfig[stat] = statConfig;
+            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, isNewStatConfiguration));
             
-            foreach (var keyValuePair in ItemConfig.Config) {
+            foreach (var keyValuePair in Config.StatsConfig) {
                 Debug.WriteLine(keyValuePair.Key.DisplayName);
             }
         }

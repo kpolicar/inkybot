@@ -37,7 +37,7 @@ namespace Inkybot
 
         private void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             Invoke(new MethodInvoker(() => {
-                RebuildDataGridView(e.ItemConfig);
+                RebuildDataGridView(e.Config);
             }));
         }
 
@@ -68,7 +68,7 @@ namespace Inkybot
                 var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
                     
                 if (updatingFallenExos) {
-                    if (configManager.ItemConfig.For(stat).maximum == 0) {
+                    if (configManager.Config.For(stat).maximum == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -101,15 +101,15 @@ namespace Inkybot
             return true;
         }
 
-        private void RebuildDataGridView(ItemConfig itemConfig) {
+        private void RebuildDataGridView(Config config) {
             statsDataGridView.Rows.Clear();
 
-            foreach (var statConfig in itemConfig.Config) {
+            foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;
-                var config = statConfig.Value;
-                var itemStat = itemConfig.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
+                var cfg = statConfig.Value;
+                var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
                 
-                var row = AddNewStatRow(stat.DisplayName, itemStat.value, config.maximum, itemStat.Exo || itemStat == default);
+                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.maximum, itemStat.Exo || itemStat == default);
                 row.Tag = new ItemStatRow(stat);
             }
         }

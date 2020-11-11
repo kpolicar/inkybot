@@ -8,14 +8,14 @@ namespace Inkybot
     public struct StatConfig
     {
         public readonly int maximum;
-        public readonly int ChangeToPaRuneValue => stat.ChangeToPaRuneThreshold;
-        public readonly int ChangeToRaRuneValue => stat.ChangeToRaRuneThreshold;
+        public readonly int ChangeToPaRuneThreshold => stat.ChangeToPaRuneThreshold;
+        public readonly int ChangeToRaRuneThreshold => stat.ChangeToRaRuneThreshold;
         public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
         public readonly int MaxValueAtWhichPaRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
         private Stat stat;
 
-        public bool CanUsePaRunes => ChangeToPaRuneValue != int.MaxValue;
-        public bool CanUseRaRunes => ChangeToRaRuneValue != int.MaxValue;
+        public bool CanUsePaRunes => ChangeToPaRuneThreshold != int.MaxValue;
+        public bool CanUseRaRunes => ChangeToRaRuneThreshold != int.MaxValue;
         
         public Rune.Type StrongestRuneType {
             get {
@@ -32,8 +32,8 @@ namespace Inkybot
         }
         
         public static bool operator == (StatConfig op1, StatConfig op2) {
-            return op1.ChangeToPaRuneValue == op2.ChangeToPaRuneValue &&
-                   op1.ChangeToRaRuneValue == op2.ChangeToRaRuneValue &&
+            return op1.ChangeToPaRuneThreshold == op2.ChangeToPaRuneThreshold &&
+                   op1.ChangeToRaRuneThreshold == op2.ChangeToRaRuneThreshold &&
                    op1.MaxValueAtWhichSmRuneCanHit == op2.MaxValueAtWhichSmRuneCanHit &&
                    op1.MaxValueAtWhichPaRuneCanHit == op2.MaxValueAtWhichPaRuneCanHit &&
                    op1.maximum == op2.maximum;
@@ -44,14 +44,15 @@ namespace Inkybot
         }
     }
 
-    public class ItemConfig
+    public class Config
     {
         public readonly Item Item;
-        public readonly Dictionary<Stat, StatConfig> Config = new Dictionary<Stat, StatConfig>();
+        public readonly Dictionary<Stat, StatConfig> StatsConfig = new Dictionary<Stat, StatConfig>();
+        public readonly MageConfig MageConfig = new MageConfig();
         
         public KeyValuePair<Stat, StatConfig>[] Exos {
             get {
-                var configuredExoStats = from itemConfig in Config 
+                var configuredExoStats = from itemConfig in StatsConfig 
                     where !(from standardStat in Item.Stats.StandardStats.Select(itemStat => itemStat.stat) 
                         select standardStat).Contains(itemConfig.Key) 
                     select itemConfig;
@@ -60,23 +61,23 @@ namespace Inkybot
             }
         }
 
-        public ItemConfig(Item item) {
+        public Config(Item item) {
             Item = item;
             ResetDefaults(item);
         }
 
         public StatConfig For(ItemStat itemStat) {
-            return Config[itemStat.stat];
+            return StatsConfig[itemStat.stat];
         }
 
         public StatConfig For(Stat stat) {
-            return Config[stat];
+            return StatsConfig[stat];
         }
 
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                Config[stat] = new StatConfig(stat,  itemStat.max);
+                StatsConfig[stat] = new StatConfig(stat,  itemStat.max);
             }
         }
 
@@ -87,7 +88,7 @@ namespace Inkybot
 
         public bool HasConfiguredExoStatsForItem(Item item) {
             return item.Stats.ExoStats.All(itemStat =>
-                Config.ContainsKey(itemStat.stat));
+                StatsConfig.ContainsKey(itemStat.stat));
         }
     }
 }

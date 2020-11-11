@@ -67,7 +67,7 @@ namespace Inkybot
         }
 
         private void configButton_Click(object sender, EventArgs e) {
-            var result = configForm.ShowDialog(this);
+            configForm.Show();
         }
     }
 }

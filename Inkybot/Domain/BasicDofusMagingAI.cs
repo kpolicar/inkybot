@@ -14,14 +14,14 @@ namespace Inkybot
     public class BasicDofusMagingAI : DofusMagingAI
     {
         private readonly ActionFactory actions;
-        private ItemConfig itemConfig;
+        private Config config;
         private float sink;
 
         public BasicDofusMagingAI() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
             
             var configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            configManager!.ConfigModified += (sender, args) => itemConfig = args.ItemConfig;
+            configManager!.ConfigModified += (sender, args) => config = args.Config;
             
             var magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magingJob!.SinkChanged += (sender, args) => sink = args.sink;
@@ -43,14 +43,14 @@ namespace Inkybot
                     return new ItemMage(
                         itemStat.stat,
                         rune,
-                        itemConfig.For(itemStat),
+                        config.For(itemStat),
                         itemStat.value,
                         exo
                     );
                 });
                 
             var prioritized = priorityFunction(potentialItemMages);
-
+            
             var proposed = prioritized.FirstOrDefault(itemMage => {
                 if (itemMage.WillOvermage)
                     return false;
@@ -112,7 +112,7 @@ namespace Inkybot
         }
 
         private ItemMage? ResolveItemMageForExo(Item item) {
-            var statsToExo = itemConfig.Exos;
+            var statsToExo = config.Exos;
                 
             return ResolveItemMageByPriority(
                 item,
@@ -152,10 +152,10 @@ namespace Inkybot
         }
 
         private Rune.Type ResolveRuneType(ItemStat itemStat) {
-            var itemConfig = this.itemConfig.For(itemStat);
+            var itemConfig = this.config.For(itemStat);
 
-            if (itemConfig.CanUseRaRunes && itemStat.value > itemConfig.ChangeToRaRuneValue) return Rune.Type.Ra;
-            if (itemConfig.CanUsePaRunes && itemStat.value > itemConfig.ChangeToPaRuneValue) return Rune.Type.Pa;
+            if (itemConfig.CanUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra;
+            if (itemConfig.CanUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa;
 
             return Rune.Type.Sm;
         }
