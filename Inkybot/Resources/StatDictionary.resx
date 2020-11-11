@@ -133,31 +133,31 @@
     <data name="neutral_resistance" xml:space="preserve">
         <value>Neutral Resistance</value>
     </data>
-    <data name="%neutral_resistance" xml:space="preserve">
+    <data name="per_neutral_resistance" xml:space="preserve">
         <value>% Neutral Resistance</value>
     </data>
     <data name="earth_resistance" xml:space="preserve">
         <value>Earth Resistance</value>
     </data>
-    <data name="%earth_resistance" xml:space="preserve">
+    <data name="per_earth_resistance" xml:space="preserve">
         <value>% Earth Resistance</value>
     </data>
     <data name="fire_resistance" xml:space="preserve">
         <value>Fire Resistance</value>
     </data>
-    <data name="%fire_resistance" xml:space="preserve">
+    <data name="per_fire_resistance" xml:space="preserve">
         <value>% Fire Resistance</value>
     </data>
     <data name="water_resistance" xml:space="preserve">
         <value>Water Resistance</value>
     </data>
-    <data name="%water_resistance" xml:space="preserve">
+    <data name="per_water_resistance" xml:space="preserve">
         <value>% Water Resistance</value>
     </data>
     <data name="air_resistance" xml:space="preserve">
         <value>Air Resistance</value>
     </data>
-    <data name="%air_resistance" xml:space="preserve">
+    <data name="per_air_resistance" xml:space="preserve">
         <value>% Air Resistance</value>
     </data>
     <data name="critical_resistance" xml:space="preserve">
@@ -193,5 +193,8 @@
     </data>
     <data name="hunting_weapon" xml:space="preserve">
         <value>Hunting weapon</value>
+    </data>
+    <data name="reflect" xml:space="preserve">
+        <value>Reflect</value>
     </data>
 </root>

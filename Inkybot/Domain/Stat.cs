@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Text.RegularExpressions;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 
@@ -71,15 +72,15 @@ namespace Inkybot
             ParryStatData("ap"),
 
             new Stat("heals", 10, 10f, 5f),
-            new Stat("per_critical", 10, 10f, 5f),
+            new Stat("critical", 10, 10f, 5f),
             new Stat("reflect", 10, 10f, 10f),
 
-            PerModifiersStatData("per_spell_damage"),
-            PerModifiersStatData("per_weapon_damage"),
-            PerModifiersStatData("per_melee_damage"),
-            PerModifiersStatData("per_ranged_damage"),
-            PerModifiersStatData("per_ranged_resistance"),
-            PerModifiersStatData("per_melee_resistance"),
+            PerModifiersStatData("spell_damage"),
+            PerModifiersStatData("weapon_damage"),
+            PerModifiersStatData("melee_damage"),
+            PerModifiersStatData("ranged_damage"),
+            PerModifiersStatData("ranged_resistance"),
+            PerModifiersStatData("melee_resistance"),
 
             new Stat("damage", 5, 20f, 20f),
             new Stat("summons", 3, 30f, 30f),
@@ -88,7 +89,7 @@ namespace Inkybot
             new Stat("ap", 1, 100f, 50f)
         };
 
-        public Config.StatConfig Config => (Config.StatConfig) Properties.Settings.Default["_"+Identifier];
+        public Config.StatConfig Config => (Config.StatConfig) Properties.Settings.Default[Identifier];
         
         public int ChangeToPaRuneThreshold {
             get {
@@ -102,13 +103,13 @@ namespace Inkybot
                 return val == 0 ? int.MaxValue : val;
             }
         }
-        public int MaxValueAtWhichSmRuneCanHit {
+        public int MaxValueAtWhichSmRuneCanLand {
             get {
                 var val = Numbers.Parse(Config.MaxValueAtWhichSmRuneCanLand);
                 return val == 0 ? ChangeToPaRuneThreshold : val;
             }
         }
-        public int MaxValueAtWhichPaRuneCanHit {
+        public int MaxValueAtWhichPaRuneCanLand {
             get {
                 var val = Numbers.Parse(Config.MaxValueAtWhichPaRuneCanLand);
                 return val == 0 ? ChangeToRaRuneThreshold : val;
