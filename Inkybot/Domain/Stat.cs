@@ -96,11 +96,19 @@ namespace Inkybot
                 var val = Numbers.Parse(Config.ChangeToPaRuneThreshold);
                 return val == 0 ? int.MaxValue : val;
             }
+            set {
+                Config.ChangeToPaRuneThreshold = value.ToString();
+                Properties.Settings.Default.Save();
+            }
         }
         public int ChangeToRaRuneThreshold {
             get {
                 var val = Numbers.Parse(Config.ChangeToRaRuneThreshold);
                 return val == 0 ? int.MaxValue : val;
+            }
+            set {
+                Config.ChangeToRaRuneThreshold = value.ToString();
+                Properties.Settings.Default.Save();
             }
         }
         public int MaxValueAtWhichSmRuneCanLand {
@@ -108,11 +116,19 @@ namespace Inkybot
                 var val = Numbers.Parse(Config.MaxValueAtWhichSmRuneCanLand);
                 return val == 0 ? ChangeToPaRuneThreshold : val;
             }
+            set {
+                Config.MaxValueAtWhichSmRuneCanLand = value.ToString();
+                Properties.Settings.Default.Save();
+            }
         }
         public int MaxValueAtWhichPaRuneCanLand {
             get {
                 var val = Numbers.Parse(Config.MaxValueAtWhichPaRuneCanLand);
                 return val == 0 ? ChangeToRaRuneThreshold : val;
+            }
+            set {
+                Config.MaxValueAtWhichPaRuneCanLand = value.ToString();
+                Properties.Settings.Default.Save();
             }
         }
 
