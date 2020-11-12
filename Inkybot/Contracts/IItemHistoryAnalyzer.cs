@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Inkybot.Domain;
 
 namespace Inkybot.Contracts
 {

@@ -9,7 +9,7 @@ using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 using StatConfigResource = Inkybot.Resources.StatConfig;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public class Stat
     {

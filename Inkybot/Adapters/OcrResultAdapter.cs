@@ -1,3 +1,4 @@
+using Inkybot.Domain;
 
 namespace Inkybot.Adapters
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Inkybot.Domain;
 
 namespace Inkybot.Events
 {

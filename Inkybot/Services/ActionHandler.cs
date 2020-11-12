@@ -1,7 +1,8 @@
 ﻿using System;
+using Inkybot.Domain;
 using Inkybot.Events;
 
-namespace Inkybot
+namespace Inkybot.Services
 {
     public class ActionHandler
     {

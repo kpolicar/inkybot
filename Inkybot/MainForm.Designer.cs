@@ -68,7 +68,7 @@ namespace Inkybot
             this.mageInfoPanel.SuspendLayout();
             this.userInfoPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //     
             // dofusClientPanel
             // 
             this.dofusClientPanel.AutoSize = true;

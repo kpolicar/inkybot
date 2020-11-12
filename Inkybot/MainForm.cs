@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;

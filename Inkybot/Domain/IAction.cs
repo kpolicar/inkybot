@@ -1,4 +1,4 @@
-﻿namespace Inkybot
+﻿namespace Inkybot.Domain
 {
     public interface IAction
     {

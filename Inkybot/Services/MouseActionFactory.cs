@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 
 namespace Inkybot.Services
 {

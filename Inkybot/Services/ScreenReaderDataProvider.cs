@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;

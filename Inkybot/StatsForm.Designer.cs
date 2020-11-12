@@ -55,6 +55,10 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
             this.SuspendLayout();
+            this.Text = "Stats - Inkybot";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
+            this.Load += new System.EventHandler(this.StatsForm_Loaded);
+            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             // 
             // TargetColumn
             // 
@@ -190,10 +194,6 @@ namespace Inkybot
             this.Controls.Add(this.statsDataGridView);
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "StatsForm";
-            this.Text = "Stats - Inkybot";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
-            this.Load += new System.EventHandler(this.StatsForm_Loaded);
-            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.actionsPanel.ResumeLayout(false);
             this.actionsPanel.PerformLayout();

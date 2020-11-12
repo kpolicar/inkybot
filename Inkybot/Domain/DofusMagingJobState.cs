@@ -1,4 +1,4 @@
-namespace Inkybot
+namespace Inkybot.Domain
 {
     internal enum DofusMagingJobState
     {

@@ -1,6 +1,7 @@
 ﻿using System;
+using Inkybot.Domain;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public class Rune
     {

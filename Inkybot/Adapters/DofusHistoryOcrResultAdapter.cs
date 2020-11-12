@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Domain;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters

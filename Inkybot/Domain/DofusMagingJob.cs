@@ -8,7 +8,7 @@ using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public class DofusMagingJob
     {

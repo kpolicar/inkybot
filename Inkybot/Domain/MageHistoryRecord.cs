@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Inkybot.Domain;
 using Inkybot.Exceptions;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public struct StatChanged
     {

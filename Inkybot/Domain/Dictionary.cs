@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public static class Dictionary
     {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Api.Resources;
+using Inkybot.Domain;
 using Newtonsoft.Json;
 
 namespace Inkybot.Api

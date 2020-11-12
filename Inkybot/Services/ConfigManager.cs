@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 

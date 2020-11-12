@@ -4,12 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
 
-namespace Inkybot
+namespace Inkybot.Services
 {
     public class BasicDofusMagingAI : DofusMagingAI
     {

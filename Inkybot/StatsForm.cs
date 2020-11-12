@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
 

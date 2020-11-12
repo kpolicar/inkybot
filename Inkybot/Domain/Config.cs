@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public struct StatConfig
     {

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Domain;
 using Inkybot.Helpers;
 using Rect = Tesseract.Rect;
 

@@ -7,7 +7,7 @@ using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     internal class DofusMagingJobTick
     {

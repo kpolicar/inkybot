@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Api;
+using Inkybot.Domain;
 using Inkybot.Events;
 
 namespace Inkybot

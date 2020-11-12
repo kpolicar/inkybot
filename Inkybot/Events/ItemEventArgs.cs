@@ -1,4 +1,5 @@
 ﻿using System;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 
 namespace Inkybot.Events

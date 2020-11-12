@@ -1,4 +1,5 @@
-﻿using Inkybot.Domain.Repositories;
+﻿using Inkybot.Domain;
+using Inkybot.Domain.Repositories;
 
 namespace Inkybot.Contracts
 {

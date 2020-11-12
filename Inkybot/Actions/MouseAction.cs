@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Helpers;
 
 namespace Inkybot.Actions

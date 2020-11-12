@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ImageMagick;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Tesseract;
 
 namespace Inkybot

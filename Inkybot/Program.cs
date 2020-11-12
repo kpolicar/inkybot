@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
 using static System.Configuration.ConfigurationManager;

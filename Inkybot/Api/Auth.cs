@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Api.Resources;
+using Inkybot.Domain;
 using Newtonsoft.Json;
 using static System.Configuration.ConfigurationManager;
 

@@ -26,6 +26,7 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <Obfuscate>True</Obfuscate>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
@@ -172,9 +173,6 @@
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\Item.cs" />
-        <Compile Include="Domain\ItemMage.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
-        </Compile>
         <Compile Include="Domain\MageConfig.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
@@ -206,8 +204,6 @@
         <Compile Include="Contracts\IItemHistoryAnalyzer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
-        <Compile Include="Domain\ActionHandler.cs" />
-        <Compile Include="Domain\BasicDofusMagingAI.cs" />
         <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\DofusMagingJob.cs" />
         <Compile Include="Domain\DofusMagingJobState.cs">
@@ -244,6 +240,11 @@
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
           <DependentUpon>StatDictionary.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Services\ActionHandler.cs" />
+        <Compile Include="Services\BasicDofusMagingAI.cs" />
+        <Compile Include="Services\ItemMage.cs">
+          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
@@ -349,6 +350,7 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
+      <Content Include="Inkybot.crproj" />
       <Content Include="Resources\Tesseract\eng.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
@@ -360,5 +362,7 @@
         <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
       </PropertyGroup>
       <Error Condition="!Exists('..\packages\Tesseract.4.1.0-beta1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.0-beta1\build\Tesseract.targets'))" />
+      <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
     </Target>
+    <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
 </Project>
