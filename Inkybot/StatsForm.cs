@@ -9,6 +9,7 @@ using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
+using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot
 {

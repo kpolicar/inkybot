@@ -13,6 +13,7 @@ using Inkybot.Helpers;
 using Inkybot.Services;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
+using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 
 namespace Inkybot
@@ -57,6 +58,10 @@ namespace Inkybot
             Closing += (sender, args) => {
                 if (debugging) StopDebugging();
             };
+        }
+        
+        private void MainForm_OnLoad() {
+        
         }
 
         private void OnError(object sender, ExceptionEventArgs e) {

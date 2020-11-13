@@ -14,6 +14,8 @@ namespace Inkybot
 {
     public class ScreenReaderDataProvider : DofusDataProvider
     {
+        public event EventHandler<ScannedRegionEventArgs> ScannedStats;
+        public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
         public event EventHandler<ItemEventArgs> FetchedItem;
         private IntPtr handle;
         public ItemStatRepository lastScanResults;
@@ -33,6 +35,8 @@ namespace Inkybot
             var scanResults = scan.History()
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
+            ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            
             var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
 
             return historyResults;
@@ -40,6 +44,8 @@ namespace Inkybot
 
         public Item Item() {
             var scanResults = scan.Stats();
+            ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
             var item = new Item(lastScanResults = stats);
             FetchedItem?.Invoke(this, new ItemEventArgs(item));

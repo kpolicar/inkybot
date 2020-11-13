@@ -74,17 +74,14 @@ namespace Inkybot
         }
 
         public string[] Stats() {
-            var scanned = ScanRegion(StatBounds,
+            return ScanRegion(StatBounds,
             text => {
                 return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             });
-            Debug.WriteLine(string.Join("\n", scanned));
-
-            return scanned;
         }
 
         public string[] History() {
-            var scanned = ScanRegion(
+            return ScanRegion(
                 HistoryBounds,
                 text => {
                     return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure)))")
@@ -92,12 +89,6 @@ namespace Inkybot
                         .Select(result => result.Replace("\n", " "))
                         .ToArray();
                 });
-
-            foreach (var s in scanned) {
-                Debug.WriteLine(Regex.Escape(s));
-            }
-
-            return scanned;
         }
 
         private Image PreprocessRunesImage(Image image, Rectangle bounds) {

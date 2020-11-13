@@ -17,11 +17,14 @@ using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
 using static System.Configuration.ConfigurationManager;
+using DofusMagingJob = Inkybot.Domain.DofusMagingJob;
+using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot
 {
     internal static class Program
     {
+        
         #if DEBUG
             public const string Url = "http://inkybot-server.test";
             public const string GrantId = "2";
@@ -52,10 +55,11 @@ namespace Inkybot
             Services.AddService(typeof(ActionHandler), new ActionHandler());
             Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
             Services.AddService(typeof(ApiClient), new ApiClient());
-            Services.AddService(typeof(DofusMagingJob), new DofusMagingJob());
+            Services.AddService(typeof(DofusMagingJobContract), new DofusMagingJob());
             Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
-
+            
             BindNotifications();
+            BindLogger();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -72,6 +76,10 @@ namespace Inkybot
                 actions!.ActionExecuted += notifier.Notify;
                 magingJob!.Error += notifier.Notify;
             }
+        }
+
+        private static void BindLogger() {
+            new FileEventLogger().BindToServices();
         }
     }
 }

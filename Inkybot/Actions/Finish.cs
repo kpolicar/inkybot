@@ -2,6 +2,7 @@
 using Inkybot.Domain;
 using Inkybot.Helpers;
 using Tesseract;
+using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Actions
 {

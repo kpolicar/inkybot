@@ -7,10 +7,11 @@ using Inkybot.Contracts;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
+using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Domain
 {
-    public class DofusMagingJob
+    public class DofusMagingJob : DofusMagingJobContract
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
