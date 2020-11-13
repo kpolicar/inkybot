@@ -69,7 +69,7 @@ namespace Inkybot
 
         private static void BindNotifications() {
             var actions = (ActionHandler) Services.GetService(typeof(ActionHandler));
-            var magingJob = (DofusMagingJob) Services.GetService(typeof(DofusMagingJob));
+            var magingJob = (DofusMagingJobContract) Services.GetService(typeof(DofusMagingJobContract));
             var notified = new[] { new ApiNotifier() };
 
             foreach (var notifier in notified) {

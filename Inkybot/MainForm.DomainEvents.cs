@@ -14,6 +14,7 @@ namespace Inkybot
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
+            
             var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             actionHandler.ActionExecuted += OnMagingAction;
         }

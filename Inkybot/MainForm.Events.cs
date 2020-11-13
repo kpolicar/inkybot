@@ -15,12 +15,9 @@ namespace Inkybot
     public partial class MainForm
     {
         private void MainFormEvents() {
-            InitializeKeyboardShortcuts();
-        }
-        
-        private void InitializeKeyboardShortcuts() {
-            Closing += (sender, e) => {
+            Closing += (sender, args) => {
                 magingJob.StopMage();
+                StopDebugging();
             };
         }
         
@@ -30,8 +27,6 @@ namespace Inkybot
         }
         
         private void toggleMageButton_Click(object sender, EventArgs e) {
-            if (api.Connection == null) return;
-            
             toastPanel.Hide();
 
             magingJob.BeginMage(!magingJob.IsMaging);

@@ -68,7 +68,7 @@ namespace Inkybot
             this.mageInfoPanel.SuspendLayout();
             this.userInfoPanel.SuspendLayout();
             this.SuspendLayout();
-            //     
+            // 
             // dofusClientPanel
             // 
             this.dofusClientPanel.AutoSize = true;
@@ -385,9 +385,9 @@ namespace Inkybot
             this.usernameLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.usernameLabel.Location = new System.Drawing.Point(0, 28);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(77, 24);
+            this.usernameLabel.Size = new System.Drawing.Size(96, 24);
             this.usernameLabel.TabIndex = 2;
-            this.usernameLabel.Text = "Klemen";
+            this.usernameLabel.Text = "username";
             // 
             // loggedInAsLabel
             // 

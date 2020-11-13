@@ -11,12 +11,9 @@ namespace Inkybot
     {
 
         private void InitAuth() {
-            Load += AuthenticatedForm_Load;
+            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
+            api.UserFetched += OnUserDetailsUpdated;
             VisibleChanged += AuthenticatedForm_VisibleChanged;
-        }
-
-        private void AuthenticatedForm_Load(object sender, EventArgs eventArgs) {
-            DoLoginDialog();
         }
 
         private void AuthenticatedForm_VisibleChanged(object sender, EventArgs e) {

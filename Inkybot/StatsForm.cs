@@ -19,12 +19,10 @@ namespace Inkybot
         private readonly DofusDataProvider dataProvider;
         private DofusMagingJob magingJob;
         private ConfigManager configManager;
-        private MainForm mainForm;
 
-        public StatsForm(MainForm mainForm) {
+        public StatsForm() {
             InitializeComponent();
             InitializeCustomComponents();
-            this.mainForm = mainForm;
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));

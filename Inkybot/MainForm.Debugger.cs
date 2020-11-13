@@ -56,6 +56,8 @@ namespace Inkybot
         }
         
         private void StopDebugging() {
+            if (!debugging) return;
+            
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
             #if DEBUG

@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Api;
+using Inkybot.Contracts;
 using Inkybot.Exceptions;
+using Inkybot.Services;
 
 namespace Inkybot
 {
@@ -11,8 +13,8 @@ namespace Inkybot
     {
         private Process pDofus;
         private IntPtr hWndDocked;
-        
-        private void InitializeDofusClient() {
+
+        private bool InitializeDofusClient() {
             if (pDofus != null && !pDofus.HasExited) {
                 pDofus.Kill();
                 hWndDocked = IntPtr.Zero;
@@ -21,9 +23,7 @@ namespace Inkybot
             if (Properties.Settings.Default.dofusPath == "") {
                 var result = new DofusPathForm().ShowDialog(this);
                 if (result != DialogResult.OK) {
-                    // Todo: fix
-                    Close();
-                    return;
+                    return false;
                 }
             }
 
@@ -31,6 +31,22 @@ namespace Inkybot
             pDofus = Process.Start(Properties.Settings.Default.dofusPath);
             WindowHelpers.DockProcess(pDofus, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
+
+            BindServicesToDockedWindow();
+
+            return true;
+        }
+        
+
+        private void BindServicesToDockedWindow() {
+            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider.BindTo(hWndDocked);
+            
+            var mouse = (Win32Input) Program.Services.GetService(typeof(Input));
+            mouse.SetRelativeToHandle(hWndDocked);
+            
+            var actions = (MouseActionFactory) Program.Services.GetService(typeof(ActionFactory));
+            actions.setRelativeToControl(dofusClientPanel);
         }
     }
 }

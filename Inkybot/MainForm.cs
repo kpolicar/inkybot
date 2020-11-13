@@ -21,8 +21,8 @@ namespace Inkybot
     public partial class MainForm : Form
     {
         private StatsForm statsForm;
-        private readonly ApiClient api;
-        private readonly DofusMagingJob magingJob;
+        private ApiClient api;
+        private DofusMagingJob magingJob;
         private ConfigForm configForm;
 
         public MainForm() {
@@ -32,36 +32,30 @@ namespace Inkybot
             debugScreenshotButton.Hide();
             exoAttemptsLabel.Hide();
             exoAttemptsValueLabel.Hide();
+            Hide();
             
-            InitializeDofusClient();
+            InitAuth();
 
-            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.BindTo(hWndDocked);
-            var mouse = (Win32Input) Program.Services.GetService(typeof(Input));
-            mouse.SetRelativeToHandle(hWndDocked);
-            
-            var actions = (MouseActionFactory) Program.Services.GetService(typeof(ActionFactory));
-            actions.setRelativeToControl(dofusClientPanel);
+            Shown += MainForm_OnLoad;
 
-            statsForm = new StatsForm(this);
+            statsForm = new StatsForm();
+            statsForm.Error += OnError;
             configForm = new ConfigForm();
-            
-            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magingJob.Error += OnError;
-            statsForm.Error += OnError;
+            
             MainFormDomainEvents();
             MainFormEvents();
-            api.UserFetched += OnUserDetailsUpdated;
-            InitAuth();
-            
-            Closing += (sender, args) => {
-                if (debugging) StopDebugging();
-            };
         }
-        
-        private void MainForm_OnLoad() {
-        
+
+        private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
+            Hide();
+            var openedDofusSuccessfully = InitializeDofusClient();
+            if (!openedDofusSuccessfully) {
+                Close();
+                return;
+            }
+            DoLoginDialog();
         }
 
         private void OnError(object sender, ExceptionEventArgs e) {
