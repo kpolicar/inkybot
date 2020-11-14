@@ -1,6 +1,8 @@
-namespace Inkybot.Domain
+using Inkybot.Contracts;
+
+namespace Inkybot.Services
 {
-    public class MageConfig
+    public class SettingsMageConfig : MageConfig
     {
         public bool RestoreHighSinkStatsFirst => Properties.Settings.Default.restoreHighSinkStatImmediately;
     }

@@ -167,6 +167,7 @@
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Contracts\DofusMagingJob.cs" />
+        <Compile Include="Contracts\MageConfig.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
         </Compile>
@@ -182,7 +183,6 @@
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\Item.cs" />
-        <Compile Include="Domain\MageConfig.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
@@ -257,6 +257,7 @@
         <Compile Include="Services\ItemMage.cs">
           <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\SettingsMageConfig.cs" />
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
         </Compile>

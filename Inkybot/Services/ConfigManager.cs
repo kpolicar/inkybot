@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 
 namespace Inkybot.Services

@@ -25,6 +25,7 @@ namespace Inkybot.Services
 
         private void BindToMagingJob() {
             var magingJob =  (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            var config =  (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             
             magingJob.Started += (sender, args) => 
                 MagingLogger.Info("Maging started");
@@ -33,9 +34,11 @@ namespace Inkybot.Services
             magingJob.Finished += (sender, args) => 
                 MagingLogger.Info("Maging finished");
             magingJob.Error += (sender, args) => 
-                MagingLogger.Info(args.exception, "Maging error occured!");
+                MagingLogger.Error(args.exception, "Maging error occured!");
             magingJob.SinkChanged += (sender, args) => 
                 MagingLogger.Info("Sink has changed: " + args.sink);
+            config.ConfigModified += (sender, args) =>
+                MagingLogger.Info("Config has changed: " + args.Config);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 
@@ -49,7 +50,7 @@ namespace Inkybot.Domain
     {
         public readonly Item Item;
         public readonly Dictionary<Stat, StatConfig> StatsConfig = new Dictionary<Stat, StatConfig>();
-        public readonly MageConfig MageConfig = new MageConfig();
+        public readonly MageConfig MageConfig;
         
         public KeyValuePair<Stat, StatConfig>[] Exos {
             get {
@@ -64,6 +65,7 @@ namespace Inkybot.Domain
 
         public Config(Item item) {
             Item = item;
+            MageConfig = (MageConfig) Program.Services.GetService(typeof(MageConfig));
             ResetDefaults(item);
         }
 
