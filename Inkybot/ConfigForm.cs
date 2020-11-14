@@ -38,29 +38,43 @@ namespace Inkybot
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
             if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
             var row = statsDataGridView.Rows[e.RowIndex];
+            var cell = row.Cells[e.ColumnIndex];
 
             var stat = (Stat) row.Tag;
-            switch (e.ColumnIndex) {
-                case 1:
-                    stat.ChangeToPaRuneThreshold = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
-                    break;
-                case 2:
-                    stat.ChangeToRaRuneThreshold = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
-                    break;
-                case 3:
-                    stat.MaxValueAtWhichSmRuneCanLand = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
-                    break;
-                case 4:
-                    stat.MaxValueAtWhichPaRuneCanLand = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
-                    break;
+            try {
+                switch (e.ColumnIndex) {
+                    case 1:
+                        stat.ChangeToPaRuneThreshold = int.Parse(cell.Value.ToString());
+                        break;
+                    case 2:
+                        stat.ChangeToRaRuneThreshold = int.Parse(cell.Value.ToString());
+                        break;
+                    case 3:
+                        stat.MaxValueAtWhichSmRuneCanLand = int.Parse(cell.Value.ToString());
+                        break;
+                    case 4:
+                        stat.MaxValueAtWhichPaRuneCanLand = int.Parse(cell.Value.ToString());
+                        break;
+                }
+            } catch (FormatException) {
+                
             }
+        }
+
+        private void ConfigForm_OnValidatingValue(object sender, DataGridViewCellValidatingEventArgs e) {
+            if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
+            var row = statsDataGridView.Rows[e.RowIndex];
+            var cell = row.Cells[e.ColumnIndex];
+
+            var isNumber = int.TryParse(cell.Value.ToString(), out _);
+            e.Cancel = !isNumber;
         }
 
         private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
             Properties.Settings.Default.restoreHighSinkStatImmediately = restoreHighSinkStatsCheckbox.Checked;
             Properties.Settings.Default.Save();
         }
-        
+
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();

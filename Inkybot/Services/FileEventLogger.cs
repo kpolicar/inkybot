@@ -1,5 +1,9 @@
+using System;
 using System.ComponentModel.Design;
+using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Domain;
+using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
@@ -25,20 +29,30 @@ namespace Inkybot.Services
 
         private void BindToMagingJob() {
             var magingJob =  (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             var config =  (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             
             magingJob.Started += (sender, args) => 
-                MagingLogger.Info("Maging started");
-            magingJob.Stopped += (sender, args) => 
-                MagingLogger.Info("Maging stopped");
+                MagingLogger.Info("Maging started.");
             magingJob.Finished += (sender, args) => 
-                MagingLogger.Info("Maging finished");
+                MagingLogger.Info("Maging stopped.");
             magingJob.Error += (sender, args) => 
                 MagingLogger.Error(args.exception, "Maging error occured!");
             magingJob.SinkChanged += (sender, args) => 
-                MagingLogger.Info("Sink has changed: " + args.sink);
+                MagingLogger.Info("Sink has changed: " + args.Sink);
             config.ConfigModified += (sender, args) =>
-                MagingLogger.Info("Config has changed: " + args.Config);
+                MagingLogger.Info("Config has changed:\r\n" + args.Config);
+            actionHandler.ActionExecuted += (sender, args) => 
+                MagingLogger.Info("Action executed: " + FormatAction(args.action));
+        }
+
+        private string FormatAction(IAction action) {
+            return action switch {
+                Finish a => "Finished maging",
+                Combine a => "Combined rune",
+                SelectRune a => "Selected rune",
+                _ => "Unknown action",
+            };
         }
     }
 }

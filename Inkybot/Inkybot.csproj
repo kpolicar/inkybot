@@ -201,6 +201,7 @@
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />
         <Compile Include="Exceptions\OcrException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
+        <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />

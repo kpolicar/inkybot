@@ -50,8 +50,8 @@ namespace Inkybot.Domain
         internal float Sink {
             get => sink;
             set {
+                SinkChanged?.Invoke(this, new SinkChangedEventArgs(sink, value));
                 sink = value;
-                SinkChanged?.Invoke(this, new SinkChangedEventArgs(sink));
             }
         }
 
@@ -86,14 +86,8 @@ namespace Inkybot.Domain
             previousAction = null;
             previousHistory = null;
             
-            IsMaging = true;
             dataProvider.FetchData();
-            var item = dataProvider.Item();
-            // Someone could've stopped maging during stats gather
-            if (!IsMaging)
-                return;
-            IsMaging = false; // We dont want to stop maging on the initial config change 
-            configManager.EnforceConfigSetForItem(item);
+            dataProvider.Item();
             IsMaging = true;
         }
 

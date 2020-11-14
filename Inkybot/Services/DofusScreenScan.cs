@@ -83,7 +83,7 @@ namespace Inkybot
             return ScanRegion(
                 HistoryBounds,
                 text => {
-                    return Regex.Split(text, Properties.Regex.HistorySplitPattern)
+                    return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
                         .Where(s => s != string.Empty)
                         .Select(result => result.Replace("\n", " "))
                         .ToArray();

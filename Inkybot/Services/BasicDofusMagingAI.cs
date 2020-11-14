@@ -26,7 +26,7 @@ namespace Inkybot.Services
             configManager!.ConfigModified += (sender, args) => config = args.Config;
             
             var magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            magingJob!.SinkChanged += (sender, args) => sink = args.sink;
+            magingJob!.SinkChanged += (sender, args) => sink = args.Sink;
         }
 
         private ItemMage? ResolveItemMageByPriority(

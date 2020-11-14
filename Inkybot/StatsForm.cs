@@ -161,11 +161,17 @@ namespace Inkybot
         private void StatsForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
             if (e.ColumnIndex != 2) return;
             var row = statsDataGridView.Rows[e.RowIndex];
+            var cell = row.Cells[e.ColumnIndex];
 
             var statRow = (ItemStatRow) row.Tag;
             var stat = statRow.Stat;
             
-            var max = int.Parse(row.Cells[e.ColumnIndex].Value.ToString());
+            int max;
+            var newMaxIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
+            if (!newMaxIsValidNumber) {
+                cell.Value = configManager.Config.For(stat).Maximum;
+                return;
+            }
             var statConfig = new StatConfig(stat, max);
 
             configManager.ChangeStatConfig(stat, statConfig);

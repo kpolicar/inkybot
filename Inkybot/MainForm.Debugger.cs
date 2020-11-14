@@ -69,7 +69,7 @@ namespace Inkybot
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
             #if DEBUG
-            m_GlobalHook.Dispose();
+            m_GlobalHook?.Dispose();
             #endif
             Resize -= onWindowResize;
             

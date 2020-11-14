@@ -4,11 +4,13 @@ namespace Inkybot.Events
 {
     public class SinkChangedEventArgs : EventArgs
     {
-        public readonly float sink;
+        public readonly float Sink;
+        public readonly float OldSink;
 
 
-        public SinkChangedEventArgs(float sink) {
-            this.sink = sink;
+        public SinkChangedEventArgs(float oldSink, float sink) {
+            this.Sink = sink;
+            this.OldSink = oldSink;
         }
     }
 }

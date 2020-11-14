@@ -46,12 +46,17 @@ namespace Inkybot.Domain
         }
 
         public override string ToString() {
-            return $"{stat} |" +
-                   $"Maximum: ${Maximum}, " +
-                   $"ChangeToPaRuneThreshold: ${ChangeToPaRuneThreshold}, " +
-                   $"ChangeToRaRuneThreshold: ${ChangeToRaRuneThreshold}, " +
-                   $"MaxValueAtWhichSmRuneCanHit: ${MaxValueAtWhichSmRuneCanHit}, " +
-                   $"MaxValueAtWhichPaRuneCanHit: ${MaxValueAtWhichPaRuneCanHit}, ";
+            var changeToPaRuneThresholdString = CanUsePaRunes ? ChangeToPaRuneThreshold.ToString() : "-";
+            var changeToRaRuneThresholdString = CanUseRaRunes ? ChangeToRaRuneThreshold.ToString() : "-";
+            var maxValueAtWhichSmRuneCanHitString = CanUsePaRunes ? MaxValueAtWhichSmRuneCanHit.ToString() : "-";
+            var maxValueAtWhichPaRuneCanHitString = CanUseRaRunes ? MaxValueAtWhichPaRuneCanHit.ToString() : "-";
+            
+            return $"{stat} | " +
+                   $"Max: {Maximum}, " +
+                   $"PA Threshold: {changeToPaRuneThresholdString}, " +
+                   $"RA Threshold: {changeToRaRuneThresholdString}, " +
+                   $"Max SM: {maxValueAtWhichSmRuneCanHitString}, " +
+                   $"Max PA: {maxValueAtWhichPaRuneCanHitString}, ";
         }
     }
 
@@ -104,8 +109,7 @@ namespace Inkybot.Domain
         }
 
         public override string ToString() {
-            return string.Join("\r\n", StatsConfig.Select(statConfig => 
-                statConfig.Key +""+ statConfig.Value));
+            return string.Join("\r\n", StatsConfig.Values);
         }
     }
 }

@@ -94,19 +94,20 @@ namespace Inkybot.Domain
 
 
         private void ChangeSinkFromLastAction(MageHistoryRecord lastHistoryRecord) {
+            var sink = job.Sink;
             try {
-                job.Sink += lastHistoryRecord.ChangeInSink;
+                sink += lastHistoryRecord.ChangeInSink;
             } catch (CouldNotResolveSinkException e) {
                 
                 var previousCombine = (Combine) job.previousAction;
-                job.Sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink;
+                sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink;
                 
                 Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
                 Debug.WriteLine("sink change:" +
                                 (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink));
             }
 
-            job.Sink = Math.Max(0f, job.Sink);
+            job.Sink = Math.Max(0f, sink);
         }
 
 

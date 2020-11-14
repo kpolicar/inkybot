@@ -44,7 +44,7 @@ namespace Inkybot
 
         public Item Item() {
             var scanResults = scan.Stats();
-            ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            ScannedStats?.Invoke(this, new ScannedRegionEventArgs(scanResults));
             
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
             var item = new Item(lastScanResults = stats);

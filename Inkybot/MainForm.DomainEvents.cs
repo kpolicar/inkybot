@@ -31,7 +31,9 @@ namespace Inkybot
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
-            Invoke(new MethodInvoker(delegate { sinkValueLabel.Text = Convert.ToInt32(e.sink) + ""; }));
+            Invoke(new MethodInvoker(delegate {
+                sinkValueLabel.Text = Convert.ToInt32(e.Sink) + "";
+            }));
         }
         
         private void OnMagingStopped(object sender, EventArgs e) {

@@ -61,9 +61,6 @@ namespace Inkybot.Helpers
                 p2y -= (int) yOffset;
             }
             
-            //Debug.WriteLine($"gameW:{gameW}, xOffset:{xOffset}, w: {w}, p1x: {p1x}");
-
-
             var p1x_ratio = 1d * p1x / gameW;
             var p1y_ratio = 1d * p1y / gameH;
             var rw = p2x - p1x;
