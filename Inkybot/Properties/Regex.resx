@@ -27,4 +27,7 @@
     <data name="HistorySplitPattern" xml:space="preserve">
         <value>(?&lt;!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure)))</value>
     </data>
+    <data name="HistoryEntryPattern" xml:space="preserve">
+        <value>(-? ?\d+) ?(%? ?[A-z( ]+[A-z)])</value>
+    </data>
 </root>

@@ -17,4 +17,10 @@
     <data name="SinkHasChangedPattern" xml:space="preserve">
         <value>[+-] ?reliquat</value>
     </data>
+    <data name="HistorySplitPattern" xml:space="preserve">
+        <value>(?&lt;!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|reliquat|Échec)))</value>
+    </data>
+    <data name="HistoryEntryPattern" xml:space="preserve">
+        <value>(-? ?\d+) ?(%? ?[A-zÀ-ÿ( ]+[A-zÀ-ÿ)])</value>
+    </data>
 </root>

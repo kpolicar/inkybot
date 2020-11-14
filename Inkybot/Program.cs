@@ -47,6 +47,7 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         private static void Main() {
+            CultureInfo.CurrentUICulture = new CultureInfo("fr");
             Services.AddService(typeof(MageConfig), new SettingsMageConfig());
             Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());

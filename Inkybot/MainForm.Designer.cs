@@ -258,6 +258,7 @@ namespace Inkybot
             resources.ApplyResources(this.loggedInAsLabel, "loggedInAsLabel");
             this.loggedInAsLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.loggedInAsLabel.Name = "loggedInAsLabel";
+            this.loggedInAsLabel.MaximumSize = new Size(113, 0);
             // 
             // mousePositionLabel
             // 

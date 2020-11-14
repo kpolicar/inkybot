@@ -41,7 +41,7 @@ namespace Inkybot.Services
             magingJob.SinkChanged += (sender, args) => 
                 MagingLogger.Info("Sink has changed: " + args.Sink);
             config.ConfigModified += (sender, args) =>
-                MagingLogger.Info("Config has changed:\r\n" + args.Config);
+                MagingLogger.Info("Mage config has changed.");
             actionHandler.ActionExecuted += (sender, args) => 
                 MagingLogger.Info("Action executed: " + FormatAction(args.action));
         }
