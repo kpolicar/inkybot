@@ -22,14 +22,14 @@ namespace Inkybot.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class Regex {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Regex() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Inkybot.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Properties.Regex", typeof(Regex).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,20 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() .
+        ///   Looks up a localized string similar to ^(-?\d+|-) (-?\d+|-) (-?\d*) ?(%? ?[A-z() ]+)$.
         /// </summary>
-        internal static string OcrCharWhitelist {
+        internal static string ItemStatLinePattern {
             get {
-                return ResourceManager.GetString("OcrCharWhitelist", resourceCulture);
+                return ResourceManager.GetString("ItemStatLinePattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [+-] ?sink.
+        /// </summary>
+        internal static string SinkHasChangedPattern {
+            get {
+                return ResourceManager.GetString("SinkHasChangedPattern", resourceCulture);
             }
         }
     }

@@ -16,10 +16,10 @@ namespace Inkybot
         private void debugButton_Click(object sender, EventArgs e) {
             if (debugging = !debugging) {
                 StartDebugging();
-                debugButton.Text = "STOP DEBUG";
+                debugButton.Text = resources.GetString("debugButton.TextStop");
             } else {
                 StopDebugging();
-                debugButton.Text = "DEBUG";
+                debugButton.Text = resources.GetString("debugButton.Text");
             }
         }
 
@@ -56,7 +56,6 @@ namespace Inkybot
         }
         
         private void StopDebugging() {
-            if (!debugging) return;
             
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();

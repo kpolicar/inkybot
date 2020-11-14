@@ -32,17 +32,17 @@ namespace Inkybot
                 var connection = await AuthManager.Login(usernameTextBox.Text, passwordTextBox.Text);
 
                 if (connection == null) {
-                    errorMessage.Text = "Incorrect username or password!";
+                    errorMessage.Text = resources.GetString("errorMessage.TextIncorrect");
                     return;
                 }
 
                 var user = await api.User();
                 if (!user.is_subscribed) {
-                    errorMessage.Text = "User is not subscribed!";
+                    errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
                     return;
                 }
             } catch (HttpRequestException requestException) {
-                errorMessage.Text = "Could not connect to server.\nPlease try again later.";
+                errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
                 return;
             }
 

@@ -1,0 +1,51 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="configButton.Text" xml:space="preserve">
+        <value>CONFIG</value>
+    </data>
+    <data name="debugButton.Text" xml:space="preserve">
+        <value>DÉBOGUER</value>
+    </data>
+    <data name="debugScreenshotButton.Text" xml:space="preserve">
+        <value>CAPTURE D'ÉCRAN</value>
+    </data>
+    <data name="exoAttemptsLabel.Text" xml:space="preserve">
+        <value>EXO TENTATIVES</value>
+    </data>
+    <data name="helpButton.Text" xml:space="preserve">
+        <value>AIDER</value>
+    </data>
+    <data name="loggedInAsLabel.Text" xml:space="preserve">
+        <value>CONNECTÉ EN TANT QUE</value>
+    </data>
+    <data name="sinkLabel.Text" xml:space="preserve">
+        <value>Reliquat</value>
+    </data>
+    <data name="statsButton.Text" xml:space="preserve">
+        <value>STATISTIQUE</value>
+    </data>
+    <data name="subscribedInfoLabel.Text" xml:space="preserve">
+        <value>ABONNÉ JUSQU'À:
+jj / mm / aaaa</value>
+    </data>
+    <data name="debugButton.TextStop" xml:space="preserve">
+        <value>ARRÊTER LE DÉBOGAGE</value>
+    </data>
+    <data name="toggleMageButton.Text" xml:space="preserve">
+        <value>DÉBUT</value>
+    </data>
+    <data name="toggleMageButton.TextStop" xml:space="preserve">
+        <value>ARRÊTEZ</value>
+    </data>
+</root>

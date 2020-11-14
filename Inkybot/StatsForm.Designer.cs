@@ -40,10 +40,10 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -55,33 +55,30 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
             this.SuspendLayout();
-            this.Text = "Stats - Inkybot";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
-            this.Load += new System.EventHandler(this.StatsForm_Loaded);
-            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             // 
             // TargetColumn
             // 
-            this.TargetColumn.HeaderText = "Target";
+            resources.ApplyResources(this.TargetColumn, "TargetColumn");
             this.TargetColumn.Name = "TargetColumn";
             this.TargetColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // ValueColumn
             // 
-            this.ValueColumn.HeaderText = "Value";
+            resources.ApplyResources(this.ValueColumn, "ValueColumn");
             this.ValueColumn.Name = "ValueColumn";
             this.ValueColumn.ReadOnly = true;
             this.ValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // StatColumn
             // 
-            this.StatColumn.HeaderText = "Stat";
+            resources.ApplyResources(this.StatColumn, "StatColumn");
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
             this.StatColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // statsDataGridView
             // 
+            resources.ApplyResources(this.statsDataGridView, "statsDataGridView");
             this.statsDataGridView.AllowUserToAddRows = false;
             this.statsDataGridView.AllowUserToResizeColumns = false;
             this.statsDataGridView.AllowUserToResizeRows = false;
@@ -106,10 +103,8 @@ namespace Inkybot
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.statsDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
-            this.statsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.statsDataGridView.EnableHeadersVisualStyles = false;
             this.statsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int) (((byte) (70)))), ((int) (((byte) (70)))), ((int) (((byte) (70)))));
-            this.statsDataGridView.Location = new System.Drawing.Point(0, 0);
             this.statsDataGridView.MultiSelect = false;
             this.statsDataGridView.Name = "statsDataGridView";
             this.statsDataGridView.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -123,77 +118,56 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.statsDataGridView.RowHeadersVisible = false;
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.statsDataGridView.Size = new System.Drawing.Size(535, 316);
-            this.statsDataGridView.TabIndex = 0;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.StatsForm_OnChangeValue);
             // 
             // actionsPanel
             // 
+            resources.ApplyResources(this.actionsPanel, "actionsPanel");
             this.actionsPanel.Controls.Add(this.addExoButton);
             this.actionsPanel.Controls.Add(this.exoStatComboBox);
             this.actionsPanel.Controls.Add(this.clearExosButton);
-            this.actionsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.actionsPanel.Location = new System.Drawing.Point(0, 276);
             this.actionsPanel.Name = "actionsPanel";
-            this.actionsPanel.Size = new System.Drawing.Size(535, 40);
-            this.actionsPanel.TabIndex = 2;
             // 
             // addExoButton
             // 
-            this.addExoButton.AutoSize = true;
+            resources.ApplyResources(this.addExoButton, "addExoButton");
             this.addExoButton.BackColor = System.Drawing.Color.Black;
-            this.addExoButton.Enabled = false;
             this.addExoButton.FlatAppearance.BorderSize = 0;
-            this.addExoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.addExoButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.addExoButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.addExoButton.Location = new System.Drawing.Point(0, 0);
-            this.addExoButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.addExoButton.Name = "addExoButton";
-            this.addExoButton.Size = new System.Drawing.Size(113, 40);
-            this.addExoButton.TabIndex = 2;
-            this.addExoButton.Text = "ADD EXO";
             this.addExoButton.UseVisualStyleBackColor = false;
             this.addExoButton.Click += new System.EventHandler(this.addExoButton_Click);
             // 
             // exoStatComboBox
             // 
+            resources.ApplyResources(this.exoStatComboBox, "exoStatComboBox");
             this.exoStatComboBox.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.exoStatComboBox.ForeColor = System.Drawing.SystemColors.Control;
             this.exoStatComboBox.FormattingEnabled = true;
-            this.exoStatComboBox.Location = new System.Drawing.Point(116, 3);
             this.exoStatComboBox.Name = "exoStatComboBox";
-            this.exoStatComboBox.Size = new System.Drawing.Size(159, 21);
-            this.exoStatComboBox.TabIndex = 3;
             this.exoStatComboBox.SelectedIndexChanged += new System.EventHandler(this.exoStatComboBox_SelectedIndexChanged);
             // 
             // clearExosButton
             // 
-            this.clearExosButton.AutoSize = true;
+            resources.ApplyResources(this.clearExosButton, "clearExosButton");
             this.clearExosButton.BackColor = System.Drawing.Color.Black;
             this.clearExosButton.FlatAppearance.BorderSize = 0;
-            this.clearExosButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearExosButton.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.clearExosButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.clearExosButton.Location = new System.Drawing.Point(278, 0);
-            this.clearExosButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.clearExosButton.Name = "clearExosButton";
-            this.clearExosButton.Size = new System.Drawing.Size(113, 40);
-            this.clearExosButton.TabIndex = 4;
-            this.clearExosButton.Text = "CLEAR EXOS";
             this.clearExosButton.UseVisualStyleBackColor = false;
             this.clearExosButton.Click += new System.EventHandler(this.clearExosButton_Click);
             // 
             // StatsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.ClientSize = new System.Drawing.Size(535, 316);
             this.Controls.Add(this.actionsPanel);
             this.Controls.Add(this.statsDataGridView);
-            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "StatsForm";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
+            this.Load += new System.EventHandler(this.StatsForm_Loaded);
+            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.actionsPanel.ResumeLayout(false);
             this.actionsPanel.PerformLayout();

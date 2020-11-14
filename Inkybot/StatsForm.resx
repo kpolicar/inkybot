@@ -1,4 +1,4 @@
-﻿﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,4 +117,199 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="clearExosButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="clearExosButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>278, 0</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Inkybot - Stats</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="addExoButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="clearExosButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="clearExosButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;addExoButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;actionsPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="addExoButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 40</value>
+  </data>
+  <data name="&gt;&gt;ValueColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;exoStatComboBox.Parent" xml:space="preserve">
+    <value>actionsPanel</value>
+  </data>
+  <data name="&gt;&gt;addExoButton.Name" xml:space="preserve">
+    <value>addExoButton</value>
+  </data>
+  <data name="addExoButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>StatsForm</value>
+  </data>
+  <data name="actionsPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 276</value>
+  </data>
+  <data name="clearExosButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 40</value>
+  </data>
+  <data name="TargetColumn.HeaderText" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="addExoButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;statsDataGridView.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;statsDataGridView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="exoStatComboBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>116, 3</value>
+  </data>
+  <data name="&gt;&gt;TargetColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="actionsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>535, 316</value>
+  </data>
+  <data name="actionsPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="actionsPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>535, 40</value>
+  </data>
+  <data name="statsDataGridView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="statsDataGridView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;clearExosButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;actionsPanel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="exoStatComboBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;StatColumn.Name" xml:space="preserve">
+    <value>StatColumn</value>
+  </data>
+  <data name="&gt;&gt;StatColumn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;clearExosButton.Parent" xml:space="preserve">
+    <value>actionsPanel</value>
+  </data>
+  <data name="addExoButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="statsDataGridView.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="ValueColumn.HeaderText" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="&gt;&gt;addExoButton.Parent" xml:space="preserve">
+    <value>actionsPanel</value>
+  </data>
+  <data name="&gt;&gt;statsDataGridView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;exoStatComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="clearExosButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
+  <data name="&gt;&gt;clearExosButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;clearExosButton.Name" xml:space="preserve">
+    <value>clearExosButton</value>
+  </data>
+  <data name="addExoButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
+  <data name="clearExosButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="statsDataGridView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>535, 316</value>
+  </data>
+  <data name="addExoButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ValueColumn.Name" xml:space="preserve">
+    <value>ValueColumn</value>
+  </data>
+  <data name="&gt;&gt;statsDataGridView.Name" xml:space="preserve">
+    <value>statsDataGridView</value>
+  </data>
+  <data name="addExoButton.Text" xml:space="preserve">
+    <value>ADD EXO</value>
+  </data>
+  <data name="&gt;&gt;actionsPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;addExoButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="exoStatComboBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>159, 21</value>
+  </data>
+  <data name="&gt;&gt;actionsPanel.Name" xml:space="preserve">
+    <value>actionsPanel</value>
+  </data>
+  <data name="addExoButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;exoStatComboBox.Name" xml:space="preserve">
+    <value>exoStatComboBox</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TargetColumn.Name" xml:space="preserve">
+    <value>TargetColumn</value>
+  </data>
+  <data name="clearExosButton.Text" xml:space="preserve">
+    <value>CLEAR EXOS</value>
+  </data>
+  <data name="&gt;&gt;exoStatComboBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="StatColumn.HeaderText" xml:space="preserve">
+    <value>Stat</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>fr</value>
+  </metadata>
 </root>

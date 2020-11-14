@@ -61,13 +61,12 @@ namespace Inkybot
 
         private void Init() {
             if (init) return;
+            
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
-                "eng",
-                EngineMode.TesseractOnly,
-                null, new Dictionary<string, object> {
-                    {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
-                }, false);
+                "fra",
+                EngineMode.TesseractOnly);
+            engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             init = true;

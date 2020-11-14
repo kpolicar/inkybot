@@ -235,6 +235,11 @@
         <Compile Include="Events\FetchedUserEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
+        <Compile Include="Properties\Regex.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Regex.resx</DependentUpon>
+        </Compile>
         <Compile Include="Resources\MagingDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
@@ -310,27 +315,40 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Services\Win32Input.cs" />
         <Compile Include="WindowHelpers.cs" />
+        <EmbeddedResource Include="ConfigForm.fr.resx" />
         <EmbeddedResource Include="ConfigForm.resx">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="DebugForm.resx">
-          <DependentUpon>StatsForm.cs</DependentUpon>
-        </EmbeddedResource>
+        <EmbeddedResource Include="DofusPathForm.fr.resx" />
         <EmbeddedResource Include="DofusPathForm.resx">
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </EmbeddedResource>
+        <EmbeddedResource Include="MainForm.fr.resx" />
+        <EmbeddedResource Include="OcrDebugForm.fr.resx" />
+        <EmbeddedResource Include="Properties\Regex.fr.resx" />
+        <EmbeddedResource Include="Properties\Regex.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Regex.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Properties\Resources.fr.resx" />
+        <EmbeddedResource Include="Resources\MagingDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\MagingDictionary.resx">
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Include="Resources\RuneDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\RuneDictionary.resx">
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Include="Resources\StatDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\StatDictionary.resx">
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Include="StatsForm.fr.resx" />
+        <EmbeddedResource Include="StatsForm.resx" />
+        <EmbeddedResource Include="WelcomeDialogue.fr.resx" />
         <EmbeddedResource Include="WelcomeDialogue.resx">
           <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
@@ -364,6 +382,9 @@
     <ItemGroup>
       <Content Include="Inkybot.crproj" />
       <Content Include="Resources\Tesseract\eng.traineddata">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Resources\Tesseract\fra.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>

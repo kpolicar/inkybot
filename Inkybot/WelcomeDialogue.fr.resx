@@ -1,0 +1,56 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="rememberPasswordCheckbox.Text" xml:space="preserve">
+        <value>Se souvenir de mes identifiants</value>
+    </data>
+    <data name="newVersionLabel.Text" xml:space="preserve">
+        <value>Nouvelle version disponible!</value>
+    </data>
+    <data name="label4.Text" xml:space="preserve">
+        <value>MOT DE PASSE</value>
+    </data>
+    <data name="label3.Text" xml:space="preserve">
+        <value>EMAIL</value>
+    </data>
+    <data name="label2.Text" xml:space="preserve">
+        <value>Reconfigurez vos articles</value>
+    </data>
+    <data name="errorMessage.Text" xml:space="preserve">
+        <value>Une erreur est survenue</value>
+    </data>
+    <data name="dofusPathLink.Text" xml:space="preserve">
+        <value>Changer le répertoire Dofus</value>
+    </data>
+    <data name="button1.Text" xml:space="preserve">
+        <value>SE CONNECTER</value>
+    </data>
+    <data name="$this.Text" xml:space="preserve">
+        <value>Inkybot - S'identifier</value>
+    </data>
+    <data name="label5.Text" xml:space="preserve">
+        <value>Pas encore inscrit?</value>
+    </data>
+    <data name="linkLabel1.Text" xml:space="preserve">
+        <value>S'enregistrer</value>
+    </data>
+    <data name="errorMessage.TextConnectionError" xml:space="preserve">
+        <value>N'a pas pu se connecter au serveur.\n Veuillez réessayer plus tard.</value>
+    </data>
+    <data name="errorMessage.TextIncorrect" xml:space="preserve">
+        <value>Identifiant ou mot de passe incorrect!</value>
+    </data>
+    <data name="errorMessage.TextUnsubscribed" xml:space="preserve">
+        <value>L'utilisateur n'est pas abonné!</value>
+    </data>
+</root>

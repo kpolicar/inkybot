@@ -19,7 +19,7 @@ namespace Inkybot.Adapters
         public IEnumerable<MageHistoryRecord> ToMageHistoryRecords() {
             return historyLines.Select(mageEntry => {
                 var changes = SegmentMageHistoryEntry(mageEntry);
-                var sinkHasChanged = Regex.IsMatch(mageEntry, @"[+-] ?sink");
+                var sinkHasChanged = Regex.IsMatch(mageEntry, Properties.Regex.SinkHasChangedPattern);
 
                 var statChanges = changes
                     .Cast<Match>()

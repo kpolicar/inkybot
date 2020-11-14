@@ -30,7 +30,8 @@ namespace Inkybot
                 "eng",
                 EngineMode.TesseractOnly,
                 null, new Dictionary<string, object> {
-                    {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
+                    {"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+()ÉÀÈÙÂÊÎÔÛÇËÏÜéàèùâêîôûçëïü "}
+                    //{"tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() "}
                 }, false);
             
             spellCorrect = new SymSpell(16, 6);

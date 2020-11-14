@@ -28,10 +28,10 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,6 +48,7 @@ namespace Inkybot
             // 
             // statsDataGridView
             // 
+            resources.ApplyResources(this.statsDataGridView, "statsDataGridView");
             this.statsDataGridView.AllowUserToAddRows = false;
             this.statsDataGridView.AllowUserToResizeColumns = false;
             this.statsDataGridView.AllowUserToResizeRows = false;
@@ -72,10 +73,8 @@ namespace Inkybot
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.statsDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
-            this.statsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.statsDataGridView.EnableHeadersVisualStyles = false;
             this.statsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int) (((byte) (70)))), ((int) (((byte) (70)))), ((int) (((byte) (70)))));
-            this.statsDataGridView.Location = new System.Drawing.Point(0, 0);
             this.statsDataGridView.MultiSelect = false;
             this.statsDataGridView.Name = "statsDataGridView";
             this.statsDataGridView.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -89,100 +88,71 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.statsDataGridView.RowHeadersVisible = false;
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.statsDataGridView.Size = new System.Drawing.Size(775, 592);
-            this.statsDataGridView.TabIndex = 1;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigForm_OnChangeValue);
             // 
             // StatColumn
             // 
-            this.StatColumn.HeaderText = "Stat";
+            resources.ApplyResources(this.StatColumn, "StatColumn");
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
             // 
             // PaRuneThresholdColumn
             // 
-            this.PaRuneThresholdColumn.HeaderText = "PA Rune Threshold";
+            resources.ApplyResources(this.PaRuneThresholdColumn, "PaRuneThresholdColumn");
             this.PaRuneThresholdColumn.Name = "PaRuneThresholdColumn";
             // 
             // RaRuneThresholdColumn
             // 
-            this.RaRuneThresholdColumn.HeaderText = "RA Rune Threshold";
+            resources.ApplyResources(this.RaRuneThresholdColumn, "RaRuneThresholdColumn");
             this.RaRuneThresholdColumn.Name = "RaRuneThresholdColumn";
             // 
             // MaxSmRuneCanHitColumn
             // 
-            this.MaxSmRuneCanHitColumn.HeaderText = "Max (SM Rune)";
+            resources.ApplyResources(this.MaxSmRuneCanHitColumn, "MaxSmRuneCanHitColumn");
             this.MaxSmRuneCanHitColumn.Name = "MaxSmRuneCanHitColumn";
             // 
             // MaxPaRuneCanHitColumn
             // 
-            this.MaxPaRuneCanHitColumn.HeaderText = "Max (RA Rune)";
+            resources.ApplyResources(this.MaxPaRuneCanHitColumn, "MaxPaRuneCanHitColumn");
             this.MaxPaRuneCanHitColumn.Name = "MaxPaRuneCanHitColumn";
             // 
             // restoreHighSinkStatsCheckbox
             // 
-            this.restoreHighSinkStatsCheckbox.AutoSize = true;
-            this.restoreHighSinkStatsCheckbox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.restoreHighSinkStatsCheckbox.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            resources.ApplyResources(this.restoreHighSinkStatsCheckbox, "restoreHighSinkStatsCheckbox");
             this.restoreHighSinkStatsCheckbox.ForeColor = System.Drawing.SystemColors.Control;
-            this.restoreHighSinkStatsCheckbox.Location = new System.Drawing.Point(15, 10);
             this.restoreHighSinkStatsCheckbox.Name = "restoreHighSinkStatsCheckbox";
-            this.restoreHighSinkStatsCheckbox.Size = new System.Drawing.Size(194, 21);
-            this.restoreHighSinkStatsCheckbox.TabIndex = 0;
-            this.restoreHighSinkStatsCheckbox.Text = "Restore high sink stats immediately";
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             // 
             // creditsNameLabel
             // 
-            this.creditsNameLabel.AutoSize = true;
-            this.creditsNameLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.creditsNameLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            resources.ApplyResources(this.creditsNameLabel, "creditsNameLabel");
             this.creditsNameLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.creditsNameLabel.Location = new System.Drawing.Point(707, 10);
-            this.creditsNameLabel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.creditsNameLabel.Name = "creditsNameLabel";
-            this.creditsNameLabel.Size = new System.Drawing.Size(53, 13);
-            this.creditsNameLabel.TabIndex = 1;
-            this.creditsNameLabel.Text = "Tomolone\r\n";
             // 
             // bottomPanel
             // 
+            resources.ApplyResources(this.bottomPanel, "bottomPanel");
             this.bottomPanel.Controls.Add(this.creditsLabel);
             this.bottomPanel.Controls.Add(this.creditsNameLabel);
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
-            this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.bottomPanel.Location = new System.Drawing.Point(0, 551);
             this.bottomPanel.Name = "bottomPanel";
-            this.bottomPanel.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
-            this.bottomPanel.Size = new System.Drawing.Size(775, 41);
-            this.bottomPanel.TabIndex = 3;
             // 
             // creditsLabel
             // 
-            this.creditsLabel.AutoSize = true;
-            this.creditsLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.creditsLabel.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            resources.ApplyResources(this.creditsLabel, "creditsLabel");
             this.creditsLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.creditsLabel.Location = new System.Drawing.Point(596, 10);
-            this.creditsLabel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.creditsLabel.Name = "creditsLabel";
-            this.creditsLabel.Size = new System.Drawing.Size(111, 13);
-            this.creditsLabel.TabIndex = 2;
-            this.creditsLabel.Text = "Configured with  ❤ ️ by";
             // 
             // ConfigForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.ClientSize = new System.Drawing.Size(775, 592);
             this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.statsDataGridView);
-            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "ConfigForm";
-            this.Text = "Config - Inkybot";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             this.Load += new System.EventHandler(this.ConfigForm_OnLoad);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.bottomPanel.ResumeLayout(false);

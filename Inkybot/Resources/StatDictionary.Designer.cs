@@ -39,7 +39,7 @@ namespace Inkybot.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.StatDictionary", typeof(StatDictionary).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.RuneDictionary", typeof(RuneDictionary).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,34 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lock.
+        ///   Looks up a localized string similar to air res per.
+        /// </summary>
+        internal static string _air_resistance {
+            get {
+                return ResourceManager.GetString("%air_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to earth res per.
+        /// </summary>
+        internal static string _earth_resistance {
+            get {
+                return ResourceManager.GetString("%earth_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to fire res per.
+        /// </summary>
+        internal static string _fire_resistance {
+            get {
+                return ResourceManager.GetString("%fire_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to loc.
         /// </summary>
         internal static string _lock {
             get {
@@ -70,7 +97,25 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agility.
+        ///   Looks up a localized string similar to neutral res per.
+        /// </summary>
+        internal static string _neutral_resistance {
+            get {
+                return ResourceManager.GetString("%neutral_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to water res per.
+        /// </summary>
+        internal static string _water_resistance {
+            get {
+                return ResourceManager.GetString("%water_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to agi.
         /// </summary>
         internal static string agility {
             get {
@@ -79,7 +124,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Air Damage.
+        ///   Looks up a localized string similar to air dam.
         /// </summary>
         internal static string air_damage {
             get {
@@ -88,7 +133,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Air Resistance.
+        ///   Looks up a localized string similar to air res.
         /// </summary>
         internal static string air_resistance {
             get {
@@ -106,7 +151,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AP.
+        ///   Looks up a localized string similar to ap ga.
         /// </summary>
         internal static string ap {
             get {
@@ -115,7 +160,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AP Parry.
+        ///   Looks up a localized string similar to ap res.
         /// </summary>
         internal static string ap_parry {
             get {
@@ -124,7 +169,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AP Reduction.
+        ///   Looks up a localized string similar to ap red.
         /// </summary>
         internal static string ap_reduction {
             get {
@@ -133,7 +178,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chance.
+        ///   Looks up a localized string similar to cha.
         /// </summary>
         internal static string chance {
             get {
@@ -142,7 +187,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to % Critical.
+        ///   Looks up a localized string similar to crit.
         /// </summary>
         internal static string critical {
             get {
@@ -151,7 +196,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Critical Damage.
+        ///   Looks up a localized string similar to cri dam.
         /// </summary>
         internal static string critical_damage {
             get {
@@ -160,7 +205,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Critical Resistance.
+        ///   Looks up a localized string similar to cri res.
         /// </summary>
         internal static string critical_resistance {
             get {
@@ -169,7 +214,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Damage.
+        ///   Looks up a localized string similar to dam.
         /// </summary>
         internal static string damage {
             get {
@@ -178,7 +223,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dodge.
+        ///   Looks up a localized string similar to dod.
         /// </summary>
         internal static string dodge {
             get {
@@ -187,7 +232,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earth Damage.
+        ///   Looks up a localized string similar to earth dam.
         /// </summary>
         internal static string earth_damage {
             get {
@@ -196,7 +241,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earth Resistance.
+        ///   Looks up a localized string similar to earth res.
         /// </summary>
         internal static string earth_resistance {
             get {
@@ -214,7 +259,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fire Damage.
+        ///   Looks up a localized string similar to fire dam.
         /// </summary>
         internal static string fire_damage {
             get {
@@ -223,7 +268,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fire Resistance.
+        ///   Looks up a localized string similar to fire res.
         /// </summary>
         internal static string fire_resistance {
             get {
@@ -241,7 +286,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Heals.
+        ///   Looks up a localized string similar to hea.
         /// </summary>
         internal static string heals {
             get {
@@ -259,7 +304,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hunting weapon.
+        ///   Looks up a localized string similar to hunting.
         /// </summary>
         internal static string hunting_weapon {
             get {
@@ -268,7 +313,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initiative.
+        ///   Looks up a localized string similar to ini.
         /// </summary>
         internal static string initiative {
             get {
@@ -277,7 +322,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Intelligence.
+        ///   Looks up a localized string similar to int.
         /// </summary>
         internal static string intelligence {
             get {
@@ -286,7 +331,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Melee Damage.
+        ///   Looks up a localized string similar to me dam per.
         /// </summary>
         internal static string melee_damage {
             get {
@@ -295,7 +340,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Melee Resistance.
+        ///   Looks up a localized string similar to me res per.
         /// </summary>
         internal static string melee_resistance {
             get {
@@ -304,7 +349,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MP.
+        ///   Looks up a localized string similar to mp ga.
         /// </summary>
         internal static string mp {
             get {
@@ -313,7 +358,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MP Parry.
+        ///   Looks up a localized string similar to mp res.
         /// </summary>
         internal static string mp_parry {
             get {
@@ -322,7 +367,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MP Reduction.
+        ///   Looks up a localized string similar to mp red.
         /// </summary>
         internal static string mp_reduction {
             get {
@@ -331,7 +376,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Neutral Damage.
+        ///   Looks up a localized string similar to neutral dam.
         /// </summary>
         internal static string neutral_damage {
             get {
@@ -340,7 +385,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Neutral Resistance.
+        ///   Looks up a localized string similar to neutral res.
         /// </summary>
         internal static string neutral_resistance {
             get {
@@ -358,52 +403,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to % Air Resistance.
-        /// </summary>
-        internal static string per_air_resistance {
-            get {
-                return ResourceManager.GetString("per_air_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to % Earth Resistance.
-        /// </summary>
-        internal static string per_earth_resistance {
-            get {
-                return ResourceManager.GetString("per_earth_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to % Fire Resistance.
-        /// </summary>
-        internal static string per_fire_resistance {
-            get {
-                return ResourceManager.GetString("per_fire_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to % Neutral Resistance.
-        /// </summary>
-        internal static string per_neutral_resistance {
-            get {
-                return ResourceManager.GetString("per_neutral_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to % Water Resistance.
-        /// </summary>
-        internal static string per_water_resistance {
-            get {
-                return ResourceManager.GetString("per_water_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pods.
+        ///   Looks up a localized string similar to pod.
         /// </summary>
         internal static string pods {
             get {
@@ -412,7 +412,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Power.
+        ///   Looks up a localized string similar to power.
         /// </summary>
         internal static string power {
             get {
@@ -421,7 +421,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Power (traps).
+        ///   Looks up a localized string similar to tra per.
         /// </summary>
         internal static string power_traps {
             get {
@@ -430,7 +430,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prospecting.
+        ///   Looks up a localized string similar to prospe.
         /// </summary>
         internal static string prospecting {
             get {
@@ -439,7 +439,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pushback Damage.
+        ///   Looks up a localized string similar to psh dam.
         /// </summary>
         internal static string pushback_damage {
             get {
@@ -448,7 +448,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pushback Resistance.
+        ///   Looks up a localized string similar to psh res.
         /// </summary>
         internal static string pushback_resistance {
             get {
@@ -457,7 +457,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range.
+        ///   Looks up a localized string similar to range.
         /// </summary>
         internal static string range {
             get {
@@ -466,7 +466,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ranged Damage.
+        ///   Looks up a localized string similar to ra dam per.
         /// </summary>
         internal static string ranged_damage {
             get {
@@ -475,7 +475,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ranged Resistance.
+        ///   Looks up a localized string similar to ra res per.
         /// </summary>
         internal static string ranged_resistance {
             get {
@@ -484,16 +484,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reflect.
-        /// </summary>
-        internal static string reflect {
-            get {
-                return ResourceManager.GetString("reflect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spell Damage.
+        ///   Looks up a localized string similar to spe dam per.
         /// </summary>
         internal static string spell_damage {
             get {
@@ -502,7 +493,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Strength.
+        ///   Looks up a localized string similar to stre.
         /// </summary>
         internal static string strength {
             get {
@@ -511,7 +502,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Summons.
+        ///   Looks up a localized string similar to summo.
         /// </summary>
         internal static string summons {
             get {
@@ -520,7 +511,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trap Damage.
+        ///   Looks up a localized string similar to tra.
         /// </summary>
         internal static string trap_damage {
             get {
@@ -529,7 +520,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vitality.
+        ///   Looks up a localized string similar to vit.
         /// </summary>
         internal static string vitality {
             get {
@@ -538,7 +529,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Water Damage.
+        ///   Looks up a localized string similar to water dam.
         /// </summary>
         internal static string water_damage {
             get {
@@ -547,7 +538,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Water Resistance.
+        ///   Looks up a localized string similar to water res.
         /// </summary>
         internal static string water_resistance {
             get {
@@ -565,7 +556,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Weapon Damage.
+        ///   Looks up a localized string similar to we dam per.
         /// </summary>
         internal static string weapon_damage {
             get {
@@ -574,7 +565,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wisdom.
+        ///   Looks up a localized string similar to wis.
         /// </summary>
         internal static string wisdom {
             get {

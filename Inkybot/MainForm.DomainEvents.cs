@@ -36,7 +36,7 @@ namespace Inkybot
         
         private void OnMagingStopped(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Text = "START";
+                toggleMageButton.Text = resources.GetString("toggleMageButton.Text");
                 toggleMageButton.Enabled = false;
                 mageInfoPanel.Hide();
                 exoAttemptsLabel.Hide();
@@ -55,7 +55,7 @@ namespace Inkybot
                 // Todo: check if is configured for exos
                 exoAttemptsLabel.Show();
                 exoAttemptsValueLabel.Show();
-                toggleMageButton.Text = "STOP";
+                toggleMageButton.Text = resources.GetString("toggleMageButton.TextStop");
                 mageInfoPanel.Show();
             }));
         }

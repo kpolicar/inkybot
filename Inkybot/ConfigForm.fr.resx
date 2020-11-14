@@ -1,0 +1,38 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="$this.Text" xml:space="preserve">
+        <value>Inkybot - Config</value>
+    </data>
+    <data name="creditsLabel.Text" xml:space="preserve">
+        <value>Coniguré avec  ❤  par</value>
+    </data>
+    <data name="MaxPaRuneCanHitColumn.HeaderText" xml:space="preserve">
+        <value>Max (RA Rune)</value>
+    </data>
+    <data name="MaxSmRuneCanHitColumn.HeaderText" xml:space="preserve">
+        <value>Max (SM Rune)</value>
+    </data>
+    <data name="PaRuneThresholdColumn.HeaderText" xml:space="preserve">
+        <value>PA Rune Seuil</value>
+    </data>
+    <data name="RaRuneThresholdColumn.HeaderText" xml:space="preserve">
+        <value>RA Rune Seuil</value>
+    </data>
+    <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
+        <value>Restaurez immédiatement les statistiques de chute élevée</value>
+    </data>
+    <data name="StatColumn.HeaderText" xml:space="preserve">
+        <value>Statistique</value>
+    </data>
+</root>

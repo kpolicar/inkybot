@@ -117,7 +117,454 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="exoAttemptsValueLabel.Text" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;debugScreenshotButton.Name" xml:space="preserve">
+    <value>debugScreenshotButton</value>
+  </data>
+  <data name="debugButton.Text" xml:space="preserve">
+    <value>DEBUG</value>
+  </data>
+  <data name="&gt;&gt;toastPanel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonsPanel.Name" xml:space="preserve">
+    <value>buttonsPanel</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="sinkLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="dofusClientPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="helpButton.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;dofusClientPanel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="mousePositionLabel.Text" xml:space="preserve">
+    <value>(0,0)
+(0,0)</value>
+  </data>
+  <data name="&gt;&gt;toastPanelCloseButton.Name" xml:space="preserve">
+    <value>toastPanelCloseButton</value>
+  </data>
+  <data name="&gt;&gt;userInfoPanel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="configButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="mageInfoPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;mageInfoPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toastPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>792, 6</value>
+  </data>
+  <data name="toggleMageButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="configButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
+  </data>
+  <data name="mageInfoPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 57</value>
+  </data>
+  <data name="usernameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;sinkValueLabel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="toastPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="configButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;secondaryButtonsPanel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;mageInfoPanel.Parent" xml:space="preserve">
+    <value>sidebarPanel</value>
+  </data>
+  <data name="sidebarPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;toastPanelCloseButton.Parent" xml:space="preserve">
+    <value>toastPanel</value>
+  </data>
+  <data name="&gt;&gt;debugButton.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="secondaryButtonsPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;historyOcrIndicatorRectangle.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;dofusClientPanel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="dofusClientPanel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="loggedInAsLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;sinkValueLabel.Name" xml:space="preserve">
+    <value>sinkValueLabel</value>
+  </data>
+  <data name="buttonsPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="primaryButtonsPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;usernameLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;toastPanelCloseButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="toastPanelCloseButton.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;sinkValueLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonsPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 61</value>
+  </data>
+  <data name="sidebarPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="sinkLabel.Text" xml:space="preserve">
+    <value>Sink</value>
+  </data>
+  <data name="subscribedInfoLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 29</value>
+  </data>
+  <data name="configButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Inkybot</value>
+  </data>
+  <data name="helpButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
+  </data>
+  <data name="toastIconPictureBox.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="statsOcrIndicatorRectangle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 284</value>
+  </data>
+  <data name="sinkValueLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="toastLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;toastPanelCloseButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="secondaryButtonsPanel.FlowDirection" type="System.Windows.Forms.FlowDirection, System.Windows.Forms">
+    <value>BottomUp</value>
+  </data>
+  <data name="exoAttemptsValueLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+  </data>
+  <data name="toastLabel.Text" xml:space="preserve">
+    <value>There has been an error processing the image</value>
+  </data>
+  <data name="dofusClientPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="sidebarPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;userInfoPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dofusClientPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toastPanel.Name" xml:space="preserve">
+    <value>toastPanel</value>
+  </data>
+  <data name="loggedInAsLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;configButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="exoAttemptsValueLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 5, 3, 0</value>
+  </data>
+  <data name="sinkValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;subscribedInfoLabel.Name" xml:space="preserve">
+    <value>subscribedInfoLabel</value>
+  </data>
+  <data name="&gt;&gt;loggedInAsLabel.Parent" xml:space="preserve">
+    <value>userInfoPanel</value>
+  </data>
+  <data name="toastPanelCloseButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="exoAttemptsLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="subscribedInfoLabel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="subscribedInfoLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 52</value>
+  </data>
+  <data name="primaryButtonsPanel.FlowDirection" type="System.Windows.Forms.FlowDirection, System.Windows.Forms">
+    <value>TopDown</value>
+  </data>
+  <data name="&gt;&gt;subscribedInfoLabel.Parent" xml:space="preserve">
+    <value>userInfoPanel</value>
+  </data>
+  <data name="&gt;&gt;debugButton.Parent" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsLabel.Name" xml:space="preserve">
+    <value>exoAttemptsLabel</value>
+  </data>
+  <data name="debugScreenshotButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="exoAttemptsLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="toastPanel.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
+    <value>GrowAndShrink</value>
+  </data>
+  <data name="secondaryButtonsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="debugButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;subscribedInfoLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="toggleMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="debugButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;mousePositionLabel.Name" xml:space="preserve">
+    <value>mousePositionLabel</value>
+  </data>
+  <data name="mageInfoPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="exoAttemptsLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 10, 3, 0</value>
+  </data>
+  <data name="mousePositionLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Trebuchet MS, 9pt, style=Bold</value>
+  </data>
+  <data name="&gt;&gt;sidebarPanel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="historyOcrIndicatorRectangle.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="statsOcrIndicatorRectangle.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;sinkLabel.Parent" xml:space="preserve">
+    <value>mageInfoPanel</value>
+  </data>
+  <data name="debugScreenshotButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;configButton.Name" xml:space="preserve">
+    <value>configButton</value>
+  </data>
+  <data name="&gt;&gt;secondaryButtonsPanel.Parent" xml:space="preserve">
+    <value>buttonsPanel</value>
+  </data>
+  <data name="historyOcrIndicatorRectangle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 284</value>
+  </data>
+  <data name="toggleMageButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="&gt;&gt;helpButton.Name" xml:space="preserve">
+    <value>helpButton</value>
+  </data>
+  <data name="&gt;&gt;toastIconPictureBox.Name" xml:space="preserve">
+    <value>toastIconPictureBox</value>
+  </data>
+  <data name="&gt;&gt;statsButton.Name" xml:space="preserve">
+    <value>statsButton</value>
+  </data>
+  <data name="&gt;&gt;configButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;userInfoPanel.Name" xml:space="preserve">
+    <value>userInfoPanel</value>
+  </data>
+  <data name="helpButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;secondaryButtonsPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="exoAttemptsLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;statsOcrIndicatorRectangle.Type" xml:space="preserve">
+    <value>Inkybot.Controls.Rectangle, Inkybot, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;primaryButtonsPanel.Name" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="toastLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>50, 8</value>
+  </data>
+  <data name="sinkValueLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 28</value>
+  </data>
+  <data name="&gt;&gt;toastLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="buttonsPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 587</value>
+  </data>
+  <data name="debugButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="dofusClientPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="mousePositionLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopCenter</value>
+  </data>
+  <data name="&gt;&gt;toastIconPictureBox.Parent" xml:space="preserve">
+    <value>toastPanel</value>
+  </data>
+  <data name="helpButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 149</value>
+  </data>
+  <data name="exoAttemptsValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;statsButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="toastLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9pt</value>
+  </data>
+  <data name="loggedInAsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 15</value>
+  </data>
+  <data name="&gt;&gt;mageInfoPanel.Name" xml:space="preserve">
+    <value>mageInfoPanel</value>
+  </data>
+  <data name="primaryButtonsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="toastPanelCloseButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>347, 11</value>
+  </data>
+  <data name="&gt;&gt;statsButton.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="debugScreenshotButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
+  </data>
+  <data name="dofusClientPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1178, 784</value>
+  </data>
+  <data name="usernameLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 24</value>
+  </data>
+  <data name="sinkValueLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopCenter</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsValueLabel.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="exoAttemptsLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;sidebarPanel.Name" xml:space="preserve">
+    <value>sidebarPanel</value>
+  </data>
+  <data name="userInfoPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;subscriptionCheckTimer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsValueLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;debugButton.Name" xml:space="preserve">
+    <value>debugButton</value>
+  </data>
+  <data name="toastPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="primaryButtonsPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="subscribedInfoLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;sinkLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="toggleMageButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsValueLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="usernameLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="debugButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="toggleMageButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="sinkValueLabel.Text" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;toastLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toggleMageButton.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="exoAttemptsValueLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 156</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="toastIconPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAKkAAACWCAYAAACl+ahXAAAABGdBTUEAALGPC/xhBQAADONJREFUeF7t
@@ -179,6 +626,45 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="sidebarPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsLabel.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="loggedInAsLabel.Text" xml:space="preserve">
+    <value>LOGGED IN AS</value>
+  </data>
+  <data name="toastPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>374, 54</value>
+  </data>
+  <data name="subscribedInfoLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="userInfoPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 15, 0, 15</value>
+  </data>
+  <data name="&gt;&gt;toastPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="mousePositionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="statsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 64</value>
+  </data>
+  <data name="dofusClientPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsValueLabel.Name" xml:space="preserve">
+    <value>exoAttemptsValueLabel</value>
+  </data>
+  <data name="statsButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
+  <data name="subscribedInfoLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
   <data name="toastPanelCloseButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAABGdBTUEAALGPC/xhBQAABupJREFUeF7t
@@ -214,12 +700,201 @@
         mA6KoiiKoiiKoiiKoiiKoihKPltb/wEBl2uLXwr2bwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="subscriptionCheckTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>65</value>
-  </metadata>
+  <data name="toastPanelCloseButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>16, 16</value>
+  </data>
+  <data name="&gt;&gt;debugButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="exoAttemptsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 138</value>
+  </data>
+  <data name="toastPanelCloseButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>Stretch</value>
+  </data>
+  <data name="statsButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="toastIconPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>StretchImage</value>
+  </data>
+  <data name="userInfoPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="toastIconPictureBox.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;loggedInAsLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;statsOcrIndicatorRectangle.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="helpButton.Text" xml:space="preserve">
+    <value>HELP</value>
+  </data>
+  <data name="configButton.Text" xml:space="preserve">
+    <value>CONFIG</value>
+  </data>
+  <data name="statsButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 61</value>
+  </data>
+  <data name="exoAttemptsValueLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 24</value>
+  </data>
+  <data name="&gt;&gt;sinkValueLabel.Parent" xml:space="preserve">
+    <value>mageInfoPanel</value>
+  </data>
+  <data name="&gt;&gt;debugScreenshotButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="userInfoPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 96</value>
+  </data>
+  <data name="sinkLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 13</value>
+  </data>
+  <data name="sinkLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;toastIconPictureBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="subscribedInfoLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="&gt;&gt;statsOcrIndicatorRectangle.Name" xml:space="preserve">
+    <value>statsOcrIndicatorRectangle</value>
+  </data>
+  <data name="toggleMageButton.Text" xml:space="preserve">
+    <value>START</value>
+  </data>
+  <data name="toastIconPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="statsButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="statsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;sinkLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;sinkLabel.Name" xml:space="preserve">
+    <value>sinkLabel</value>
+  </data>
+  <data name="&gt;&gt;sidebarPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="configButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;subscriptionCheckTimer.Name" xml:space="preserve">
+    <value>subscriptionCheckTimer</value>
+  </data>
+  <data name="usernameLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+  </data>
+  <data name="mageInfoPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 683</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>MainForm</value>
+  </data>
+  <data name="debugScreenshotButton.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;primaryButtonsPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;statsOcrIndicatorRectangle.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;userInfoPanel.Parent" xml:space="preserve">
+    <value>sidebarPanel</value>
+  </data>
+  <data name="usernameLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 28</value>
+  </data>
+  <data name="exoAttemptsValueLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="mageInfoPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 15, 0, 5</value>
+  </data>
+  <data name="toastLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>291, 38</value>
+  </data>
+  <data name="debugButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
+  </data>
+  <data name="exoAttemptsValueLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;subscribedInfoLabel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;exoAttemptsLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="mousePositionLabel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 5, 0, 0</value>
+  </data>
+  <data name="buttonsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="helpButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="&gt;&gt;buttonsPanel.Parent" xml:space="preserve">
+    <value>sidebarPanel</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="exoAttemptsValueLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopCenter</value>
+  </data>
+  <data name="mousePositionLabel.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="debugButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="helpButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="debugButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 5</value>
+  </data>
+  <data name="userInfoPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;usernameLabel.Parent" xml:space="preserve">
+    <value>userInfoPanel</value>
+  </data>
+  <data name="&gt;&gt;debugScreenshotButton.Parent" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;helpButton.Parent" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="debugScreenshotButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="&gt;&gt;toastPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;toastLabel.Name" xml:space="preserve">
+    <value>toastLabel</value>
+  </data>
+  <data name="&gt;&gt;primaryButtonsPanel.Parent" xml:space="preserve">
+    <value>buttonsPanel</value>
+  </data>
+  <data name="&gt;&gt;debugScreenshotButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAEBAAAAEAIABoBAAAZgAAACAgAAABACAAqBAAAM4EAAAwMAAAAQAgAKglAAB2FQAAQEAAAAEA
@@ -1990,5 +2665,237 @@
         w12HvKARrUA0uqBz3aZHA6piCkwVH4htkMhw5L3nQ977ZOoOyxmx89MifkhCP2qAXvYV2zhCbGMIBAKB
         QCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgELvg/Vy1SSrLYrB4AAAAASUVORK5CYII=
 </value>
+  </data>
+  <data name="userInfoPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="mousePositionLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="toastPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>8, 8, 8, 8</value>
+  </data>
+  <data name="mousePositionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 740</value>
+  </data>
+  <data name="statsButton.Text" xml:space="preserve">
+    <value>STATS</value>
+  </data>
+  <data name="mousePositionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 44</value>
+  </data>
+  <data name="&gt;&gt;mousePositionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;primaryButtonsPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;historyOcrIndicatorRectangle.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;toggleMageButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="statsOcrIndicatorRectangle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>323, 89</value>
+  </data>
+  <data name="&gt;&gt;mousePositionLabel.Parent" xml:space="preserve">
+    <value>sidebarPanel</value>
+  </data>
+  <data name="toastLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="historyOcrIndicatorRectangle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>323, 89</value>
+  </data>
+  <data name="&gt;&gt;sidebarPanel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="exoAttemptsLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 13</value>
+  </data>
+  <data name="secondaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 194</value>
+  </data>
+  <data name="sinkValueLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 24</value>
+  </data>
+  <data name="statsOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="loggedInAsLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;toastLabel.Parent" xml:space="preserve">
+    <value>toastPanel</value>
+  </data>
+  <data name="&gt;&gt;dofusClientPanel.Name" xml:space="preserve">
+    <value>dofusClientPanel</value>
+  </data>
+  <data name="exoAttemptsLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopCenter</value>
+  </data>
+  <data name="toastIconPictureBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 11</value>
+  </data>
+  <data name="sinkLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopCenter</value>
+  </data>
+  <data name="usernameLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="debugScreenshotButton.Text" xml:space="preserve">
+    <value>SCREENSHOT</value>
+  </data>
+  <data name="debugScreenshotButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 53</value>
+  </data>
+  <data name="loggedInAsLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="sidebarPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 784</value>
+  </data>
+  <data name="&gt;&gt;loggedInAsLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>1178, 784</value>
+  </data>
+  <data name="subscribedInfoLabel.Text" xml:space="preserve">
+    <value>SUBSCRIBED UNTIL:
+dd/mm/yyyy</value>
+  </data>
+  <data name="debugScreenshotButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;helpButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;toastIconPictureBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;configButton.Parent" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;historyOcrIndicatorRectangle.Type" xml:space="preserve">
+    <value>Inkybot.Controls.Rectangle, Inkybot, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;mageInfoPanel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="sinkValueLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+  </data>
+  <data name="&gt;&gt;toggleMageButton.Name" xml:space="preserve">
+    <value>toggleMageButton</value>
+  </data>
+  <data name="toastIconPictureBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>33, 31</value>
+  </data>
+  <data name="buttonsPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="toggleMageButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
+  <data name="&gt;&gt;mousePositionLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="&gt;&gt;historyOcrIndicatorRectangle.Name" xml:space="preserve">
+    <value>historyOcrIndicatorRectangle</value>
+  </data>
+  <data name="&gt;&gt;toggleMageButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;usernameLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;loggedInAsLabel.Name" xml:space="preserve">
+    <value>loggedInAsLabel</value>
+  </data>
+  <data name="sinkLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 15</value>
+  </data>
+  <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 184</value>
+  </data>
+  <data name="historyOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="helpButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="loggedInAsLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 13</value>
+  </data>
+  <data name="mageInfoPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="configButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 101</value>
+  </data>
+  <data name="statsButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="&gt;&gt;buttonsPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="exoAttemptsLabel.Text" xml:space="preserve">
+    <value>EXO ATTEMPTS</value>
+  </data>
+  <data name="&gt;&gt;helpButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonsPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 96</value>
+  </data>
+  <data name="&gt;&gt;secondaryButtonsPanel.Name" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;usernameLabel.Name" xml:space="preserve">
+    <value>usernameLabel</value>
+  </data>
+  <data name="toastLabel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 12, 30, 12</value>
+  </data>
+  <data name="sinkLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="usernameLabel.Text" xml:space="preserve">
+    <value>username</value>
+  </data>
+  <data name="secondaryButtonsPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 393</value>
+  </data>
+  <data name="configButton.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="toastPanel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;statsButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="subscriptionCheckTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>fr</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>65</value>
+  </metadata>
+  <data name="debugButton.TextStop" xml:space="preserve">
+    <value>STOP DEBUG</value>
+  </data>
+  <data name="toggleMageButton.TextStop" xml:space="preserve">
+    <value>STOP</value>
   </data>
 </root>

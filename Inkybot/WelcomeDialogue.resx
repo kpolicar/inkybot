@@ -117,7 +117,129 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="splitContainer1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="splitContainer1.IsSplitterFixed" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="splitContainer1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="linkLabel2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="linkLabel2.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="linkLabel2.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="linkLabel2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 298</value>
+  </data>
+  <data name="linkLabel2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 0, 0, 0</value>
+  </data>
+  <data name="linkLabel2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 13</value>
+  </data>
+  <data name="linkLabel2.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="linkLabel2.Text" xml:space="preserve">
+    <value>www.inkybot.me</value>
+  </data>
+  <data name="&gt;&gt;linkLabel2.Name" xml:space="preserve">
+    <value>linkLabel2</value>
+  </data>
+  <data name="&gt;&gt;linkLabel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;linkLabel2.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;linkLabel2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label2.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="label2.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9pt</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 165</value>
+  </data>
+  <data name="label2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 0, 0, 0</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>133, 14</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Reconfigure your items</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Trebuchet MS, 20.25pt, style=Bold</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 130</value>
+  </data>
+  <data name="label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 35</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Inkybot</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="logoPictureBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
   <data name="logoPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -161,6 +283,498 @@
         vOx73k3oEwX38fb29sdqtUoxwt/gXzVoM/pqPB6fqf3gscnp0dFnebegJgrW7+y9oKna4Qdp8nRYAAAA
         AAAAAAAAAAAAAAAA4ATevfsX0UWCw77oaWoAAAAASUVORK5CYII=
 </value>
+  </data>
+  <data name="logoPictureBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 30</value>
+  </data>
+  <data name="logoPictureBox.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>100, 100</value>
+  </data>
+  <data name="logoPictureBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 100</value>
+  </data>
+  <data name="logoPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>StretchImage</value>
+  </data>
+  <data name="logoPictureBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;logoPictureBox.Name" xml:space="preserve">
+    <value>logoPictureBox</value>
+  </data>
+  <data name="&gt;&gt;logoPictureBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;logoPictureBox.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;logoPictureBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="splitContainer1.Panel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>10, 30, 10, 10</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Name" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Parent" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="label3.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Verdana, 8.25pt</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 20</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 13</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>EMAIL</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="usernameTextBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="usernameTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 36</value>
+  </data>
+  <data name="usernameTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 20</value>
+  </data>
+  <data name="usernameTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;usernameTextBox.Name" xml:space="preserve">
+    <value>usernameTextBox</value>
+  </data>
+  <data name="&gt;&gt;usernameTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;usernameTextBox.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;usernameTextBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label4.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="label4.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Verdana, 8.25pt</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 59</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 13</value>
+  </data>
+  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>PASSWORD</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="passwordTextBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="passwordTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 75</value>
+  </data>
+  <data name="passwordTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 20</value>
+  </data>
+  <data name="passwordTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;passwordTextBox.Name" xml:space="preserve">
+    <value>passwordTextBox</value>
+  </data>
+  <data name="&gt;&gt;passwordTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;passwordTextBox.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;passwordTextBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="rememberPasswordCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rememberPasswordCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 101</value>
+  </data>
+  <data name="rememberPasswordCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 17</value>
+  </data>
+  <data name="rememberPasswordCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="rememberPasswordCheckbox.Text" xml:space="preserve">
+    <value>Save my credentials</value>
+  </data>
+  <data name="&gt;&gt;rememberPasswordCheckbox.Name" xml:space="preserve">
+    <value>rememberPasswordCheckbox</value>
+  </data>
+  <data name="&gt;&gt;rememberPasswordCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rememberPasswordCheckbox.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;rememberPasswordCheckbox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="button1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="button1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="button1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="button1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 130</value>
+  </data>
+  <data name="button1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 9, 3, 3</value>
+  </data>
+  <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 33</value>
+  </data>
+  <data name="button1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="button1.Text" xml:space="preserve">
+    <value>SIGN IN</value>
+  </data>
+  <data name="&gt;&gt;button1.Name" xml:space="preserve">
+    <value>button1</value>
+  </data>
+  <data name="&gt;&gt;button1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button1.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="label5.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label5.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="label5.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 166</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 13</value>
+  </data>
+  <data name="label5.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Not yet registered?</value>
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
+  </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="linkLabel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="linkLabel1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="linkLabel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 179</value>
+  </data>
+  <data name="linkLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 13</value>
+  </data>
+  <data name="linkLabel1.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="linkLabel1.Text" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Name" xml:space="preserve">
+    <value>linkLabel1</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="errorMessage.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="errorMessage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 207</value>
+  </data>
+  <data name="errorMessage.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 15, 3, 0</value>
+  </data>
+  <data name="errorMessage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>109, 13</value>
+  </data>
+  <data name="errorMessage.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="errorMessage.Text" xml:space="preserve">
+    <value>An error has occured!</value>
+  </data>
+  <data name="&gt;&gt;errorMessage.Name" xml:space="preserve">
+    <value>errorMessage</value>
+  </data>
+  <data name="&gt;&gt;errorMessage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;errorMessage.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;errorMessage.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="dofusPathLink.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="dofusPathLink.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="dofusPathLink.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="dofusPathLink.Location" type="System.Drawing.Point, System.Drawing">
+    <value>23, 220</value>
+  </data>
+  <data name="dofusPathLink.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 13</value>
+  </data>
+  <data name="dofusPathLink.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="dofusPathLink.Text" xml:space="preserve">
+    <value>Change Dofus Directory</value>
+  </data>
+  <data name="&gt;&gt;dofusPathLink.Name" xml:space="preserve">
+    <value>dofusPathLink</value>
+  </data>
+  <data name="&gt;&gt;dofusPathLink.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dofusPathLink.Parent" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;dofusPathLink.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="flowLayoutPanel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="flowLayoutPanel1.FlowDirection" type="System.Windows.Forms.FlowDirection, System.Windows.Forms">
+    <value>TopDown</value>
+  </data>
+  <data name="flowLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>20, 33</value>
+  </data>
+  <data name="flowLayoutPanel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>20, 20, 20, 0</value>
+  </data>
+  <data name="flowLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 268</value>
+  </data>
+  <data name="flowLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;flowLayoutPanel1.Name" xml:space="preserve">
+    <value>flowLayoutPanel1</value>
+  </data>
+  <data name="&gt;&gt;flowLayoutPanel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;flowLayoutPanel1.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;flowLayoutPanel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="newVersionLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="newVersionLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="newVersionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>20, 20</value>
+  </data>
+  <data name="newVersionLabel.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="newVersionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 13</value>
+  </data>
+  <data name="newVersionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="newVersionLabel.Text" xml:space="preserve">
+    <value>New version available!</value>
+  </data>
+  <data name="newVersionLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>TopRight</value>
+  </data>
+  <data name="&gt;&gt;newVersionLabel.Name" xml:space="preserve">
+    <value>newVersionLabel</value>
+  </data>
+  <data name="&gt;&gt;newVersionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;newVersionLabel.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;newVersionLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="panel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="panel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>20, 20, 20, 20</value>
+  </data>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>309, 321</value>
+  </data>
+  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel2</value>
+  </data>
+  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Name" xml:space="preserve">
+    <value>splitContainer1.Panel2</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Parent" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="splitContainer1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>464, 321</value>
+  </data>
+  <data name="splitContainer1.SplitterDistance" type="System.Int32, mscorlib">
+    <value>154</value>
+  </data>
+  <data name="splitContainer1.SplitterWidth" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="splitContainer1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Name" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>fr</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>464, 321</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1932,5 +2546,29 @@
         w12HvKARrUA0uqBz3aZHA6piCkwVH4htkMhw5L3nQ977ZOoOyxmx89MifkhCP2qAXvYV2zhCbGMIBAKB
         QCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgELvg/Vy1SSrLYrB4AAAAASUVORK5CYII=
 </value>
+  </data>
+  <data name="$this.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 15</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Inkybot - Login</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>WelcomeDialogue</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="errorMessage.TextConnectionError" xml:space="preserve">
+    <value>Could not connect to server.\nPlease try again later.</value>
+  </data>
+  <data name="errorMessage.TextUnsubscribed" xml:space="preserve">
+    <value>User is not subscribed!</value>
+  </data>
+  <data name="errorMessage.TextIncorrect" xml:space="preserve">
+    <value>Incorrect username or password!</value>
   </data>
 </root>
