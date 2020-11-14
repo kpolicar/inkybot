@@ -10,7 +10,7 @@ namespace Inkybot.Domain
         public readonly StatConfig MageConfig;
         public readonly int Value;
         public readonly bool Exo;
-        public readonly int Max => MageConfig.maximum;
+        public readonly int Max => MageConfig.Maximum;
             
         public int NumberOfRunesNeededForFullMage =>
             Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));

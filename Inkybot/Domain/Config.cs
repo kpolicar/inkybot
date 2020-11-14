@@ -9,7 +9,7 @@ namespace Inkybot.Domain
 {
     public struct StatConfig
     {
-        public readonly int maximum;
+        public readonly int Maximum;
         public readonly int ChangeToPaRuneThreshold => stat.ChangeToPaRuneThreshold;
         public readonly int ChangeToRaRuneThreshold => stat.ChangeToRaRuneThreshold;
         public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichSmRuneCanLand;
@@ -30,7 +30,7 @@ namespace Inkybot.Domain
 
         public StatConfig(Stat stat, int maximum) {
             this.stat = stat;
-            this.maximum = maximum;
+            this.Maximum = maximum;
         }
         
         public static bool operator == (StatConfig op1, StatConfig op2) {
@@ -38,11 +38,20 @@ namespace Inkybot.Domain
                    op1.ChangeToRaRuneThreshold == op2.ChangeToRaRuneThreshold &&
                    op1.MaxValueAtWhichSmRuneCanHit == op2.MaxValueAtWhichSmRuneCanHit &&
                    op1.MaxValueAtWhichPaRuneCanHit == op2.MaxValueAtWhichPaRuneCanHit &&
-                   op1.maximum == op2.maximum;
+                   op1.Maximum == op2.Maximum;
         }
 
         public static bool operator !=(StatConfig op1, StatConfig op2) {
             return !(op1 == op1);
+        }
+
+        public override string ToString() {
+            return $"{stat} |" +
+                   $"Maximum: ${Maximum}, " +
+                   $"ChangeToPaRuneThreshold: ${ChangeToPaRuneThreshold}, " +
+                   $"ChangeToRaRuneThreshold: ${ChangeToRaRuneThreshold}, " +
+                   $"MaxValueAtWhichSmRuneCanHit: ${MaxValueAtWhichSmRuneCanHit}, " +
+                   $"MaxValueAtWhichPaRuneCanHit: ${MaxValueAtWhichPaRuneCanHit}, ";
         }
     }
 
@@ -92,6 +101,11 @@ namespace Inkybot.Domain
         public bool HasConfiguredExoStatsForItem(Item item) {
             return item.Stats.ExoStats.All(itemStat =>
                 StatsConfig.ContainsKey(itemStat.stat));
+        }
+
+        public override string ToString() {
+            return string.Join("\r\n", StatsConfig.Select(statConfig => 
+                statConfig.Key +""+ statConfig.Value));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Inkybot.Services
 
         private void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
-                Config.StatsConfig.Where(statConfig => statConfig.Value.maximum == 0 && !item.HasStat(statConfig.Key))
+                Config.StatsConfig.Where(statConfig => statConfig.Value.Maximum == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 

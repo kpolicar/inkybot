@@ -19,7 +19,11 @@ namespace Inkybot.Domain
         private static ResourceSet RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
             .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
         // ----
-        
+
+        public override string ToString() {
+            return DisplayName;
+        }
+
         public static bool operator == (Stat operand1, Stat operand2) {
             return operand1?.Identifier == operand2?.Identifier;
         }

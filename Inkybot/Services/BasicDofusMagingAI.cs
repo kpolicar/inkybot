@@ -134,7 +134,7 @@ namespace Inkybot.Services
             var itemMage = proposedItemMage.Value;
 
             Debug.WriteLine(
-                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.maximum}, stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, stat will overmage: {itemMage.WillOvermage}"
                 );
             
             var selectRune = new Func<IAction>(() => actions.SelectRune(itemMage.Rune));

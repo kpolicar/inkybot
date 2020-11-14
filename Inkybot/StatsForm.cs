@@ -68,7 +68,7 @@ namespace Inkybot
                 var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
                     
                 if (updatingFallenExos) {
-                    if (configManager.Config.For(stat).maximum == 0) {
+                    if (configManager.Config.For(stat).Maximum == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -109,7 +109,7 @@ namespace Inkybot
                 var cfg = statConfig.Value;
                 var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
                 
-                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.maximum, itemStat.Exo || itemStat == default);
+                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Maximum, itemStat.Exo || itemStat == default);
                 row.Tag = new ItemStatRow(stat);
             }
         }

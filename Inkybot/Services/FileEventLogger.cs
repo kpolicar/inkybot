@@ -18,9 +18,9 @@ namespace Inkybot.Services
             var dataProvider =  (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             
             dataProvider.ScannedStats += (sender, args) =>
-                OcrLogger.Info("Stats scanned:\r\n" + string.Join("\r\n", args.Lines));
+                OcrLogger.Info("Stats scanned:\r\n" + string.Join("\r\n", args.Lines)+"\r\n");
             dataProvider.ScannedHistory += (sender, args) =>
-                OcrLogger.Info("History scanned:\r\n" + string.Join("\r\n", args.Lines));
+                OcrLogger.Info("History scanned:\r\n" + string.Join("\r\n", args.Lines)+"\r\n");
         }
 
         private void BindToMagingJob() {
