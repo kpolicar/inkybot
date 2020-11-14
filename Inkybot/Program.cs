@@ -34,9 +34,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "6";
-        public const string Version = "v0.6 Beta";
-        public const string VersionEndpoint = "v0.6beta";
+        public const string VersionNumber = "7";
+        public const string Version = "v0.7 Beta";
+        public const string VersionEndpoint = "v0.7beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -47,7 +47,6 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         private static void Main() {
-            CultureInfo.CurrentUICulture = new CultureInfo("fr");
             Services.AddService(typeof(MageConfig), new SettingsMageConfig());
             Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());

@@ -48,8 +48,17 @@ namespace Inkybot
         private void onWindowResize(object sender, EventArgs e) {
             var width = dofusClientPanel.Width;
             var height = dofusClientPanel.Height;
+            
             var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatBoundsMeasurement, width, height);
+            statRect.X -= 2;
+            statRect.Y -= 2;
+            statRect.Width += 4;
+            statRect.Height += 4;
             var historyRect = Responsive.ResponsiveRectangle(DofusScreenScan.HistoryBoundsMeasurement, width, height);
+            historyRect.X -= 2;
+            historyRect.Y -= 2;
+            historyRect.Width += 4;
+            historyRect.Height += 4;
 
             statsOcrIndicatorRectangle.Bounds = statRect;
             historyOcrIndicatorRectangle.Bounds = historyRect;

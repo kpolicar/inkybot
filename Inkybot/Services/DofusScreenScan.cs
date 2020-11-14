@@ -41,7 +41,7 @@ namespace Inkybot
         
         private static ScreenCapture screen;
         private static TesseractEngine engine;
-        private static bool init;
+        private static CultureInfo lang;
         private readonly IntPtr handle;
         private readonly Image screenshot;
         private bool saveToDisk;
@@ -60,16 +60,16 @@ namespace Inkybot
         }
 
         private void Init() {
-            if (init) return;
+            if (engine != null && CultureInfo.CurrentUICulture.Equals(lang)) return;
+            lang = CultureInfo.CurrentUICulture;
             
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
-                "fra",
+                lang.ThreeLetterISOLanguageName,
                 EngineMode.TesseractOnly);
             engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
-            init = true;
         }
 
         public string[] Stats() {
@@ -83,7 +83,7 @@ namespace Inkybot
             return ScanRegion(
                 HistoryBounds,
                 text => {
-                    return Regex.Split(text, "(?<!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure)))")
+                    return Regex.Split(text, Properties.Regex.HistorySplitPattern)
                         .Where(s => s != string.Empty)
                         .Select(result => result.Replace("\n", " "))
                         .ToArray();

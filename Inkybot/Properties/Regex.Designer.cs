@@ -61,6 +61,15 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (?&lt;!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure))).
+        /// </summary>
+        internal static string HistorySplitPattern {
+            get {
+                return ResourceManager.GetString("HistorySplitPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ^(-?\d+|-) (-?\d+|-) (-?\d*) ?(%? ?[A-z() ]+)$.
         /// </summary>
         internal static string ItemStatLinePattern {
