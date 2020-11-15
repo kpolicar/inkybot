@@ -13,12 +13,80 @@ namespace Inkybot.Domain
 {
     public class Stat
     {
-        // ---- These must be specified at the top (they are used upon compilation)
-        private static ResourceSet StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-        private static ResourceSet RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
-            .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-        // ----
+        public static void Init() {
+            StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            RuneDictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            Stats = new[] {
+                new Stat("initiative", 1010, 0.1f, 0.05f),
+                new Stat("vitality", 505, 0.2f, 0.1f),
+                new Stat("pods", 404, 0.25f, 0.125f),
+
+                ElementStatData("strength"),
+                ElementStatData("intelligence"),
+                ElementStatData("agility"),
+                ElementStatData("chance"),
+
+                new Stat("critical_resistance", 50, 2f, 1f),
+                new Stat("pushback_resistance", 50, 2f, 1f),
+
+                new Stat("power", 50, 2f, 2f),
+                new Stat("power_traps", 50, 2f, 2f),
+
+                FlatElementResistanceStatData("neutral"),
+                FlatElementResistanceStatData("earth"),
+                FlatElementResistanceStatData("fire"),
+                FlatElementResistanceStatData("air"),
+                FlatElementResistanceStatData("water"),
+
+                new Stat("wisdom", 33, 3f, 2f),
+                new Stat("prospecting", 33, 3f, 2f),
+
+                EvadeStatData("lock"),
+                EvadeStatData("dodge"),
+
+                ElementDamageStatData("neutral"),
+                ElementDamageStatData("earth"),
+                ElementDamageStatData("fire"),
+                ElementDamageStatData("air"),
+                ElementDamageStatData("water"),
+
+                new Stat("critical_damage", 20, 5f, 3f),
+                new Stat("pushback_damage", 20, 5f, 3f),
+                new Stat("trap_damage", 20, 5f, 5f),
+                new Stat("hunting_weapon", 1, 5f, 5f),
+
+                PerElementResistanceStatData("neutral"),
+                PerElementResistanceStatData("earth"),
+                PerElementResistanceStatData("fire"),
+                PerElementResistanceStatData("air"),
+                PerElementResistanceStatData("water"),
+
+                ReductionStatData("mp"),
+                ReductionStatData("ap"),
+
+                ParryStatData("mp"),
+                ParryStatData("ap"),
+
+                new Stat("heals", 10, 10f, 5f),
+                new Stat("critical", 10, 10f, 5f),
+                new Stat("reflect", 10, 10f, 10f),
+
+                PerModifiersStatData("spell_damage"),
+                PerModifiersStatData("weapon_damage"),
+                PerModifiersStatData("melee_damage"),
+                PerModifiersStatData("ranged_damage"),
+                PerModifiersStatData("ranged_resistance"),
+                PerModifiersStatData("melee_resistance"),
+
+                new Stat("damage", 5, 20f, 20f),
+                new Stat("summons", 3, 30f, 30f),
+                new Stat("range", 1, 51f, 25f),
+                new Stat("mp", 1, 90f, 45f),
+                new Stat("ap", 1, 100f, 50f)
+            };
+        }
 
         public override string ToString() {
             return DisplayName;
@@ -32,74 +100,9 @@ namespace Inkybot.Domain
             return !(operand1 == operand2);
         }
         
-        public static readonly Stat[] Stats = {
-            new Stat("initiative", 1010, 0.1f, 0.05f),
-            new Stat("vitality", 505, 0.2f, 0.1f),
-            new Stat("pods", 404, 0.25f, 0.125f),
-
-            ElementStatData("strength"),
-            ElementStatData("intelligence"),
-            ElementStatData("agility"),
-            ElementStatData("chance"),
-
-            new Stat("critical_resistance", 50, 2f, 1f),
-            new Stat("pushback_resistance", 50, 2f, 1f),
-
-            new Stat("power", 50, 2f, 2f),
-            new Stat("power_traps", 50, 2f, 2f),
-
-            FlatElementResistanceStatData("neutral"),
-            FlatElementResistanceStatData("earth"),
-            FlatElementResistanceStatData("fire"),
-            FlatElementResistanceStatData("air"),
-            FlatElementResistanceStatData("water"),
-
-            new Stat("wisdom", 33, 3f, 2f),
-            new Stat("prospecting",  33, 3f, 2f),
-
-            EvadeStatData("lock"),
-            EvadeStatData("dodge"),
-
-            ElementDamageStatData("neutral"),
-            ElementDamageStatData("earth"),
-            ElementDamageStatData("fire"),
-            ElementDamageStatData("air"),
-            ElementDamageStatData("water"),
-
-            new Stat("critical_damage", 20, 5f, 3f),
-            new Stat("pushback_damage", 20, 5f, 3f),
-            new Stat("trap_damage", 20, 5f, 5f),
-            new Stat("hunting_weapon",  1, 5f, 5f),
-
-            PerElementResistanceStatData("neutral"),
-            PerElementResistanceStatData("earth"),
-            PerElementResistanceStatData("fire"),
-            PerElementResistanceStatData("air"),
-            PerElementResistanceStatData("water"),
-
-            ReductionStatData("mp"),
-            ReductionStatData("ap"),
-
-            ParryStatData("mp"),
-            ParryStatData("ap"),
-
-            new Stat("heals", 10, 10f, 5f),
-            new Stat("critical", 10, 10f, 5f),
-            new Stat("reflect", 10, 10f, 10f),
-
-            PerModifiersStatData("spell_damage"),
-            PerModifiersStatData("weapon_damage"),
-            PerModifiersStatData("melee_damage"),
-            PerModifiersStatData("ranged_damage"),
-            PerModifiersStatData("ranged_resistance"),
-            PerModifiersStatData("melee_resistance"),
-
-            new Stat("damage", 5, 20f, 20f),
-            new Stat("summons", 3, 30f, 30f),
-            new Stat("range", 1, 51f, 25f),
-            new Stat("mp", 1, 90f, 45f),
-            new Stat("ap", 1, 100f, 50f)
-        };
+        public static Stat[] Stats;
+        private static ResourceSet StatDictionary;
+        private static ResourceSet RuneDictionary;
 
         public StatConfigResource Config => (StatConfigResource) Properties.Settings.Default[Identifier];
         

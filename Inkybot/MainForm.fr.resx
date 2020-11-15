@@ -36,8 +36,7 @@
         <value>STATISTIQUE</value>
     </data>
     <data name="subscribedInfoLabel.Text" xml:space="preserve">
-        <value>ABONNÉ JUSQU'À:
-jj / mm / aaaa</value>
+        <value>ABONNÉ JUSQU'À:</value>
     </data>
     <data name="debugButton.TextStop" xml:space="preserve">
         <value>ARRÊTER LE DÉBOGAGE</value>

@@ -28,7 +28,7 @@ namespace Inkybot.Domain
                     Type.Pa => "Pa ",
                     Type.Ra => "Ra ",
                 };
-                if (CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName == "fra")
+                if (Program.Lang.ThreeLetterISOLanguageName == "fra")
                     return "rune " + prefix + stat.RuneName;
                 return prefix + stat.RuneName+ " rune";
             }

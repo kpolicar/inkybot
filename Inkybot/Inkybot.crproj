@@ -1,9 +1,9 @@
 <project outputDir="confused" baseDir="bin\Release">
-  <rule pattern="namespace('Inkybot') and not namespace('Inkybot.Resources')" preset="maximum" inherit="false">
+  <rule pattern="namespace('Inkybot') and not namespace('Inkybot.Resources') and not namespace('Inkybot.Properties')" preset="maximum" inherit="false">
     <protection id="rename" action="add" />
     <protection id="resources" action="add" />
   </rule>
-  <rule pattern="namespace('Inkybot.Resources')" preset="maximum" inherit="false">
+  <rule pattern="namespace('Inkybot.Resources') or namespace('Inkybot.Properties')" preset="maximum" inherit="false">
     <protection id="rename" action="remove" />
     <protection id="resources" action="remove" />
   </rule>

@@ -40,6 +40,7 @@ namespace Inkybot
         
 
         public static ServiceContainer Services = new ServiceContainer();
+        public static CultureInfo Lang;
         
 
         /// <summary>
@@ -47,7 +48,9 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         private static void Main() {
-            CultureInfo.CurrentUICulture = new CultureInfo("fr");
+            SetAppLocale();
+            Stat.Init();
+            
             Services.AddService(typeof(MageConfig), new SettingsMageConfig());
             Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
@@ -67,6 +70,27 @@ namespace Inkybot
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
             Application.Run(new MainForm());
+        }
+
+        private static void SetAppLocale() {
+            if (Properties.Settings.Default.locale == Properties.Resources.FrenchLocaleCode) {
+                Lang =
+                    Thread.CurrentThread.CurrentUICulture =
+                        CultureInfo.CurrentUICulture =
+                            CultureInfo.DefaultThreadCurrentCulture =
+                                new CultureInfo(Properties.Resources.FrenchLocaleCode);
+            } else {
+                Lang =
+                    Thread.CurrentThread.CurrentUICulture =
+                        CultureInfo.CurrentUICulture =
+                            CultureInfo.DefaultThreadCurrentCulture =
+                                new CultureInfo(Properties.Resources.EnglishLocaleCode);
+            }
+            Properties.Resources.Culture = Lang;
+            Properties.Regex.Culture = Lang;
+            Resources.MagingDictionary.Culture = Lang;
+            Resources.RuneDictionary.Culture = Lang;
+            Resources.StatDictionary.Culture = Lang;
         }
 
         private static void BindNotifications() {

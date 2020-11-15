@@ -35,7 +35,10 @@ namespace Inkybot.Domain
         private void DoMainMageAction() {
             var action = job.previousAction = DoAction();
 
+            Thread.Sleep(400);
             // Have to check if user has stopped maging during this sleep
+            if (!job.IsMaging)
+                return;
             if (action is Combine combine) {
                 job.state = DofusMagingJobState.EXECUTING_COMBINE;
                 if (!combine.Exo)

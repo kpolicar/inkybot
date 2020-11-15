@@ -61,6 +61,24 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to en.
+        /// </summary>
+        internal static string EnglishLocaleCode {
+            get {
+                return ResourceManager.GetString("EnglishLocaleCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to fr.
+        /// </summary>
+        internal static string FrenchLocaleCode {
+            get {
+                return ResourceManager.GetString("FrenchLocaleCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+() .
         /// </summary>
         internal static string OcrCharWhitelist {

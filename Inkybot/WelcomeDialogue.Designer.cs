@@ -32,7 +32,7 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();

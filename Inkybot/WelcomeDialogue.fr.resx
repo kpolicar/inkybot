@@ -1978,4 +1978,16 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot - S'identifier</value>
   </data>
+    <data name="errorMessage.TextIncorrect" xml:space="preserve">
+    <value>Identifiant ou mot de passe incorrect!</value>
+  </data>
+    <data name="errorMessage.TextUnsubscribed" xml:space="preserve">
+    <value>Vous n'êtes pas abonné!</value>
+  </data>
+    <data name="errorMessage.TextConnectionError" xml:space="preserve">
+    <value>Impossible de se connecter à Inkybot!</value>
+  </data>
+    <data name="switchLanguageLabel.Text" xml:space="preserve">
+    <value>PASSER À L'ANGLAIS</value>
+  </data>
 </root>

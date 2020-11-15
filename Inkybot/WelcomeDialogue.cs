@@ -41,7 +41,7 @@ namespace Inkybot
                     errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
                     return;
                 }
-            } catch (HttpRequestException requestException) {
+            } catch (HttpRequestException) {
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
                 return;
             }
@@ -83,7 +83,12 @@ namespace Inkybot
 
         private void switchLanguageLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Properties.Settings.Default.locale =
-                Properties.Settings.Default.locale.Equals("en") ? "fr" :"en";
+                Properties.Settings.Default.locale.Equals(Properties.Resources.EnglishLocaleCode) ?
+                    Properties.Resources.FrenchLocaleCode :
+                    Properties.Resources.EnglishLocaleCode;
+            Properties.Settings.Default.Save();
+                
+            Application.Restart();
         }
     }
 }

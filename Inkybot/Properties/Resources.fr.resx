@@ -14,4 +14,10 @@
     <data name="OcrCharWhitelist" xml:space="preserve">
         <value>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+()ÉÀÈÙÂÊÎÔÛÇËÏÜéàèùâêîôûçëïü' </value>
     </data>
+    <data name="EnglishLocaleCode" xml:space="preserve">
+        <value>en</value>
+    </data>
+    <data name="FrenchLocaleCode" xml:space="preserve">
+        <value>fr</value>
+    </data>
 </root>

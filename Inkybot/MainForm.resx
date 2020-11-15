@@ -2763,8 +2763,7 @@
     <value>1178, 784</value>
   </data>
   <data name="subscribedInfoLabel.Text" xml:space="preserve">
-    <value>SUBSCRIBED UNTIL:
-dd/mm/yyyy</value>
+    <value>Subscribed to:</value>
   </data>
   <data name="debugScreenshotButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
