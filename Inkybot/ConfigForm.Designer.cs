@@ -150,8 +150,8 @@ namespace Inkybot
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.bottomPanel);
             this.Name = "ConfigForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             this.Load += new System.EventHandler(this.ConfigForm_OnLoad);

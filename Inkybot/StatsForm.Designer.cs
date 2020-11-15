@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Inkybot
@@ -48,12 +49,14 @@ namespace Inkybot
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
-            this.actionsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.actionsPanel = new System.Windows.Forms.Panel();
+            this.addExoPanel = new System.Windows.Forms.Panel();
             this.addExoButton = new System.Windows.Forms.Button();
-            this.exoStatComboBox = new System.Windows.Forms.ComboBox();
+            this.exoStatComboBox = new Inkybot.Controls.ComboBox();
             this.clearExosButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
+            this.addExoPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TargetColumn
@@ -119,15 +122,22 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersVisible = false;
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.StatsForm_OnChangeValue);
-            this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(Inkybot.Helpers.DataGridView.OnValidatingDataGridViewCellNumeric);
             // 
             // actionsPanel
             // 
             resources.ApplyResources(this.actionsPanel, "actionsPanel");
-            this.actionsPanel.Controls.Add(this.addExoButton);
-            this.actionsPanel.Controls.Add(this.exoStatComboBox);
+            this.actionsPanel.Controls.Add(this.addExoPanel);
             this.actionsPanel.Controls.Add(this.clearExosButton);
             this.actionsPanel.Name = "actionsPanel";
+            // 
+            // addExoPanel
+            // 
+            resources.ApplyResources(this.addExoPanel, "addExoPanel");
+            this.addExoPanel.Controls.Add(this.addExoButton);
+            this.addExoPanel.Controls.Add(this.exoStatComboBox);
+            this.addExoPanel.Name = "addExoPanel";
+            this.addExoPanel.Dock = DockStyle.Left;
+            this.addExoPanel.Width = 130;
             // 
             // addExoButton
             // 
@@ -138,15 +148,19 @@ namespace Inkybot
             this.addExoButton.Name = "addExoButton";
             this.addExoButton.UseVisualStyleBackColor = false;
             this.addExoButton.Click += new System.EventHandler(this.addExoButton_Click);
+            this.addExoButton.Dock = DockStyle.Bottom;
             // 
             // exoStatComboBox
             // 
             resources.ApplyResources(this.exoStatComboBox, "exoStatComboBox");
-            this.exoStatComboBox.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.exoStatComboBox.BackColor = System.Drawing.Color.Black;
             this.exoStatComboBox.ForeColor = System.Drawing.SystemColors.Control;
             this.exoStatComboBox.FormattingEnabled = true;
             this.exoStatComboBox.Name = "exoStatComboBox";
             this.exoStatComboBox.SelectedIndexChanged += new System.EventHandler(this.exoStatComboBox_SelectedIndexChanged);
+            this.exoStatComboBox.Dock = DockStyle.Top;
+            this.exoStatComboBox.FlatStyle = FlatStyle.Flat;
+            this.exoStatComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // clearExosButton
             // 
@@ -156,6 +170,7 @@ namespace Inkybot
             this.clearExosButton.ForeColor = System.Drawing.SystemColors.Control;
             this.clearExosButton.Name = "clearExosButton";
             this.clearExosButton.UseVisualStyleBackColor = false;
+            this.clearExosButton.Location = new Point(133, 25);
             this.clearExosButton.Click += new System.EventHandler(this.clearExosButton_Click);
             // 
             // StatsForm
@@ -163,8 +178,8 @@ namespace Inkybot
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.Controls.Add(this.actionsPanel);
             this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.actionsPanel);
             this.Name = "StatsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
             this.Load += new System.EventHandler(this.StatsForm_Loaded);
@@ -172,16 +187,19 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.actionsPanel.ResumeLayout(false);
             this.actionsPanel.PerformLayout();
+            this.addExoPanel.ResumeLayout(false);
+            this.addExoPanel.PerformLayout();
             this.ResumeLayout(false);
         }
 
         private System.Windows.Forms.Button clearExosButton;
 
-        private System.Windows.Forms.ComboBox exoStatComboBox;
+        private Inkybot.Controls.ComboBox exoStatComboBox;
 
         private System.Windows.Forms.Button addExoButton;
 
-        private System.Windows.Forms.FlowLayoutPanel actionsPanel;
+        private System.Windows.Forms.Panel actionsPanel;
+        private System.Windows.Forms.Panel addExoPanel;
 
         #endregion
         
