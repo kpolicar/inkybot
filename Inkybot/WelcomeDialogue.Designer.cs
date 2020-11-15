@@ -32,13 +32,16 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.switchLanguageLabel = new System.Windows.Forms.LinkLabel();
+            this.newVersionLabel = new System.Windows.Forms.LinkLabel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.usernameTextBox = new System.Windows.Forms.TextBox();
@@ -50,13 +53,13 @@ namespace Inkybot
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.errorMessage = new System.Windows.Forms.Label();
             this.dofusPathLink = new System.Windows.Forms.LinkLabel();
-            this.newVersionLabel = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.logoPictureBox)).BeginInit();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,21 +70,22 @@ namespace Inkybot
             // 
             // splitContainer1.Panel1
             // 
+            resources.ApplyResources(this.splitContainer1.Panel1, "splitContainer1.Panel1");
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.splitContainer1.Panel1.Controls.Add(this.linkLabel2);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.logoPictureBox);
-            resources.ApplyResources(this.splitContainer1.Panel1, "splitContainer1.Panel1");
             // 
             // splitContainer1.Panel2
             // 
+            resources.ApplyResources(this.splitContainer1.Panel2, "splitContainer1.Panel2");
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
             // 
             // linkLabel2
             // 
-            this.linkLabel2.ActiveLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (150)))), ((int) (((byte) (150)))), ((int) (((byte) (150)))));
             resources.ApplyResources(this.linkLabel2, "linkLabel2");
+            this.linkLabel2.ActiveLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (150)))), ((int) (((byte) (150)))), ((int) (((byte) (150)))));
             this.linkLabel2.LinkColor = System.Drawing.Color.White;
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.TabStop = true;
@@ -107,13 +111,39 @@ namespace Inkybot
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.flowLayoutPanel1);
-            this.panel1.Controls.Add(this.newVersionLabel);
             resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.flowLayoutPanel1);
             this.panel1.Name = "panel1";
+            // 
+            // panel2
+            // 
+            resources.ApplyResources(this.panel2, "panel2");
+            this.panel2.Controls.Add(this.switchLanguageLabel);
+            this.panel2.Controls.Add(this.newVersionLabel);
+            this.panel2.Name = "panel2";
+            // 
+            // switchLanguageLabel
+            // 
+            resources.ApplyResources(this.switchLanguageLabel, "switchLanguageLabel");
+            this.switchLanguageLabel.ActiveLinkColor = System.Drawing.Color.Black;
+            this.switchLanguageLabel.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
+            this.switchLanguageLabel.Name = "switchLanguageLabel";
+            this.switchLanguageLabel.TabStop = true;
+            this.switchLanguageLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.switchLanguageLabel_LinkClicked);
+            // 
+            // newVersionLabel
+            // 
+            resources.ApplyResources(this.newVersionLabel, "newVersionLabel");
+            this.newVersionLabel.ActiveLinkColor = System.Drawing.Color.Black;
+            this.newVersionLabel.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
+            this.newVersionLabel.Name = "newVersionLabel";
+            this.newVersionLabel.TabStop = true;
+            this.newVersionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newVersionLabel_LinkClicked);
             // 
             // flowLayoutPanel1
             // 
+            resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Controls.Add(this.usernameTextBox);
             this.flowLayoutPanel1.Controls.Add(this.label4);
@@ -124,7 +154,6 @@ namespace Inkybot
             this.flowLayoutPanel1.Controls.Add(this.linkLabel1);
             this.flowLayoutPanel1.Controls.Add(this.errorMessage);
             this.flowLayoutPanel1.Controls.Add(this.dofusPathLink);
-            resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             // 
             // label3
@@ -170,8 +199,8 @@ namespace Inkybot
             // 
             // linkLabel1
             // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Black;
             resources.ApplyResources(this.linkLabel1, "linkLabel1");
+            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Black;
             this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.TabStop = true;
@@ -185,21 +214,12 @@ namespace Inkybot
             // 
             // dofusPathLink
             // 
-            this.dofusPathLink.ActiveLinkColor = System.Drawing.Color.Black;
             resources.ApplyResources(this.dofusPathLink, "dofusPathLink");
+            this.dofusPathLink.ActiveLinkColor = System.Drawing.Color.Black;
             this.dofusPathLink.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
             this.dofusPathLink.Name = "dofusPathLink";
             this.dofusPathLink.TabStop = true;
             this.dofusPathLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.dofusPathLink_LinkClicked);
-            // 
-            // newVersionLabel
-            // 
-            this.newVersionLabel.ActiveLinkColor = System.Drawing.Color.Black;
-            resources.ApplyResources(this.newVersionLabel, "newVersionLabel");
-            this.newVersionLabel.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
-            this.newVersionLabel.Name = "newVersionLabel";
-            this.newVersionLabel.TabStop = true;
-            this.newVersionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newVersionLabel_LinkClicked);
             // 
             // WelcomeDialogue
             // 
@@ -219,10 +239,16 @@ namespace Inkybot
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.logoPictureBox)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.LinkLabel switchLanguageLabel;
+
+        private System.Windows.Forms.Panel panel2;
 
         private System.Windows.Forms.CheckBox rememberPasswordCheckbox;
 

@@ -80,5 +80,10 @@ namespace Inkybot
             if (changedPath == DialogResult.OK)
                 PathChanged?.Invoke(this, new PathChangedEventArgs());
         }
+
+        private void switchLanguageLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Properties.Settings.Default.locale =
+                Properties.Settings.Default.locale.Equals("en") ? "fr" :"en";
+        }
     }
 }

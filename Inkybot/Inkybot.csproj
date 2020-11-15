@@ -350,7 +350,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="StatsForm.fr.resx" />
         <EmbeddedResource Include="StatsForm.resx" />
-        <EmbeddedResource Include="WelcomeDialogue.fr.resx" />
+        <EmbeddedResource Include="WelcomeDialogue.fr.resx">
+          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+        </EmbeddedResource>
         <EmbeddedResource Include="WelcomeDialogue.resx">
           <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
