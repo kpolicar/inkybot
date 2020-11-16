@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Controls;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 
@@ -23,6 +25,42 @@ namespace Inkybot
             }
         }
 
+        private void OnScreenshotStart(object sender, EventArgs eventArgs) {
+            if (!debugging) return;
+            
+            Invoke(new MethodInvoker(() => {
+                HideOcrIndicators();
+            }));
+            Thread.Sleep(50);
+        }
+
+        private void OnScreenshotEnd(object sender, EventArgs eventArgs) {
+            if (!debugging) return;
+            
+            BeginInvoke(new MethodInvoker(() => {
+                ShowOcrIndicators();
+            }));
+        }
+
+        private void ShowOcrIndicators() {
+            historyOcrIndicatorRectangle.Show();
+            statsValuesOcrIndicatorRectangle.Show();
+            statsMaxesOcrIndicatorRectangle.Show();
+            statsMinsOcrIndicatorRectangle.Show();
+            
+            historyOcrIndicatorRectangle.BringToFront();
+            statsValuesOcrIndicatorRectangle.BringToFront();
+            statsMaxesOcrIndicatorRectangle.BringToFront();
+            statsMinsOcrIndicatorRectangle.BringToFront();
+        }
+
+        private void HideOcrIndicators() {
+            historyOcrIndicatorRectangle.Hide();
+            statsValuesOcrIndicatorRectangle.Hide();
+            statsMaxesOcrIndicatorRectangle.Hide();
+            statsMinsOcrIndicatorRectangle.Hide();
+        }
+
         private void StartDebugging() {
             sidebarPanel.BringToFront();
             #if DEBUG
@@ -31,11 +69,7 @@ namespace Inkybot
             debugScreenshotButton.Show();
             Resize += onWindowResize;
             
-            historyOcrIndicatorRectangle.Show();
-            statsOcrIndicatorRectangle.Show();
-            
-            historyOcrIndicatorRectangle.BringToFront();
-            statsOcrIndicatorRectangle.BringToFront();
+            ShowOcrIndicators();
             
             OnResize(EventArgs.Empty);
 
@@ -45,23 +79,24 @@ namespace Inkybot
             #endif
         }
 
-        private void onWindowResize(object sender, EventArgs e) {
+        private void FitOcrIndicatorRectangle(Rectangle indicatorControl, Responsive.Measurement measurements) {
             var width = dofusClientPanel.Width;
             var height = dofusClientPanel.Height;
             
-            var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatValuesBoundsMeasurement, width, height);
-            statRect.X -= 2;
-            statRect.Y -= 2;
-            statRect.Width += 4;
-            statRect.Height += 4;
-            var historyRect = Responsive.ResponsiveRectangle(DofusScreenScan.HistoryBoundsMeasurement, width, height);
-            historyRect.X -= 2;
-            historyRect.Y -= 2;
-            historyRect.Width += 4;
-            historyRect.Height += 4;
+            var rect = Responsive.ResponsiveRectangle(measurements, width, height);
+            rect.X -= 2;
+            rect.Y -= 2;
+            rect.Width += 4;
+            rect.Height += 4;
+            indicatorControl.Bounds = rect;
+        }
 
-            statsOcrIndicatorRectangle.Bounds = statRect;
-            historyOcrIndicatorRectangle.Bounds = historyRect;
+        private void onWindowResize(object sender, EventArgs e) {
+
+            FitOcrIndicatorRectangle(statsMinsOcrIndicatorRectangle, DofusScreenScan.StatMinBoundsMeasurement);
+            FitOcrIndicatorRectangle(statsMaxesOcrIndicatorRectangle, DofusScreenScan.StatMaxBoundsMeasurement);
+            FitOcrIndicatorRectangle(statsValuesOcrIndicatorRectangle, DofusScreenScan.StatValuesBoundsMeasurement);
+            FitOcrIndicatorRectangle(historyOcrIndicatorRectangle, DofusScreenScan.HistoryBoundsMeasurement);
         }
         
         private void StopDebugging() {
@@ -73,8 +108,7 @@ namespace Inkybot
             #endif
             Resize -= onWindowResize;
             
-            historyOcrIndicatorRectangle.Hide();
-            statsOcrIndicatorRectangle.Hide();
+            HideOcrIndicators();
         }
 
 

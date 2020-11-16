@@ -56,9 +56,9 @@ namespace Inkybot.Services
             var image = preprocessor.PreprocessImage(screenshot, bounds);
 
             if (saveToDisk) {
-                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
-                Directory.CreateDirectory(folderPath);
-                image.Save(folderPath + Path.GetRandomFileName() + ".png");
+                // var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
+                // Directory.CreateDirectory(folderPath);
+                // image.Save(folderPath + Path.GetRandomFileName() + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
             }
 
             using (var ocrPage = ProcessImage(engine, (Bitmap) image)) {
@@ -73,7 +73,6 @@ namespace Inkybot.Services
                     .ToArray();
             }
         }
-        
 
         private Page ProcessImage(TesseractEngine engine, Bitmap image) {
             try {

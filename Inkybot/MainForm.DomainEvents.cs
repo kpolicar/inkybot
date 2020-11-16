@@ -22,7 +22,7 @@ namespace Inkybot
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
             if (!(e.action is Combine combine) || !combine.Exo) return;
             
-            Invoke(new MethodInvoker(delegate {
+            BeginInvoke(new MethodInvoker(delegate {
                 int count; 
                 var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
                 count = parsed ? ++count : 0;
@@ -31,7 +31,7 @@ namespace Inkybot
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
-            Invoke(new MethodInvoker(delegate {
+            BeginInvoke(new MethodInvoker(delegate {
                 sinkValueLabel.Text = Convert.ToInt32(e.Sink) + "";
             }));
         }

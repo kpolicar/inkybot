@@ -268,7 +268,7 @@
   <data name="toastIconPictureBox.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>None</value>
   </data>
-  <data name="statsOcrIndicatorRectangle.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="statsValuesOcrIndicatorRectangle.Size" type="System.Drawing.Size, System.Drawing">
     <value>284, 284</value>
   </data>
   <data name="sinkValueLabel.TabIndex" type="System.Int32, mscorlib">
@@ -388,7 +388,7 @@
   <data name="historyOcrIndicatorRectangle.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="statsOcrIndicatorRectangle.Visible" type="System.Boolean, mscorlib">
+  <data name="statsValuesOcrIndicatorRectangle.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
   <data name="&gt;&gt;sinkLabel.Parent" xml:space="preserve">
@@ -433,7 +433,7 @@
   <data name="exoAttemptsLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;statsOcrIndicatorRectangle.Type" xml:space="preserve">
+  <data name="&gt;&gt;statsValuesOcrIndicatorRectangle.Type" xml:space="preserve">
     <value>Inkybot.Controls.Rectangle, Inkybot, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;primaryButtonsPanel.Name" xml:space="preserve">
@@ -727,7 +727,7 @@
   <data name="&gt;&gt;loggedInAsLabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;statsOcrIndicatorRectangle.Parent" xml:space="preserve">
+  <data name="&gt;&gt;statsValuesOcrIndicatorRectangle.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="helpButton.Text" xml:space="preserve">
@@ -763,8 +763,8 @@
   <data name="subscribedInfoLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
-  <data name="&gt;&gt;statsOcrIndicatorRectangle.Name" xml:space="preserve">
-    <value>statsOcrIndicatorRectangle</value>
+  <data name="&gt;&gt;statsValuesOcrIndicatorRectangle.Name" xml:space="preserve">
+    <value>statsValuesOcrIndicatorRectangle</value>
   </data>
   <data name="toggleMageButton.Text" xml:space="preserve">
     <value>START</value>
@@ -808,7 +808,7 @@
   <data name="&gt;&gt;primaryButtonsPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;statsOcrIndicatorRectangle.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;statsValuesOcrIndicatorRectangle.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="&gt;&gt;userInfoPanel.Parent" xml:space="preserve">
@@ -2696,7 +2696,7 @@
   <data name="&gt;&gt;toggleMageButton.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="statsOcrIndicatorRectangle.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="statsValuesOcrIndicatorRectangle.Location" type="System.Drawing.Point, System.Drawing">
     <value>323, 89</value>
   </data>
   <data name="&gt;&gt;mousePositionLabel.Parent" xml:space="preserve">
@@ -2720,7 +2720,7 @@
   <data name="sinkValueLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 24</value>
   </data>
-  <data name="statsOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
+  <data name="statsValuesOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="loggedInAsLabel.AutoSize" type="System.Boolean, mscorlib">

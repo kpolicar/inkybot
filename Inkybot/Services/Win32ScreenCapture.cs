@@ -12,12 +12,17 @@ namespace Inkybot
     /// </summary>
     public class Win32ScreenCapture : ScreenCapture
     {
+        public event EventHandler BeginScreenshot;
+        public event EventHandler EndScreenshot;
+
         /// <summary>
         ///     Creates an Image object containing a screen shot of a specific window
         /// </summary>
         /// <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
         /// <returns></returns>
         public Image CaptureWindow(IntPtr handle) {
+            BeginScreenshot?.Invoke(this, EventArgs.Empty);
+            
             // get te hDC of the target window
             var hdcSrc = User32.GetWindowDC(handle);
             // get the size
@@ -43,6 +48,8 @@ namespace Inkybot
             Image img = Image.FromHbitmap(hBitmap);
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
+            
+            EndScreenshot?.Invoke(this, EventArgs.Empty);
             return img;
         }
 
