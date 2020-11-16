@@ -28,8 +28,10 @@ namespace Inkybot
 
         private async void button1_Click(object sender, EventArgs e) {
             errorMessage.Text = "";
+            button1.Enabled = false;
             try {
                 var connection = await AuthManager.Login(usernameTextBox.Text, passwordTextBox.Text);
+                button1.Enabled = true;
 
                 if (connection == null) {
                     errorMessage.Text = resources.GetString("errorMessage.TextIncorrect");

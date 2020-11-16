@@ -92,10 +92,10 @@ namespace Inkybot
             lang = Program.Lang;
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             
-            historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(130));
-            shortHistoryScanner = new TextScreenScanner(ShortHistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(130));
-            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
-            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines);
+            historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
+            shortHistoryScanner = new TextScreenScanner(ShortHistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
+            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(150));
+            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
             statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
 
             historyScanner.PageProcessed += OnHistoryPageProcessed;

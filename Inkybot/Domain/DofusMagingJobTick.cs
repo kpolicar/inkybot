@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using Inkybot.Actions;
 using Inkybot.Contracts;
@@ -35,7 +36,6 @@ namespace Inkybot.Domain
         private void DoMainMageAction() {
             var action = job.previousAction = DoAction();
 
-            Thread.Sleep(400);
             // Have to check if user has stopped maging during this sleep
             if (!job.IsMaging)
                 return;
