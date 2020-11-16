@@ -10,6 +10,8 @@ using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
+using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot.Services
 {
@@ -53,15 +55,17 @@ namespace Inkybot.Services
         public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
             var bounds = CalculateBounds(screenshot);
             
-            var image = preprocessor.PreprocessImage(screenshot, bounds);
+            var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
             if (saveToDisk) {
-                // var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
-                // Directory.CreateDirectory(folderPath);
-                // image.Save(folderPath + Path.GetRandomFileName() + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
+                Directory.CreateDirectory(folderPath);
+                var fileName = Path.GetRandomFileName() + ".bmp";
+                
+                PixConverter.ToPix(image).Save(folderPath+"/"+fileName);
             }
 
-            using (var ocrPage = ProcessImage(engine, (Bitmap) image)) {
+            using (var ocrPage = ProcessImage(engine, image)) {
                 PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage));
                 
                 var scanned = ocrPage.GetText();

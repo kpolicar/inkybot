@@ -31,6 +31,7 @@ namespace Inkybot
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
             exoStatComboBox.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
+            exoStatComboBox.SelectedIndex = Stat.Stats.Length - 1;
             configManager.ConfigModified += OnConfigModified;
             dataProvider.FetchedItem += OnStatsFetched;
         }
