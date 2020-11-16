@@ -20,12 +20,12 @@ namespace Inkybot.Services
         private ImagePreprocessor preprocessor;
         private PageSegMode segMode = PageSegMode.SingleBlock;
 
-        public ScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]> split) {
+        public ScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]> split, ImagePreprocessor preprocessor = null) {
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 Program.Lang.ThreeLetterISOLanguageName,
                 EngineMode.Default);
-            preprocessor = new ImagePreprocessor();
+            this.preprocessor = preprocessor ?? new ImagePreprocessor();
             this.regionOfInterest = regionOfInterest;
             this.split = split;
         }
@@ -86,7 +86,9 @@ namespace Inkybot.Services
     
     public class TextScreenScanner : ScreenScanner
     {
-        public TextScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]> split) : base(regionOfInterest, split) {
+        public TextScreenScanner(Responsive.Measurement regionOfInterest,
+            Func<string, string[]> split,
+            ImagePreprocessor preprocessor = null) : base(regionOfInterest, split, preprocessor) {
             SetVariables(engine => {
                 engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
                 engine.SetVariable("tessedit_enable_dict_correction", 1);
@@ -98,7 +100,9 @@ namespace Inkybot.Services
     
     public class NumberScreenScanner : ScreenScanner
     {
-        public NumberScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]> split) : base(regionOfInterest, split) {
+        public NumberScreenScanner(Responsive.Measurement regionOfInterest,
+            Func<string, string[]> split,
+            ImagePreprocessor preprocessor = null) : base(regionOfInterest, split, preprocessor) {
             SetVariables(engine => {
                 engine.SetVariable("tessedit_char_whitelist", "01234567890-");
             });

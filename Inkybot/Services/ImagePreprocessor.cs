@@ -7,24 +7,32 @@ using ImageMagick;
 
 namespace Inkybot.Services
 {
+    public class ResizeImagePreprocessor : ImagePreprocessor
+    {
+        private int resizePercentage;
+
+        public ResizeImagePreprocessor(int resizePercentage) {
+            this.resizePercentage = resizePercentage;
+        }
+        
+        protected override void PreprocessingSteps(MagickImage image) {
+            base.PreprocessingSteps(image);
+            image.Resize(new Percentage(resizePercentage));
+        }
+    }
+    
     public class ImagePreprocessor
     {
         public Image PreprocessImage(Image image, Rectangle bounds) {
-            return DoPreprocess(image, bounds, image => {
-                image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(27));
-                image.Negate();
-                image.Resize(new Percentage(130));
-            });
+            return DoPreprocess(image, bounds, PreprocessingSteps);
         }
-        
-        private Image PreprocessRunesImage(Image image, Rectangle bounds) {
-            return DoPreprocess(image, bounds, image => {
-                image.Resize(new Percentage(300));
-                image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
-            });
+
+        protected virtual void PreprocessingSteps(MagickImage image) {
+            image.Alpha(AlphaOption.Remove);
+            image.BlackThreshold(new Percentage(27));
+            image.Negate();
         }
-        
+
         private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
 
             using (var ms = new MemoryStream()) {
@@ -48,6 +56,13 @@ namespace Inkybot.Services
                     return outImage;
                 }
             }
+        }
+
+        private Image PreprocessRunesImage(Image image, Rectangle bounds) {
+            return DoPreprocess(image, bounds, image => {
+                image.Resize(new Percentage(300));
+                image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
+            });
         }
     }
 }
