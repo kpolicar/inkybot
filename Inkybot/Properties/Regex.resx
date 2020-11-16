@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="ItemStatLinePattern" xml:space="preserve">
-        <value>^(-?\d+|-) (-?\d+|-) (-?\d*) ?(%? ?[A-z() ]+)$</value>
+        <value>^(-?\d+|-) +(-?\d+|-) +(-?\d*) *(%? ?[A-z() ]+)$</value>
     </data>
     <data name="SinkHasChangedPattern" xml:space="preserve">
         <value>[+-] ?sink</value>

@@ -79,7 +79,7 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ^(-?\d+|-) (-?\d+|-) (-?\d*) ?(%? ?[A-z() ]+)$.
+        ///   Looks up a localized string similar to ^(-?\d+|-) +(-?\d+|-) +(-?\d*) *(%? ?[A-z() ]+)$.
         /// </summary>
         internal static string ItemStatLinePattern {
             get {

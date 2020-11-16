@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Domain;
-using Inkybot.Events;
 using Inkybot.Services;
-using static System.Configuration.ConfigurationManager;
 using DofusMagingJob = Inkybot.Domain.DofusMagingJob;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
@@ -34,9 +24,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "7";
-        public const string Version = "v0.7 Beta";
-        public const string VersionEndpoint = "v0.7beta";
+        public const string VersionNumber = "8";
+        public const string Version = "v0.8 Beta";
+        public const string VersionEndpoint = "v0.8beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -65,13 +55,14 @@ namespace Inkybot
             
             BindNotifications();
             BindLogger();
-
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
             Application.Run(new MainForm());
+            
         }
-
+        
         private static void SetAppLocale() {
             if (Properties.Settings.Default.locale == Properties.Resources.FrenchLocaleCode) {
                 Lang =

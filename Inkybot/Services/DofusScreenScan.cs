@@ -60,13 +60,16 @@ namespace Inkybot
         }
 
         private void Init() {
+            if (engine != null) return;
             lang = Program.Lang;
             
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 lang.ThreeLetterISOLanguageName,
-                EngineMode.TesseractOnly);
+                EngineMode.Default);
             engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
+            engine.SetVariable("language_model_penalty_non_freq_dict_word", 1);
+            engine.SetVariable("language_model_penalty_non_dict_word", 1);
             
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
         }
@@ -98,18 +101,15 @@ namespace Inkybot
 
         private Image PreprocessImage(Image image, Rectangle bounds) {
             return DoPreprocess(image, bounds, image => {
-
-                image.Sharpen();
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(30));
-                image.WhiteThreshold(new Percentage(35));
+                image.BlackThreshold(new Percentage(27));
                 image.Negate();
+                image.Resize(new Percentage(130));
             });
         }
 
         private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
 
-            
             using (var ms = new MemoryStream()) {
                 image.Save(ms, ImageFormat.Bmp);
                 ms.Position = 0;
@@ -121,7 +121,6 @@ namespace Inkybot
                     // the height will be calculated with the aspect ratio.
                     newImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
                     newImage.ColorSpace = ColorSpace.Gray;
-                    newImage.Resize(new Percentage(300));
 
                     steps(newImage);
                     
@@ -172,6 +171,8 @@ namespace Inkybot
         //private static int times = 0;
 
         public Image TakeScreenshot() {
+            
+            //return Image.FromFile(@"C:\Users\Klemen\Desktop\exam.png");
 
             //times = times >= 3 ? times : ++times;
             var bitmap = screen.CaptureWindow(handle);

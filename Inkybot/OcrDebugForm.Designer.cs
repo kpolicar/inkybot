@@ -74,7 +74,7 @@ namespace Inkybot
             // 
             this.timerLabel.Location = new System.Drawing.Point(22, 48);
             this.timerLabel.Name = "timerLabel";
-            this.timerLabel.Size = new System.Drawing.Size(113, 36);
+            this.timerLabel.Size = new System.Drawing.Size(113, 63);
             this.timerLabel.TabIndex = 4;
             this.timerLabel.Text = "0:00s\r\n0:00s";
             // 
@@ -90,7 +90,7 @@ namespace Inkybot
             // 
             this.label1.Location = new System.Drawing.Point(26, 142);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 27);
+            this.label1.Size = new System.Drawing.Size(131, 480);
             this.label1.TabIndex = 6;
             this.label1.Text = "label1";
             // 
