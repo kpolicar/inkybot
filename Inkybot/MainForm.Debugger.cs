@@ -49,7 +49,7 @@ namespace Inkybot
             var width = dofusClientPanel.Width;
             var height = dofusClientPanel.Height;
             
-            var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatBoundsMeasurement, width, height);
+            var statRect = Responsive.ResponsiveRectangle(DofusScreenScan.StatValuesBoundsMeasurement, width, height);
             statRect.X -= 2;
             statRect.Y -= 2;
             statRect.Width += 4;

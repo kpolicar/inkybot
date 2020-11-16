@@ -121,12 +121,13 @@ namespace Inkybot.Domain
 
             var action = job.magus.ResolveAction(item, job.previousAction);
             
+            job.actions.Execute(action);
+            
             if (action is Combine) {
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
                 job.previousHistory = itemHistory;
             }
             
-            job.actions.Execute(action);
             return action;
         }
     }

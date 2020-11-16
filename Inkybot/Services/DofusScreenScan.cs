@@ -7,12 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
+using Inkybot.Services;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
@@ -27,24 +29,42 @@ namespace Inkybot
             Height = 1017
         };
 
-        public static readonly Responsive.Measurement StatBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(630, 307, 973, 836),
+        public static readonly Responsive.Measurement StatValuesBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(745, 307, 973, 836),
+            Width = 1920,
+            Height = 1017
+        };
+
+        public static readonly Responsive.Measurement StatMinBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(645, 307, 695, 836),
+            Width = 1920,
+            Height = 1017
+        };
+
+        public static readonly Responsive.Measurement StatMaxBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(695, 307, 745, 836),
             Width = 1920,
             Height = 1017
         };
         
-        public Rectangle HistoryBounds =>
-            Responsive.ResponsiveRectangle(HistoryBoundsMeasurement, screenshot.Width, screenshot.Height);
-
-        public Rectangle StatBounds =>
-            Responsive.ResponsiveRectangle(StatBoundsMeasurement, screenshot.Width, screenshot.Height);
-        
         private static ScreenCapture screen;
-        private static TesseractEngine engine;
+        
+        private static ScreenScanner historyScanner;
+        private static ScreenScanner statValuesScanner;
+        private static ScreenScanner statMinsScanner;
+        private static ScreenScanner statMaxesScanner;
+
         private static CultureInfo lang;
         private readonly IntPtr handle;
         private readonly Image screenshot;
         private bool saveToDisk;
+
+
+
+        public DofusScreenScan(Image image, bool saveToDisk = false) {
+            Init();
+            this.screenshot = image;
+        }
 
         public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
             Init();
@@ -60,126 +80,49 @@ namespace Inkybot
         }
 
         private void Init() {
-            if (engine != null) return;
+            if (lang != null && lang.Equals(Program.Lang)) return;
+            
             lang = Program.Lang;
-            
-            engine = new TesseractEngine(
-                "./Resources/Tesseract",
-                lang.ThreeLetterISOLanguageName,
-                EngineMode.Default);
-            engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
-            engine.SetVariable("language_model_penalty_non_freq_dict_word", 1);
-            engine.SetVariable("language_model_penalty_non_dict_word", 1);
-            
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
-        }
-
-        public string[] Stats() {
-            return ScanRegion(StatBounds,
-            text => {
-                return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            });
-        }
-
-        public string[] History() {
-            return ScanRegion(
-                HistoryBounds,
-                text => {
-                    return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
-                        .Where(s => s != string.Empty)
-                        .Select(result => result.Replace("\n", " "))
-                        .ToArray();
-                });
-        }
-
-        private Image PreprocessRunesImage(Image image, Rectangle bounds) {
-            return DoPreprocess(image, bounds, image => {
-                image.Resize(new Percentage(300));
-                image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
-            });
-        }
-
-        private Image PreprocessImage(Image image, Rectangle bounds) {
-            return DoPreprocess(image, bounds, image => {
-                image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(27));
-                image.Negate();
-                image.Resize(new Percentage(130));
-            });
-        }
-
-        private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
-
-            using (var ms = new MemoryStream()) {
-                image.Save(ms, ImageFormat.Bmp);
-                ms.Position = 0;
-                    
-                using (var newImage = new MagickImage(ms)) {
-                    var b = bounds;
-                    
-                    // Resize each image in the collection to a width of 200. When zero is specified for the height
-                    // the height will be calculated with the aspect ratio.
-                    newImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
-                    newImage.ColorSpace = ColorSpace.Gray;
-
-                    steps(newImage);
-                    
-                    newImage.Write(ms);
-                    if (saveToDisk) {
-                        var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"/debug/images/";
-                        Directory.CreateDirectory(folderPath);
-                        newImage.Write(folderPath+Path.GetRandomFileName()+".png");
-                    }
-                    
-                    var outImage = Image.FromStream(ms);
-
-                    return outImage;
-                }
-            }
             
-
+            historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines);
+            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines);
+            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines);
+            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines);
         }
 
-        private string[] ScanRegion(Rectangle bounds, Func<string, string[]> split) {
-            var image = PreprocessImage(screenshot, bounds);
+        private string[] SplitHistoryTextLines(string text) {
+            return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
+                .Where(s => s != string.Empty)
+                .Select(result => result.Replace("\n", " "))
+                .ToArray();
+        }
 
-            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\" + name + ".bmp");
-            //bitmap.Save(fstream, ImageFormat.Bmp);
-            //fstream.Dispose();
+        private string[] SplitStatTextLines(string text) {
+            return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public async Task<string[]> Stats() {
+            var statValuesScanTask = statValuesScanner.ScanRegionAsync(screenshot, saveToDisk);
+            var statMinScanTask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
+            var statMaxScanTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
+
+            await Task.WhenAll(statValuesScanTask, statMinScanTask, statMaxScanTask);
             
-            using (var ocrPage = ProcessImage((Bitmap) image, PageSegMode.SingleBlock)) {
-
-                var scanned = ocrPage.GetText();
-                Trace.WriteLine(Regex.Escape(scanned));
-                var textLines = split(scanned);
-
-                return textLines
-                    .Select(text => text.Replace("\n", " "))
-                    .ToArray();
-            }
+            var statValues =  await statValuesScanTask;
+            var statMins = await statMinScanTask;
+            var statMaxes = await statMaxScanTask;
+            
+            return statMins.Zip(statMaxes, (s1, s2) => s1 + " " + s2).Zip(statValues, (s1, s2) => s1 + " " + s2).ToArray();
         }
 
-        private Page ProcessImage(Bitmap image, PageSegMode? pageSegMode = null) {
-            try {
-                return engine.Process(image, pageSegMode);
-            } catch (InvalidOperationException exception) {
-                Console.WriteLine(exception.Message);
-                throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.", exception);
-            }
+        public async Task<string[]> History() {
+            return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
         }
-
-        //private static int times = 0;
 
         public Image TakeScreenshot() {
-            
-            //return Image.FromFile(@"C:\Users\Klemen\Desktop\exam.png");
-
             //times = times >= 3 ? times : ++times;
             var bitmap = screen.CaptureWindow(handle);
-
-            //var fstream = File.Create(@"C:\Users\Klemen\Desktop\example.bmp");
-            //bitmap.Save(fstream, ImageFormat.Bmp);
-            //fstream.Dispose();
 
             return bitmap;
         }

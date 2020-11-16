@@ -261,8 +261,14 @@
         <Compile Include="Services\ActionHandler.cs" />
         <Compile Include="Services\BasicDofusMagingAI.cs" />
         <Compile Include="Services\FileEventLogger.cs" />
+        <Compile Include="Services\ImagePreprocessor.cs">
+          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\ItemMage.cs">
           <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\ScreenScanner.cs">
+          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\SettingsMageConfig.cs" />
         <Compile Include="WelcomeDialogue.cs">
@@ -385,12 +391,9 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="Inkybot.crproj" />
-      <Content Include="Resources\Tesseract\config" />
       <Content Include="Resources\Tesseract\eng.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Content Include="Resources\Tesseract\eng.user-patterns" />
-      <Content Include="Resources\Tesseract\eng.user-words" />
       <Content Include="Resources\Tesseract\fra.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

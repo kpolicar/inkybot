@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
@@ -31,8 +32,13 @@ namespace Inkybot
             scan = new DofusScreenScan(handle);
         }
 
+        public void FetchData(Image image) {
+            scan = new DofusScreenScan(image);
+        }
+
         public IEnumerable<MageHistoryRecord> History() {
             var scanResults = scan.History()
+                .Result
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
             ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
@@ -43,7 +49,7 @@ namespace Inkybot
         }
 
         public Item Item() {
-            var scanResults = scan.Stats();
+            var scanResults = scan.Stats().Result;
             ScannedStats?.Invoke(this, new ScannedRegionEventArgs(scanResults));
             
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
