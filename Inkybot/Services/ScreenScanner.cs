@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Tesseract;
@@ -14,6 +15,8 @@ namespace Inkybot.Services
 {
     public class ScreenScanner
     {
+        public event EventHandler<TesseractPageProcessed> PageProcessed;
+
         private TesseractEngine engine;
         private Responsive.Measurement regionOfInterest;
         private Func<string, string[]> split;
@@ -59,11 +62,9 @@ namespace Inkybot.Services
             }
 
             using (var ocrPage = ProcessImage(engine, (Bitmap) image)) {
-
+                PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage));
+                
                 var scanned = ocrPage.GetText();
-                foreach (var segmentedRegion in ocrPage.GetSegmentedRegions(0)) {
-                    Trace.WriteLine(segmentedRegion);
-                }
                 Trace.WriteLine(Regex.Escape(scanned));
                 var textLines = split(scanned);
 

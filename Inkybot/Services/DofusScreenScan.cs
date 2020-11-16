@@ -89,6 +89,8 @@ namespace Inkybot
             statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines);
             statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines);
             statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines);
+
+            historyScanner.PageProcessed += OnHistoryPageProcessed;
         }
 
         private string[] SplitHistoryTextLines(string text) {
@@ -118,6 +120,14 @@ namespace Inkybot
 
         public async Task<string[]> History() {
             return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
+        }
+
+        private void OnHistoryPageProcessed(object sender, TesseractPageProcessed e) {
+            var page = e.Page;
+            var region = page.GetSegmentedRegions(0).FirstOrDefault();
+            if (region == default) return;
+            
+            Debug.WriteLine("Segmented history region: "+region);
         }
 
         public Image TakeScreenshot() {
