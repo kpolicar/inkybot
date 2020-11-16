@@ -44,11 +44,13 @@ namespace Inkybot
 
         private void ShowOcrIndicators() {
             historyOcrIndicatorRectangle.Show();
+            shortHistoryOcrIndicatorRectangle.Show();
             statsValuesOcrIndicatorRectangle.Show();
             statsMaxesOcrIndicatorRectangle.Show();
             statsMinsOcrIndicatorRectangle.Show();
             
             historyOcrIndicatorRectangle.BringToFront();
+            shortHistoryOcrIndicatorRectangle.BringToFront();
             statsValuesOcrIndicatorRectangle.BringToFront();
             statsMaxesOcrIndicatorRectangle.BringToFront();
             statsMinsOcrIndicatorRectangle.BringToFront();
@@ -56,6 +58,7 @@ namespace Inkybot
 
         private void HideOcrIndicators() {
             historyOcrIndicatorRectangle.Hide();
+            shortHistoryOcrIndicatorRectangle.Hide();
             statsValuesOcrIndicatorRectangle.Hide();
             statsMaxesOcrIndicatorRectangle.Hide();
             statsMinsOcrIndicatorRectangle.Hide();
@@ -97,6 +100,7 @@ namespace Inkybot
             FitOcrIndicatorRectangle(statsMaxesOcrIndicatorRectangle, DofusScreenScan.StatMaxBoundsMeasurement);
             FitOcrIndicatorRectangle(statsValuesOcrIndicatorRectangle, DofusScreenScan.StatValuesBoundsMeasurement);
             FitOcrIndicatorRectangle(historyOcrIndicatorRectangle, DofusScreenScan.HistoryBoundsMeasurement);
+            FitOcrIndicatorRectangle(shortHistoryOcrIndicatorRectangle, DofusScreenScan.ShortHistoryBoundsMeasurement);
         }
         
         private void StopDebugging() {

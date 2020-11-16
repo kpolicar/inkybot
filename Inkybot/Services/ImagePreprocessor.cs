@@ -50,6 +50,10 @@ namespace Inkybot.Services
                     steps(newImage);
 
                     newImage.Write(ms);
+                    
+                    var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
+                    Directory.CreateDirectory(folderPath);
+                    newImage.Write(folderPath + Path.GetRandomFileName() + ".png");
 
                     var outImage = Image.FromStream(ms);
 

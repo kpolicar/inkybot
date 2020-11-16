@@ -24,7 +24,13 @@ namespace Inkybot
     public class DofusScreenScan
     {
         public static readonly Responsive.Measurement HistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 835),
+            Rectangle = Rect.FromCoords(346, 117, 590, 838),
+            Width = 1920,
+            Height = 1017
+        };
+        
+        public static readonly Responsive.Measurement ShortHistoryBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(346, 752, 590, 838),
             Width = 1920,
             Height = 1017
         };
@@ -50,6 +56,7 @@ namespace Inkybot
         private static ScreenCapture screen;
         
         private static ScreenScanner historyScanner;
+        private static ScreenScanner shortHistoryScanner;
         private static ScreenScanner statValuesScanner;
         private static ScreenScanner statMinsScanner;
         private static ScreenScanner statMaxesScanner;
@@ -86,9 +93,10 @@ namespace Inkybot
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             
             historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(130));
-            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines);
+            shortHistoryScanner = new TextScreenScanner(ShortHistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(130));
+            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
             statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines);
-            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines);
+            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
 
             historyScanner.PageProcessed += OnHistoryPageProcessed;
         }

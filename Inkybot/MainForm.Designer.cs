@@ -62,6 +62,7 @@ namespace Inkybot
             this.statsMaxesOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
             this.statsValuesOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
             this.historyOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
+            this.shortHistoryOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
@@ -298,6 +299,12 @@ namespace Inkybot
             this.historyOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
             this.historyOcrIndicatorRectangle.Name = "historyOcrIndicatorRectangle";
             // 
+            // shortHistoryOcrIndicatorRectangle
+            // 
+            resources.ApplyResources(this.shortHistoryOcrIndicatorRectangle, "shortHistoryOcrIndicatorRectangle");
+            this.shortHistoryOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
+            this.shortHistoryOcrIndicatorRectangle.Name = "shortHistoryOcrIndicatorRectangle";
+            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -307,6 +314,7 @@ namespace Inkybot
             this.Controls.Add(this.dofusClientPanel);
             this.Controls.Add(this.statsValuesOcrIndicatorRectangle);
             this.Controls.Add(this.historyOcrIndicatorRectangle);
+            this.Controls.Add(this.shortHistoryOcrIndicatorRectangle);
             this.Controls.Add(this.statsMinsOcrIndicatorRectangle);
             this.Controls.Add(this.statsMaxesOcrIndicatorRectangle);
             this.HelpButton = true;
@@ -339,6 +347,7 @@ namespace Inkybot
         private Inkybot.Controls.Rectangle statsMaxesOcrIndicatorRectangle;
         private Inkybot.Controls.Rectangle statsValuesOcrIndicatorRectangle;
         private Inkybot.Controls.Rectangle historyOcrIndicatorRectangle;
+        private Inkybot.Controls.Rectangle shortHistoryOcrIndicatorRectangle;
 
         private System.Windows.Forms.Button debugScreenshotButton;
 

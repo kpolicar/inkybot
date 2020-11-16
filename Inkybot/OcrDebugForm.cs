@@ -27,7 +27,7 @@ namespace Inkybot
         private void tesseract() {
             label1.Text = "";
 
-            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\exam.png");
+            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\2.png");
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchData(image);
             

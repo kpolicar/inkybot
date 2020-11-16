@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -60,7 +66,32 @@ namespace Inkybot
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new OcrDebugForm());
             Application.Run(new MainForm());
-            
+
+            //Print();
+        }
+
+        private static void Print() {
+            var StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            var MagingDictionary = new ResourceManager("Inkybot.Resources.MagingDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+            var words = new List<string>();
+
+            foreach (DictionaryEntry dictionaryEntry in StatDictionary) {
+                foreach (var word in dictionaryEntry.Value.ToString().Split(' ')) {
+                    if (words.Contains(word)) continue;
+                    words.Add(word);
+                    Debug.WriteLine(word);
+                }
+            }
+            foreach (DictionaryEntry dictionaryEntry in MagingDictionary) {
+                foreach (var word in dictionaryEntry.Value.ToString().Split(' ')) {
+                    if (words.Contains(word)) continue;
+                    words.Add(word);
+                    Debug.WriteLine(word);
+                }
+            }
         }
         
         private static void SetAppLocale() {
