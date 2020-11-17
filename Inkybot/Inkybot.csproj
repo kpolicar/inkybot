@@ -184,9 +184,6 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
-        <Compile Include="Domain\DofusMagingJobManagerItemInfo.cs">
-          <DependentUpon>DofusMagingJob.cs</DependentUpon>
-        </Compile>
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\RuneAction.cs" />
@@ -225,13 +222,6 @@
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
         <Compile Include="Domain\Config.cs" />
-        <Compile Include="Domain\DofusMagingJob.cs" />
-        <Compile Include="Domain\DofusMagingJobState.cs">
-          <DependentUpon>DofusMagingJob.cs</DependentUpon>
-        </Compile>
-        <Compile Include="Domain\DofusMagingJobTick.cs">
-          <DependentUpon>DofusMagingJob.cs</DependentUpon>
-        </Compile>
         <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\MageHistoryRecord.cs" />
         <Compile Include="Domain\Rune.cs" />
@@ -278,6 +268,16 @@
         <Compile Include="Services\Measurements.cs" />
         <Compile Include="Services\RuneQuantityScan.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\ScreenReaderDofusMagingJob.cs" />
+        <Compile Include="Services\CurrentItemInfo.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\State.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\Tick.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ScreenScanner.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>

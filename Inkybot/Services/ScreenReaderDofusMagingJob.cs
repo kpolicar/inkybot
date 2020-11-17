@@ -4,14 +4,15 @@ using System.Security.Principal;
 using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
-namespace Inkybot.Domain
+namespace Inkybot.Services
 {
-    public class DofusMagingJob : DofusMagingJobContract
+    public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
@@ -31,13 +32,13 @@ namespace Inkybot.Domain
         internal IAction previousAction;
         internal ItemHistoryAnalysis? previousHistory;
         private float sink;
-        internal DofusMagingJobState state;
+        internal State state;
         private ConfigManager configManager;
         internal Stopwatch historyCheckTimeout;
-        internal DofusMagingJobItemInfo itemInfo;
+        internal CurrentItemInfo itemInfo;
         
 
-        public DofusMagingJob() {
+        public ScreenReaderDofusMagingJob() {
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
@@ -83,14 +84,14 @@ namespace Inkybot.Domain
         }
 
         private void PrepareMage() {
-            state = DofusMagingJobState.STANDARD;
+            state = State.STANDARD;
             Sink = 0f;
             previousAction = null;
             previousHistory = null;
             
             dataProvider.FetchData();
             dataProvider.Item();
-            itemInfo = new DofusMagingJobItemInfo {
+            itemInfo = new CurrentItemInfo {
                 Runes = dataProvider.Runes()
             };
             IsMaging = true;
@@ -99,7 +100,7 @@ namespace Inkybot.Domain
         private void DoMage() {
             try {
                 PrepareMage();
-                while (IsMaging) new DofusMagingJobTick(this).Execute();
+                while (IsMaging) new Tick(this).Execute();
             } catch (Exception exception) {
                 
                 var additionalInfo = !Helpers.System.IsRunnningAsAdmin() ?

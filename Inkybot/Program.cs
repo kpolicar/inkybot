@@ -13,7 +13,6 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Services;
-using DofusMagingJob = Inkybot.Domain.DofusMagingJob;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot
@@ -56,7 +55,7 @@ namespace Inkybot
             Services.AddService(typeof(ActionHandler), new ActionHandler());
             Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
             Services.AddService(typeof(ApiClient), new ApiClient());
-            Services.AddService(typeof(DofusMagingJobContract), new DofusMagingJob());
+            Services.AddService(typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob());
             Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
             
             BindNotifications();

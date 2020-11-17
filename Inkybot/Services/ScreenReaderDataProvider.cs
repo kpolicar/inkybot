@@ -70,6 +70,8 @@ namespace Inkybot.Services
         }
 
         public UserRune RuneQuantity(Rune rune) {
+            // var itemInfo = 
+            // var column = 
             throw new NotImplementedException();
         }
     }
