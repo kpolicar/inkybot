@@ -28,8 +28,12 @@ namespace Inkybot.Services
         }
 
         protected virtual void PreprocessingSteps(MagickImage image) {
+            // image.Alpha(AlphaOption.Remove);
+            // image.BlackThreshold(new Percentage(27));
+            // image.Negate();
+
             image.Alpha(AlphaOption.Remove);
-            image.BlackThreshold(new Percentage(27));
+            image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
             image.Negate();
         }
 

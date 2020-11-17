@@ -30,9 +30,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "8";
-        public const string Version = "v0.8 Beta";
-        public const string VersionEndpoint = "v0.8beta";
+        public const string VersionNumber = "9";
+        public const string Version = "v0.8.1 Beta";
+        public const string VersionEndpoint = "v0.8.1beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -64,8 +64,8 @@ namespace Inkybot
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new OcrDebugForm());
-            Application.Run(new MainForm());
+            Application.Run(new OcrDebugForm());
+            //Application.Run(new MainForm());
 
             //Print();
         }

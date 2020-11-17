@@ -32,8 +32,8 @@ namespace Inkybot
             scan = new DofusScreenScan(handle);
         }
 
-        public void FetchData(Image image) {
-            scan = new DofusScreenScan(image);
+        public void FetchData(Image image, bool saveToDisk=false) {
+            scan = new DofusScreenScan(image, saveToDisk);
         }
 
         public IEnumerable<MageHistoryRecord> History() {
@@ -57,6 +57,12 @@ namespace Inkybot
             FetchedItem?.Invoke(this, new ItemEventArgs(item));
 
             return item;
+        }
+
+        public int[] Runes() {
+            var scanResults = scan.Runes().Result;
+
+            return scanResults;
         }
     }
 }

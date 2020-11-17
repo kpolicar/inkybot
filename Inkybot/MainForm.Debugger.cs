@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
 using Inkybot.Helpers;
+using Inkybot.Services;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
 
@@ -20,11 +21,15 @@ namespace Inkybot
         #endif
 
         private void InitOcrIndicators() {
-            RegisterOcrIndicator(DofusScreenScan.StatMinBoundsMeasurement);
-            RegisterOcrIndicator(DofusScreenScan.StatMaxBoundsMeasurement);
-            RegisterOcrIndicator(DofusScreenScan.StatValuesBoundsMeasurement);
-            RegisterOcrIndicator(DofusScreenScan.HistoryBoundsMeasurement);
+            RegisterOcrIndicator(Measurements.StatMinBounds);
+            RegisterOcrIndicator(Measurements.StatMaxBounds);
+            RegisterOcrIndicator(Measurements.StatValuesBounds);
+            RegisterOcrIndicator(Measurements.HistoryBounds);
             //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
+
+            foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
+                RegisterOcrIndicator(runeBoundingBox);
+            }
         }
 
         private void RegisterOcrIndicator(Responsive.Measurement measurement) {

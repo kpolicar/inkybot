@@ -23,9 +23,12 @@ namespace Inkybot.Services
         private Responsive.Measurement regionOfInterest;
         private Func<string, string[]> split;
         private ImagePreprocessor preprocessor;
-        private PageSegMode segMode = PageSegMode.SingleBlock;
+        private PageSegMode segMode;
 
-        public ScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]> split, ImagePreprocessor preprocessor = null) {
+        public ScreenScanner(Responsive.Measurement regionOfInterest,
+            Func<string, string[]> split = null,
+            ImagePreprocessor preprocessor = null,
+            PageSegMode segMode = PageSegMode.SingleBlock) {
             engine = new TesseractEngine(
                 "./Resources/Tesseract",
                 Program.Lang.ThreeLetterISOLanguageName,
@@ -33,10 +36,15 @@ namespace Inkybot.Services
             this.preprocessor = preprocessor ?? new ImagePreprocessor();
             this.regionOfInterest = regionOfInterest;
             this.split = split;
+            this.segMode = segMode;
         }
         
         public void SetVariables(Action<TesseractEngine> callback) {
             callback(engine);
+        }
+        
+        public void SetRegion(Responsive.Measurement regionOfInterest) {
+            this.regionOfInterest = regionOfInterest;
         }
         
         public Rectangle CalculateBounds(Image image) {
@@ -57,7 +65,7 @@ namespace Inkybot.Services
             
             var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
-            if (saveToDisk) {
+            if (!saveToDisk) {
                 var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
                 Directory.CreateDirectory(folderPath);
                 var fileName = Path.GetRandomFileName() + ".bmp";
@@ -70,7 +78,8 @@ namespace Inkybot.Services
                 
                 var scanned = ocrPage.GetText();
                 Trace.WriteLine(Regex.Escape(scanned));
-                var textLines = split(scanned);
+                
+                var textLines = split?.Invoke(scanned) ?? new [] { scanned };
 
                 return textLines
                     .Select(text => text.Replace("\n", " "))
@@ -91,8 +100,9 @@ namespace Inkybot.Services
     public class TextScreenScanner : ScreenScanner
     {
         public TextScreenScanner(Responsive.Measurement regionOfInterest,
-            Func<string, string[]> split,
-            ImagePreprocessor preprocessor = null) : base(regionOfInterest, split, preprocessor) {
+            Func<string, string[]> split = null,
+            ImagePreprocessor preprocessor = null,
+            PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
             SetVariables(engine => {
                 engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
                 engine.SetVariable("tessedit_enable_dict_correction", 1);
@@ -105,8 +115,9 @@ namespace Inkybot.Services
     public class NumberScreenScanner : ScreenScanner
     {
         public NumberScreenScanner(Responsive.Measurement regionOfInterest,
-            Func<string, string[]> split,
-            ImagePreprocessor preprocessor = null) : base(regionOfInterest, split, preprocessor) {
+            Func<string, string[]> split = null,
+            ImagePreprocessor preprocessor = null,
+            PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
             SetVariables(engine => {
                 engine.SetVariable("tessedit_char_whitelist", "01234567890-");
             });

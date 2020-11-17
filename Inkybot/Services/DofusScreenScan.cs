@@ -24,60 +24,6 @@ namespace Inkybot
 {
     public class DofusScreenScan
     {
-        public static readonly Responsive.Measurement HistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 844),
-            Width = 1920,
-            Height = 1017
-        };
-
-        public static readonly Responsive.Measurement ShortHistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 752, 590, 842),
-            Width = 1920,
-            Height = 1017
-        };
-
-        public static readonly Responsive.Measurement StatValuesBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(745, 307, 973, 842),
-            Width = 1920,
-            Height = 1017
-        };
-
-        public static readonly Responsive.Measurement StatMinBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(645, 307, 695, 842),
-            Width = 1920,
-            Height = 1017
-        };
-        
-        public static readonly Responsive.Measurement StatMaxBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(695, 307, 745, 842),
-            Width = 1920,
-            Height = 1017
-        };
-
-        public static Responsive.Measurement[] StatMinBoundsIndividualLineMeasurements =>
-            SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMinBoundsMeasurement);
-        
-        public static Responsive.Measurement[] StatMaxBoundsIndividualLineMeasurements =>
-            SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBoundsMeasurement);
-
-        public static Responsive.Measurement[] SplitStatLineMeasurementsIntoIndividualLineMeasurements(Responsive.Measurement measurement) {
-            var b = measurement.Rectangle;
-            var n = 14;
-
-            var measurements = new Responsive.Measurement[n];
-            for (int i = 0; i < n; ++i) {
-                var smallerRect = new Rect(b.X1, b.Y1 + (int) (1f * b.Height / n * i), b.Width, b.Height / n);
-                var m = new Responsive.Measurement {
-                    Rectangle = smallerRect,
-                    Height = measurement.Height,
-                    Width = measurement.Width
-                };
-                measurements[i] = m;
-            }
-
-            return measurements;
-        }
-        
         private static ScreenCapture screen;
         
         private static ScreenScanner historyScanner;
@@ -85,12 +31,12 @@ namespace Inkybot
         private static ScreenScanner statValuesScanner;
         private static ScreenScanner statMinsScanner;
         private static ScreenScanner statMaxesScanner;
+        private static ScreenScanner runeScanner;
 
         private static CultureInfo lang;
         private readonly IntPtr handle;
         private readonly Image screenshot;
         private bool saveToDisk;
-
 
 
         public DofusScreenScan(Image image, bool saveToDisk = false) {
@@ -117,11 +63,12 @@ namespace Inkybot
             lang = Program.Lang;
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
             
-            historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
-            shortHistoryScanner = new TextScreenScanner(ShortHistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
-            statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(150));
-            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(300));
-            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(300));
+            historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
+            shortHistoryScanner = new TextScreenScanner(Measurements.ShortHistoryBounds, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
+            statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines, new ResizeImagePreprocessor(150));
+            statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines, new ResizeImagePreprocessor(300));
+            statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines, new ResizeImagePreprocessor(300));
+            runeScanner = new NumberScreenScanner(null, null, new ResizeImagePreprocessor(300), PageSegMode.SingleChar);
 
             historyScanner.PageProcessed += OnHistoryPageProcessed;
         }
@@ -154,6 +101,24 @@ namespace Inkybot
                 .ToArray();
 
             return stats;
+        }
+
+        public async Task<int[]> Runes() {
+            var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
+
+            var runes = runeBoxes.Select(runeBox => {
+                runeScanner.SetRegion(runeBox);
+                var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
+                var result = scanned.First();
+
+                int runeQuantity;
+                var hasRune = int.TryParse(result, out runeQuantity);
+                runeQuantity = hasRune ? runeQuantity : 0;
+
+                return runeQuantity;
+            }).ToArray();
+            
+            return runes;
         }
 
         public async Task<string[]> History() {

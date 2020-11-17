@@ -27,20 +27,22 @@ namespace Inkybot
         private void tesseract() {
             label1.Text = "";
 
-            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\eaxc.png");
+            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\debug.png");
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.FetchData(image);
-            
-            var history = new DofusMagingJob().history.Analyse(dataProvider.History());
-            foreach (var sad in history.history) {
-                foreach (var ex in sad.fell) {
-                    label1.Text += ex.stat.DisplayName + " " + ex.value + "\n";
-                }
-            }
+            dataProvider.FetchData(image, true);
 
-            foreach (var item in dataProvider.Item().Stats) {
-                Debug.WriteLine(item.stat.DisplayName +" " + item.value);
-            }
+            dataProvider.Runes();
+
+            // var history = new DofusMagingJob().history.Analyse(dataProvider.History());
+            // foreach (var sad in history.history) {
+            //     foreach (var ex in sad.fell) {
+            //         label1.Text += ex.stat.DisplayName + " " + ex.value + "\n";
+            //     }
+            // }
+            //
+            // foreach (var item in dataProvider.Item().Stats) {
+            //     Debug.WriteLine(item.stat.DisplayName +" " + item.value);
+            // }
         }
         
         private void button1_Click(object sender, EventArgs e) {
