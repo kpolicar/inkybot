@@ -34,6 +34,8 @@ namespace Inkybot.Domain
         internal DofusMagingJobState state;
         private ConfigManager configManager;
         internal Stopwatch historyCheckTimeout;
+        private DofusMagingJobItemInfo itemInfo;
+        
 
         public DofusMagingJob() {
             actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
@@ -88,6 +90,9 @@ namespace Inkybot.Domain
             
             dataProvider.FetchData();
             dataProvider.Item();
+            itemInfo = new DofusMagingJobItemInfo {
+                Runes = dataProvider.Runes()
+            };
             IsMaging = true;
         }
 

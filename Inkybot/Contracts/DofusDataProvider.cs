@@ -13,5 +13,6 @@ namespace Inkybot.Contracts
         Item Item();
         void FetchData();
         IEnumerable<MageHistoryRecord> History();
+        public Dictionary<Stat, UserRune[]> Runes();
     }
 }

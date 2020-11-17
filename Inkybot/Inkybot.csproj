@@ -184,6 +184,9 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
+        <Compile Include="Domain\DofusMagingJobManagerItemInfo.cs">
+          <DependentUpon>DofusMagingJob.cs</DependentUpon>
+        </Compile>
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\UserRune.cs" />
