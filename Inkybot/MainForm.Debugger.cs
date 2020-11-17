@@ -20,16 +20,11 @@ namespace Inkybot
         #endif
 
         private void InitOcrIndicators() {
-            foreach (var measurement in DofusScreenScan.StatMinBoundsIndividualLineMeasurements) {
-                RegisterOcrIndicator(measurement);
-            }
-            foreach (var measurement in DofusScreenScan.StatMaxBoundsIndividualLineMeasurements) {
-                RegisterOcrIndicator(measurement);
-            }
-            
+            RegisterOcrIndicator(DofusScreenScan.StatMinBoundsMeasurement);
+            RegisterOcrIndicator(DofusScreenScan.StatMaxBoundsMeasurement);
             RegisterOcrIndicator(DofusScreenScan.StatValuesBoundsMeasurement);
             RegisterOcrIndicator(DofusScreenScan.HistoryBoundsMeasurement);
-            RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
+            //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
         }
 
         private void RegisterOcrIndicator(Responsive.Measurement measurement) {

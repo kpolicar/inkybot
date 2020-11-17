@@ -205,6 +205,7 @@
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
+        <Compile Include="Helpers\Enumerable.cs" />
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />

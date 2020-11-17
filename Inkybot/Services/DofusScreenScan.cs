@@ -17,6 +17,7 @@ using Inkybot.Helpers;
 using Inkybot.Services;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
+using Enumerable = Inkybot.Helpers.Enumerable;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot
@@ -146,8 +147,13 @@ namespace Inkybot
             var statValues =  await statValuesScanTask;
             var statMins = await statMinScanTask;
             var statMaxes = await statMaxScanTask;
-            
-            return statMins.Zip(statMaxes, (s1, s2) => s1 + " " + s2).Zip(statValues, (s1, s2) => s1 + " " + s2).ToArray();
+
+            var stats=  statValues
+                .ZipWithDefault(statMaxes, (value, max) => (max ?? "-") + " " + value)
+                .ZipWithDefault(statMins, (valuemax, min) => (min ?? "-") + " " + valuemax)
+                .ToArray();
+
+            return stats;
         }
 
         public async Task<string[]> History() {
