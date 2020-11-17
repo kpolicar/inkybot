@@ -1,19 +1,44 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
 using Inkybot.Helpers;
+using Tesseract;
 using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot
 {
     public partial class MainForm
     {
+        private Dictionary<Rectangle, Responsive.Measurement> ocrIndicators = new Dictionary<Rectangle, Responsive.Measurement>();
+        
         private bool debugging;
         #if DEBUG
         private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         #endif
+
+        private void InitOcrIndicators() {
+            foreach (var measurement in DofusScreenScan.StatMinBoundsIndividualLineMeasurements) {
+                RegisterOcrIndicator(measurement);
+            }
+            foreach (var measurement in DofusScreenScan.StatMaxBoundsIndividualLineMeasurements) {
+                RegisterOcrIndicator(measurement);
+            }
+            
+            RegisterOcrIndicator(DofusScreenScan.StatValuesBoundsMeasurement);
+            RegisterOcrIndicator(DofusScreenScan.HistoryBoundsMeasurement);
+            RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
+        }
+
+        private void RegisterOcrIndicator(Responsive.Measurement measurement) {
+            var control = new Rectangle();
+            Controls.Add(control);
+            control.BackColor = System.Drawing.SystemColors.Control;
+            
+            ocrIndicators.Add(control, measurement);
+        }
 
         private void debugButton_Click(object sender, EventArgs e) {
             if (debugging = !debugging) {
@@ -43,25 +68,16 @@ namespace Inkybot
         }
 
         private void ShowOcrIndicators() {
-            historyOcrIndicatorRectangle.Show();
-            shortHistoryOcrIndicatorRectangle.Show();
-            statsValuesOcrIndicatorRectangle.Show();
-            statsMaxesOcrIndicatorRectangle.Show();
-            statsMinsOcrIndicatorRectangle.Show();
-            
-            historyOcrIndicatorRectangle.BringToFront();
-            shortHistoryOcrIndicatorRectangle.BringToFront();
-            statsValuesOcrIndicatorRectangle.BringToFront();
-            statsMaxesOcrIndicatorRectangle.BringToFront();
-            statsMinsOcrIndicatorRectangle.BringToFront();
+            foreach (var ocrIndicatorControl in ocrIndicators) {
+                ocrIndicatorControl.Key.Show();
+                ocrIndicatorControl.Key.BringToFront();
+            }
         }
 
         private void HideOcrIndicators() {
-            historyOcrIndicatorRectangle.Hide();
-            shortHistoryOcrIndicatorRectangle.Hide();
-            statsValuesOcrIndicatorRectangle.Hide();
-            statsMaxesOcrIndicatorRectangle.Hide();
-            statsMinsOcrIndicatorRectangle.Hide();
+            foreach (var ocrIndicatorControl in ocrIndicators) {
+                ocrIndicatorControl.Key.Hide();
+            }
         }
 
         private void StartDebugging() {
@@ -95,12 +111,9 @@ namespace Inkybot
         }
 
         private void onWindowResize(object sender, EventArgs e) {
-
-            FitOcrIndicatorRectangle(statsMinsOcrIndicatorRectangle, DofusScreenScan.StatMinBoundsMeasurement);
-            FitOcrIndicatorRectangle(statsMaxesOcrIndicatorRectangle, DofusScreenScan.StatMaxBoundsMeasurement);
-            FitOcrIndicatorRectangle(statsValuesOcrIndicatorRectangle, DofusScreenScan.StatValuesBoundsMeasurement);
-            FitOcrIndicatorRectangle(historyOcrIndicatorRectangle, DofusScreenScan.HistoryBoundsMeasurement);
-            FitOcrIndicatorRectangle(shortHistoryOcrIndicatorRectangle, DofusScreenScan.ShortHistoryBoundsMeasurement);
+            foreach (var ocrIndicatorControl in ocrIndicators) {
+                FitOcrIndicatorRectangle(ocrIndicatorControl.Key, ocrIndicatorControl.Value);
+            }
         }
         
         private void StopDebugging() {

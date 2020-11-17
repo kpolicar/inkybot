@@ -27,6 +27,7 @@ namespace Inkybot
 
         public MainForm() {
             InitializeComponent();
+            InitOcrIndicators();
             toastPanel.Hide();
             mageInfoPanel.Hide();
             debugScreenshotButton.Hide();

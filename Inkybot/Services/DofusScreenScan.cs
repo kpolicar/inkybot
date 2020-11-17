@@ -24,34 +24,58 @@ namespace Inkybot
     public class DofusScreenScan
     {
         public static readonly Responsive.Measurement HistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 838),
+            Rectangle = Rect.FromCoords(346, 117, 590, 844),
             Width = 1920,
             Height = 1017
         };
-        
+
         public static readonly Responsive.Measurement ShortHistoryBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 752, 590, 838),
+            Rectangle = Rect.FromCoords(346, 752, 590, 842),
             Width = 1920,
             Height = 1017
         };
 
         public static readonly Responsive.Measurement StatValuesBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(745, 307, 973, 836),
+            Rectangle = Rect.FromCoords(745, 307, 973, 842),
             Width = 1920,
             Height = 1017
         };
 
         public static readonly Responsive.Measurement StatMinBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(645, 307, 695, 836),
+            Rectangle = Rect.FromCoords(645, 307, 695, 842),
+            Width = 1920,
+            Height = 1017
+        };
+        
+        public static readonly Responsive.Measurement StatMaxBoundsMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(695, 307, 745, 842),
             Width = 1920,
             Height = 1017
         };
 
-        public static readonly Responsive.Measurement StatMaxBoundsMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(695, 307, 745, 836),
-            Width = 1920,
-            Height = 1017
-        };
+        public static Responsive.Measurement[] StatMinBoundsIndividualLineMeasurements =>
+            SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMinBoundsMeasurement);
+        
+        public static Responsive.Measurement[] StatMaxBoundsIndividualLineMeasurements =>
+            SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBoundsMeasurement);
+
+        public static Responsive.Measurement[] SplitStatLineMeasurementsIntoIndividualLineMeasurements(Responsive.Measurement measurement) {
+            var b = measurement.Rectangle;
+            var n = 14;
+
+            var measurements = new Responsive.Measurement[n];
+            for (int i = 0; i < n; ++i) {
+                var smallerRect = new Rect(b.X1, b.Y1 + (int) (1f * b.Height / n * i), b.Width, b.Height / n);
+                var m = new Responsive.Measurement {
+                    Rectangle = smallerRect,
+                    Height = measurement.Height,
+                    Width = measurement.Width
+                };
+                measurements[i] = m;
+            }
+
+            return measurements;
+        }
         
         private static ScreenCapture screen;
         
@@ -87,7 +111,7 @@ namespace Inkybot
         }
 
         private void Init() {
-            if (lang != null && lang.Equals(Program.Lang)) return;
+            //if (lang != null && lang.Equals(Program.Lang)) return;
             
             lang = Program.Lang;
             screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
@@ -95,8 +119,8 @@ namespace Inkybot
             historyScanner = new TextScreenScanner(HistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
             shortHistoryScanner = new TextScreenScanner(ShortHistoryBoundsMeasurement, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
             statValuesScanner = new TextScreenScanner(StatValuesBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(150));
-            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
-            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(130));
+            statMinsScanner = new NumberScreenScanner(StatMinBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(300));
+            statMaxesScanner = new NumberScreenScanner(StatMaxBoundsMeasurement, SplitStatTextLines, new ResizeImagePreprocessor(300));
 
             historyScanner.PageProcessed += OnHistoryPageProcessed;
         }

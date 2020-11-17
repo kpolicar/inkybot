@@ -44,6 +44,7 @@ namespace Inkybot
                     return;
                 }
             } catch (HttpRequestException) {
+                button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
                 return;
             }

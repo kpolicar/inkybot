@@ -58,11 +58,6 @@ namespace Inkybot
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.mousePositionLabel = new System.Windows.Forms.Label();
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
-            this.statsMinsOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
-            this.statsMaxesOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
-            this.statsValuesOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
-            this.historyOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
-            this.shortHistoryOcrIndicatorRectangle = new Inkybot.Controls.Rectangle();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
@@ -275,36 +270,6 @@ namespace Inkybot
             this.subscriptionCheckTimer.Interval = 25000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
             // 
-            // statsOcrIndicatorRectangle
-            // 
-            resources.ApplyResources(this.statsValuesOcrIndicatorRectangle, "statsValuesOcrIndicatorRectangle");
-            this.statsValuesOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
-            this.statsValuesOcrIndicatorRectangle.Name = "statsValuesOcrIndicatorRectangle";
-            // 
-            // statsOcrIndicatorRectangle
-            // 
-            resources.ApplyResources(this.statsMinsOcrIndicatorRectangle, "statsMinsOcrIndicatorRectangle");
-            this.statsMinsOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
-            this.statsMinsOcrIndicatorRectangle.Name = "statsValuesOcrIndicatorRectangle";
-            // 
-            // statsOcrIndicatorRectangle
-            // 
-            resources.ApplyResources(this.statsMaxesOcrIndicatorRectangle, "statsMaxesOcrIndicatorRectangle");
-            this.statsMaxesOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
-            this.statsMaxesOcrIndicatorRectangle.Name = "statsMaxesOcrIndicatorRectangle";
-            // 
-            // historyOcrIndicatorRectangle
-            // 
-            resources.ApplyResources(this.historyOcrIndicatorRectangle, "historyOcrIndicatorRectangle");
-            this.historyOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
-            this.historyOcrIndicatorRectangle.Name = "historyOcrIndicatorRectangle";
-            // 
-            // shortHistoryOcrIndicatorRectangle
-            // 
-            resources.ApplyResources(this.shortHistoryOcrIndicatorRectangle, "shortHistoryOcrIndicatorRectangle");
-            this.shortHistoryOcrIndicatorRectangle.BackColor = System.Drawing.SystemColors.Control;
-            this.shortHistoryOcrIndicatorRectangle.Name = "shortHistoryOcrIndicatorRectangle";
-            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -312,11 +277,6 @@ namespace Inkybot
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
-            this.Controls.Add(this.statsValuesOcrIndicatorRectangle);
-            this.Controls.Add(this.historyOcrIndicatorRectangle);
-            this.Controls.Add(this.shortHistoryOcrIndicatorRectangle);
-            this.Controls.Add(this.statsMinsOcrIndicatorRectangle);
-            this.Controls.Add(this.statsMaxesOcrIndicatorRectangle);
             this.HelpButton = true;
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -342,12 +302,6 @@ namespace Inkybot
 
         private System.Windows.Forms.Label exoAttemptsLabel;
         private System.Windows.Forms.Label exoAttemptsValueLabel;
-
-        private Inkybot.Controls.Rectangle statsMinsOcrIndicatorRectangle;
-        private Inkybot.Controls.Rectangle statsMaxesOcrIndicatorRectangle;
-        private Inkybot.Controls.Rectangle statsValuesOcrIndicatorRectangle;
-        private Inkybot.Controls.Rectangle historyOcrIndicatorRectangle;
-        private Inkybot.Controls.Rectangle shortHistoryOcrIndicatorRectangle;
 
         private System.Windows.Forms.Button debugScreenshotButton;
 
