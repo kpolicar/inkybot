@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Domain;
@@ -19,7 +20,7 @@ namespace Inkybot.Services
         public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
         public event EventHandler<ItemEventArgs> FetchedItem;
         private IntPtr handle;
-        public ItemStatRepository lastScanResults;
+        public Item previousScannedItem;
         private DofusScreenScan scan;
 
         public void BindTo(IntPtr handle) {
@@ -53,10 +54,10 @@ namespace Inkybot.Services
             ScannedStats?.Invoke(this, new ScannedRegionEventArgs(scanResults));
             
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
-            var item = new Item(lastScanResults = stats);
+            var item = new Item(stats);
             FetchedItem?.Invoke(this, new ItemEventArgs(item));
 
-            return item;
+            return previousScannedItem = item;
         }
 
         public Dictionary<Stat, UserRune[]> Runes() {
@@ -70,9 +71,18 @@ namespace Inkybot.Services
         }
 
         public UserRune RuneQuantity(Rune rune) {
-            // var itemInfo = 
-            // var column = 
-            throw new NotImplementedException();
+            var row = previousScannedItem.Stats
+                .Select((Value, Index) => new { Value, Index })
+                .Single(p => p.Value.stat == rune.stat)
+                .Index;
+            
+            var column = (int) rune.type;
+            var runeQuantityScan = scan.RuneQuantity(column, row).Result;
+            
+            return new UserRune(rune, runeQuantityScan.Quantity);
+        }
+
+        public void SetupForActiveItem() {
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Inkybot.Actions
         
         public override void Execute() {
             
-            var itemStats = screenDataProvider.lastScanResults;
+            var itemStats = screenDataProvider.previousScannedItem.Stats;
             var column = (int) Rune.type;
 
             for (var row = 0; row < itemStats.Length; row++) {

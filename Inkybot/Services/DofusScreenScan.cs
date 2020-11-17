@@ -111,6 +111,24 @@ namespace Inkybot.Services
                     .ToArray();
 
                 return stats;
+
+            }
+
+            public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
+                var runeBounds = Measurements.RuneBoxBounds(column, row);
+                runeScanner.SetRegion(runeBounds);
+                var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
+                var result = scanned.First();
+                
+                int runeQuantity;
+                var hasRune = int.TryParse(result, out runeQuantity);
+                runeQuantity = hasRune ? runeQuantity : 0;
+                
+                return new RuneQuantityScan {
+                    Column = column,
+                    Row = row,
+                    Quantity = runeQuantity,
+                };
             }
 
             public async Task<RuneQuantityScan[]> RunesQuantities() {

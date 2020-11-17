@@ -24,7 +24,7 @@ namespace Inkybot.Services
 
         public Config Config;
 
-        internal DofusDataProvider dataProvider;
+        internal ScreenReaderDataProvider dataProvider;
         internal IItemHistoryAnalyzer history;
 
         public Thread job;
@@ -67,7 +67,7 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (IsMaging) return;
-            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
 
             job = new Thread(DoMage);
