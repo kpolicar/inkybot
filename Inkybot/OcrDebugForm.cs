@@ -31,11 +31,13 @@ namespace Inkybot
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchData(image, true);
 
-            var item = dataProvider.Item();
-            foreach (var itemStat in item.Stats) {
-                var rune = new Rune(itemStat.stat, Rune.Type.Ra);
-                var quantity = dataProvider.RuneQuantity(rune);
-                Debug.WriteLine(quantity);
+            var item = dataProvider.LatestHistory();
+            foreach (var itemStat in item) {
+                if (!Equals(itemStat.attempted, default(StatChanged)))
+                    Debug.WriteLine(itemStat.attempted);
+                foreach (var statChanged in itemStat.fell) {
+                    Debug.WriteLine(statChanged);
+                }
             }
             // var runes = dataProvider.Runes();
             //

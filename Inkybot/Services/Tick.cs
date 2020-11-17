@@ -34,7 +34,7 @@ namespace Inkybot.Services
                         DoRuneCheckForChanges();
                         break;
                     case State.CALCULATING_SINK_CHANGE:
-                        DoHistoryCheckForChanges();
+                        CalculateSinkChange();
                         break;
                 }
             }
@@ -42,6 +42,7 @@ namespace Inkybot.Services
             private void DoMainMageAction() {
                 var action = job.previousAction = DoAction();
 
+                Thread.Sleep(200);
                 // Have to check if user has stopped maging during this sleep
                 if (!job.IsMaging)
                     return;
@@ -57,6 +58,11 @@ namespace Inkybot.Services
             }
 
             private void DoRuneCheckForChanges() {
+                if (!job.changeTimeout.IsRunning)
+                    job.changeTimeout.Restart();
+                if (job.changeTimeout.ElapsedMilliseconds > 5000)
+                    HandleChangeCheckTimeout();
+                
                 if (!(job.previousAction is RuneAction previousAction)) return;
 
                 var userRune = job.dataProvider.RuneQuantity(previousAction.Rune);
@@ -65,42 +71,28 @@ namespace Inkybot.Services
                     .Runes[previousAction.Rune.stat]
                     .First(userRune => userRune.Rune == previousAction.Rune);
 
-                Debug.WriteLine($"current: {userRune.Quantity}, previous: {previousUserRune.Quantity}");
-                if (userRune.Quantity == previousUserRune.Quantity) {
-                    Debug.WriteLine("it's the same boi!");
-                } else {
-                    Debug.WriteLine("it's different!");
+                if (userRune.Quantity != previousUserRune.Quantity) {
                     job.state = State.CALCULATING_SINK_CHANGE;
+                    job.changeTimeout.Stop();
                 }
 
                 Thread.Sleep(30);
             }
 
-            private void DoHistoryCheckForChanges() {
-                if (!job.historyCheckTimeout.IsRunning)
-                    job.historyCheckTimeout.Restart();
-                if (job.historyCheckTimeout.ElapsedMilliseconds > 5000)
-                    HandleHistoryCheckTimeout();
+            private void CalculateSinkChange() {
+                // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
+                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
 
-                var itemHistory = job.history.Analyse(job.dataProvider.History());
-
-                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
-
-                if (!historyHasChanged) {
-                    Thread.Sleep(300);
-                } else {
-                    var historyRecord = itemHistory.history.Last();
-                    ChangeSinkFromLastAction(historyRecord);
-                    EnforceValidPreviousActionResult(historyRecord);
-                    job.state = State.STANDARD;
-                    job.historyCheckTimeout.Stop();
-                }
+                var historyRecord = itemLatestHistory.history.Last();
+                ChangeSinkFromLastAction(historyRecord);
+                EnforceValidPreviousActionResult(historyRecord);
+                job.state = State.STANDARD;
             }
 
-            private void HandleHistoryCheckTimeout() {
-                job.historyCheckTimeout.Stop();
-                throw new HistoryChangeCheckTimeoutException(
-                    "Mage history was expected to change within 5 seconds, but did not. " +
+            private void HandleChangeCheckTimeout() {
+                job.changeTimeout.Stop();
+                throw new ChangeCheckTimeoutException(
+                    "Rune combination was expected to perform within 5 seconds, but did not. " +
                     "This may be the result of a poor internet connection or you may have run out of runes.");
             }
 
@@ -148,11 +140,6 @@ namespace Inkybot.Services
                 var action = job.magus.ResolveAction(item, job.previousAction);
 
                 job.actions.Execute(action);
-
-                if (action is Combine) {
-                    var itemHistory = job.history.Analyse(job.dataProvider.History());
-                    job.previousHistory = itemHistory;
-                }
 
                 return action;
             }

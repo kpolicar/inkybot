@@ -193,6 +193,7 @@
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
         <Compile Include="Events\PathChangedEventArgs.cs" />
+        <Compile Include="Events\ScanBoundsChanged.cs" />
         <Compile Include="Events\ScannedRegionEventArgs.cs" />
         <Compile Include="Events\TesseractPageProcessed.cs" />
         <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
@@ -200,7 +201,7 @@
         <Compile Include="Exceptions\CouldNotResolveStatValueException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentStatLineException.cs" />
-        <Compile Include="Exceptions\HistoryChangeCheckTimeoutException.cs" />
+        <Compile Include="Exceptions\ChangeCheckTimeoutException.cs" />
         <Compile Include="Exceptions\MagingException.cs" />
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />

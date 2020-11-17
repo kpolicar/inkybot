@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
+using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Tesseract;
@@ -19,25 +20,36 @@ namespace Inkybot
         #if DEBUG
         private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         #endif
+        private Rectangle latestHistoryOcrIndicatorControl;
 
         private void InitOcrIndicators() {
             RegisterOcrIndicator(Measurements.StatMinBounds);
             RegisterOcrIndicator(Measurements.StatMaxBounds);
             RegisterOcrIndicator(Measurements.StatValuesBounds);
-            RegisterOcrIndicator(Measurements.HistoryBounds);
             //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
+            latestHistoryOcrIndicatorControl = RegisterOcrIndicator(ScreenReaderDataProvider.DofusScreenScan.LatestHistoryBounds);
+
+            ScreenReaderDataProvider.DofusScreenScan.LatestHistoryBoundsChanged += OnLatestHistoryBoundsChanged;
         }
 
-        private void RegisterOcrIndicator(Responsive.Measurement measurement) {
+        private void OnLatestHistoryBoundsChanged(object sender, ScanBoundsChanged e) {
+            ocrIndicators[latestHistoryOcrIndicatorControl] = e.ScanBounds;
+            BeginInvoke(new MethodInvoker(() => {
+                FitOcrIndicatorRectangle(latestHistoryOcrIndicatorControl, e.ScanBounds);
+            }));
+        }
+
+        private Rectangle RegisterOcrIndicator(Responsive.Measurement measurement) {
             var control = new Rectangle();
             Controls.Add(control);
             control.BackColor = System.Drawing.SystemColors.Control;
             
             ocrIndicators.Add(control, measurement);
+            return control;
         }
 
         private void debugButton_Click(object sender, EventArgs e) {

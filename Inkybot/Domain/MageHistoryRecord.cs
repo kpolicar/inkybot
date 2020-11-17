@@ -18,6 +18,10 @@ namespace Inkybot.Domain
             this.stat = stat;
             this.value = value;
         }
+
+        public override string ToString() {
+            return $"{stat} {value}";
+        }
     }
 
     public class MageHistoryRecord

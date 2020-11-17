@@ -27,10 +27,13 @@ namespace Inkybot.Services
     {
         public class DofusScreenScan
         {
+            public static event EventHandler<ScanBoundsChanged> LatestHistoryBoundsChanged;
+            public static Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
+            
             private static ScreenCapture screen;
 
             private static ScreenScanner historyScanner;
-            private static ScreenScanner shortHistoryScanner;
+            private static ScreenScanner latestHistoryScanner;
             private static ScreenScanner statValuesScanner;
             private static ScreenScanner statMinsScanner;
             private static ScreenScanner statMaxesScanner;
@@ -69,7 +72,7 @@ namespace Inkybot.Services
 
                 historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                     new ResizeImagePreprocessor(200));
-                shortHistoryScanner = new TextScreenScanner(Measurements.ShortHistoryBounds, SplitHistoryTextLines,
+                latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                     new ResizeImagePreprocessor(200));
                 statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                     new ResizeImagePreprocessor(150));
@@ -80,7 +83,7 @@ namespace Inkybot.Services
                 runeScanner =
                     new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
 
-                historyScanner.PageProcessed += OnHistoryPageProcessed;
+                latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
             }
 
             private string[] SplitHistoryTextLines(string text) {
@@ -132,6 +135,8 @@ namespace Inkybot.Services
             }
 
             public async Task<RuneQuantityScan[]> RunesQuantities() {
+                LatestHistoryBounds = Measurements.HistoryBounds;
+                LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
                 var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
 
                 var scanIndex = 0;
@@ -159,12 +164,33 @@ namespace Inkybot.Services
                 return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
             }
 
-            private void OnHistoryPageProcessed(object sender, TesseractPageProcessed e) {
+            public async Task<string[]> LatestHistory() {
+                latestHistoryScanner.SetRegion(LatestHistoryBounds);
+                return await latestHistoryScanner.ScanRegionAsync(screenshot, saveToDisk);
+            }
+
+            private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
+                if (e.Text == string.Empty) return;
+                
+                var bounds = Measurements.ShortHistoryBounds.Rectangle;
+                var historyBounds = Measurements.HistoryBounds;
+                var maxY = historyBounds.Rectangle.Y2 - bounds.Height;
+                
                 var page = e.Page;
-                var region = page.GetSegmentedRegions(0).FirstOrDefault();
+                var region = page.GetSegmentedRegions(PageIteratorLevel.TextLine).LastOrDefault();
                 if (region == default) return;
 
-                Debug.WriteLine("Segmented history region: " + region);
+                var lastY = LatestHistoryBounds.Rectangle.Y1 + (region.Bottom / 2);
+
+                var y1 = lastY < maxY ? lastY : maxY;
+                Debug.WriteLine(region);
+                
+                LatestHistoryBounds = new Responsive.Measurement {
+                    Rectangle = new Rect(bounds.X1, y1, bounds.Width, bounds.Height),
+                    Height = screenshot.Height,
+                    Width = screenshot.Width,
+                };
+                LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             }
 
             public Image TakeScreenshot() {

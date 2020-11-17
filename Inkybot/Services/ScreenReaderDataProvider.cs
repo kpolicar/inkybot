@@ -11,6 +11,7 @@ using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Inkybot.Helpers;
 
 namespace Inkybot.Services
 {
@@ -35,6 +36,18 @@ namespace Inkybot.Services
 
         public void FetchData(Image image, bool saveToDisk=false) {
             scan = new DofusScreenScan(image, saveToDisk);
+        }
+
+        public IEnumerable<MageHistoryRecord> LatestHistory() {
+            var scanResults = scan.LatestHistory()
+                .Result
+                .Select(line => line.Replace("\n", " "))
+                .ToArray();
+            ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            
+            var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
+
+            return historyResults;
         }
 
         public IEnumerable<MageHistoryRecord> History() {

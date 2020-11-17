@@ -66,7 +66,7 @@ namespace Inkybot.Services
 
                 var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
-                if (!saveToDisk) {
+                if (saveToDisk) {
                     var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                                      @"/debug/images/";
                     Directory.CreateDirectory(folderPath);
@@ -76,9 +76,9 @@ namespace Inkybot.Services
                 }
 
                 using (var ocrPage = ProcessImage(engine, image)) {
-                    PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage));
-
                     var scanned = ocrPage.GetText();
+                    PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
+                    
                     Trace.WriteLine(Regex.Escape(scanned));
 
                     var textLines = split?.Invoke(scanned) ?? new[] {scanned};

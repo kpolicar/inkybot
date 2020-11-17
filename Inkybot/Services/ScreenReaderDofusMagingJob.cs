@@ -34,7 +34,7 @@ namespace Inkybot.Services
         private float sink;
         internal State state;
         private ConfigManager configManager;
-        internal Stopwatch historyCheckTimeout;
+        internal Stopwatch changeTimeout;
         internal CurrentItemInfo itemInfo;
         
 
@@ -45,7 +45,7 @@ namespace Inkybot.Services
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
             configManager.ConfigModified += OnConfigModified;
             
-            historyCheckTimeout = new Stopwatch();
+            changeTimeout = new Stopwatch();
         }
 
         public bool IsMaging { get; private set; }
@@ -80,7 +80,7 @@ namespace Inkybot.Services
             
             IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
-            historyCheckTimeout.Reset();
+            changeTimeout.Reset();
         }
 
         private void PrepareMage() {
