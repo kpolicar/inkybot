@@ -18,7 +18,6 @@ namespace Inkybot.Adapters
 
         public ItemStatRepository ToItemStats() {
             return new ItemStatRepository(statLines.Select(mageEntry => {
-                Debug.WriteLine(mageEntry);
                 var changes = SegmentItemStatLine(mageEntry);
 
                 try {

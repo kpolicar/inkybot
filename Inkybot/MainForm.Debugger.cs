@@ -39,7 +39,7 @@ namespace Inkybot
         private void OnLatestHistoryBoundsChanged(object sender, ScanBoundsChanged e) {
             ocrIndicators[latestHistoryOcrIndicatorControl] = e.ScanBounds;
             BeginInvoke(new MethodInvoker(() => {
-                FitOcrIndicatorRectangle(latestHistoryOcrIndicatorControl, e.ScanBounds);
+                FitOcrIndicatorRectangle(latestHistoryOcrIndicatorControl, ocrIndicators[latestHistoryOcrIndicatorControl]);
             }));
         }
 

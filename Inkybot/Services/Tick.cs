@@ -17,6 +17,7 @@ namespace Inkybot.Services
         {
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;
+            private static Task previousTickDeferredExecutionTask;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
@@ -24,14 +25,16 @@ namespace Inkybot.Services
             }
 
             public void Execute() {
-                job.dataProvider.FetchData();
 
                 switch (job.state) {
                     case State.STANDARD:
                         DoMainMageAction();
                         break;
                     case State.EXECUTING_COMBINE:
-                        DoRuneCheckForChanges();
+                        if (job.previousAction is Combine previousCombine && previousCombine.Exo)
+                            DoHistoryCheckForChanges(); // todo fix
+                        else
+                            DoRuneCheckForChanges();
                         break;
                     case State.CALCULATING_SINK_CHANGE:
                         CalculateSinkChange();
@@ -42,15 +45,19 @@ namespace Inkybot.Services
             private void DoMainMageAction() {
                 var action = job.previousAction = DoAction();
 
-                Thread.Sleep(200);
-                // Have to check if user has stopped maging during this sleep
-                if (!job.IsMaging)
-                    return;
-                if (action is Combine combine) {
+                if (action is Combine)
                     job.state = State.EXECUTING_COMBINE;
-                    if (!combine.Exo)
+                
+                previousTickDeferredExecutionTask = Task.Run(() => {
+                    Thread.Sleep(300);
+                    // Have to check if user has stopped maging during this sleep
+                    if (!job.IsMaging)
+                        return;
+                    if (action is Combine combine && !combine.Exo) {
                         PersistRuneOnTable(combine);
-                }
+                    }
+                    Thread.Sleep(100);
+                });
             }
 
             private void PersistRuneOnTable(Combine action) {
@@ -63,7 +70,10 @@ namespace Inkybot.Services
                 if (job.changeTimeout.ElapsedMilliseconds > 5000)
                     HandleChangeCheckTimeout();
                 
-                if (!(job.previousAction is RuneAction previousAction)) return;
+                if (!(job.previousAction is RuneAction previousAction))
+                    throw new SystemException("Cannot check for changes (previous action has no information about rune)");
+                
+                job.dataProvider.FetchData();
 
                 var userRune = job.dataProvider.RuneQuantity(previousAction.Rune);
                 var previousUserRune = job
@@ -78,14 +88,40 @@ namespace Inkybot.Services
 
                 Thread.Sleep(30);
             }
+            
+            private void DoHistoryCheckForChanges() {
+                previousTickDeferredExecutionTask?.Wait();
+                
+                if (!job.changeTimeout.IsRunning)
+                    job.changeTimeout.Restart();
+                if (job.changeTimeout.ElapsedMilliseconds > 5000)
+                    HandleChangeCheckTimeout();
+
+                var itemHistory = job.history.Analyse(job.dataProvider.History());
+
+                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
+
+                if (!historyHasChanged) {
+                    Thread.Sleep(300);
+                } else {
+                    var historyRecord = itemHistory.history.Last();
+                    ChangeSinkFromLastAction(historyRecord);
+                    EnforceValidPreviousActionResult(historyRecord);
+                    job.state = State.STANDARD;
+                    job.changeTimeout.Stop();
+                }
+            }
 
             private void CalculateSinkChange() {
+                job.dataProvider.FetchData();
+                
                 // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
                 var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
+                var historyRecord = itemLatestHistory.history.LastOrDefault();
 
-                var historyRecord = itemLatestHistory.history.Last();
-                ChangeSinkFromLastAction(historyRecord);
                 EnforceValidPreviousActionResult(historyRecord);
+
+                ChangeSinkFromLastAction(historyRecord);
                 job.state = State.STANDARD;
             }
 
@@ -137,7 +173,15 @@ namespace Inkybot.Services
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
 
+                previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item, job.previousAction);
+
+                if ((action is Combine combine) && combine.Exo) {
+
+                    previousTickDeferredExecutionTask = Task.Run(() => {
+                        job.previousHistory = job.history.Analyse(job.dataProvider.History());
+                    });
+                }
 
                 job.actions.Execute(action);
 

@@ -171,8 +171,13 @@ namespace Inkybot.Services
 
             private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
                 if (e.Text == string.Empty) return;
-                
-                var bounds = Measurements.ShortHistoryBounds.Rectangle;
+
+                var bounds = new Responsive.Measurement {
+                    Rectangle = Rect.FromCoords(346, 117, 590, 242),
+                    Width = 1920,
+                    Height = 1017
+                }.Rectangle;
+                //var bounds = Measurements.ShortHistoryBounds.Rectangle;
                 var historyBounds = Measurements.HistoryBounds;
                 var maxY = historyBounds.Rectangle.Y2 - bounds.Height;
                 

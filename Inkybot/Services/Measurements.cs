@@ -63,7 +63,7 @@ namespace Inkybot.Services
         };
         
         public static readonly Responsive.Measurement ShortHistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 239),
+            Rectangle = Rect.FromCoords(346, 117, 590, 242),
             Width = 1920,
             Height = 1017
         };

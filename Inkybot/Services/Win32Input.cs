@@ -33,7 +33,7 @@ namespace Inkybot.Services
 
         public void DoubleClick(int x, int y) {
             Click(x,y);
-            Thread.Sleep(100);
+            Thread.Sleep(50);
             Click(x,y);
         }
 
@@ -56,7 +56,7 @@ namespace Inkybot.Services
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
             DoubleClick(x, y);
-            Thread.Sleep(100);
+            Thread.Sleep(50);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.PostMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
         }
