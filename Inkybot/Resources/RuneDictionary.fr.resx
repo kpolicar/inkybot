@@ -126,31 +126,31 @@
     <data name="neutral_resistance" xml:space="preserve">
         <value>ré neutre</value>
     </data>
-    <data name="%neutral_resistance" xml:space="preserve">
+    <data name="per_neutral_resistance" xml:space="preserve">
         <value>ré per neutre</value>
     </data>
     <data name="earth_resistance" xml:space="preserve">
         <value>ré terre</value>
     </data>
-    <data name="%earth_resistance" xml:space="preserve">
+    <data name="per_earth_resistance" xml:space="preserve">
         <value>ré per terre</value>
     </data>
     <data name="fire_resistance" xml:space="preserve">
         <value>ré feu</value>
     </data>
-    <data name="%fire_resistance" xml:space="preserve">
+    <data name="per_fire_resistance" xml:space="preserve">
         <value>ré per feu</value>
     </data>
     <data name="water_resistance" xml:space="preserve">
         <value>ré eau</value>
     </data>
-    <data name="%water_resistance" xml:space="preserve">
+    <data name="per_water_resistance" xml:space="preserve">
         <value>ré per eau</value>
     </data>
     <data name="air_resistance" xml:space="preserve">
         <value>ré air</value>
     </data>
-    <data name="%air_resistance" xml:space="preserve">
+    <data name="per_air_resistance" xml:space="preserve">
         <value>ré per air</value>
     </data>
     <data name="critical_resistance" xml:space="preserve">

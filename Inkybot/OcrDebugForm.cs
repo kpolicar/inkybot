@@ -32,7 +32,15 @@ namespace Inkybot
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             dataProvider.FetchData(image, true);
 
-            dataProvider.Runes();
+            dataProvider.Item();
+            var runes = dataProvider.Runes();
+
+            foreach (var statRunes in runes) {
+                Debug.WriteLine(statRunes.Key);
+                foreach (var statRune in statRunes.Value) {
+                    Debug.WriteLine(statRune);
+                }
+            }
 
             // var history = new DofusMagingJob().history.Analyse(dataProvider.History());
             // foreach (var sad in history.history) {

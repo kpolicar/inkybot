@@ -65,7 +65,7 @@ namespace Inkybot.Resources {
         /// </summary>
         internal static string _air_resistance {
             get {
-                return ResourceManager.GetString("%air_resistance", resourceCulture);
+                return ResourceManager.GetString("per_air_resistance", resourceCulture);
             }
         }
         
@@ -74,7 +74,7 @@ namespace Inkybot.Resources {
         /// </summary>
         internal static string _earth_resistance {
             get {
-                return ResourceManager.GetString("%earth_resistance", resourceCulture);
+                return ResourceManager.GetString("per_earth_resistance", resourceCulture);
             }
         }
         
@@ -83,7 +83,7 @@ namespace Inkybot.Resources {
         /// </summary>
         internal static string _fire_resistance {
             get {
-                return ResourceManager.GetString("%fire_resistance", resourceCulture);
+                return ResourceManager.GetString("per_fire_resistance", resourceCulture);
             }
         }
         
@@ -101,7 +101,7 @@ namespace Inkybot.Resources {
         /// </summary>
         internal static string _neutral_resistance {
             get {
-                return ResourceManager.GetString("%neutral_resistance", resourceCulture);
+                return ResourceManager.GetString("per_neutral_resistance", resourceCulture);
             }
         }
         
@@ -110,7 +110,7 @@ namespace Inkybot.Resources {
         /// </summary>
         internal static string _water_resistance {
             get {
-                return ResourceManager.GetString("%water_resistance", resourceCulture);
+                return ResourceManager.GetString("per_water_resistance", resourceCulture);
             }
         }
         

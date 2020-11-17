@@ -133,31 +133,31 @@
     <data name="neutral_resistance" xml:space="preserve">
         <value>neutral res</value>
     </data>
-    <data name="%neutral_resistance" xml:space="preserve">
+    <data name="per_neutral_resistance" xml:space="preserve">
         <value>neutral res per</value>
     </data>
     <data name="earth_resistance" xml:space="preserve">
         <value>earth res</value>
     </data>
-    <data name="%earth_resistance" xml:space="preserve">
+    <data name="per_earth_resistance" xml:space="preserve">
         <value>earth res per</value>
     </data>
     <data name="fire_resistance" xml:space="preserve">
         <value>fire res</value>
     </data>
-    <data name="%fire_resistance" xml:space="preserve">
+    <data name="per_fire_resistance" xml:space="preserve">
         <value>fire res per</value>
     </data>
     <data name="water_resistance" xml:space="preserve">
         <value>water res</value>
     </data>
-    <data name="%water_resistance" xml:space="preserve">
+    <data name="per_water_resistance" xml:space="preserve">
         <value>water res per</value>
     </data>
     <data name="air_resistance" xml:space="preserve">
         <value>air res</value>
     </data>
-    <data name="%air_resistance" xml:space="preserve">
+    <data name="per_air_resistance" xml:space="preserve">
         <value>air res per</value>
     </data>
     <data name="critical_resistance" xml:space="preserve">

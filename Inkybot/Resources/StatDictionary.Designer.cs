@@ -61,56 +61,11 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to air res per.
-        /// </summary>
-        internal static string _air_resistance {
-            get {
-                return ResourceManager.GetString("%air_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to earth res per.
-        /// </summary>
-        internal static string _earth_resistance {
-            get {
-                return ResourceManager.GetString("%earth_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to fire res per.
-        /// </summary>
-        internal static string _fire_resistance {
-            get {
-                return ResourceManager.GetString("%fire_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to loc.
         /// </summary>
         internal static string _lock {
             get {
                 return ResourceManager.GetString("lock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to neutral res per.
-        /// </summary>
-        internal static string _neutral_resistance {
-            get {
-                return ResourceManager.GetString("%neutral_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to water res per.
-        /// </summary>
-        internal static string _water_resistance {
-            get {
-                return ResourceManager.GetString("%water_resistance", resourceCulture);
             }
         }
         
@@ -399,6 +354,51 @@ namespace Inkybot.Resources {
         internal static string neutral_steal {
             get {
                 return ResourceManager.GetString("neutral_steal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to air res per.
+        /// </summary>
+        internal static string per_air_resistance {
+            get {
+                return ResourceManager.GetString("per_air_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to earth res per.
+        /// </summary>
+        internal static string per_earth_resistance {
+            get {
+                return ResourceManager.GetString("per_earth_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to fire res per.
+        /// </summary>
+        internal static string per_fire_resistance {
+            get {
+                return ResourceManager.GetString("per_fire_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to neutral res per.
+        /// </summary>
+        internal static string per_neutral_resistance {
+            get {
+                return ResourceManager.GetString("per_neutral_resistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to water res per.
+        /// </summary>
+        internal static string per_water_resistance {
+            get {
+                return ResourceManager.GetString("per_water_resistance", resourceCulture);
             }
         }
         
