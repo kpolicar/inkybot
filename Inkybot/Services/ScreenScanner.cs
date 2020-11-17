@@ -15,112 +15,124 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot.Services
 {
-    public class ScreenScanner
+    public partial class ScreenReaderDataProvider
     {
-        public event EventHandler<TesseractPageProcessed> PageProcessed;
+        public class ScreenScanner
+        {
+            public event EventHandler<TesseractPageProcessed> PageProcessed;
 
-        private TesseractEngine engine;
-        private Responsive.Measurement regionOfInterest;
-        private Func<string, string[]> split;
-        private ImagePreprocessor preprocessor;
-        private PageSegMode segMode;
+            private TesseractEngine engine;
+            private Responsive.Measurement regionOfInterest;
+            private Func<string, string[]> split;
+            private ImagePreprocessor preprocessor;
+            private PageSegMode segMode;
 
-        public ScreenScanner(Responsive.Measurement regionOfInterest,
-            Func<string, string[]> split = null,
-            ImagePreprocessor preprocessor = null,
-            PageSegMode segMode = PageSegMode.SingleBlock) {
-            engine = new TesseractEngine(
-                "./Resources/Tesseract",
-                Program.Lang.ThreeLetterISOLanguageName,
-                EngineMode.Default);
-            this.preprocessor = preprocessor ?? new ImagePreprocessor();
-            this.regionOfInterest = regionOfInterest;
-            this.split = split;
-            this.segMode = segMode;
-        }
-        
-        public void SetVariables(Action<TesseractEngine> callback) {
-            callback(engine);
-        }
-        
-        public void SetRegion(Responsive.Measurement regionOfInterest) {
-            this.regionOfInterest = regionOfInterest;
-        }
-        
-        public Rectangle CalculateBounds(Image image) {
-            return Responsive.ResponsiveRectangle(regionOfInterest, image.Width, image.Height);
-        }
-        public async Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
-            var result = new string[] { };
-            var task = Task.Run(() => {
-                result = ScanRegion(screenshot, saveToDisk);
-            });
-            task.Wait();
-
-            return result;
-        }
-
-        public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
-            var bounds = CalculateBounds(screenshot);
-            
-            var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
-
-            if (!saveToDisk) {
-                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images/";
-                Directory.CreateDirectory(folderPath);
-                var fileName = Path.GetRandomFileName() + ".bmp";
-                
-                PixConverter.ToPix(image).Save(folderPath+"/"+fileName);
+            public ScreenScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]> split = null,
+                ImagePreprocessor preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock) {
+                engine = new TesseractEngine(
+                    "./Resources/Tesseract",
+                    Program.Lang.ThreeLetterISOLanguageName,
+                    EngineMode.Default);
+                this.preprocessor = preprocessor ?? new ImagePreprocessor();
+                this.regionOfInterest = regionOfInterest;
+                this.split = split;
+                this.segMode = segMode;
             }
 
-            using (var ocrPage = ProcessImage(engine, image)) {
-                PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage));
-                
-                var scanned = ocrPage.GetText();
-                Trace.WriteLine(Regex.Escape(scanned));
-                
-                var textLines = split?.Invoke(scanned) ?? new [] { scanned };
+            public void SetVariables(Action<TesseractEngine> callback) {
+                callback(engine);
+            }
 
-                return textLines
-                    .Select(text => text.Replace("\n", " "))
-                    .ToArray();
+            public void SetRegion(Responsive.Measurement regionOfInterest) {
+                this.regionOfInterest = regionOfInterest;
+            }
+
+            public Rectangle CalculateBounds(Image image) {
+                return Responsive.ResponsiveRectangle(regionOfInterest, image.Width, image.Height);
+            }
+
+            public async Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
+                var result = new string[] { };
+                var task = Task.Run(() => { result = ScanRegion(screenshot, saveToDisk); });
+                task.Wait();
+
+                return result;
+            }
+
+            public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
+                var bounds = CalculateBounds(screenshot);
+
+                var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+
+                if (!saveToDisk) {
+                    var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
+                                     @"/debug/images/";
+                    Directory.CreateDirectory(folderPath);
+                    var fileName = Path.GetRandomFileName() + ".bmp";
+
+                    PixConverter.ToPix(image).Save(folderPath + "/" + fileName);
+                }
+
+                using (var ocrPage = ProcessImage(engine, image)) {
+                    PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage));
+
+                    var scanned = ocrPage.GetText();
+                    Trace.WriteLine(Regex.Escape(scanned));
+
+                    var textLines = split?.Invoke(scanned) ?? new[] {scanned};
+
+                    return textLines
+                        .Select(text => text.Replace("\n", " "))
+                        .ToArray();
+                }
+            }
+
+            private Page ProcessImage(TesseractEngine engine, Bitmap image) {
+                try {
+                    return engine.Process(image, segMode);
+                } catch (InvalidOperationException exception) {
+                    Console.WriteLine(exception.Message);
+                    throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.",
+                        exception);
+                }
             }
         }
 
-        private Page ProcessImage(TesseractEngine engine, Bitmap image) {
-            try {
-                return engine.Process(image, segMode);
-            } catch (InvalidOperationException exception) {
-                Console.WriteLine(exception.Message);
-                throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.", exception);
+        public class TextScreenScanner : ScreenScanner
+        {
+            public TextScreenScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]> split = null,
+                ImagePreprocessor preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => {
+                    engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
+                    engine.SetVariable("tessedit_enable_dict_correction", 1);
+                    engine.SetVariable("language_model_penalty_non_freq_dict_word", 1);
+                    engine.SetVariable("language_model_penalty_non_dict_word", 1);
+                });
             }
         }
-    }
-    
-    public class TextScreenScanner : ScreenScanner
-    {
-        public TextScreenScanner(Responsive.Measurement regionOfInterest,
-            Func<string, string[]> split = null,
-            ImagePreprocessor preprocessor = null,
-            PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
-            SetVariables(engine => {
-                engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
-                engine.SetVariable("tessedit_enable_dict_correction", 1);
-                engine.SetVariable("language_model_penalty_non_freq_dict_word", 1);
-                engine.SetVariable("language_model_penalty_non_dict_word", 1);
-            });
+
+        public class NumberScreenScanner : ScreenScanner
+        {
+            public NumberScreenScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]> split = null,
+                ImagePreprocessor preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890-"); });
+            }
         }
-    }
-    
-    public class NumberScreenScanner : ScreenScanner
-    {
-        public NumberScreenScanner(Responsive.Measurement regionOfInterest,
-            Func<string, string[]> split = null,
-            ImagePreprocessor preprocessor = null,
-            PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
-            SetVariables(engine => {
-                engine.SetVariable("tessedit_char_whitelist", "01234567890-");
-            });
+
+        public class PositiveNumberScreenScanner : ScreenScanner
+        {
+            public PositiveNumberScreenScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]> split = null,
+                ImagePreprocessor preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890"); });
+            }
         }
     }
 }

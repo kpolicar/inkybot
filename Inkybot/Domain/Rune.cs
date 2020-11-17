@@ -58,5 +58,9 @@ namespace Inkybot.Domain
         }
 
         public float Sink => stat.SinkValue * IncreaseInValue;
+
+        public override string ToString() {
+            return DisplayName;
+        }
     }
 }

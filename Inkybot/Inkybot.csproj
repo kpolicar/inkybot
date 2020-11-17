@@ -146,6 +146,7 @@
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
+        <Compile Include="Adapters\DofusStatUserRunesOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
         <Compile Include="Api\ApiConnection.cs">
           <Link>Api\ApiConnection.cs</Link>
@@ -185,6 +186,7 @@
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
+        <Compile Include="Domain\UserRune.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
@@ -270,6 +272,9 @@
           <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Measurements.cs" />
+        <Compile Include="Services\RuneQuantityScan.cs">
+          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\ScreenScanner.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>

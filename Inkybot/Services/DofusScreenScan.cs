@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Inkybot.Services;
@@ -20,124 +21,140 @@ using Debug = System.Diagnostics.Debug;
 using Enumerable = Inkybot.Helpers.Enumerable;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
-namespace Inkybot
+namespace Inkybot.Services
 {
-    public class DofusScreenScan
+    public partial class ScreenReaderDataProvider
     {
-        private static ScreenCapture screen;
-        
-        private static ScreenScanner historyScanner;
-        private static ScreenScanner shortHistoryScanner;
-        private static ScreenScanner statValuesScanner;
-        private static ScreenScanner statMinsScanner;
-        private static ScreenScanner statMaxesScanner;
-        private static ScreenScanner runeScanner;
+        public class DofusScreenScan
+        {
+            private static ScreenCapture screen;
 
-        private static CultureInfo lang;
-        private readonly IntPtr handle;
-        private readonly Image screenshot;
-        private bool saveToDisk;
+            private static ScreenScanner historyScanner;
+            private static ScreenScanner shortHistoryScanner;
+            private static ScreenScanner statValuesScanner;
+            private static ScreenScanner statMinsScanner;
+            private static ScreenScanner statMaxesScanner;
+            private static ScreenScanner runeScanner;
+
+            private static CultureInfo lang;
+            private readonly IntPtr handle;
+            private readonly Image screenshot;
+            private bool saveToDisk;
 
 
-        public DofusScreenScan(Image image, bool saveToDisk = false) {
-            Init();
-            this.screenshot = image;
-        }
-
-        public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
-            Init();
-            handle = hwnd;
-            screenshot = TakeScreenshot();
-            this.saveToDisk = saveToDisk;
-            
-            if (saveToDisk) {
-                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"/debug/images/";
-                Directory.CreateDirectory(folderPath);
-                screenshot.Save(folderPath+Path.GetRandomFileName()+".png");
+            public DofusScreenScan(Image image, bool saveToDisk = false) {
+                Init();
+                this.screenshot = image;
             }
-        }
 
-        private void Init() {
-            //if (lang != null && lang.Equals(Program.Lang)) return;
-            
-            lang = Program.Lang;
-            screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
-            
-            historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
-            shortHistoryScanner = new TextScreenScanner(Measurements.ShortHistoryBounds, SplitHistoryTextLines, new ResizeImagePreprocessor(200));
-            statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines, new ResizeImagePreprocessor(150));
-            statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines, new ResizeImagePreprocessor(300));
-            statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines, new ResizeImagePreprocessor(300));
-            runeScanner = new NumberScreenScanner(null, null, new ResizeImagePreprocessor(300), PageSegMode.SingleChar);
+            public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
+                Init();
+                handle = hwnd;
+                screenshot = TakeScreenshot();
+                this.saveToDisk = saveToDisk;
 
-            historyScanner.PageProcessed += OnHistoryPageProcessed;
-        }
+                if (saveToDisk) {
+                    var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
+                                     @"/debug/images/";
+                    Directory.CreateDirectory(folderPath);
+                    screenshot.Save(folderPath + Path.GetRandomFileName() + ".png");
+                }
+            }
 
-        private string[] SplitHistoryTextLines(string text) {
-            return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
-                .Where(s => s != string.Empty)
-                .Select(result => result.Replace("\n", " "))
-                .ToArray();
-        }
+            private void Init() {
+                //if (lang != null && lang.Equals(Program.Lang)) return;
 
-        private string[] SplitStatTextLines(string text) {
-            return text.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        }
+                lang = Program.Lang;
+                screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
 
-        public async Task<string[]> Stats() {
-            var statValuesScanTask = statValuesScanner.ScanRegionAsync(screenshot, saveToDisk);
-            var statMinScanTask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
-            var statMaxScanTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
+                historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
+                    new ResizeImagePreprocessor(200));
+                shortHistoryScanner = new TextScreenScanner(Measurements.ShortHistoryBounds, SplitHistoryTextLines,
+                    new ResizeImagePreprocessor(200));
+                statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
+                    new ResizeImagePreprocessor(150));
+                statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
+                    new ResizeImagePreprocessor(300));
+                statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
+                    new ResizeImagePreprocessor(300));
+                runeScanner =
+                    new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
 
-            await Task.WhenAll(statValuesScanTask, statMinScanTask, statMaxScanTask);
-            
-            var statValues =  await statValuesScanTask;
-            var statMins = await statMinScanTask;
-            var statMaxes = await statMaxScanTask;
+                historyScanner.PageProcessed += OnHistoryPageProcessed;
+            }
 
-            var stats=  statValues
-                .ZipWithDefault(statMaxes, (value, max) => (max ?? "-") + " " + value)
-                .ZipWithDefault(statMins, (valuemax, min) => (min ?? "-") + " " + valuemax)
-                .ToArray();
+            private string[] SplitHistoryTextLines(string text) {
+                return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
+                    .Where(s => s != string.Empty)
+                    .Select(result => result.Replace("\n", " "))
+                    .ToArray();
+            }
 
-            return stats;
-        }
+            private string[] SplitStatTextLines(string text) {
+                return text.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+            }
 
-        public async Task<int[]> Runes() {
-            var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
+            public async Task<string[]> Stats() {
+                var statValuesScanTask = statValuesScanner.ScanRegionAsync(screenshot, saveToDisk);
+                var statMinScanTask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
+                var statMaxScanTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
 
-            var runes = runeBoxes.Select(runeBox => {
-                runeScanner.SetRegion(runeBox);
-                var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
-                var result = scanned.First();
+                await Task.WhenAll(statValuesScanTask, statMinScanTask, statMaxScanTask);
 
-                int runeQuantity;
-                var hasRune = int.TryParse(result, out runeQuantity);
-                runeQuantity = hasRune ? runeQuantity : 0;
+                var statValues = await statValuesScanTask;
+                var statMins = await statMinScanTask;
+                var statMaxes = await statMaxScanTask;
 
-                return runeQuantity;
-            }).ToArray();
-            
-            return runes;
-        }
+                var stats = statValues
+                    .ZipWithDefault(statMaxes, (value, max) => (max ?? "-") + " " + value)
+                    .ZipWithDefault(statMins, (valuemax, min) => (min ?? "-") + " " + valuemax)
+                    .ToArray();
 
-        public async Task<string[]> History() {
-            return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
-        }
+                return stats;
+            }
 
-        private void OnHistoryPageProcessed(object sender, TesseractPageProcessed e) {
-            var page = e.Page;
-            var region = page.GetSegmentedRegions(0).FirstOrDefault();
-            if (region == default) return;
-            
-            Debug.WriteLine("Segmented history region: "+region);
-        }
+            public async Task<RuneQuantityScan[]> RunesQuantities() {
+                var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
 
-        public Image TakeScreenshot() {
-            //times = times >= 3 ? times : ++times;
-            var bitmap = screen.CaptureWindow(handle);
+                var scanIndex = 0;
+                return runeBoxes.Select(runeBox => {
+                    runeScanner.SetRegion(runeBox);
+                    var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
+                    var result = scanned.First();
 
-            return bitmap;
+                    int runeQuantity;
+                    var hasRune = int.TryParse(result, out runeQuantity);
+                    runeQuantity = hasRune ? runeQuantity : 0;
+                    
+                    var scan = new RuneQuantityScan {
+                        Column = scanIndex / 14,
+                        Row = scanIndex % 14,
+                        Quantity = runeQuantity,
+                    };
+                    
+                    scanIndex++;
+                    return scan;
+                }).ToArray();
+            }
+
+            public async Task<string[]> History() {
+                return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
+            }
+
+            private void OnHistoryPageProcessed(object sender, TesseractPageProcessed e) {
+                var page = e.Page;
+                var region = page.GetSegmentedRegions(0).FirstOrDefault();
+                if (region == default) return;
+
+                Debug.WriteLine("Segmented history region: " + region);
+            }
+
+            public Image TakeScreenshot() {
+                //times = times >= 3 ? times : ++times;
+                var bitmap = screen.CaptureWindow(handle);
+
+                return bitmap;
+            }
         }
     }
 }

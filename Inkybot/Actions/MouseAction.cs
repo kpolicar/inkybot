@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Helpers;
+using Inkybot.Services;
 
 namespace Inkybot.Actions
 {

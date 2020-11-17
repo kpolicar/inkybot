@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Inkybot.Helpers;
 using Tesseract;
 
@@ -38,16 +40,13 @@ namespace Inkybot.Services
             return measurements;
         }
 
-        public static Responsive.Measurement[] RuneBoundsIndividualMeasurements {
+        public static IEnumerable<Responsive.Measurement> RuneBoundsIndividualMeasurements {
             get {
-                var measurements = new Responsive.Measurement[3*14];
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 14; j++) {
-                        var measurement = RuneBoxBounds(i, j);
-                        measurements[i * 10 + j] = measurement;
+                for (var i = 0; i < 3; i++) {
+                    for (var j = 0; j < 14; j++) {
+                        yield return RuneBoxBounds(i, j);
                     }
                 }
-                return measurements;
             }
         }
 

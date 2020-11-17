@@ -11,9 +11,9 @@ using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 
-namespace Inkybot
+namespace Inkybot.Services
 {
-    public class ScreenReaderDataProvider : DofusDataProvider
+    public partial class ScreenReaderDataProvider : DofusDataProvider
     {
         public event EventHandler<ScannedRegionEventArgs> ScannedStats;
         public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
@@ -59,10 +59,14 @@ namespace Inkybot
             return item;
         }
 
-        public int[] Runes() {
-            var scanResults = scan.Runes().Result;
+        public Dictionary<Stat, UserRune[]> Runes() {
+            var item = Item();
+            var scanResults = scan.RunesQuantities().Result;
 
-            return scanResults;
+            var userRunes = new DofusStatUserRunesOcrResultAdapter(item, scanResults).ToUserRunes();
+
+            return userRunes
+                .ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value);
         }
     }
 }
