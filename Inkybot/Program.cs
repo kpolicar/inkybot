@@ -63,8 +63,8 @@ namespace Inkybot
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new OcrDebugForm());
-            //Application.Run(new MainForm());
+            //Application.Run(new OcrDebugForm());
+            Application.Run(new MainForm());
 
             //Print();
         }

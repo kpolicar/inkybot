@@ -5,7 +5,8 @@ namespace Inkybot.Services
         internal enum State
         {
             STANDARD,
-            EXECUTING_COMBINE
+            EXECUTING_COMBINE,
+            CALCULATING_SINK_CHANGE
         }
     }
 }

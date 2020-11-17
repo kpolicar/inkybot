@@ -31,6 +31,9 @@ namespace Inkybot.Services
                         DoMainMageAction();
                         break;
                     case State.EXECUTING_COMBINE:
+                        DoRuneCheckForChanges();
+                        break;
+                    case State.CALCULATING_SINK_CHANGE:
                         DoHistoryCheckForChanges();
                         break;
                 }
@@ -62,11 +65,15 @@ namespace Inkybot.Services
                     .Runes[previousAction.Rune.stat]
                     .First(userRune => userRune.Rune == previousAction.Rune);
 
+                Debug.WriteLine($"current: {userRune.Quantity}, previous: {previousUserRune.Quantity}");
                 if (userRune.Quantity == previousUserRune.Quantity) {
-                    Debug.WriteLine("it's the same yeah");
+                    Debug.WriteLine("it's the same boi!");
                 } else {
                     Debug.WriteLine("it's different!");
+                    job.state = State.CALCULATING_SINK_CHANGE;
                 }
+
+                Thread.Sleep(30);
             }
 
             private void DoHistoryCheckForChanges() {
