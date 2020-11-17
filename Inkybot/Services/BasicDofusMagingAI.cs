@@ -146,7 +146,7 @@ namespace Inkybot.Services
                 if (previousCombine.Exo)
                     return selectRune();
                     
-                if (previousCombine.target.stat != itemMage.Stat || previousCombine.target.type != itemMage.Rune.type)
+                if (previousCombine.Rune.stat != itemMage.Stat || previousCombine.Rune.type != itemMage.Rune.type)
                     return selectRune();
             }
 

@@ -47,7 +47,23 @@ namespace Inkybot.Domain
         }
 
         private void PersistRuneOnTable(Combine action) {
-            job.actions.Execute(actions.SelectRune(action.target));
+            job.actions.Execute(actions.SelectRune(action.Rune));
+        }
+
+        private void DoRuneCheckForChanges() {
+            if (!(job.previousAction is RuneAction previousAction)) return;
+
+            var userRune = job.dataProvider.RuneQuantity(previousAction.Rune);
+            var previousUserRune = job
+                .itemInfo
+                .Runes[previousAction.Rune.stat]
+                .First(userRune => userRune.Rune == previousAction.Rune);
+
+            if (userRune.Quantity == previousUserRune.Quantity) {
+                Debug.WriteLine("it's the same yeah");
+            } else {
+                Debug.WriteLine("it's different!");
+            }
         }
 
         private void DoHistoryCheckForChanges() {
@@ -87,7 +103,7 @@ namespace Inkybot.Domain
             }
             
             var previousCombine = (Combine) job.previousAction;
-            var expectedStat = previousCombine.target.stat;
+            var expectedStat = previousCombine.Rune.stat;
 
             if (statLanded != expectedStat)
                 throw new UnexpectedMageResultException(
@@ -103,11 +119,11 @@ namespace Inkybot.Domain
             } catch (CouldNotResolveSinkException e) {
                 
                 var previousCombine = (Combine) job.previousAction;
-                sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink;
+                sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
                 
                 Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
                 Debug.WriteLine("sink change:" +
-                                (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.target.Sink));
+                                (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
             }
 
             job.Sink = Math.Max(0f, sink);

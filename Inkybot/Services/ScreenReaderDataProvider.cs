@@ -68,5 +68,9 @@ namespace Inkybot.Services
             return userRunes
                 .ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value);
         }
+
+        public UserRune RuneQuantity(Rune rune) {
+            throw new NotImplementedException();
+        }
     }
 }

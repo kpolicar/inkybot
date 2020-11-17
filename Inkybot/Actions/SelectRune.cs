@@ -7,7 +7,7 @@ using Rect = Tesseract.Rect;
 
 namespace Inkybot.Actions
 {
-    public class SelectRune : MouseAction
+    public class SelectRune : MouseAction, RuneAction
     {
         public bool SelectedExoRune;
         
@@ -35,12 +35,12 @@ namespace Inkybot.Actions
         };
         
         public ItemStat Target { get; set; }
-        private readonly Rune rune;
+        public Rune Rune { get; private set; }
         private Control targetControl;
 
         public SelectRune(Control targetControl, Rune rune) : base(targetControl) {
             this.targetControl = targetControl;
-            this.rune = rune;
+            Rune = rune;
         }
 
         public SelectRune(Control targetControl) : base(targetControl) {
@@ -62,15 +62,15 @@ namespace Inkybot.Actions
         public override void Execute() {
             
             var itemStats = screenDataProvider.lastScanResults;
-            var column = (int) rune.type;
+            var column = (int) Rune.type;
 
             for (var row = 0; row < itemStats.Length; row++) {
-                if (rune.stat != itemStats[row].stat)
+                if (Rune.stat != itemStats[row].stat)
                     continue;
 
                 var pos = RunePosition(column, row);
                 Input.CtrlDoubleClick(pos.X, pos.Y);
-                System.Diagnostics.Debug.WriteLine($"Rune changed to {rune.stat.DisplayName}");
+                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.DisplayName}");
                 return;
             }
 
@@ -90,14 +90,14 @@ namespace Inkybot.Actions
             Input.SelectAll();
             Thread.Sleep(50);
             
-            Input.TypeMessage(rune.DisplayName);
+            Input.TypeMessage(Rune.DisplayName);
             Thread.Sleep(2000);
             
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
             SelectedExoRune = true;
             
-            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {rune.stat.DisplayName}");
+            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.stat.DisplayName}");
         }
         
         private Point RunePosition(int column, int row) {

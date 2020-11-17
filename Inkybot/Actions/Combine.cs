@@ -5,7 +5,7 @@ using Tesseract;
 
 namespace Inkybot.Actions
 {
-    public class Combine : MouseAction
+    public class Combine : MouseAction, RuneAction
     {
         public static readonly Responsive.Measurement FinishItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1015, 225, 1015, 225),
@@ -14,12 +14,12 @@ namespace Inkybot.Actions
         };
         
         public bool Exo;
-        public Rune target;
+        public Rune Rune { get; private set; }
         private Control targetControl;
 
         public Combine(Control targetControl, Rune target, bool exo) : base(targetControl) {
             this.targetControl = targetControl;
-            this.target = target;
+            this.Rune = target;
             this.Exo = exo;
         }
 

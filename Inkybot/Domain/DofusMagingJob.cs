@@ -34,7 +34,7 @@ namespace Inkybot.Domain
         internal DofusMagingJobState state;
         private ConfigManager configManager;
         internal Stopwatch historyCheckTimeout;
-        private DofusMagingJobItemInfo itemInfo;
+        internal DofusMagingJobItemInfo itemInfo;
         
 
         public DofusMagingJob() {

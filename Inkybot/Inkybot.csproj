@@ -189,6 +189,7 @@
         </Compile>
         <Compile Include="Domain\Item.cs" />
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
+        <Compile Include="Domain\RuneAction.cs" />
         <Compile Include="Domain\UserRune.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
