@@ -97,6 +97,7 @@ namespace Inkybot.Services
                 if (job.changeTimeout.ElapsedMilliseconds > 5000)
                     HandleChangeCheckTimeout();
 
+                job.dataProvider.FetchData();
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
 
                 var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
@@ -176,7 +177,7 @@ namespace Inkybot.Services
                 previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item, job.previousAction);
 
-                if ((action is Combine combine) && combine.Exo) {
+                if (action is Combine combine && combine.Exo) {
 
                     previousTickDeferredExecutionTask = Task.Run(() => {
                         job.previousHistory = job.history.Analyse(job.dataProvider.History());

@@ -55,9 +55,9 @@ namespace Inkybot.Domain
             changed.Where(change => change.value < 0).ToArray();
 
         public static bool operator ==(MageHistoryRecord operand1, MageHistoryRecord operand2) {
-            if (operand1 == null && operand2 != null) return false;
-            if (operand1 != null && operand2 == null) return false;
-            if (operand1 == null && operand2 == null) return true;
+            if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return false;
+            if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
+            if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
             
             var comparison = operand1.changed.Zip(operand2.changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
@@ -68,9 +68,9 @@ namespace Inkybot.Domain
         }
 
         public static bool operator !=(MageHistoryRecord operand1, MageHistoryRecord operand2) {
-            if (operand1 == null && operand2 == null) return false;
-            if (operand1 != null && operand2 == null) return true;
-            if (operand1 == null && operand2 != null) return true;
+            if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
+            if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
+            if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return true;
             
             var comparison = operand1.changed.Zip(operand2.changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
