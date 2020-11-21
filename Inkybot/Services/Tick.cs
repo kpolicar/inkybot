@@ -25,14 +25,13 @@ namespace Inkybot.Services
             }
 
             public void Execute() {
-
                 switch (job.state) {
                     case State.STANDARD:
                         DoMainMageAction();
                         break;
                     case State.EXECUTING_COMBINE:
                         if (job.previousAction is Combine previousCombine && previousCombine.Exo)
-                            DoHistoryCheckForChanges(); // todo fix
+                            DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
                         break;
@@ -56,7 +55,7 @@ namespace Inkybot.Services
                     if (action is Combine combine && !combine.Exo) {
                         PersistRuneOnTable(combine);
                     }
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                 });
             }
 
@@ -114,15 +113,22 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
-                job.dataProvider.FetchData();
+
+                MageHistoryRecord latestChange;
+                do {
+                    if (!job.IsMaging)
+                        return;
+                    
+                    // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
+                    job.dataProvider.FetchData();
+                    var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
+                    latestChange = itemLatestHistory.history.LastOrDefault();
+                    Debug.WriteLine(latestChange);
+                } while (latestChange == default);
                 
-                // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
-                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
-                var historyRecord = itemLatestHistory.history.LastOrDefault();
+                EnforceValidPreviousActionResult(latestChange);
 
-                EnforceValidPreviousActionResult(historyRecord);
-
-                ChangeSinkFromLastAction(historyRecord);
+                ChangeSinkFromLastAction(latestChange);
                 job.state = State.STANDARD;
             }
 
@@ -135,9 +141,9 @@ namespace Inkybot.Services
 
             // Todo: We can also check if the expected result is correct by comparing sink change.
             private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
-                var attempted = lastHistoryRecord.attempted;
-                var statLanded = attempted.stat;
-                if (attempted.Equals(default(StatChanged)) || statLanded == null) {
+                var attempted = lastHistoryRecord?.attempted;
+                var statLanded = attempted?.stat;
+                if (attempted == null || statLanded == null) {
                     return;
                 }
 
@@ -160,7 +166,6 @@ namespace Inkybot.Services
                     var previousCombine = (Combine) job.previousAction;
                     sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
 
-                    Debug.WriteLine("Could not resolve history's change in sink, defaulting to applied rune!");
                     Debug.WriteLine("sink change:" +
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }

@@ -123,9 +123,11 @@ namespace Inkybot
         }
 
         private void onWindowResize(object sender, EventArgs e) {
-            foreach (var ocrIndicatorControl in ocrIndicators) {
-                FitOcrIndicatorRectangle(ocrIndicatorControl.Key, ocrIndicatorControl.Value);
-            }
+            BeginInvoke(new MethodInvoker(() => {
+                foreach (var ocrIndicatorControl in ocrIndicators) {
+                    FitOcrIndicatorRectangle(ocrIndicatorControl.Key, ocrIndicatorControl.Value);
+                }
+            }));
         }
         
         private void StopDebugging() {

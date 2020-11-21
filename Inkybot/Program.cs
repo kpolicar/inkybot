@@ -30,8 +30,8 @@ namespace Inkybot
             public const string GrantSecret = "***REMOVED***";
         #endif
         public const string VersionNumber = "9";
-        public const string Version = "v0.8.1 Beta";
-        public const string VersionEndpoint = "v0.8.1beta";
+        public const string Version = "v0.9 Beta";
+        public const string VersionEndpoint = "v0.9beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -69,6 +69,7 @@ namespace Inkybot
             //Print();
         }
 
+        #if DEBUG
         private static void Print() {
             var StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
                 .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
@@ -92,6 +93,7 @@ namespace Inkybot
                 }
             }
         }
+        #endif
         
         private static void SetAppLocale() {
             if (Properties.Settings.Default.locale == Properties.Resources.FrenchLocaleCode) {

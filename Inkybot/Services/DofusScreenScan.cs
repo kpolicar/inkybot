@@ -172,28 +172,28 @@ namespace Inkybot.Services
             private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
                 if (e.Text == string.Empty) return;
 
-                var bounds = new Responsive.Measurement {
-                    Rectangle = Rect.FromCoords(346, 117, 590, 242),
-                    Width = 1920,
-                    Height = 1017
-                }.Rectangle;
-                //var bounds = Measurements.ShortHistoryBounds.Rectangle;
-                var historyBounds = Measurements.HistoryBounds;
-                var maxY = historyBounds.Rectangle.Y2 - bounds.Height;
+                var bounds =
+                    Responsive.ResponsiveRectangle(Measurements.ShortHistoryBounds, screenshot.Width, screenshot.Height);
+                var historyBounds =
+                    Responsive.ResponsiveRectangle(Measurements.HistoryBounds, screenshot.Width, screenshot.Height);
+                var latestHistoryBounds =
+                    Responsive.ResponsiveRectangle(LatestHistoryBounds, screenshot.Width, screenshot.Height);
+                
+                var maxY = (historyBounds.Y+historyBounds.Height) - bounds.Height;
                 
                 var page = e.Page;
                 var region = page.GetSegmentedRegions(PageIteratorLevel.TextLine).LastOrDefault();
                 if (region == default) return;
 
-                var lastY = LatestHistoryBounds.Rectangle.Y1 + (region.Bottom / 2);
+                var lastY = latestHistoryBounds.Y + (region.Bottom / 2);
 
                 var y1 = lastY < maxY ? lastY : maxY;
                 Debug.WriteLine(region);
                 
                 LatestHistoryBounds = new Responsive.Measurement {
-                    Rectangle = new Rect(bounds.X1, y1, bounds.Width, bounds.Height),
-                    Height = screenshot.Height,
+                    Rectangle = new Rect(bounds.X, y1, bounds.Width, bounds.Height),
                     Width = screenshot.Width,
+                    Height = screenshot.Height,
                 };
                 LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             }
