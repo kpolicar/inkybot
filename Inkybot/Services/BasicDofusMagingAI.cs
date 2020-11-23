@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
@@ -13,20 +14,21 @@ using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
-    public class BasicDofusMagingAI : DofusMagingAI
+    public class BasicDofusMagingAI : DofusMagingAI, InjectableService
     {
-        private readonly ActionFactory actions;
+        private ActionFactory actions;
         private Config config;
         private float sink;
 
-        public BasicDofusMagingAI() {
+        
+        public void BindDependencies() {
             actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
             
-            var configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            configManager!.ConfigModified += (sender, args) => config = args.Config;
+            var configManager = Program.Services.GetService<ConfigManager>();
+            configManager.ConfigModified += (sender, args) => config = args.Config;
             
-            var magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            magingJob!.SinkChanged += (sender, args) => sink = args.Sink;
+            var magingJob = Program.Services.GetService<DofusMagingJob>();
+            magingJob.SinkChanged += (sender, args) => sink = args.Sink;
         }
 
         private ItemMage? ResolveItemMageByPriority(

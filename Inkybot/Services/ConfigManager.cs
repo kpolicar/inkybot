@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Events;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager
+    public class ConfigManager : InjectableService
     {
         public event EventHandler<ConfigModifiedEventArgs> ConfigModified;
 
@@ -16,9 +17,9 @@ namespace Inkybot.Services
             get;
             private set;
         }
-
-        public ConfigManager() {
-            var dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+        
+        public void BindDependencies() {
+            var dataProvider = Program.Services.GetService<DofusDataProvider>();
             dataProvider.FetchedItem += StatsUpdated;
         }
 

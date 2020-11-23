@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
 
@@ -21,7 +22,7 @@ namespace Inkybot.Services
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
-                actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
+                actions = Program.Services.GetService<ActionFactory>();
             }
 
             public void Execute() {
@@ -44,9 +45,10 @@ namespace Inkybot.Services
             private void DoMainMageAction() {
                 var action = job.previousAction = DoAction();
 
-                if (action is Combine)
+                if (action is Combine) {
                     job.state = State.EXECUTING_COMBINE;
-                
+                }
+
                 previousTickDeferredExecutionTask = Task.Run(() => {
                     Thread.Sleep(300);
                     // Have to check if user has stopped maging during this sleep

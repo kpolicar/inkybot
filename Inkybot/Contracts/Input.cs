@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading;
 
 namespace Inkybot.Contracts
 {
@@ -9,6 +10,6 @@ namespace Inkybot.Contracts
         void DoubleClick(int x, int y);
         void CtrlDoubleClick(int x, int y);
         void SelectAll();
-        void TypeMessage(string message);
+        void TypeMessage(string message, CancellationToken? cancel=null);
     }
 }

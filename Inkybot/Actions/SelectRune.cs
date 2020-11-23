@@ -69,6 +69,7 @@ namespace Inkybot.Actions
                     continue;
 
                 var pos = RunePosition(column, row);
+                
                 Input.CtrlDoubleClick(pos.X, pos.Y);
                 System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.DisplayName}");
                 return;
@@ -79,20 +80,24 @@ namespace Inkybot.Actions
                 Width = 1920,
                 Height = 1017
             });
+            
             Input.Click(resourceCategoryPosition.X, resourceCategoryPosition.Y);
 
             Thread.Sleep(50);
             
+            
             var searchTextBoxPosition = GetCursorTarget(InventorySearchTextBox);
             Input.Click(searchTextBoxPosition.X, searchTextBoxPosition.Y);
-            
             Thread.Sleep(500);
+            
+            Cancel?.ThrowIfCancellationRequested();
             Input.SelectAll();
             Thread.Sleep(50);
-            
-            Input.TypeMessage(Rune.DisplayName);
+
+            Input.TypeMessage(Rune.DisplayName, Cancel);
             Thread.Sleep(2000);
             
+            Cancel?.ThrowIfCancellationRequested();
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
             SelectedExoRune = true;

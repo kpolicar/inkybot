@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using Inkybot.Contracts;
@@ -15,11 +16,17 @@ namespace Inkybot.Actions
         protected ScreenReaderDataProvider screenDataProvider;
         protected Control targetControl;
         protected bool shouldContinueInput = true;
+        protected CancellationToken? Cancel;
 
         public InputAction(Control targetControl) {
             Input = (Input) Program.Services.GetService(typeof(Input));
             screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             this.targetControl = targetControl;
+        }
+
+        public void Execute(CancellationToken cancel) {
+            Cancel = cancel;
+            Execute();
         }
 
         public abstract void Execute();

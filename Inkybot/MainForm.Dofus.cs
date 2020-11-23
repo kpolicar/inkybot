@@ -39,13 +39,13 @@ namespace Inkybot
         
 
         private void BindServicesToDockedWindow() {
-            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             dataProvider.BindTo(hWndDocked);
             
-            var mouse = (Win32Input) Program.Services.GetService(typeof(Input));
+            var mouse = (Win32Input) Program.Services.GetService<Input>();
             mouse.SetRelativeToHandle(hWndDocked);
             
-            var actions = (MouseActionFactory) Program.Services.GetService(typeof(ActionFactory));
+            var actions = (MouseActionFactory) Program.Services.GetService<ActionFactory>();
             actions.setRelativeToControl(dofusClientPanel);
         }
     }

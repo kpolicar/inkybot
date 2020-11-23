@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
@@ -12,7 +13,7 @@ using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract
+    public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, InjectableService
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
@@ -39,14 +40,16 @@ namespace Inkybot.Services
         
 
         public ScreenReaderDofusMagingJob() {
-            actions = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
-            history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
-            configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            configManager.ConfigModified += OnConfigModified;
-            
             changeTimeout = new Stopwatch();
+        }
+        
+        public void BindDependencies() {
+            actions = Program.Services.GetService<ActionHandler>();
+            history = Program.Services.GetService<IItemHistoryAnalyzer>();
+            configManager = Program.Services.GetService<ConfigManager>();
+            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
+            configManager.ConfigModified += OnConfigModified;
         }
 
         public bool IsMaging { get; private set; }
@@ -81,7 +84,6 @@ namespace Inkybot.Services
             IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
             changeTimeout.Reset();
-            dataProvider.Reset();
         }
 
         private void PrepareMage() {
@@ -90,7 +92,6 @@ namespace Inkybot.Services
             previousAction = null;
             previousHistory = null;
             
-            dataProvider.Reset();
             dataProvider.FetchData();
             dataProvider.Item();
             itemInfo = new CurrentItemInfo {

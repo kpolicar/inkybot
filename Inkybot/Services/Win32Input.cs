@@ -37,8 +37,9 @@ namespace Inkybot.Services
             Click(x,y);
         }
 
-        public void TypeMessage(string message) {
+        public void TypeMessage(string message, CancellationToken? cancel=null) {
             foreach (var character in message) {
+                cancel?.ThrowIfCancellationRequested();
                 Win32.PostMessage(relativeToControl, 
                     Win32.WM_CHAR, 
                     (IntPtr) character, 

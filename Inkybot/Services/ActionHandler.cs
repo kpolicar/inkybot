@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Inkybot.Actions;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Events;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
-    public class ActionHandler
+    public class ActionHandler : InjectableService
     {
         public event EventHandler<ActionExecutedEventArgs> ActionExecuted;
-        private CancellationTokenSource cancelExecutingTask = new CancellationTokenSource();
+        private CancellationTokenSource cancelExecutingTask;
         private DofusMagingJob magingJob;
 
-        public ActionHandler() {
-            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+        
+        public void BindDependencies() {
+            magingJob = Program.Services.GetService<DofusMagingJob>();
             magingJob.Stopped += OnStoppedMaging;
         }
 
@@ -27,13 +30,19 @@ namespace Inkybot.Services
             if (!magingJob.IsMaging)
                 return;
             
-            var cancel = cancelExecutingTask.Token;
-            var task = new Task(o => {
+            if (action is InputAction inputAction) {
+                cancelExecutingTask = new CancellationTokenSource();
+                var cancel = cancelExecutingTask.Token;
+
+                try {
+                    inputAction.Execute(cancel);
+                    ActionExecuted?.Invoke(this, new ActionExecutedEventArgs(action));
+                } catch (OperationCanceledException) {
+                }
+                
+            } else {
                 action.Execute();
-                ActionExecuted?.Invoke(this, new ActionExecutedEventArgs(action));
-            }, cancel);
-            
-            task.Wait(cancel);
+            }
         }
     }
 }

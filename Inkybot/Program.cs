@@ -11,9 +11,11 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Services;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
+using ServiceContainer = Inkybot.Design.ServiceContainer;
 
 namespace Inkybot
 {
@@ -37,6 +39,20 @@ namespace Inkybot
         public static ServiceContainer Services = new ServiceContainer();
         public static CultureInfo Lang;
         
+        public static Dictionary<Type, object> _services = new Dictionary<Type, object> {
+            { typeof(MageConfig), new SettingsMageConfig() },
+            { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
+            { typeof(ScreenCapture), new Win32ScreenCapture() },
+            { typeof(Input), new Win32Input() },
+            { typeof(ActionFactory), new MouseActionFactory() },
+            { typeof(ConfigManager), new ConfigManager() },
+            { typeof(ActionHandler), new ActionHandler() },
+            { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
+            { typeof(ApiClient), new ApiClient() },
+            { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
+            { typeof(DofusMagingAI), new BasicDofusMagingAI() }
+        };
+
 
         /// <summary>
         ///     The main entry point for the application.
@@ -45,20 +61,8 @@ namespace Inkybot
         private static void Main() {
             SetAppLocale();
             Stat.Init();
-            
-            
-            Services.AddService(typeof(MageConfig), new SettingsMageConfig());
-            Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
-            Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());
-            Services.AddService(typeof(Input), new Win32Input());
-            Services.AddService(typeof(ActionFactory), new MouseActionFactory());
-            Services.AddService(typeof(ConfigManager), new ConfigManager());
-            Services.AddService(typeof(ActionHandler), new ActionHandler());
-            Services.AddService(typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer());
-            Services.AddService(typeof(ApiClient), new ApiClient());
-            Services.AddService(typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob());
-            Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
 
+            BindServices();
             BindNotifications();
             BindLogger();
             
@@ -68,6 +72,20 @@ namespace Inkybot
             Application.Run(new MainForm());
 
             //Print();
+        }
+
+        private static void BindServices() {
+            foreach (var serviceBinding in _services) {
+                var @abstract = serviceBinding.Key;
+                var concrete = serviceBinding.Value;
+                Services.AddService(@abstract, concrete);
+            }
+            foreach (var serviceBinding in _services) {
+                var concrete = serviceBinding.Value;
+                if (concrete is InjectableService service) {
+                    service.BindDependencies();
+                }
+            }
         }
 
         #if DEBUG

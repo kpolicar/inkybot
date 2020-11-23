@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Events;
@@ -15,7 +16,7 @@ using Inkybot.Helpers;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDataProvider : DofusDataProvider
+    public partial class ScreenReaderDataProvider : DofusDataProvider, InjectableService
     {
         public event EventHandler<ScannedRegionEventArgs> ScannedStats;
         public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
@@ -26,6 +27,11 @@ namespace Inkybot.Services
         private DofusScreenScan scan;
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
 
+
+        public void BindDependencies() {
+            var magingJob = Program.Services.GetService<DofusMagingJob>();
+            magingJob.Stopped += (sender, args) => Reset();
+        }
 
         public void Reset() {
             LatestHistoryBounds = Measurements.HistoryBounds;

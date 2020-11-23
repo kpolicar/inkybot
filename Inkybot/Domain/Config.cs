@@ -79,7 +79,7 @@ namespace Inkybot.Domain
 
         public Config(Item item) {
             Item = item;
-            MageConfig = (MageConfig) Program.Services.GetService(typeof(MageConfig));
+            MageConfig = Program.Services.GetService<MageConfig>();
             ResetDefaults(item);
         }
 

@@ -177,6 +177,8 @@
           <DependentUpon>Rectangle.cs</DependentUpon>
         </Compile>
         <Compile Include="Debugging\WelcomeDialogue.cs" />
+        <Compile Include="Design\InjectableService.cs" />
+        <Compile Include="Design\ServiceContainer.cs" />
         <Compile Include="DofusPathForm.cs">
           <SubType>Form</SubType>
         </Compile>
