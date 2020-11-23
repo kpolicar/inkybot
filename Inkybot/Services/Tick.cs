@@ -113,9 +113,13 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
-
+                if (!job.changeTimeout.IsRunning)
+                    job.changeTimeout.Restart();
+                
                 MageHistoryRecord latestChange;
                 do {
+                    if (job.changeTimeout.ElapsedMilliseconds > 5000)
+                        HandleChangeCheckTimeout();
                     if (!job.IsMaging)
                         return;
                     
@@ -126,6 +130,7 @@ namespace Inkybot.Services
                     Debug.WriteLine(latestChange);
                 } while (latestChange == default);
                 
+                job.changeTimeout.Stop();
                 EnforceValidPreviousActionResult(latestChange);
 
                 ChangeSinkFromLastAction(latestChange);
