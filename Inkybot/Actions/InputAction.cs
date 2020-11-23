@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Helpers;
@@ -7,13 +9,14 @@ using Inkybot.Services;
 
 namespace Inkybot.Actions
 {
-    public abstract class MouseAction : IAction
+    public abstract class InputAction : IAction
     {
         protected Input Input;
         protected ScreenReaderDataProvider screenDataProvider;
         protected Control targetControl;
+        protected bool shouldContinueInput = true;
 
-        public MouseAction(Control targetControl) {
+        public InputAction(Control targetControl) {
             Input = (Input) Program.Services.GetService(typeof(Input));
             screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             this.targetControl = targetControl;

@@ -141,7 +141,7 @@
     <ItemGroup>
         <Compile Include="Actions\Combine.cs" />
         <Compile Include="Actions\Finish.cs" />
-        <Compile Include="Actions\MouseAction.cs" />
+        <Compile Include="Actions\InputAction.cs" />
         <Compile Include="Actions\SelectRune.cs" />
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />

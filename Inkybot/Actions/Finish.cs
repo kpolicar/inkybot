@@ -6,7 +6,7 @@ using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Actions
 {
-    public class Finish : MouseAction
+    public class Finish : InputAction
     {
         public static readonly Responsive.Measurement FinishItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(850, 165, 850, 165),

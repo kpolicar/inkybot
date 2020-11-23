@@ -7,7 +7,7 @@ using Rect = Tesseract.Rect;
 
 namespace Inkybot.Actions
 {
-    public class SelectRune : MouseAction, RuneAction
+    public class SelectRune : InputAction, RuneAction
     {
         public bool SelectedExoRune;
         

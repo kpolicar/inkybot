@@ -46,6 +46,7 @@ namespace Inkybot
             SetAppLocale();
             Stat.Init();
             
+            
             Services.AddService(typeof(MageConfig), new SettingsMageConfig());
             Services.AddService(typeof(DofusDataProvider), new ScreenReaderDataProvider());
             Services.AddService(typeof(ScreenCapture), new Win32ScreenCapture());

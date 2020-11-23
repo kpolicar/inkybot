@@ -5,7 +5,7 @@ using Tesseract;
 
 namespace Inkybot.Actions
 {
-    public class Combine : MouseAction, RuneAction
+    public class Combine : InputAction, RuneAction
     {
         public static readonly Responsive.Measurement FinishItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1015, 225, 1015, 225),
