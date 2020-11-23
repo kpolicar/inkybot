@@ -23,7 +23,7 @@ namespace Inkybot.Services
         }
 
         private void OnStoppedMaging(object sender, EventArgs e) {
-            cancelExecutingTask.Cancel();
+            cancelExecutingTask?.Cancel();
         }
 
         public void Execute(IAction action) {

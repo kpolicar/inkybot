@@ -1,7 +1,7 @@
 using System;
 using Inkybot.Domain;
 
-namespace Inkybot.Domain
+namespace Inkybot.Services
 {
     internal struct ItemMage
     {
@@ -24,6 +24,16 @@ namespace Inkybot.Domain
             MageConfig = mageConfig;
             Value = value;
             Exo = exo;
+        }
+        
+
+        public static ItemMage WithRuneTypeOffset(ItemMage itemMage, int runeTypeOffset) {
+            var runeType = itemMage.Rune.type;
+            runeType = runeType != Rune.Type.Sm ? runeType - runeTypeOffset : runeType;
+                    
+            var rune = new Rune(itemMage.Stat, runeType);
+            
+            return new ItemMage(itemMage.Stat, rune, itemMage.MageConfig, itemMage.Value, itemMage.Exo);
         }
     }
 }

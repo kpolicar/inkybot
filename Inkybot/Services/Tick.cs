@@ -48,7 +48,11 @@ namespace Inkybot.Services
                 if (action is Combine) {
                     job.state = State.EXECUTING_COMBINE;
                 }
+                if (action is SelectRune) {
+                    Thread.Sleep(500); 
+                }
 
+                return;
                 previousTickDeferredExecutionTask = Task.Run(() => {
                     Thread.Sleep(300);
                     // Have to check if user has stopped maging during this sleep
@@ -125,6 +129,7 @@ namespace Inkybot.Services
 
                 ChangeSinkFromLastAction(latestChange);
                 job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
+                Debug.WriteLine("approving latest history continue");
                 job.state = State.STANDARD;
             }
 
@@ -186,6 +191,7 @@ namespace Inkybot.Services
                 }
 
                 job.actions.Execute(action);
+                Debug.WriteLine("executed action "+action);
 
                 return action;
             }
