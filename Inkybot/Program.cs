@@ -57,7 +57,7 @@ namespace Inkybot
             Services.AddService(typeof(ApiClient), new ApiClient());
             Services.AddService(typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob());
             Services.AddService(typeof(DofusMagingAI), new BasicDofusMagingAI());
-            
+
             BindNotifications();
             BindLogger();
             

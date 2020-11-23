@@ -64,10 +64,7 @@ namespace Inkybot.Services
             }
 
             private void DoRuneCheckForChanges() {
-                if (!job.changeTimeout.IsRunning)
-                    job.changeTimeout.Restart();
-                if (job.changeTimeout.ElapsedMilliseconds > 5000)
-                    HandleChangeCheckTimeout();
+                EnforceChangeTimeoutRunningAndNotFinished();
                 
                 if (!(job.previousAction is RuneAction previousAction))
                     throw new SystemException("Cannot check for changes (previous action has no information about rune)");
@@ -90,11 +87,7 @@ namespace Inkybot.Services
             
             private void DoHistoryCheckForChanges() {
                 previousTickDeferredExecutionTask?.Wait();
-                
-                if (!job.changeTimeout.IsRunning)
-                    job.changeTimeout.Restart();
-                if (job.changeTimeout.ElapsedMilliseconds > 5000)
-                    HandleChangeCheckTimeout();
+                EnforceChangeTimeoutRunningAndNotFinished();
 
                 job.dataProvider.FetchData();
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
@@ -102,7 +95,7 @@ namespace Inkybot.Services
                 var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
 
                 if (!historyHasChanged) {
-                    Thread.Sleep(300);
+                    Thread.Sleep(100);
                 } else {
                     var historyRecord = itemHistory.history.Last();
                     ChangeSinkFromLastAction(historyRecord);
@@ -113,27 +106,23 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
-                if (!job.changeTimeout.IsRunning)
-                    job.changeTimeout.Restart();
+                EnforceChangeTimeoutRunningAndNotFinished();
                 
                 MageHistoryRecord latestChange;
-                do {
-                    if (job.changeTimeout.ElapsedMilliseconds > 5000)
-                        HandleChangeCheckTimeout();
-                    if (!job.IsMaging)
-                        return;
-                    
-                    // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
+                // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
+                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
+                latestChange = itemLatestHistory.history.LastOrDefault();
+
+                if (latestChange == default) {
                     job.dataProvider.FetchData();
-                    var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
-                    latestChange = itemLatestHistory.history.LastOrDefault();
-                    Debug.WriteLine(latestChange);
-                } while (latestChange == default);
+                    return;
+                }
                 
                 job.changeTimeout.Stop();
                 EnforceValidPreviousActionResult(latestChange);
 
                 ChangeSinkFromLastAction(latestChange);
+                job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
                 job.state = State.STANDARD;
             }
 
@@ -197,6 +186,14 @@ namespace Inkybot.Services
                 job.actions.Execute(action);
 
                 return action;
+            }
+
+            private void EnforceChangeTimeoutRunningAndNotFinished() {
+                if (!job.changeTimeout.IsRunning)
+                    job.changeTimeout.Restart();
+                
+                if (job.changeTimeout.ElapsedMilliseconds > 5000)
+                    HandleChangeCheckTimeout();
             }
         }
     }

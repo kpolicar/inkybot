@@ -27,8 +27,8 @@ namespace Inkybot.Services
     {
         public class DofusScreenScan
         {
-            public static event EventHandler<ScanBoundsChanged> LatestHistoryBoundsChanged;
-            public static Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
+            private Rectangle latestHistoryLastTextLineBounds;
+            public Responsive.Measurement LatestHistoryBounds;
             
             private static ScreenCapture screen;
 
@@ -45,13 +45,15 @@ namespace Inkybot.Services
             private bool saveToDisk;
 
 
-            public DofusScreenScan(Image image, bool saveToDisk = false) {
+            public DofusScreenScan(Image image, Responsive.Measurement latestHistoryBounds = null, bool saveToDisk = false) {
                 Init();
+                LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
                 this.screenshot = image;
             }
 
-            public DofusScreenScan(IntPtr hwnd, bool saveToDisk = false) {
+            public DofusScreenScan(IntPtr hwnd, Responsive.Measurement latestHistoryBounds = null, bool saveToDisk = false) {
                 Init();
+                LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
                 handle = hwnd;
                 screenshot = TakeScreenshot();
                 this.saveToDisk = saveToDisk;
@@ -84,6 +86,13 @@ namespace Inkybot.Services
                     new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
 
                 latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
+
+            }
+
+            private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
+                if (e.Page.GetText() == string.Empty)
+                    return;
+                latestHistoryLastTextLineBounds = e.Page.GetSegmentedRegions(PageIteratorLevel.TextLine).LastOrDefault();
             }
 
             private string[] SplitHistoryTextLines(string text) {
@@ -135,8 +144,6 @@ namespace Inkybot.Services
             }
 
             public async Task<RuneQuantityScan[]> RunesQuantities() {
-                LatestHistoryBounds = Measurements.HistoryBounds;
-                LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
                 var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
 
                 var scanIndex = 0;
@@ -169,9 +176,11 @@ namespace Inkybot.Services
                 return await latestHistoryScanner.ScanRegionAsync(screenshot, saveToDisk);
             }
 
-            private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
-                if (e.Text == string.Empty) return;
-
+            public Responsive.Measurement CalculateNextHistoryBounds() {
+                var region = latestHistoryLastTextLineBounds;
+                if (region == default)
+                    return LatestHistoryBounds;
+                
                 var bounds =
                     Responsive.ResponsiveRectangle(Measurements.ShortHistoryBounds, screenshot.Width, screenshot.Height);
                 var historyBounds =
@@ -180,22 +189,15 @@ namespace Inkybot.Services
                     Responsive.ResponsiveRectangle(LatestHistoryBounds, screenshot.Width, screenshot.Height);
                 
                 var maxY = (historyBounds.Y+historyBounds.Height) - bounds.Height;
-                
-                var page = e.Page;
-                var region = page.GetSegmentedRegions(PageIteratorLevel.TextLine).LastOrDefault();
-                if (region == default) return;
-
                 var lastY = latestHistoryBounds.Y + (region.Bottom / 2);
 
                 var y1 = lastY < maxY ? lastY : maxY;
-                Debug.WriteLine(region);
                 
-                LatestHistoryBounds = new Responsive.Measurement {
+                return new Responsive.Measurement {
                     Rectangle = new Rect(bounds.X, y1, bounds.Width, bounds.Height),
                     Width = screenshot.Width,
                     Height = screenshot.Height,
                 };
-                LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             }
 
             public Image TakeScreenshot() {

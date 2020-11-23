@@ -23,10 +23,15 @@ namespace Inkybot
         private StatsForm statsForm;
         private ApiClient api;
         private DofusMagingJob magingJob;
+        private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
 
         public MainForm() {
             InitializeComponent();
+            
+            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            screenReader = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            
             InitOcrIndicators();
             toastPanel.Hide();
             mageInfoPanel.Hide();
@@ -42,7 +47,6 @@ namespace Inkybot
             statsForm = new StatsForm();
             statsForm.Error += OnError;
             configForm = new ConfigForm();
-            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magingJob.Error += OnError;
             
             MainFormDomainEvents();

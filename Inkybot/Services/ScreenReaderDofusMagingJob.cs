@@ -43,6 +43,7 @@ namespace Inkybot.Services
             history = (IItemHistoryAnalyzer) Program.Services.GetService(typeof(IItemHistoryAnalyzer));
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager.ConfigModified += OnConfigModified;
             
             changeTimeout = new Stopwatch();
@@ -67,7 +68,6 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (IsMaging) return;
-            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
 
             job = new Thread(DoMage);
@@ -81,6 +81,7 @@ namespace Inkybot.Services
             IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
             changeTimeout.Reset();
+            dataProvider.Reset();
         }
 
         private void PrepareMage() {
@@ -89,6 +90,7 @@ namespace Inkybot.Services
             previousAction = null;
             previousHistory = null;
             
+            dataProvider.Reset();
             dataProvider.FetchData();
             dataProvider.Item();
             itemInfo = new CurrentItemInfo {

@@ -29,6 +29,8 @@ namespace Inkybot
                     );
                 statsDataGridView.Rows[rowIndex].Tag = stat;
             }
+
+            restoreHighSinkStatsCheckbox.Checked = Properties.Settings.Default.restoreHighSinkStatImmediately;
         }
 
         protected string ParseConfigThreshold(int threshold) {

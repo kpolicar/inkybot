@@ -31,12 +31,12 @@ namespace Inkybot
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
-            latestHistoryOcrIndicatorControl = RegisterOcrIndicator(ScreenReaderDataProvider.DofusScreenScan.LatestHistoryBounds);
+            latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
 
-            ScreenReaderDataProvider.DofusScreenScan.LatestHistoryBoundsChanged += OnLatestHistoryBoundsChanged;
+            screenReader.LatestHistoryBoundsChanged += OnLatestHistoryProcessed;
         }
 
-        private void OnLatestHistoryBoundsChanged(object sender, ScanBoundsChanged e) {
+        private void OnLatestHistoryProcessed(object sender, ScanBoundsChanged e) {
             ocrIndicators[latestHistoryOcrIndicatorControl] = e.ScanBounds;
             BeginInvoke(new MethodInvoker(() => {
                 FitOcrIndicatorRectangle(latestHistoryOcrIndicatorControl, ocrIndicators[latestHistoryOcrIndicatorControl]);

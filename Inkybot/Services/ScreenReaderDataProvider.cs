@@ -19,11 +19,20 @@ namespace Inkybot.Services
     {
         public event EventHandler<ScannedRegionEventArgs> ScannedStats;
         public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
+        public event EventHandler<ScanBoundsChanged> LatestHistoryBoundsChanged;
         public event EventHandler<ItemEventArgs> FetchedItem;
         private IntPtr handle;
         public Item previousScannedItem;
         private DofusScreenScan scan;
+        public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
 
+
+        public void Reset() {
+            LatestHistoryBounds = Measurements.HistoryBounds;
+            LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
+            previousScannedItem = null;
+        }
+        
         public void BindTo(IntPtr handle) {
             this.handle = handle;
         }
@@ -31,11 +40,11 @@ namespace Inkybot.Services
         public void FetchData() {
             if (handle == IntPtr.Zero)
                 throw new SystemException();
-            scan = new DofusScreenScan(handle);
+            scan = new DofusScreenScan(handle, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
-            scan = new DofusScreenScan(image, saveToDisk);
+            scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
         }
 
         public IEnumerable<MageHistoryRecord> LatestHistory() {
@@ -48,6 +57,11 @@ namespace Inkybot.Services
             var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
 
             return historyResults;
+        }
+        
+        public void ApproveLatestHistoryContinueToNextScanBounds() {
+            LatestHistoryBounds = scan.CalculateNextHistoryBounds();
+            LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
         }
 
         public IEnumerable<MageHistoryRecord> History() {

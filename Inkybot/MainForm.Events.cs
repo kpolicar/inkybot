@@ -57,7 +57,7 @@ namespace Inkybot
 
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
             var takeScreenshot = new ThreadStart(delegate {
-                var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, true);
+                var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, screenReader.LatestHistoryBounds, true);
 
                 for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
                     try {
