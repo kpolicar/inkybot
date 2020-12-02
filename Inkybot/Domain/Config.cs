@@ -42,7 +42,7 @@ namespace Inkybot.Domain
         }
 
         public static bool operator !=(StatConfig op1, StatConfig op2) {
-            return !(op1 == op1);
+            return !(op1 == op2);
         }
 
         public override string ToString() {
