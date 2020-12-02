@@ -30,7 +30,7 @@ namespace Inkybot.Services
         
         protected virtual IOrderedEnumerable<ItemMage> Prioritize() {
             var potentialMages = PotentialMages();
-            return potentialMages.OrderBy(Priority);
+            return potentialMages.OrderByDescending(Priority);
         }
         
         protected virtual Rune.Type ResolveRuneType(ItemStat itemStat) {

@@ -21,6 +21,11 @@ namespace Inkybot.Services
                     ));
         }
         
+        protected override IOrderedEnumerable<ItemMage> Prioritize() {
+            var potentialMages = PotentialMages();
+            return potentialMages.OrderBy(Priority);
+        }
+        
         protected override int Priority(ItemMage itemMage) {
             return (int) itemMage.Rune.Sink;
         }
