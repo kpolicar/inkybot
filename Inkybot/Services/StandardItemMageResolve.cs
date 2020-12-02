@@ -15,6 +15,7 @@ namespace Inkybot.Services
 
         protected override IEnumerable<ItemMage> PotentialMages() {
             return item.Stats
+                .Where(itemStat => !itemStat.Exo)
                 .Select(itemStat => {
                     var runeType = ResolveRuneType(itemStat);
                 
