@@ -46,7 +46,7 @@ namespace Inkybot.Services
         public IAction ResolveAction(Item item, IAction previousAction) {
             Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
 
-            var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);;
+            var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage == null)
                 return actions.Finish();
@@ -54,7 +54,7 @@ namespace Inkybot.Services
             var itemMage = proposedItemMage.Value;
 
             Debug.WriteLine(
-                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
             var selectRune = new Func<IAction>(() => actions.SelectRune(itemMage.Rune));

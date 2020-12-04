@@ -30,7 +30,7 @@ namespace Inkybot.Services
 
         private void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
-                Config.StatsConfig.Where(statConfig => statConfig.Value.Maximum == 0 && !item.HasStat(statConfig.Key))
+                Config.StatsConfig.Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
@@ -67,6 +67,12 @@ namespace Inkybot.Services
 
         private bool ConfigIsSetForItem(Item item) {
             return Config != null && Config.IsConfiguredForItem(item);
+        }
+
+        public void ChangeStatConfigTarget(Stat stat, int target) {
+            var statConfig = Config.StatsConfig[stat];
+            var newStatConfig = new StatConfig(stat, target, statConfig.Target);
+            ChangeStatConfig(stat, newStatConfig);
         }
 
         public void ChangeStatConfig(Stat stat, StatConfig statConfig) {

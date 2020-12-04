@@ -17,7 +17,7 @@ namespace Inkybot.Services
         public ItemMage? Resolve() {
             var prioritized = Prioritize();
             
-            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
+            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvertarget);
             
             if (proposed.Equals(default(ItemMage)))
                 return null;

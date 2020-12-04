@@ -10,6 +10,7 @@ namespace Inkybot.Domain
     public struct StatConfig
     {
         public readonly int Maximum;
+        public readonly int Target;
         public readonly int ChangeToPaRuneThreshold => stat.ChangeToPaRuneThreshold;
         public readonly int ChangeToRaRuneThreshold => stat.ChangeToRaRuneThreshold;
         public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichSmRuneCanLand;
@@ -28,8 +29,9 @@ namespace Inkybot.Domain
             }
         }
 
-        public StatConfig(Stat stat, int maximum) {
+        public StatConfig(Stat stat, int target, int maximum) {
             this.stat = stat;
+            this.Target = target;
             this.Maximum = maximum;
         }
         
@@ -38,6 +40,7 @@ namespace Inkybot.Domain
                    op1.ChangeToRaRuneThreshold == op2.ChangeToRaRuneThreshold &&
                    op1.MaxValueAtWhichSmRuneCanHit == op2.MaxValueAtWhichSmRuneCanHit &&
                    op1.MaxValueAtWhichPaRuneCanHit == op2.MaxValueAtWhichPaRuneCanHit &&
+                   op1.Target == op2.Target &&
                    op1.Maximum == op2.Maximum;
         }
 
@@ -53,6 +56,7 @@ namespace Inkybot.Domain
             
             return $"{stat} | " +
                    $"Max: {Maximum}, " +
+                   $"Target: {Target}, " +
                    $"PA Threshold: {changeToPaRuneThresholdString}, " +
                    $"RA Threshold: {changeToRaRuneThresholdString}, " +
                    $"Max SM: {maxValueAtWhichSmRuneCanHitString}, " +
@@ -94,7 +98,7 @@ namespace Inkybot.Domain
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                StatsConfig[stat] = new StatConfig(stat,  itemStat.max);
+                StatsConfig[stat] = new StatConfig(stat,  itemStat.max, itemStat.max);
             }
         }
 

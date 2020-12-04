@@ -11,11 +11,16 @@ namespace Inkybot.Services
         public readonly int Value;
         public readonly bool Exo;
         public readonly int Max => MageConfig.Maximum;
+        public readonly int Target => MageConfig.Target;
             
         public int NumberOfRunesNeededForFullMage =>
             Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));
+        
+        public int NumberOfRunesNeededToReachTarget =>
+            Math.Max(0, (int) Math.Ceiling((Target - Value) / (float) Rune.IncreaseInValue));
             
         public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
+        public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;
 
             
         public ItemMage(Stat stat, Rune rune, StatConfig mageConfig, int value, bool exo=false) {

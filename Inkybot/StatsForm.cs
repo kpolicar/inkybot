@@ -69,7 +69,7 @@ namespace Inkybot
                 var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
                     
                 if (updatingFallenExos) {
-                    if (configManager.Config.For(stat).Maximum == 0) {
+                    if (configManager.Config.For(stat).Target == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -110,7 +110,7 @@ namespace Inkybot
                 var cfg = statConfig.Value;
                 var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
                 
-                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Maximum, itemStat.Exo || itemStat == default);
+                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Target, itemStat.Exo || itemStat == default);
                 row.Tag = new ItemStatRow(stat);
             }
         }
@@ -168,14 +168,13 @@ namespace Inkybot
             var stat = statRow.Stat;
             
             int max;
-            var newMaxIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
-            if (!newMaxIsValidNumber) {
-                cell.Value = configManager.Config.For(stat).Maximum;
+            var newTargetIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
+            if (!newTargetIsValidNumber) {
+                cell.Value = configManager.Config.For(stat).Target;
                 return;
             }
-            var statConfig = new StatConfig(stat, max);
 
-            configManager.ChangeStatConfig(stat, statConfig);
+            configManager.ChangeStatConfigTarget(stat, max);
         }
 
         private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -185,7 +184,7 @@ namespace Inkybot
 
         private void addExoButton_Click(object sender, EventArgs e) {
             var stat = Stat.Stats.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new StatConfig(stat, 0);
+            var exoConfig = new StatConfig(stat, 0, 0);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }
