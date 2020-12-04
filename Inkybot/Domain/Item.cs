@@ -9,6 +9,8 @@ namespace Inkybot.Domain
         public readonly ItemStatRepository Stats;
         public bool IsValid => Stats.Length > 0;
         public bool IsInvalid => !IsValid;
+        public bool IsOvermaged => Stats.StandardStats.Any(itemStat => itemStat.value > itemStat.max);
+        public bool HasExo => Stats.ExoStats.Length > 0;
 
         public Item(ItemStatRepository stats) {
             Stats = stats;

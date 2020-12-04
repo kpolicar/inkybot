@@ -16,12 +16,16 @@ namespace Inkybot.Services
 
         public ItemMage? Resolve() {
             var prioritized = Prioritize();
-            
-            var proposed = prioritized.FirstOrDefault(itemMage => !itemMage.WillOvertarget);
+
+            var proposed = ChooseFromPrioritized(prioritized);
             
             if (proposed.Equals(default(ItemMage)))
                 return null;
             return proposed;
+        }
+
+        protected virtual ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
+            return prioritized.FirstOrDefault(itemMage => !itemMage.WillOvertarget);
         }
 
         protected abstract IEnumerable<ItemMage> PotentialMages();

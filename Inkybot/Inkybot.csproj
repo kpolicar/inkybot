@@ -274,6 +274,9 @@
         <Compile Include="Services\Measurements.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\PerfectionItemMageResolve.cs">
+          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\PrioritizedItemMageResolve.cs">
           <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
         </Compile>
