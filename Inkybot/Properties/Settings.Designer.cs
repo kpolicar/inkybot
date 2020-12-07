@@ -85,6 +85,18 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<ItemPresets xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema""></ItemPresets>")]
+        public global::Inkybot.Resources.ItemPresets presets {
+            get {
+                return ((global::Inkybot.Resources.ItemPresets)(this["presets"]));
+            }
+            set {
+                this["presets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
         public global::Inkybot.Resources.StatConfig earth_damage {
             get {

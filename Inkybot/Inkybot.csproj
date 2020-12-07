@@ -148,6 +148,7 @@
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatUserRunesOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
+        <Compile Include="Adapters\StatConfigAdapter.cs" />
         <Compile Include="Api\ApiConnection.cs">
           <Link>Api\ApiConnection.cs</Link>
         </Compile>
@@ -243,6 +244,9 @@
           <AutoGen>True</AutoGen>
           <DependentUpon>Regex.resx</DependentUpon>
         </Compile>
+        <Compile Include="Resources\ItemPreset.cs" />
+        <Compile Include="Resources\ItemPresets.cs" />
+        <Compile Include="Resources\ItemStatPreset.cs" />
         <Compile Include="Resources\MagingDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>

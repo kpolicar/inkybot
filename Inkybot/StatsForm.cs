@@ -5,11 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Resources;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
+using StatConfig = Inkybot.Domain.StatConfig;
 
 namespace Inkybot
 {
@@ -218,8 +221,20 @@ namespace Inkybot
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
-            var config = configManager.Config;
-            throw new NotImplementedException();
+            var config = configManager.Config.StatsConfig
+                .Select(statConfig =>
+                    new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
+                .ToArray();
+            var preset = new ItemPreset {
+                Name = "Preset 1",
+                Stats = config
+            };
+            
+            var existingPresets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
+            Properties.Settings.Default.presets = new ItemPresets {
+                Presets = existingPresets.Append(preset).ToArray()
+            };
+            Properties.Settings.Default.Save();
         }
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
