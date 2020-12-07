@@ -38,6 +38,8 @@ namespace Inkybot.Services
                 MagingLogger.Info("Maging stopped.");
             magingJob.Error += (sender, args) => 
                 MagingLogger.Error(args.exception, "Maging error occured!");
+            magingJob.Warning += (sender, args) => 
+                MagingLogger.Error(args.exception, "Unexpected result occured during maging!");
             magingJob.SinkChanged += (sender, args) => 
                 MagingLogger.Info("Sink has changed: " + args.Sink);
             config.ConfigModified += (sender, args) =>

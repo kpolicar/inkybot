@@ -20,6 +20,7 @@ namespace Inkybot.Services
         public event EventHandler<MagingJobFinishedEventArgs> Finished;
         public event EventHandler<SinkChangedEventArgs> SinkChanged;
         public event EventHandler<MagingJobErrorEventArgs> Error;
+        public event EventHandler<MagingJobErrorEventArgs> Warning;
 
         internal ActionHandler actions;
 

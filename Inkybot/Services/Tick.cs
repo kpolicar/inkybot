@@ -8,6 +8,7 @@ using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
+using Inkybot.Events;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Services
@@ -19,6 +20,8 @@ namespace Inkybot.Services
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;
             private static Task previousTickDeferredExecutionTask;
+            private const int MaxHistoryChangedChecks = 5;
+            private static int HistoryChangedChecksCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
@@ -113,6 +116,7 @@ namespace Inkybot.Services
 
             private void CalculateSinkChange() {
                 EnforceChangeTimeoutRunningAndNotFinished();
+                HistoryChangedChecksCount++;
                 
                 MageHistoryRecord latestChange;
                 // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
@@ -125,12 +129,22 @@ namespace Inkybot.Services
                 }
                 
                 job.changeTimeout.Stop();
-                EnforceValidPreviousActionResult(latestChange);
+                try {
+                    EnforceValidPreviousActionResult(latestChange);
+                } catch (UnexpectedMageResultException exception) {
+                    if (HistoryChangedChecksCount >= MaxHistoryChangedChecks)
+                        throw;
+                    
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{HistoryChangedChecksCount} out of ${MaxHistoryChangedChecks}"));
+                    Thread.Sleep(100);
+                    job.dataProvider.FetchData();
+                    return;
+                }
 
                 ChangeSinkFromLastAction(latestChange);
                 job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
-                Debug.WriteLine("approving latest history continue");
                 job.state = State.STANDARD;
+                HistoryChangedChecksCount = 0;
             }
 
             private void HandleChangeCheckTimeout() {
