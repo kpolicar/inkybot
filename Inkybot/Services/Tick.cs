@@ -141,6 +141,7 @@ namespace Inkybot.Services
             }
 
             // Todo: We can also check if the expected result is correct by comparing sink change.
+            // Todo: the previous history is sometimes missing the last mage record: take a screenshot
             private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
                 var attempted = lastHistoryRecord?.attempted;
                 var statLanded = attempted?.stat;
