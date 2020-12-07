@@ -216,5 +216,14 @@ namespace Inkybot
         private void clearExosButton_Click(object sender, EventArgs e) {
             configManager.RemoveExos();
         }
+
+        private void addPresetButton_Click(object sender, EventArgs e) {
+            var config = configManager.Config;
+            throw new NotImplementedException();
+        }
+
+        private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            throw new NotImplementedException();
+        }
     }
 }

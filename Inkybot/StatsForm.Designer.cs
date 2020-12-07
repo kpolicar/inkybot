@@ -51,12 +51,16 @@ namespace Inkybot
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.actionsPanel = new System.Windows.Forms.Panel();
             this.addExoPanel = new System.Windows.Forms.Panel();
+            this.selectPresetPanel = new System.Windows.Forms.Panel();
             this.addExoButton = new System.Windows.Forms.Button();
             this.exoStatComboBox = new Inkybot.Controls.ComboBox();
+            this.presetsComboBox = new Inkybot.Controls.ComboBox();
             this.clearExosButton = new System.Windows.Forms.Button();
+            this.addPresetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
             this.addExoPanel.SuspendLayout();
+            this.selectPresetPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TargetColumn
@@ -127,6 +131,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.actionsPanel, "actionsPanel");
             this.actionsPanel.Controls.Add(this.addExoPanel);
+            this.actionsPanel.Controls.Add(this.selectPresetPanel);
             this.actionsPanel.Controls.Add(this.clearExosButton);
             this.actionsPanel.Name = "actionsPanel";
             // 
@@ -139,6 +144,15 @@ namespace Inkybot
             this.addExoPanel.Dock = DockStyle.Left;
             this.addExoPanel.Width = 130;
             // 
+            // selectPresetPanel
+            // 
+            resources.ApplyResources(this.selectPresetPanel, "selectPresetPanel");
+            this.selectPresetPanel.Controls.Add(this.addPresetButton);
+            this.selectPresetPanel.Controls.Add(this.presetsComboBox);
+            this.selectPresetPanel.Name = "selectPresetPanel";
+            this.selectPresetPanel.Dock = DockStyle.Right;
+            this.selectPresetPanel.Width = 130;
+            // 
             // addExoButton
             // 
             resources.ApplyResources(this.addExoButton, "addExoButton");
@@ -149,6 +163,18 @@ namespace Inkybot
             this.addExoButton.UseVisualStyleBackColor = false;
             this.addExoButton.Click += new System.EventHandler(this.addExoButton_Click);
             this.addExoButton.Dock = DockStyle.Bottom;
+            // 
+            // presetsComboBox
+            // 
+            resources.ApplyResources(this.presetsComboBox, "presetsComboBox");
+            this.presetsComboBox.BackColor = System.Drawing.Color.Black;
+            this.presetsComboBox.ForeColor = System.Drawing.SystemColors.Control;
+            this.presetsComboBox.FormattingEnabled = true;
+            this.presetsComboBox.Name = "presetsComboBox";
+            this.presetsComboBox.SelectedIndexChanged += new System.EventHandler(this.presetsComboBox_SelectedIndexChanged);
+            this.presetsComboBox.FlatStyle = FlatStyle.Flat;
+            this.presetsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.presetsComboBox.Dock = DockStyle.Bottom;
             // 
             // exoStatComboBox
             // 
@@ -173,6 +199,18 @@ namespace Inkybot
             this.clearExosButton.Location = new Point(133, 25);
             this.clearExosButton.Click += new System.EventHandler(this.clearExosButton_Click);
             // 
+            // addPresetButton
+            // 
+            resources.ApplyResources(this.addPresetButton, "addPresetButton");
+            this.addPresetButton.BackColor = System.Drawing.Color.Black;
+            this.addPresetButton.FlatAppearance.BorderSize = 0;
+            this.addPresetButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.addPresetButton.Name = "addPresetButton";
+            this.addPresetButton.UseVisualStyleBackColor = false;
+            this.addPresetButton.Dock = DockStyle.Top;
+            this.addPresetButton.Location = new Point(0, 0);
+            this.addPresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
+            // 
             // StatsForm
             // 
             resources.ApplyResources(this, "$this");
@@ -189,17 +227,22 @@ namespace Inkybot
             this.actionsPanel.PerformLayout();
             this.addExoPanel.ResumeLayout(false);
             this.addExoPanel.PerformLayout();
+            this.selectPresetPanel.ResumeLayout(false);
+            this.selectPresetPanel.PerformLayout();
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.Button addPresetButton;
         private System.Windows.Forms.Button clearExosButton;
 
+        private Inkybot.Controls.ComboBox presetsComboBox;
         private Inkybot.Controls.ComboBox exoStatComboBox;
 
         private System.Windows.Forms.Button addExoButton;
 
         private System.Windows.Forms.Panel actionsPanel;
         private System.Windows.Forms.Panel addExoPanel;
+        private System.Windows.Forms.Panel selectPresetPanel;
 
         #endregion
         

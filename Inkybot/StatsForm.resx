@@ -131,6 +131,9 @@
   <data name="&gt;&gt;exoStatComboBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;presetsComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="addExoButton.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
@@ -149,6 +152,12 @@
   </data>
   <data name="exoStatComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>116, 3</value>
+  </data>
+  <data name="presetsComboBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>240, 3</value>
+  </data>
+  <data name="addPresetButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 40</value>
   </data>
   <data name="clearExosButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
@@ -171,6 +180,9 @@
   <data name="clearExosButton.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
+  <data name="addPresetButton.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
   <data name="&gt;&gt;StatColumn.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -189,6 +201,9 @@
   <data name="&gt;&gt;addExoPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;selectPresetPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="addExoPanel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
@@ -200,6 +215,9 @@
   </data>
   <data name="addExoPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
+  </data>
+  <data name="selectPresetPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>240, 0</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -228,6 +246,9 @@
   <data name="clearExosButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="addPresetButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="statsDataGridView.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -240,10 +261,19 @@
   <data name="clearExosButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
+  <data name="addPresetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="&gt;&gt;exoStatComboBox.Name" xml:space="preserve">
     <value>exoStatComboBox</value>
   </data>
+  <data name="&gt;&gt;presetsComboBox.Name" xml:space="preserve">
+    <value>presetsComboBox</value>
+  </data>
   <data name="clearExosButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="addPresetButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
   </data>
   <data name="&gt;&gt;clearExosButton.ZOrder" xml:space="preserve">
@@ -258,8 +288,14 @@
   <data name="exoStatComboBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>159, 21</value>
   </data>
+  <data name="presetsComboBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>159, 21</value>
+  </data>
   <data name="&gt;&gt;clearExosButton.Parent" xml:space="preserve">
     <value>actionsPanel</value>
+  </data>
+  <data name="&gt;&gt;addPresetButton.Parent" xml:space="preserve">
+    <value>selectPresetPanel</value>
   </data>
   <data name="addExoButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2074,6 +2110,12 @@
   <data name="clearExosButton.Text" xml:space="preserve">
     <value>CLEAR EXOS</value>
   </data>
+  <data name="addPresetButton.Dock" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+  <data name="addPresetButton.Text" xml:space="preserve">
+    <value>SAVE AS PRESET</value>
+  </data>
   <data name="&gt;&gt;addExoButton.Parent" xml:space="preserve">
     <value>addExoPanel</value>
   </data>
@@ -2096,6 +2138,9 @@
     <value>0</value>
   </data>
   <data name="addExoPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 100</value>
+  </data>
+  <data name="selectPresetPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>200, 100</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
