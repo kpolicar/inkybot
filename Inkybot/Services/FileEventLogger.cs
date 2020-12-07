@@ -39,9 +39,9 @@ namespace Inkybot.Services
             magingJob.Error += (sender, args) => 
                 MagingLogger.Error(args.exception, "Maging error occured!");
             magingJob.Warning += (sender, args) => 
-                MagingLogger.Error(args.exception, "Unexpected result occured during maging!");
+                MagingLogger.Warn(args.exception, "Unexpected result occured during maging!");
             magingJob.SinkChanged += (sender, args) => 
-                MagingLogger.Info("Sink has changed: " + args.Sink);
+                MagingLogger.Info("Sink has changed: " + Math.Round(args.Sink, 2));
             config.ConfigModified += (sender, args) =>
                 MagingLogger.Info("Mage config has changed.");
             actionHandler.ActionExecuted += (sender, args) => 
@@ -51,8 +51,8 @@ namespace Inkybot.Services
         private string FormatAction(IAction action) {
             return action switch {
                 Finish a => "Finished maging",
-                Combine a => "Combined rune",
-                SelectRune a => "Selected rune",
+                Combine a => $"Combined rune \"{a.Rune}\"",
+                SelectRune a => $"Selected rune \"{a.Rune}\"",
                 _ => "Unknown action",
             };
         }

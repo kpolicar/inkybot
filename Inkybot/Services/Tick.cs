@@ -136,7 +136,7 @@ namespace Inkybot.Services
                         throw;
                     
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{HistoryChangedChecksCount} out of ${MaxHistoryChangedChecks}"));
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                     job.dataProvider.FetchData();
                     return;
                 }
