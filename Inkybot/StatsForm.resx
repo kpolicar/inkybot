@@ -201,7 +201,7 @@
   <data name="&gt;&gt;addExoPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;selectPresetPanel.Type" xml:space="preserve">
+  <data name="&gt;&gt;presetPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="addExoPanel.TabIndex" type="System.Int32, mscorlib">
@@ -216,7 +216,7 @@
   <data name="addExoPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="selectPresetPanel.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="presetPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>240, 0</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.Type" xml:space="preserve">
@@ -289,13 +289,24 @@
     <value>159, 21</value>
   </data>
   <data name="presetsComboBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>159, 21</value>
+    <value>175, 21</value>
   </data>
+  <data name="deletePresetButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>21, 21</value>
+  </data>
+    <data name="deletePresetButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+        <value>Stretch</value>
+    </data>
+<data name="deletePresetButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABu0lEQVRoge2av07CQACHv+sgxA6eG2HzTfQZnEwcfQOji6sw8QxObj6J8R0wxh3bEkvLwDkYEmnsHe2V9gr9tlKO+33cv96BwBKlVD8MwyfgEjjasliqlHqRUt4IIVKb+j2bwgBRFN0BV2wfHqAnhLiOoujetn5hU3g2m514nvcOnJb8iBA4k1J+lc2wIRAEwRi4pdi3WSdLYCKlfFi/kBVIcTf8mlRK2V9fZMeA6+EBen8vrAdx02QFlo2kKMbGtJsVmOC2xJLfjB0dVZG7EgdBsAD6efdrZiGlPP7vhm4aDXYUpjBKqdwsrRAQQrRbAE2WTqAmOoGmKSUQ7iBIWXKz7G8L6ObeBmj3GDjMhcylLlSqBTzPc0ZAlyVXwPf90odNVeP7fqkulALJThIVY6E7PzUdqzTejXR7AWiBgGkycV4AQ4ZOoAY6gaaxEnBhT6DNsN8t4MgDXbvHwGEvZC50IasWcGFPYMqgFXBhT6DbC4C5C6XAZ6WJivFh+i/FNj+zPlcUpgzGuo0CSZKMgLdK4hTjNY7jselNRoHBYPAdx/E5MAKmwMo+Wy4rYKqUepzP5xfD4TA2FfgBja+Qg3SOjBYAAAAASUVORK5CYII=
+    </value>
+</data>
   <data name="&gt;&gt;clearExosButton.Parent" xml:space="preserve">
     <value>actionsPanel</value>
   </data>
   <data name="&gt;&gt;addPresetButton.Parent" xml:space="preserve">
-    <value>selectPresetPanel</value>
+    <value>presetPanel</value>
   </data>
   <data name="addExoButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -2140,7 +2151,7 @@
   <data name="addExoPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>200, 100</value>
   </data>
-  <data name="selectPresetPanel.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="presetPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>200, 100</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

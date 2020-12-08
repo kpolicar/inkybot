@@ -51,15 +51,18 @@ namespace Inkybot
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.actionsPanel = new System.Windows.Forms.Panel();
             this.addExoPanel = new System.Windows.Forms.Panel();
+            this.presetPanel = new System.Windows.Forms.Panel();
             this.selectPresetPanel = new System.Windows.Forms.Panel();
             this.addExoButton = new System.Windows.Forms.Button();
             this.exoStatComboBox = new Inkybot.Controls.ComboBox();
             this.presetsComboBox = new Inkybot.Controls.ComboBox();
             this.clearExosButton = new System.Windows.Forms.Button();
+            this.deletePresetButton = new System.Windows.Forms.Button();
             this.addPresetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
             this.addExoPanel.SuspendLayout();
+            this.presetPanel.SuspendLayout();
             this.selectPresetPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,7 +134,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.actionsPanel, "actionsPanel");
             this.actionsPanel.Controls.Add(this.addExoPanel);
-            this.actionsPanel.Controls.Add(this.selectPresetPanel);
+            this.actionsPanel.Controls.Add(this.presetPanel);
             this.actionsPanel.Controls.Add(this.clearExosButton);
             this.actionsPanel.Name = "actionsPanel";
             // 
@@ -146,12 +149,21 @@ namespace Inkybot
             // 
             // selectPresetPanel
             // 
-            resources.ApplyResources(this.selectPresetPanel, "selectPresetPanel");
-            this.selectPresetPanel.Controls.Add(this.addPresetButton);
+            resources.ApplyResources(this.presetPanel, "selectPresetPanel");
             this.selectPresetPanel.Controls.Add(this.presetsComboBox);
-            this.selectPresetPanel.Name = "selectPresetPanel";
-            this.selectPresetPanel.Dock = DockStyle.Right;
-            this.selectPresetPanel.Width = 130;
+            this.selectPresetPanel.Controls.Add(this.deletePresetButton);
+            this.selectPresetPanel.Name = "presetPanel";
+            this.selectPresetPanel.Dock = DockStyle.Top;
+            this.selectPresetPanel.Height = 21;
+            // 
+            // presetPanel
+            // 
+            resources.ApplyResources(this.presetPanel, "presetPanel");
+            this.presetPanel.Controls.Add(this.addPresetButton);
+            this.presetPanel.Controls.Add(this.selectPresetPanel);
+            this.presetPanel.Name = "presetPanel";
+            this.presetPanel.Width = 200;
+            this.presetPanel.Dock = DockStyle.Right;
             // 
             // addExoButton
             // 
@@ -174,7 +186,21 @@ namespace Inkybot
             this.presetsComboBox.SelectedIndexChanged += new System.EventHandler(this.presetsComboBox_SelectedIndexChanged);
             this.presetsComboBox.FlatStyle = FlatStyle.Flat;
             this.presetsComboBox.DropDownStyle = ComboBoxStyle.DropDown;
-            this.presetsComboBox.Dock = DockStyle.Top;
+            this.presetsComboBox.Dock = DockStyle.Left;
+            // 
+            // deletePresetButton
+            // 
+            resources.ApplyResources(this.deletePresetButton, "deletePresetButton");
+            this.deletePresetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.deletePresetButton.FlatStyle = FlatStyle.Flat;
+            this.deletePresetButton.FlatAppearance.BorderSize = 0;
+            this.deletePresetButton.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.deletePresetButton.Name = "deletePresetButton";
+            this.deletePresetButton.UseVisualStyleBackColor = false;
+            this.deletePresetButton.Dock = DockStyle.Right;
+            this.deletePresetButton.Cursor = Cursors.Hand;
+            this.deletePresetButton.Location = new Point(0, 0);
+            this.deletePresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
             // 
             // exoStatComboBox
             // 
@@ -229,10 +255,13 @@ namespace Inkybot
             this.addExoPanel.PerformLayout();
             this.selectPresetPanel.ResumeLayout(false);
             this.selectPresetPanel.PerformLayout();
+            this.presetPanel.ResumeLayout(false);
+            this.presetPanel.PerformLayout();
             this.ResumeLayout(false);
         }
 
         private System.Windows.Forms.Button addPresetButton;
+        private System.Windows.Forms.Button deletePresetButton;
         private System.Windows.Forms.Button clearExosButton;
 
         private Inkybot.Controls.ComboBox presetsComboBox;
@@ -242,6 +271,7 @@ namespace Inkybot
 
         private System.Windows.Forms.Panel actionsPanel;
         private System.Windows.Forms.Panel addExoPanel;
+        private System.Windows.Forms.Panel presetPanel;
         private System.Windows.Forms.Panel selectPresetPanel;
 
         #endregion

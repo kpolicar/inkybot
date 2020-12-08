@@ -43,8 +43,10 @@ namespace Inkybot
         }
 
         private void LoadPresetsToComboBox() {
+            var presets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
+            
             presetsComboBox.DataSource =
-                Properties.Settings.Default.presets.Presets.Select(preset => preset.Name)
+                presets.Select(preset => preset.Name)
                     .Prepend("None")
                     .ToArray();
         }
