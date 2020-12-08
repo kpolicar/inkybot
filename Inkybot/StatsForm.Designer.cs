@@ -173,8 +173,8 @@ namespace Inkybot
             this.presetsComboBox.Name = "presetsComboBox";
             this.presetsComboBox.SelectedIndexChanged += new System.EventHandler(this.presetsComboBox_SelectedIndexChanged);
             this.presetsComboBox.FlatStyle = FlatStyle.Flat;
-            this.presetsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.presetsComboBox.Dock = DockStyle.Bottom;
+            this.presetsComboBox.DropDownStyle = ComboBoxStyle.DropDown;
+            this.presetsComboBox.Dock = DockStyle.Top;
             // 
             // exoStatComboBox
             // 
@@ -207,7 +207,7 @@ namespace Inkybot
             this.addPresetButton.ForeColor = System.Drawing.SystemColors.Control;
             this.addPresetButton.Name = "addPresetButton";
             this.addPresetButton.UseVisualStyleBackColor = false;
-            this.addPresetButton.Dock = DockStyle.Top;
+            this.addPresetButton.Dock = DockStyle.Bottom;
             this.addPresetButton.Location = new Point(0, 0);
             this.addPresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
             // 

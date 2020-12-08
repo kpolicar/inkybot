@@ -241,22 +241,25 @@ namespace Inkybot
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) return;
+            
             var config = configManager.Config.StatsConfig
                 .Select(statConfig =>
                     new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
                 .ToArray();
             var preset = new ItemPreset {
-                Name = "Preset 1",
+                Name = presetsComboBox.Text,
                 Stats = config
             };
             
             var existingPresets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
 
-            var index = presetsComboBox.SelectedIndex;
-            if (index == 0) {
+            if (index <= 0) {
                 Properties.Settings.Default.presets = new ItemPresets {
                     Presets = existingPresets.Append(preset).ToArray()
                 };
+                index = Properties.Settings.Default.presets.Presets.Length;
             } else {
                 existingPresets[index - 1] = preset;
             }
