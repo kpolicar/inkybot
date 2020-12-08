@@ -30,7 +30,7 @@ namespace Inkybot
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            //actionsPanel.Hide();
+            actionsPanel.Hide();
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
@@ -64,7 +64,7 @@ namespace Inkybot
                 if (e.Item.IsValid) {
                     actionsPanel.Show();
                 } else {
-                    //actionsPanel.Hide();
+                    actionsPanel.Hide();
                 }
             }));
         }
@@ -158,10 +158,9 @@ namespace Inkybot
             var fetchStats = new ThreadStart(delegate {
                 try {
                     Invoke(new MethodInvoker(() => {
-                        presetsComboBox.Enabled = false;
+                        selectPresetPanel.Enabled = false;
                     }));
                     
-                    presetsComboBox.Enabled = false;
                     dataProvider.FetchData();
                     dataProvider.Item();
                     
@@ -172,7 +171,7 @@ namespace Inkybot
                 }
                 
                 Invoke(new MethodInvoker(() => {
-                    presetsComboBox.Enabled = true;
+                    selectPresetPanel.Enabled = true;
                 }));
             });
             
@@ -286,6 +285,19 @@ namespace Inkybot
             foreach (var statPreset in preset.Stats) {
                 configManager.ChangeStatConfigTarget(Stat.Stats.First(stat => stat.DisplayName == statPreset.Stat), statPreset.Target);
             }
+        }
+
+        private void deletePresetButton_Click(object sender, EventArgs e) {
+            var index = presetsComboBox.SelectedIndex;
+            if (index <= 0) return;
+            
+            var existingPresets = (Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {}).ToList();
+            existingPresets.RemoveAt(index-1);
+            Properties.Settings.Default.presets = new ItemPresets {
+                Presets = existingPresets.ToArray()
+            };
+            Properties.Settings.Default.Save();
+            LoadPresetsToComboBox();
         }
     }
 }

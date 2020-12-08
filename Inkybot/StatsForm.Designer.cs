@@ -200,7 +200,7 @@ namespace Inkybot
             this.deletePresetButton.Dock = DockStyle.Right;
             this.deletePresetButton.Cursor = Cursors.Hand;
             this.deletePresetButton.Location = new Point(0, 0);
-            this.deletePresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
+            this.deletePresetButton.Click += new System.EventHandler(this.deletePresetButton_Click);
             // 
             // exoStatComboBox
             // 
