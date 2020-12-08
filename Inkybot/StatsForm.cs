@@ -39,6 +39,10 @@ namespace Inkybot
             exoStatComboBox.SelectedIndex = Stat.Stats.Length - 1;
             configManager.ConfigModified += OnConfigModified;
             dataProvider.FetchedItem += OnStatsFetched;
+            LoadPresetsToComboBox();
+        }
+
+        private void LoadPresetsToComboBox() {
             presetsComboBox.DataSource =
                 Properties.Settings.Default.presets.Presets.Select(preset => preset.Name)
                     .Prepend("None")
@@ -151,13 +155,23 @@ namespace Inkybot
         private void RefreshStats() {
             var fetchStats = new ThreadStart(delegate {
                 try {
+                    Invoke(new MethodInvoker(() => {
+                        presetsComboBox.Enabled = false;
+                    }));
+                    
+                    presetsComboBox.Enabled = false;
                     dataProvider.FetchData();
                     dataProvider.Item();
+                    
                 } catch (Exception exception) {
                     Error?.Invoke(this, new ExceptionEventArgs(exception));
                     Debug.WriteLine(exception.Message);
                     Debug.WriteLine(exception.StackTrace);
                 }
+                
+                Invoke(new MethodInvoker(() => {
+                    presetsComboBox.Enabled = true;
+                }));
             });
             
             new Thread(fetchStats).Start();
@@ -237,10 +251,18 @@ namespace Inkybot
             };
             
             var existingPresets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
-            Properties.Settings.Default.presets = new ItemPresets {
-                Presets = existingPresets.Append(preset).ToArray()
-            };
+
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) {
+                Properties.Settings.Default.presets = new ItemPresets {
+                    Presets = existingPresets.Append(preset).ToArray()
+                };
+            } else {
+                existingPresets[index - 1] = preset;
+            }
             Properties.Settings.Default.Save();
+            LoadPresetsToComboBox();
+            presetsComboBox.SelectedIndex = index;
         }
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
