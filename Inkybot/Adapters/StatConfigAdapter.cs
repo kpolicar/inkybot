@@ -14,6 +14,7 @@ namespace Inkybot.Adapters
 
         public Resources.ItemStatPreset ToSerializable() {
             return new Resources.ItemStatPreset {
+                Minimum = StatConfig.Minimum,
                 Maximum = StatConfig.Maximum,
                 Stat = Stat.DisplayName,
                 Target = StatConfig.Target

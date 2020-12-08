@@ -9,6 +9,7 @@ namespace Inkybot.Domain
 {
     public struct StatConfig
     {
+        public readonly int Minimum;
         public readonly int Maximum;
         public readonly int Target;
         public readonly int ChangeToPaRuneThreshold => stat.ChangeToPaRuneThreshold;
@@ -29,10 +30,11 @@ namespace Inkybot.Domain
             }
         }
 
-        public StatConfig(Stat stat, int target, int maximum) {
+        public StatConfig(Stat stat, int target, int maximum, int minimum) {
             this.stat = stat;
             this.Target = target;
             this.Maximum = maximum;
+            this.Minimum = minimum;
         }
         
         public static bool operator == (StatConfig op1, StatConfig op2) {
@@ -98,7 +100,7 @@ namespace Inkybot.Domain
         public void ResetDefaults(Item item) {
             foreach (var itemStat in item.Stats) {
                 var stat = itemStat.stat;
-                StatsConfig[stat] = new StatConfig(stat,  itemStat.max, itemStat.max);
+                StatsConfig[stat] = new StatConfig(stat,  itemStat.max, itemStat.max, itemStat.min);
             }
         }
 

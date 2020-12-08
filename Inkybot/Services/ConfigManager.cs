@@ -71,7 +71,7 @@ namespace Inkybot.Services
 
         public void ChangeStatConfigTarget(Stat stat, int target) {
             var statConfig = Config.StatsConfig[stat];
-            var newStatConfig = new StatConfig(stat, target, statConfig.Target);
+            var newStatConfig = new StatConfig(stat, target, statConfig.Maximum, statConfig.Minimum);
             ChangeStatConfig(stat, newStatConfig);
         }
 

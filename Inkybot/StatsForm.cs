@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Domain;
+using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Resources;
 using Inkybot.Services;
@@ -29,14 +30,19 @@ namespace Inkybot
             magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
             configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
-            actionsPanel.Hide();
+            //actionsPanel.Hide();
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
-            exoStatComboBox.DataSource = Stat.Stats.Select(stat => stat.DisplayName).ToArray();
+            exoStatComboBox.DataSource =
+                Stat.Stats.Select(stat => stat.DisplayName).ToArray();
             exoStatComboBox.SelectedIndex = Stat.Stats.Length - 1;
             configManager.ConfigModified += OnConfigModified;
             dataProvider.FetchedItem += OnStatsFetched;
+            presetsComboBox.DataSource =
+                Properties.Settings.Default.presets.Presets.Select(preset => preset.Name)
+                    .Prepend("None")
+                    .ToArray();
         }
 
         private void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
@@ -52,7 +58,7 @@ namespace Inkybot
                 if (e.Item.IsValid) {
                     actionsPanel.Show();
                 } else {
-                    actionsPanel.Hide();
+                    //actionsPanel.Hide();
                 }
             }));
         }
@@ -187,7 +193,7 @@ namespace Inkybot
 
         private void addExoButton_Click(object sender, EventArgs e) {
             var stat = Stat.Stats.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new StatConfig(stat, 0, 0);
+            var exoConfig = new StatConfig(stat, 0, 0, 0);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }
@@ -238,7 +244,21 @@ namespace Inkybot
         }
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) return;
+            
+            var preset = Properties.Settings.Default.presets.Presets.Skip(index-1).First();
+            var itemStats = preset.Stats.Select(statPreset => {
+                var stat = Stat.Stats.First(stat => stat.DisplayName == statPreset.Stat);
+
+                return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
+            }).ToArray();
+            var item = new Item(new ItemStatRepository(itemStats));
+            configManager.ResetConfig(item);
+            
+            foreach (var statPreset in preset.Stats) {
+                configManager.ChangeStatConfigTarget(Stat.Stats.First(stat => stat.DisplayName == statPreset.Stat), statPreset.Target);
+            }
         }
     }
 }

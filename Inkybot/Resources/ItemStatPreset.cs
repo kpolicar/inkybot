@@ -10,5 +10,6 @@ namespace Inkybot.Resources
         public string Stat { get; set; }
         public int Target { get; set; }
         public int Maximum { get; set; }
+        public int Minimum { get; set; }
     }
 }
