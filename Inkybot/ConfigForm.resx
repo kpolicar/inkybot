@@ -253,6 +253,18 @@
   <data name="PaRuneThresholdColumn.HeaderText" xml:space="preserve">
     <value>PA Rune Threshold</value>
   </data>
+  <data name="PaRuneThresholdColumn.ToolTipText" xml:space="preserve">
+    <value>Change to PA runes once this value is reached</value>
+  </data>
+  <data name="RaRuneThresholdColumn.ToolTipText" xml:space="preserve">
+    <value>Change to RA runes once this value is reached</value>
+  </data>
+  <data name="MaxSmRuneCanHitColumn.ToolTipText" xml:space="preserve">
+    <value>The maximum value at which SM runes should still be used</value>
+  </data>
+  <data name="MaxPaRuneCanHitColumn.ToolTipText" xml:space="preserve">
+    <value>The maximum value at which PA runes should still be used</value>
+  </data>
   <data name="restoreHighSinkStatsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>

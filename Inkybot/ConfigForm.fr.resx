@@ -35,4 +35,16 @@
     <data name="StatColumn.HeaderText" xml:space="preserve">
         <value>Statistique</value>
     </data>
+    <data name="PaRuneThresholdColumn.ToolTipText" xml:space="preserve">
+    <value>Changez en runes PA une fois que cette valeur est atteinte</value>
+  </data>
+    <data name="RaRuneThresholdColumn.ToolTipText" xml:space="preserve">
+    <value>Changez pour les runes RA une fois cette valeur atteinte</value>
+  </data>
+    <data name="MaxSmRuneCanHitColumn.ToolTipText" xml:space="preserve">
+    <value>La valeur maximale à laquelle les runes SM doivent encore être utilisées</value>
+  </data>
+    <data name="MaxPaRuneCanHitColumn.ToolTipText" xml:space="preserve">
+    <value>La valeur maximale à laquelle les runes PA doivent encore être utilisées</value>
+  </data>
 </root>
