@@ -12,7 +12,7 @@ namespace Inkybot.Domain
         public Stat stat;
         public int value;
 
-        public float SinkModifier => stat.SinkValue * value;
+        public float SinkModifier => stat.SinkValue * -value;
 
         public StatChanged(Stat stat, int value) {
             this.stat = stat;
@@ -41,12 +41,12 @@ namespace Inkybot.Domain
                 if (attempted.Equals(default(StatChanged)))
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
                 
-                return ChangeInSinkFromFallen - attempted.SinkModifier;
+                return ChangeInSinkFromFallen + attempted.SinkModifier;
             }
         }
 
         public float ChangeInSinkFromFallen =>
-            fell.Sum(statChange => -statChange.SinkModifier);
+            fell.Sum(statChange => statChange.SinkModifier);
 
         public StatChanged attempted =>
             changed.FirstOrDefault(change => change.value >= 0);

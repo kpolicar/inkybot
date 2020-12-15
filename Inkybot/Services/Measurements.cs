@@ -57,13 +57,13 @@ namespace Inkybot.Services
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBounds);
         
         public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 127, 640, 844),
+            Rectangle = Rect.FromCoords(346, 127, 628, 844),
             Width = 1920,
             Height = 1017
         };
         
         public static readonly Responsive.Measurement ShortHistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 127, 640, 322),
+            Rectangle = Rect.FromCoords(346, 127, 628, 322),
             Width = 1920,
             Height = 1017
         };

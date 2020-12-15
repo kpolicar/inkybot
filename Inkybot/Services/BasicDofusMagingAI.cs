@@ -48,7 +48,7 @@ namespace Inkybot.Services
             return new ExoItemMageResolve(config, item).Resolve();
         }
 
-        public IAction ResolveAction(Item item, IAction previousAction) {
+        public IAction ResolveAction(Item item) {
             Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
 
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);

@@ -23,7 +23,15 @@ namespace Inkybot.Adapters
 
                 var statChanges = changes
                     .Cast<Match>()
-                    .Select(change => HistoryEntrySegmentToStatChange(change.Groups));
+                    .Select<Match, StatChanged?>(change => {
+                        try {
+                            return HistoryEntrySegmentToStatChange(change.Groups);
+                        } catch (OcrException) {
+                            return null;
+                        }
+                    })
+                    .Where(change => change != null)
+                    .OfType<StatChanged>();
 
                 return new MageHistoryRecord(statChanges, sinkHasChanged);
             });

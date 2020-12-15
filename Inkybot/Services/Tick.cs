@@ -46,11 +46,14 @@ namespace Inkybot.Services
             }
 
             private void DoMainMageAction() {
+                job.dataProvider.FetchData();
                 var action = job.previousAction = DoAction();
 
                 if (action is CombineRune) {
                     job.state = State.EXECUTING_COMBINE;
                 }
+                
+                Thread.Sleep(150);
             }
 
             private void DoRuneCheckForChanges() {
@@ -126,6 +129,7 @@ namespace Inkybot.Services
                 ChangeSinkFromLastAction(latestChange);
                 job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
                 job.state = State.STANDARD;
+                job.previousHistory = itemLatestHistory;
                 HistoryChangedChecksCount = 0;
             }
 
@@ -156,7 +160,7 @@ namespace Inkybot.Services
             
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
                 if (job.previousHistory != null && !itemHistory.IsDifferentFrom(job.previousHistory))
-                    throw new UnexpectedMageResultException("Expected history would be different!");
+                    throw new UnexpectedMageResultException("Expected mage history to change, but didn't!");
             }
 
 
@@ -164,6 +168,8 @@ namespace Inkybot.Services
                 var sink = job.Sink;
                 try {
                     sink += lastHistoryRecord.ChangeInSink;
+                    Debug.WriteLine("sink change:" +
+                                    lastHistoryRecord.ChangeInSink);
                 } catch (CouldNotResolveSinkException e) {
 
                     var previousCombine = (CombineRune) job.previousAction;
@@ -183,7 +189,7 @@ namespace Inkybot.Services
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
 
                 previousTickDeferredExecutionTask?.Wait();
-                var action = job.magus.ResolveAction(item, job.previousAction);
+                var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine && combine.Exo) {
 
