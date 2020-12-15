@@ -66,7 +66,9 @@ namespace Inkybot
             if (!debugging) return;
             
             Invoke(new MethodInvoker(() => {
-                HideOcrIndicators();
+                lock (ocrIndicators) {
+                    HideOcrIndicators();
+                }
             }));
             Thread.Sleep(50);
         }
@@ -75,7 +77,9 @@ namespace Inkybot
             if (!debugging) return;
             
             BeginInvoke(new MethodInvoker(() => {
-                ShowOcrIndicators();
+                lock (ocrIndicators) {
+                    ShowOcrIndicators();
+                }
             }));
         }
 

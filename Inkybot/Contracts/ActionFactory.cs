@@ -5,7 +5,6 @@ namespace Inkybot.Contracts
     public interface ActionFactory
     {
         IAction Finish();
-        IAction Combine(Rune target, bool exo);
-        IAction SelectRune(Rune rune);
+        IAction CombineRune(Rune rune, bool exo);
     }
 }

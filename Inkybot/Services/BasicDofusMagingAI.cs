@@ -62,21 +62,7 @@ namespace Inkybot.Services
                 $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
-            var selectRune = new Func<IAction>(() => actions.SelectRune(itemMage.Rune));
-
-            if (previousAction == null)
-                return selectRune();
-            
-            if (previousAction is Combine previousCombine) {
-                return selectRune();
-                if (previousCombine.Exo)
-                    return selectRune();
-                    
-                if (previousCombine.Rune.stat != itemMage.Stat || previousCombine.Rune.type != itemMage.Rune.type)
-                    return selectRune();
-            }
-
-            return actions.Combine(itemMage.Rune, itemMage.Exo);
+            return actions.CombineRune(itemMage.Rune, itemMage.Exo);
         }
     }
 }

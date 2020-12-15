@@ -157,8 +157,8 @@ namespace Inkybot.Services
                     runeQuantity = hasRune ? runeQuantity : 0;
                     
                     var scan = new RuneQuantityScan {
-                        Column = scanIndex / 14,
-                        Row = scanIndex % 14,
+                        Column = scanIndex / 13,
+                        Row = scanIndex % 13,
                         Quantity = runeQuantity,
                     };
                     

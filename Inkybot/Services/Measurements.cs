@@ -9,9 +9,9 @@ namespace Inkybot.Services
     {
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
-            var x1 = 1050 + column * 55;
-            var y1 = 305 + (int) (row * 38.7);
-            var x2 = 1090 + column * 55;
+            var x1 = 1100 + column * 51;
+            var y1 = 306 + (int) (row * 38.7);
+            var x2 = 1140 + column * 51;
             var y2 = 336 + (int) (row * 38.7);
 
             return new Responsive.Measurement {
@@ -24,7 +24,7 @@ namespace Inkybot.Services
         public static Responsive.Measurement[] SplitStatLineMeasurementsIntoIndividualLineMeasurements(
             Responsive.Measurement measurement) {
             var b = measurement.Rectangle;
-            var n = 14; // number of stat lines
+            var n = 13; // number of stat lines
 
             var measurements = new Responsive.Measurement[n];
             for (int i = 0; i < n; ++i) {
@@ -43,7 +43,7 @@ namespace Inkybot.Services
         public static IEnumerable<Responsive.Measurement> RuneBoundsIndividualMeasurements {
             get {
                 for (var i = 0; i < 3; i++) {
-                    for (var j = 0; j < 14; j++) {
+                    for (var j = 0; j < 13; j++) {
                         yield return RuneBoxBounds(i, j);
                     }
                 }
@@ -57,31 +57,31 @@ namespace Inkybot.Services
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBounds);
         
         public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 844),
+            Rectangle = Rect.FromCoords(346, 127, 640, 844),
             Width = 1920,
             Height = 1017
         };
         
         public static readonly Responsive.Measurement ShortHistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 117, 590, 242),
+            Rectangle = Rect.FromCoords(346, 127, 640, 322),
             Width = 1920,
             Height = 1017
         };
 
         public static readonly Responsive.Measurement StatValuesBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(745, 307, 973, 842),
+            Rectangle = Rect.FromCoords(800, 307, 1025, 805),
             Width = 1920,
             Height = 1017
         };
 
         public static readonly Responsive.Measurement StatMinBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(645, 307, 695, 842),
+            Rectangle = Rect.FromCoords(695, 307, 745, 805),
             Width = 1920,
             Height = 1017
         };
         
         public static readonly Responsive.Measurement StatMaxBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(695, 307, 745, 842),
+            Rectangle = Rect.FromCoords(745, 307, 800, 805),
             Width = 1920,
             Height = 1017
         };

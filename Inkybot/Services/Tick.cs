@@ -20,7 +20,7 @@ namespace Inkybot.Services
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;
             private static Task previousTickDeferredExecutionTask;
-            private const int MaxHistoryChangedChecks = 5;
+            private const int MaxHistoryChangedChecks = 3;
             private static int HistoryChangedChecksCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
@@ -34,7 +34,7 @@ namespace Inkybot.Services
                         DoMainMageAction();
                         break;
                     case State.EXECUTING_COMBINE:
-                        if (job.previousAction is Combine previousCombine && previousCombine.Exo)
+                        if (job.previousAction is CombineRune previousCombine && previousCombine.Exo)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
@@ -48,28 +48,9 @@ namespace Inkybot.Services
             private void DoMainMageAction() {
                 var action = job.previousAction = DoAction();
 
-                if (action is Combine) {
+                if (action is CombineRune) {
                     job.state = State.EXECUTING_COMBINE;
                 }
-                if (action is SelectRune) {
-                    Thread.Sleep(500); 
-                }
-
-                return;
-                previousTickDeferredExecutionTask = Task.Run(() => {
-                    Thread.Sleep(300);
-                    // Have to check if user has stopped maging during this sleep
-                    if (!job.IsMaging)
-                        return;
-                    if (action is Combine combine && !combine.Exo) {
-                        PersistRuneOnTable(combine);
-                    }
-                    Thread.Sleep(200);
-                });
-            }
-
-            private void PersistRuneOnTable(Combine action) {
-                job.actions.Execute(actions.SelectRune(action.Rune));
             }
 
             private void DoRuneCheckForChanges() {
@@ -131,6 +112,7 @@ namespace Inkybot.Services
                 job.changeTimeout.Stop();
                 try {
                     EnforceValidPreviousActionResult(latestChange);
+                    EnforceDifferentHistory(itemLatestHistory);
                 } catch (UnexpectedMageResultException exception) {
                     if (HistoryChangedChecksCount >= MaxHistoryChangedChecks)
                         throw;
@@ -163,13 +145,18 @@ namespace Inkybot.Services
                     return;
                 }
 
-                var previousCombine = (Combine) job.previousAction;
+                var previousCombine = (CombineRune) job.previousAction;
                 var expectedStat = previousCombine.Rune.stat;
 
                 if (statLanded != expectedStat)
                     throw new UnexpectedMageResultException(
                         $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
                         $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
+            }
+            
+            private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
+                if (job.previousHistory != null && !itemHistory.IsDifferentFrom(job.previousHistory))
+                    throw new UnexpectedMageResultException("Expected history would be different!");
             }
 
 
@@ -179,7 +166,7 @@ namespace Inkybot.Services
                     sink += lastHistoryRecord.ChangeInSink;
                 } catch (CouldNotResolveSinkException e) {
 
-                    var previousCombine = (Combine) job.previousAction;
+                    var previousCombine = (CombineRune) job.previousAction;
                     sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
 
                     Debug.WriteLine("sink change:" +
@@ -198,7 +185,7 @@ namespace Inkybot.Services
                 previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item, job.previousAction);
 
-                if (action is Combine combine && combine.Exo) {
+                if (action is CombineRune combine && combine.Exo) {
 
                     previousTickDeferredExecutionTask = Task.Run(() => {
                         job.previousHistory = job.history.Analyse(job.dataProvider.History());

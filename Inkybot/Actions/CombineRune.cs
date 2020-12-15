@@ -7,23 +7,29 @@ using Rect = Tesseract.Rect;
 
 namespace Inkybot.Actions
 {
-    public class SelectRune : InputAction, RuneAction
+    public class CombineRune : InputAction, RuneAction
     {
+        public static readonly Responsive.Measurement CombineButtonMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1050, 225, 1050, 225),
+            Width = 1920,
+            Height = 1017
+        };
+        
         public bool SelectedExoRune;
         
         public static readonly Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1492, 103, 1492, 103),
+            Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
             Width = 1920,
             Height = 1017
         };
         
         public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1320, 775, 1320, 775),
+            Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
             Width = 1920,
             Height = 1017
         };
         public static readonly Responsive.Measurement FirstItemInInventoryMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1284, 186, 1284, 186),
+            Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
             Width = 1920,
             Height = 1017
         };
@@ -37,19 +43,21 @@ namespace Inkybot.Actions
         public ItemStat Target { get; set; }
         public Rune Rune { get; private set; }
         private Control targetControl;
+        public readonly bool Exo;
 
-        public SelectRune(Control targetControl, Rune rune) : base(targetControl) {
+        public CombineRune(Control targetControl, Rune rune, bool exo) : base(targetControl) {
             this.targetControl = targetControl;
             Rune = rune;
+            Exo = exo;
         }
 
-        public SelectRune(Control targetControl) : base(targetControl) {
+        public CombineRune(Control targetControl) : base(targetControl) {
             this.targetControl = targetControl;
         }
 
         public void Test() {
             for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 14; j++) {
+                for (int j = 0; j < 13; j++) {
                     
                     var pos = RunePosition(i, j);
                     Cursor.Position = targetControl.PointToScreen(new Point(pos.X, pos.Y));
@@ -69,17 +77,13 @@ namespace Inkybot.Actions
 
                 var pos = RunePosition(column, row);
                 
-                Input.CtrlDoubleClick(pos.X, pos.Y);
+                System.Diagnostics.Debug.WriteLine(pos);
+                Input.DoubleClick(pos.X, pos.Y);
                 System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.DisplayName}");
                 return;
             }
 
-            var resourceCategoryPosition = GetCursorTarget(new Responsive.Measurement {
-                Rectangle = Rect.FromCoords(1492, 103, 1492, 103),
-                Width = 1920,
-                Height = 1017
-            });
-            
+            var resourceCategoryPosition = GetCursorTarget(InventorySelectResourcesCategory);
             Input.Click(resourceCategoryPosition.X, resourceCategoryPosition.Y);
 
             Thread.Sleep(50);
@@ -100,13 +104,18 @@ namespace Inkybot.Actions
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
             SelectedExoRune = true;
+            Thread.Sleep(500);
+            
+            Cancel?.ThrowIfCancellationRequested();
+            var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;
+            Input.Click(combineButtonPosition.X, combineButtonPosition.Y);
             
             System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.stat.DisplayName}");
         }
         
         private Point RunePosition(int column, int row) {
-            var x = 1065 + column * 55;
-            var y = 320 + row * 39;
+            var x = 1110 + column * 51;
+            var y = 318 + (int)(row * 38.7);
             
             var measurement = new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x, y, x, y),
