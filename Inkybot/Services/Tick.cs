@@ -20,7 +20,7 @@ namespace Inkybot.Services
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;
             private static Task previousTickDeferredExecutionTask;
-            private const int MaxHistoryChangedChecks = 3;
+            private const int MaxHistoryChangedChecks = 5;
             private static int HistoryChangedChecksCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
