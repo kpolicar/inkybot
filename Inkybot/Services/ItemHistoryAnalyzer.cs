@@ -12,7 +12,7 @@ namespace Inkybot
     {
         private readonly IItemHistoryAnalyzer analyzer;
         public IEnumerable<MageHistoryRecord> history;
-        private bool fullHistory;
+        public readonly bool fullHistory;
         public bool SuitableForCompare => fullHistory || history.Count() >= 3;
 
         public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, IItemHistoryAnalyzer analyzer, bool fullHistory=true) {
@@ -29,12 +29,11 @@ namespace Inkybot
             var comparison = history.Zip(analysis.history,
                 (target, comparator) => new {Target = target, Comparator = comparator});
 
-            return history.Count() != analysis.history.Count() ||
-                   comparison.Any(comparison => comparison.Target != comparison.Comparator);
+            return comparison.Any(comparison => comparison.Target != comparison.Comparator);
         }
 
         public override string ToString() {
-            return string.Join("\n", history.Select(mageRecord => mageRecord.ToString()));
+            return string.Join("\n", history.Reverse().Select(mageRecord => mageRecord.ToString()));
         }
     }
 

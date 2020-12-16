@@ -90,7 +90,7 @@ namespace Inkybot.Services
                 if (!historyHasChanged) {
                     Thread.Sleep(100);
                 } else {
-                    var historyRecord = itemHistory.history.Last();
+                    var historyRecord = itemHistory.history.First();
                     ChangeSinkFromLastAction(historyRecord);
                     EnforceValidPreviousActionResult(historyRecord);
                     job.state = State.STANDARD;
@@ -102,10 +102,9 @@ namespace Inkybot.Services
                 EnforceChangeTimeoutRunningAndNotFinished();
                 HistoryChangedChecksCount++;
                 
-                MageHistoryRecord latestChange;
                 // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
                 var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);
-                latestChange = itemLatestHistory.history.LastOrDefault();
+                var latestChange = itemLatestHistory.history.FirstOrDefault();
 
                 if (latestChange == default) {
                     job.dataProvider.FetchData();
@@ -181,6 +180,8 @@ namespace Inkybot.Services
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }
 
+                if (sink < 0)
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));
                 job.Sink = Math.Max(0f, sink);
             }
 

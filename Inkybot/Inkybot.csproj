@@ -209,6 +209,7 @@
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />
         <Compile Include="Exceptions\OcrException.cs" />
+        <Compile Include="Exceptions\SinkNegativeException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
