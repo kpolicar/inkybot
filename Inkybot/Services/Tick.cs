@@ -180,8 +180,10 @@ namespace Inkybot.Services
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }
 
-                if (sink < 0)
+                if (sink < 0) {
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));
+                }
+
                 job.Sink = Math.Max(0f, sink);
             }
 

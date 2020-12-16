@@ -63,7 +63,7 @@ namespace Inkybot.Services
                 return $"{exception.Message}\nPrevious history: {hexception.PreviousItemHistory}\nCurrent history: {hexception.ItemHistory}";
             }
 
-            return exception.ToString();
+            return exception.Message;
         }
     }
 }
