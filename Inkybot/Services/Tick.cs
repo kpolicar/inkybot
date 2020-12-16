@@ -160,7 +160,7 @@ namespace Inkybot.Services
             
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
                 if (job.previousHistory != null && !itemHistory.IsDifferentFrom(job.previousHistory))
-                    throw new UnexpectedMageResultException("Expected mage history to change, but didn't!");
+                    throw new HistoryHasntChangedException(itemHistory, job.previousHistory);
             }
 
 

@@ -204,6 +204,7 @@
         <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentStatLineException.cs" />
         <Compile Include="Exceptions\ChangeCheckTimeoutException.cs" />
+        <Compile Include="Exceptions\HistoryHasntChangedException.cs" />
         <Compile Include="Exceptions\MagingException.cs" />
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />

@@ -20,7 +20,7 @@ namespace Inkybot.Domain
         }
 
         public override string ToString() {
-            return $"{stat} {value}";
+            return $"{(value >= 0 ? $"+{value}" : $"{value}")} {stat}";
         }
     }
 
@@ -58,6 +58,8 @@ namespace Inkybot.Domain
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
+            if (operand1.changed.Count() != operand2.changed.Count())
+                return false;
             
             var comparison = operand1.changed.Zip(operand2.changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
@@ -79,6 +81,10 @@ namespace Inkybot.Domain
                    comparison.Any(comparison =>
                        comparison.Record1.stat.DisplayName != comparison.Record2.stat.DisplayName ||
                        comparison.Record1.value != comparison.Record2.value);
+        }
+
+        public override string ToString() {
+            return string.Join(", ", changed.Select(change => change.ToString()).Append(sinkChanged ? "sink" : ""));
         }
     }
 }

@@ -29,6 +29,10 @@ namespace Inkybot
             return history.Count() != analysis.history.Count() ||
                    comparison.Any(comparison => comparison.Target != comparison.Comparator);
         }
+
+        public override string ToString() {
+            return string.Join("\n", history.Select(mageRecord => mageRecord.ToString()));
+        }
     }
 
     public class ItemHistoryAnalyzer : IItemHistoryAnalyzer

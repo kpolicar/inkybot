@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Domain;
+using Inkybot.Exceptions;
 using Tesseract;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
@@ -38,9 +39,9 @@ namespace Inkybot.Services
             magingJob.Finished += (sender, args) => 
                 MagingLogger.Info("Maging stopped.");
             magingJob.Error += (sender, args) => 
-                MagingLogger.Error(args.exception, "Maging error occured!");
+                MagingLogger.Error(args.exception, $"Maging error occured: {FormatException(args.exception)}");
             magingJob.Warning += (sender, args) => 
-                MagingLogger.Warn(args.exception, "Unexpected result occured during maging!");
+                MagingLogger.Warn(args.exception, $"Unexpected result occured during maging: {FormatException(args.exception)}");
             magingJob.SinkChanged += (sender, args) => 
                 MagingLogger.Info("Sink has changed: " + Math.Round(args.Sink, 2));
             config.ConfigModified += (sender, args) =>
@@ -55,6 +56,14 @@ namespace Inkybot.Services
                 CombineRune a => $"Combined rune \"{a.Rune}\"",
                 _ => "Unknown action",
             };
+        }
+
+        private string FormatException(Exception exception) {
+            if (exception is HistoryHasntChangedException hexception) {
+                return $"{exception.Message}\nPrevious history: {hexception.PreviousItemHistory}\nCurrent history: {hexception.ItemHistory}";
+            }
+
+            return exception.ToString();
         }
     }
 }
