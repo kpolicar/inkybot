@@ -104,7 +104,7 @@ namespace Inkybot.Services
                 
                 MageHistoryRecord latestChange;
                 // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
-                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory());
+                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);
                 latestChange = itemLatestHistory.history.LastOrDefault();
 
                 if (latestChange == default) {
@@ -157,8 +157,10 @@ namespace Inkybot.Services
                         $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
                         $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
             }
-            
+
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
+                if (!itemHistory.SuitableForCompare)
+                    return;
                 if (job.previousHistory != null && !itemHistory.IsDifferentFrom(job.previousHistory))
                     throw new HistoryHasntChangedException(itemHistory, job.previousHistory);
             }

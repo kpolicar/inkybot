@@ -12,10 +12,13 @@ namespace Inkybot
     {
         private readonly IItemHistoryAnalyzer analyzer;
         public IEnumerable<MageHistoryRecord> history;
+        private bool fullHistory;
+        public bool SuitableForCompare => fullHistory || history.Count() >= 3;
 
-        public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, IItemHistoryAnalyzer analyzer) {
+        public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, IItemHistoryAnalyzer analyzer, bool fullHistory=true) {
             this.history = history;
             this.analyzer = analyzer;
+            this.fullHistory = fullHistory;
         }
 
         public float CalculateSink() {
@@ -37,8 +40,8 @@ namespace Inkybot
 
     public class ItemHistoryAnalyzer : IItemHistoryAnalyzer
     {
-        public ItemHistoryAnalysis Analyse(IEnumerable<MageHistoryRecord> history) {
-            return new ItemHistoryAnalysis(history, this);
+        public ItemHistoryAnalysis Analyse(IEnumerable<MageHistoryRecord> history, bool fullHistory=true) {
+            return new ItemHistoryAnalysis(history, this, fullHistory);
         }
 
         public float ResolveSinkChange(MageHistoryRecord record) {
