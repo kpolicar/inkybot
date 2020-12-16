@@ -18,7 +18,15 @@ namespace Inkybot.Services
         }
 
         protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
-            return prioritized.FirstOrDefault(itemMage => !itemMage.WillOvermage);
+            return prioritized.FirstOrDefault(itemMage => {
+                if (itemMage.WillOvermage)
+                    return false;
+                if (itemMage.Rune.type == Rune.Type.Sm && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichSmRuneCanHit)
+                    return false;
+                if (itemMage.Rune.type == Rune.Type.Pa && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichPaRuneCanHit)
+                    return false;
+                return true;
+            });
         }
     }
 }
