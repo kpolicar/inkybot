@@ -18,23 +18,23 @@ namespace Inkybot.Adapters
 
         public IEnumerable<MageHistoryRecord> ToMageHistoryRecords() {
             return historyLines.Reverse().Select(mageEntry => {
-                var changes = SegmentMageHistoryEntry(mageEntry);
-                var sinkHasChanged = Regex.IsMatch(mageEntry, Regex.Unescape(Properties.Regex.SinkHasChangedPattern));
+                try {
+                    var changes = SegmentMageHistoryEntry(mageEntry);
+                    var sinkHasChanged =
+                        Regex.IsMatch(mageEntry, Regex.Unescape(Properties.Regex.SinkHasChangedPattern));
 
-                var statChanges = changes
-                    .Cast<Match>()
-                    .Select<Match, StatChanged?>(change => {
-                        try {
-                            return HistoryEntrySegmentToStatChange(change.Groups);
-                        } catch (OcrException) {
-                            return null;
-                        }
-                    })
-                    .Where(change => change != null)
-                    .OfType<StatChanged>();
+                    var statChanges = changes
+                        .Cast<Match>()
+                        .Select(change => HistoryEntrySegmentToStatChange(change.Groups))
+                        .ToArray();
 
-                return new MageHistoryRecord(statChanges, sinkHasChanged);
-            });
+                    return new MageHistoryRecord(statChanges, sinkHasChanged);
+                } catch (OcrException) {
+                    Debug.WriteLine($"Failed to segment stat line {mageEntry}");
+                    return null;
+                }
+                
+            }).Where(mageHistoryRecord => mageHistoryRecord != null);
         }
 
         private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {
