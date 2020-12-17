@@ -31,9 +31,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "12";
-        public const string Version = "0.12 Beta";
-        public const string VersionEndpoint = "v0.12beta";
+        public const string VersionNumber = "13";
+        public const string Version = "0.13 Beta";
+        public const string VersionEndpoint = "v0.13beta";
         
 
         public static ServiceContainer Services = new ServiceContainer();
