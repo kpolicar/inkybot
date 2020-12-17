@@ -112,10 +112,17 @@ namespace Inkybot.Services
                 
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 Debug.WriteLine(exception.StackTrace);
-            } finally {
-                IsMaging = true; // If an error occured during preparation, we still want to stop properly
-                StopMage();
+                
+                if (Properties.Settings.Default.autoRestartBot) {
+                    Thread.Sleep(1000);
+                    if (IsMaging) {
+                        DoMage();
+                        return;
+                    }
+                }
             }
+            IsMaging = true; // If an error occured during preparation, we still want to stop properly
+            StopMage();
             
             Finished?.Invoke(this, new MagingJobFinishedEventArgs());
         }

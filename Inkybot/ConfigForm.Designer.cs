@@ -40,6 +40,7 @@ namespace Inkybot
             this.MaxSmRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
+            this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.creditsNameLabel = new System.Windows.Forms.Label();
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.creditsLabel = new System.Windows.Forms.Label();
@@ -126,6 +127,14 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
             // 
+            // autoRestartBotCheckbox
+            // 
+            resources.ApplyResources(this.autoRestartBotCheckbox, "autoRestartBotCheckbox");
+            this.autoRestartBotCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.autoRestartBotCheckbox.Name = "restoreHighSinkStatsCheckbox";
+            this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
+            this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
+            // 
             // creditsNameLabel
             // 
             resources.ApplyResources(this.creditsNameLabel, "creditsNameLabel");
@@ -137,6 +146,7 @@ namespace Inkybot
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
             this.bottomPanel.Controls.Add(this.creditsLabel);
             this.bottomPanel.Controls.Add(this.creditsNameLabel);
+            this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.bottomPanel.Name = "bottomPanel";
             // 
@@ -167,6 +177,7 @@ namespace Inkybot
         private System.Windows.Forms.Label creditsLabel;
         private System.Windows.Forms.Label creditsNameLabel;
 
+        private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;

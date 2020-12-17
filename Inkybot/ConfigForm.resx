@@ -2081,6 +2081,9 @@
   <data name="restoreHighSinkStatsCheckbox.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
+  <data name="autoRestartBotCheckbox.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
   <data name="bottomPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>15, 10, 15, 10</value>
   </data>
@@ -2114,6 +2117,21 @@
   <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
     <value>Restore high sink stats immediately</value>
   </data>
+  <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
+    <value>Automatically restart bot on error</value>
+  </data>
+  <data name="autoRestartBotCheckbox.AutoSize" xml:space="preserve">
+    <value>true</value>
+  </data>
+  <data name="autoRestartBotCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+    <data name="autoRestartBotCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 21</value>
+    </data>
+    <data name="autoRestartBotCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
   <data name="creditsNameLabel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>

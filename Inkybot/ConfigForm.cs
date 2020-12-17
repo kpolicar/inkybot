@@ -31,6 +31,7 @@ namespace Inkybot
             }
 
             restoreHighSinkStatsCheckbox.Checked = Properties.Settings.Default.restoreHighSinkStatImmediately;
+            autoRestartBotCheckbox.Checked = Properties.Settings.Default.autoRestartBot;
         }
 
         protected string ParseConfigThreshold(int threshold) {
@@ -80,6 +81,11 @@ namespace Inkybot
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
+        }
+
+        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
+            Properties.Settings.Default.autoRestartBot = autoRestartBotCheckbox.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

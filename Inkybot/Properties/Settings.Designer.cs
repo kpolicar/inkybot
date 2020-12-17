@@ -73,6 +73,18 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoRestartBot {
+            get {
+                return ((bool)(this["autoRestartBot"]));
+            }
+            set {
+                this["autoRestartBot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("en")]
         public string locale {
             get {
