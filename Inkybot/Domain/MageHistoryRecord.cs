@@ -7,8 +7,6 @@ namespace Inkybot.Domain
 {
     public struct StatChanged
     {
-        public static StatChanged Failure => new StatChanged(default, 0);
-        
         public Stat stat;
         public int value;
 
@@ -26,6 +24,7 @@ namespace Inkybot.Domain
 
     public class MageHistoryRecord
     {
+        public static MageHistoryRecord Failure = new MageHistoryRecord(new StatChanged[] {}, false);
         private readonly IEnumerable<StatChanged> changed;
         private readonly bool sinkChanged;
 
@@ -84,6 +83,8 @@ namespace Inkybot.Domain
         }
 
         public override string ToString() {
+            if (this == Failure)
+                return "Failure";
             return string.Join(", ", changed.Select(change => change.ToString()).Append(sinkChanged ? "sink" : ""));
         }
     }

@@ -61,6 +61,15 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failure.
+        /// </summary>
+        internal static string FailurePattern {
+            get {
+                return ResourceManager.GetString("FailurePattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (-? ?\d+) ?(%? ?[A-z( ]+[A-z)]).
         /// </summary>
         internal static string HistoryEntryPattern {

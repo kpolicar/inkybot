@@ -28,6 +28,14 @@ namespace Inkybot.Adapters
                         .Select(change => HistoryEntrySegmentToStatChange(change.Groups))
                         .ToArray();
 
+                    if (statChanges.Length == 0 && !sinkHasChanged) {
+                        var isFailureResult =
+                            Regex.IsMatch(mageEntry, Regex.Unescape(Properties.Regex.FailurePattern));
+                        if (!isFailureResult)
+                            throw new CouldNotSegmentMageHistoryLineException("Unrecognizable mage history record");
+                        return MageHistoryRecord.Failure;
+                    }
+
                     return new MageHistoryRecord(statChanges, sinkHasChanged);
                 } catch (OcrException) {
                     Debug.WriteLine($"Failed to segment stat line {mageEntry}");

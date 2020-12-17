@@ -24,6 +24,9 @@
     <data name="SinkHasChangedPattern" xml:space="preserve">
         <value>[+-] ?sink</value>
     </data>
+    <data name="FailurePattern" xml:space="preserve">
+        <value>Failure</value>
+    </data>
     <data name="HistorySplitPattern" xml:space="preserve">
         <value>(?&lt;!(?:[,+-] ?[0-9]*(?:\\n)*))(?:\\n)+(?=(?:[-+]?(?:[0-9]|sink|Failure)))</value>
     </data>

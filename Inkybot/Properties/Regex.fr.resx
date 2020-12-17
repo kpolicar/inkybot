@@ -23,4 +23,7 @@
     <data name="HistoryEntryPattern" xml:space="preserve">
         <value>(-? ?\d+) ?(%? ?[A-zÀ-ÿ( ]+[A-zÀ-ÿ)])</value>
     </data>
+    <data name="FailurePattern" xml:space="preserve">
+        <value>Échec</value>
+    </data>
 </root>
