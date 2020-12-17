@@ -16,7 +16,7 @@ namespace Inkybot.Adapters
             return new Resources.ItemStatPreset {
                 Minimum = StatConfig.Minimum,
                 Maximum = StatConfig.Maximum,
-                Stat = Stat.DisplayName,
+                Stat = Stat.Identifier,
                 Target = StatConfig.Target
             };
         }

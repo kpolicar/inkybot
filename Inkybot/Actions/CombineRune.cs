@@ -104,7 +104,7 @@ namespace Inkybot.Actions
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
             SelectedExoRune = true;
-            Thread.Sleep(500);
+            Thread.Sleep(1500);
             
             Cancel?.ThrowIfCancellationRequested();
             var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;

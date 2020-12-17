@@ -275,7 +275,7 @@ namespace Inkybot
             
             var preset = Properties.Settings.Default.presets.Presets.Skip(index-1).First();
             var itemStats = preset.Stats.Select(statPreset => {
-                var stat = Stat.Stats.First(stat => stat.DisplayName == statPreset.Stat);
+                var stat = Stat.Stats.First(stat => stat.Identifier == statPreset.Stat);
 
                 return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
             }).ToArray();
@@ -283,7 +283,7 @@ namespace Inkybot
             configManager.ResetConfig(item);
             
             foreach (var statPreset in preset.Stats) {
-                configManager.ChangeStatConfigTarget(Stat.Stats.First(stat => stat.DisplayName == statPreset.Stat), statPreset.Target);
+                configManager.ChangeStatConfigTarget(Stat.Stats.First(stat => stat.Identifier == statPreset.Stat), statPreset.Target);
             }
         }
 
