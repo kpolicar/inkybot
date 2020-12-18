@@ -72,6 +72,8 @@ namespace Inkybot.Domain
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return true;
+            if (operand1.changed.Count() != operand2.changed.Count())
+                return true;
             
             var comparison = operand1.changed.Zip(operand2.changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
