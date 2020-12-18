@@ -35,6 +35,10 @@ namespace Inkybot.Services
             var proposedMage =
                 new StandardItemMageResolve(config, item).Resolve() ??
                 new StandardItemMageResolve(config, item, 1).Resolve();
+                
+            proposedMage ??=
+                new PerfectionItemMageResolve(config, item, sink).Resolve() ??
+                new PerfectionItemMageResolve(config, item, sink, 1).Resolve();
 
             return proposedMage;
         }

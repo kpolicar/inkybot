@@ -91,9 +91,11 @@ namespace Inkybot.Services
                     Thread.Sleep(100);
                 } else {
                     var historyRecord = itemHistory.history.First();
-                    ChangeSinkFromLastAction(historyRecord);
                     EnforceValidPreviousActionResult(historyRecord);
+                    
+                    ChangeSinkFromLastAction(historyRecord);
                     job.state = State.STANDARD;
+                    job.previousHistory = itemHistory;
                     job.changeTimeout.Stop();
                 }
             }
