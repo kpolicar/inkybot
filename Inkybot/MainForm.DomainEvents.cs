@@ -33,7 +33,7 @@ namespace Inkybot
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
             BeginInvoke(new MethodInvoker(delegate {
-                sinkValueLabel.Text = Convert.ToInt32(e.Sink) + "";
+                sinkValueLabel.Text = Convert.ToInt32(Math.Floor(e.Sink)) + "";
             }));
         }
         
