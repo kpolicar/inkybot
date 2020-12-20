@@ -9,6 +9,7 @@ namespace Inkybot.Contracts
         public event EventHandler Stopped;
         public event EventHandler<MagingJobFinishedEventArgs> Finished;
         public event EventHandler<SinkChangedEventArgs> SinkChanged;
+        public event EventHandler<RuneQuantityChangedEventArgs> RuneQuantityChanged;
         public event EventHandler<MagingJobErrorEventArgs> Error;
         public event EventHandler<MagingJobErrorEventArgs> Warning;
         

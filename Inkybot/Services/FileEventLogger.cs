@@ -44,6 +44,8 @@ namespace Inkybot.Services
                 MagingLogger.Warn(args.exception, $"Unexpected result occured during maging: {FormatException(args.exception)}");
             magingJob.SinkChanged += (sender, args) => 
                 MagingLogger.Info("Sink has changed: " + Math.Round(args.Sink, 2));
+            magingJob.RuneQuantityChanged += (sender, args) => 
+                MagingLogger.Info($"Rune quantity changed: {args.Rune}, new: {args.Quantity}, old: {args.OldQuantity}");
             config.ConfigModified += (sender, args) =>
                 MagingLogger.Info("Mage config has changed.");
             actionHandler.ActionExecuted += (sender, args) => 

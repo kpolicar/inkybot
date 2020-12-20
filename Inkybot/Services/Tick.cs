@@ -74,6 +74,7 @@ namespace Inkybot.Services
                     job.state = State.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();
                 }
+                job.RuneQuantityChanged?.Invoke(this, new RuneQuantityChangedEventArgs(userRune.Rune, userRune.Quantity, previousUserRune.Quantity));
 
                 Thread.Sleep(30);
             }
