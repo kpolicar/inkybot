@@ -142,6 +142,7 @@
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\InputAction.cs" />
         <Compile Include="Actions\CombineRune.cs" />
+        <Compile Include="Actions\InventorySelectResourcesAction.cs" />
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
@@ -169,6 +170,7 @@
         </Compile>
         <Compile Include="Contracts\DofusMagingJob.cs" />
         <Compile Include="Contracts\MageConfig.cs" />
+        <Compile Include="Contracts\StatisticsManager.cs" />
         <Compile Include="Controls\ComboBox.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
@@ -190,6 +192,7 @@
         <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\RuneAction.cs" />
         <Compile Include="Domain\UserRune.cs" />
+        <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
@@ -299,6 +302,7 @@
         <Compile Include="Services\State.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\StatisticsManager.cs" />
         <Compile Include="Services\Tick.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
@@ -424,7 +428,11 @@
             <DesignTimeSharedInput>True</DesignTimeSharedInput>
         </Compile>
     </ItemGroup>
+    <PropertyGroup>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
     <ItemGroup>
+      <Content Include="app.manifest" />
       <Content Include="Inkybot.crproj" />
       <Content Include="Resources\Tesseract\eng.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

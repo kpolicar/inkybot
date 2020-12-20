@@ -20,5 +20,9 @@ namespace Inkybot.Services
         public IAction CombineRune(Rune rune, bool exo) {
             return new CombineRune(targetControl, rune, exo);
         }
+
+        public IAction InventorySelectResourcesAction() {
+            return new InventorySelectResourcesAction(targetControl);
+        }
     }
 }

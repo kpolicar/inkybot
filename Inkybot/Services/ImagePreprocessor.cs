@@ -49,7 +49,9 @@ namespace Inkybot.Services
             private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
 
                 using (var ms = new MemoryStream()) {
-                    image.Save(ms, ImageFormat.Bmp);
+                    lock (image) {
+                        image.Save(ms, ImageFormat.Bmp);
+                    }
                     ms.Position = 0;
 
                     using (var newImage = new MagickImage(ms)) {
@@ -69,13 +71,6 @@ namespace Inkybot.Services
                         return outImage;
                     }
                 }
-            }
-
-            private Image PreprocessRunesImage(Image image, Rectangle bounds) {
-                return DoPreprocess(image, bounds, image => {
-                    image.Resize(new Percentage(300));
-                    image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
-                });
             }
         }
         

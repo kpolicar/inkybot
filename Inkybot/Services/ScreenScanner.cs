@@ -50,15 +50,13 @@ namespace Inkybot.Services
             }
 
             public Rectangle CalculateBounds(Image image) {
-                return Responsive.ResponsiveRectangle(regionOfInterest, image.Width, image.Height);
+                lock (image) {
+                    return Responsive.ResponsiveRectangle(regionOfInterest, image.Width, image.Height);
+                }
             }
 
             public async Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
-                var result = new string[] { };
-                var task = Task.Run(() => { result = ScanRegion(screenshot, saveToDisk); });
-                task.Wait();
-
-                return result;
+                return await Task.Run(() => ScanRegion(screenshot, saveToDisk));
             }
 
             public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
@@ -132,6 +130,16 @@ namespace Inkybot.Services
                 ImagePreprocessor preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890"); });
+            }
+        }
+
+        public class KamasScanner : ScreenScanner
+        {
+            public KamasScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]> split = null,
+                ImagePreprocessor preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890k,"); });
             }
         }
     }

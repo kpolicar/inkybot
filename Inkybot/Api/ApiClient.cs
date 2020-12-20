@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -54,6 +55,15 @@ namespace Inkybot.Api
 
             var result = response.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<VersionDetails>(result);
+        }
+
+        public async Task SendStatistics(IEnumerable<KeyValuePair<string, string>> data) {
+            await WaitForStableConnection();
+            
+            var client = Connection.Request();
+            var response = await client.PostAsync($"{Server.ApiUrl}/statistics", new FormUrlEncodedContent(data));
+            var result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine(result);
         }
 
         public async Task NotifyFinished() {

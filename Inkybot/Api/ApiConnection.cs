@@ -21,7 +21,7 @@ namespace Inkybot.Api
         public ApiConnection(AuthDetails authDetails) {
             this.authDetails = authDetails;
             refreshTokenTimer = new Timer();
-            refreshTokenTimer.Interval = 60000;
+            refreshTokenTimer.Interval = 53000;
             refreshTokenTimer.Tick += OnRefreshTokenTimer;
             refreshTokenTimer.Start();
         }

@@ -6,7 +6,8 @@ namespace Inkybot.Services
         {
             STANDARD,
             EXECUTING_COMBINE,
-            CALCULATING_SINK_CHANGE
+            CALCULATING_SINK_CHANGE,
+            CALCULATING_PRICE_CHANGE
         }
     }
 }

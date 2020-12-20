@@ -85,5 +85,17 @@ namespace Inkybot.Services
             Width = 1920,
             Height = 1017
         };
+        
+        public static readonly Responsive.Measurement InventoryAverageItemValueBounds = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1435, 802, 1565, 825),
+            Width = 1940,
+            Height = 1110
+        };
+        
+        public static readonly Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
+            Width = 1920,
+            Height = 1017
+        };
     }
 }

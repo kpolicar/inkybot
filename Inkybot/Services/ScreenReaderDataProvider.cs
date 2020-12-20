@@ -53,6 +53,12 @@ namespace Inkybot.Services
             scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
         }
 
+        public int? AverageItemBalance() {
+            var scanResults = scan.AverageItemBalance().Result;
+
+            return scanResults;
+        }
+
         public IEnumerable<MageHistoryRecord> LatestHistory() {
             var scanResults = scan.LatestHistory()
                 .Result

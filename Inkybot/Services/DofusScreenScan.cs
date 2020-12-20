@@ -38,6 +38,7 @@ namespace Inkybot.Services
             private static ScreenScanner statMinsScanner;
             private static ScreenScanner statMaxesScanner;
             private static ScreenScanner runeScanner;
+            private static ScreenScanner averageItemPriceScanner;
 
             private static CultureInfo lang;
             private readonly IntPtr handle;
@@ -84,6 +85,9 @@ namespace Inkybot.Services
                     new ResizeImagePreprocessor(300));
                 runeScanner =
                     new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
+                averageItemPriceScanner =
+                    new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
+                        new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
 
                 latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
 
@@ -169,6 +173,17 @@ namespace Inkybot.Services
 
             public async Task<string[]> History() {
                 return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
+            }
+
+            public async Task<int?> AverageItemBalance() {
+                var scanned = await averageItemPriceScanner.ScanRegionAsync(screenshot);
+                var result = scanned.First();
+
+                var success = int.TryParse(result
+                    .Replace(",", "")
+                    .Replace("k", ""), out var balance);
+
+                return success ? balance : (int?) null;
             }
 
             public async Task<string[]> LatestHistory() {

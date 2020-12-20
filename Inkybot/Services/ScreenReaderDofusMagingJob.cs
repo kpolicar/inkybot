@@ -17,13 +17,16 @@ namespace Inkybot.Services
     {
         public event EventHandler Started;
         public event EventHandler Stopped;
+        public event EventHandler Preparing;
         public event EventHandler<MagingJobFinishedEventArgs> Finished;
         public event EventHandler<SinkChangedEventArgs> SinkChanged;
+        public event EventHandler<BalanceChangedEventArgs> BalanceChanged;
         public event EventHandler<RuneQuantityChangedEventArgs> RuneQuantityChanged;
         public event EventHandler<MagingJobErrorEventArgs> Error;
         public event EventHandler<MagingJobErrorEventArgs> Warning;
 
         internal ActionHandler actions;
+        internal ActionFactory actionFactory;
 
         public Config Config;
 
@@ -34,7 +37,9 @@ namespace Inkybot.Services
         internal DofusMagingAI magus;
         internal IAction previousAction;
         internal ItemHistoryAnalysis? previousHistory;
+        private Item? previousItem;
         private float sink;
+        private int balance;
         internal State state;
         private ConfigManager configManager;
         internal Stopwatch changeTimeout;
@@ -48,6 +53,7 @@ namespace Inkybot.Services
         
         public void BindDependencies() {
             actions = Program.Services.GetService<ActionHandler>();
+            actionFactory = Program.Services.GetService<ActionFactory>();
             history = Program.Services.GetService<IItemHistoryAnalyzer>();
             configManager = Program.Services.GetService<ConfigManager>();
             dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
@@ -56,6 +62,14 @@ namespace Inkybot.Services
 
         public bool IsMaging { get; private set; }
 
+        internal int Balance {
+            get => balance;
+            set {
+                if (balance != 0)
+                    BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(balance, value));
+                balance = value;
+            }
+        }
         internal float Sink {
             get => sink;
             set {
@@ -77,7 +91,7 @@ namespace Inkybot.Services
 
             job = new Thread(DoMage);
             job.Start();
-            Started?.Invoke(this, EventArgs.Empty);
+            Preparing?.Invoke(this, EventArgs.Empty);
         }
 
         public void StopMage() {
@@ -91,29 +105,49 @@ namespace Inkybot.Services
         private void PrepareMage() {
             state = State.STANDARD;
             Sink = 0f;
+            balance = 0;
             previousAction = null;
             previousHistory = null;
+            previousItem = null;
             
             dataProvider.FetchData();
             dataProvider.Item();
             itemInfo = new CurrentItemInfo {
                 Runes = dataProvider.Runes()
             };
+            
             IsMaging = true;
+            Started?.Invoke(this, EventArgs.Empty);
         }
 
         private void DoMage() {
+            actions.Execute(actionFactory.InventorySelectResourcesAction());
+            
             try {
                 PrepareMage();
                 while (IsMaging) new Tick(this).Execute();
-            } catch (Exception exception) {
-                
-                var additionalInfo = !Helpers.System.IsRunnningAsAdmin() ?
-                    "Please try running Inkybot as an administrator." : "";
-                
+            } catch (OperationCanceledException) {
+                Debug.WriteLine("operation cancelled!");
+            }
+            catch (AggregateException agg_ex)
+            {
+                //just get first exception, it will contain the most relevant error.
+                var ex = agg_ex.InnerExceptions[0];
+                Debug.WriteLine("/---aggregate");
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine("---/");
+            }
+            catch (Exception exception) {
+
+                var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
+                    ? "Please try running Inkybot as an administrator."
+                    : "";
+
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
+                Debug.WriteLine(exception.Message);
                 Debug.WriteLine(exception.StackTrace);
-                
+
                 if (Properties.Settings.Default.autoRestartBot) {
                     Thread.Sleep(1000);
                     if (IsMaging) {
@@ -122,6 +156,7 @@ namespace Inkybot.Services
                     }
                 }
             }
+
             IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             

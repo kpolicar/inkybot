@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Domain;
 using Inkybot.Helpers;
+using Inkybot.Services;
 using Rect = Tesseract.Rect;
 
 namespace Inkybot.Actions
@@ -17,17 +18,18 @@ namespace Inkybot.Actions
         
         public bool SelectedExoRune;
         
-        public static readonly Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
-            Width = 1920,
-            Height = 1017
-        };
-        
         public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
             Width = 1920,
             Height = 1017
         };
+        
+        public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(2100, 1165, 2100, 1165),
+            Width = 2310,
+            Height = 1530
+        };
+        
         public static readonly Responsive.Measurement FirstItemInInventoryMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
             Width = 1920,
@@ -83,7 +85,7 @@ namespace Inkybot.Actions
                 return;
             }
 
-            var resourceCategoryPosition = GetCursorTarget(InventorySelectResourcesCategory);
+            var resourceCategoryPosition = GetCursorTarget(Measurements.InventorySelectResourcesCategory);
             Input.Click(resourceCategoryPosition.X, resourceCategoryPosition.Y);
 
             Thread.Sleep(50);
@@ -104,7 +106,14 @@ namespace Inkybot.Actions
             var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
             SelectedExoRune = true;
-            Thread.Sleep(1500);
+            Thread.Sleep(1000);
+            
+            Cancel?.ThrowIfCancellationRequested();
+            var eraseSearchPosition = GetCursorTarget(InventorySearchTextBoxErase);
+            Input.Click(eraseSearchPosition.X, eraseSearchPosition.Y);
+            
+            
+            Thread.Sleep(500);
             
             Cancel?.ThrowIfCancellationRequested();
             var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;

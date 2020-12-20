@@ -12,6 +12,7 @@ namespace Inkybot
     {
         private void MainFormDomainEvents() {
             magingJob.Started += OnMagingStarted;
+            magingJob.Preparing += OnMagingPreparing;
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
@@ -36,7 +37,7 @@ namespace Inkybot
                 sinkValueLabel.Text = Convert.ToInt32(Math.Floor(e.Sink)) + "";
             }));
         }
-        
+
         private void OnMagingStopped(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Text = resources.GetString("toggleMageButton.Text");
@@ -56,13 +57,20 @@ namespace Inkybot
         private void OnMagingStarted(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 // Todo: check if is configured for exos
+                toggleMageButton.Enabled = true;
+            }));
+        }
+
+        private void OnMagingPreparing(object sender, EventArgs e) {
+            Invoke(new MethodInvoker(delegate {
                 exoAttemptsLabel.Show();
                 exoAttemptsValueLabel.Show();
                 toggleMageButton.Text = resources.GetString("toggleMageButton.TextStop");
                 mageInfoPanel.Show();
+                toggleMageButton.Enabled = false;
             }));
         }
-        
+
         private void OnUserDetailsUpdated(object sender, FetchedUserEventArgs e) {
             var user = e.user;
             usernameLabel.Text = user.name;

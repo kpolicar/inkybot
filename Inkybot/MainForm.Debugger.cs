@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace Inkybot
 {
     public partial class MainForm
     {
-        private Dictionary<Rectangle, Responsive.Measurement> ocrIndicators = new Dictionary<Rectangle, Responsive.Measurement>();
+        private ConcurrentDictionary<Rectangle, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Rectangle, Responsive.Measurement>();
         
         private bool debugging;
         #if DEBUG
@@ -26,6 +27,7 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatMinBounds);
             RegisterOcrIndicator(Measurements.StatMaxBounds);
             RegisterOcrIndicator(Measurements.StatValuesBounds);
+            RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
@@ -48,7 +50,7 @@ namespace Inkybot
             Controls.Add(control);
             control.BackColor = System.Drawing.SystemColors.Control;
             
-            ocrIndicators.Add(control, measurement);
+            ocrIndicators[control] = measurement;
             return control;
         }
 

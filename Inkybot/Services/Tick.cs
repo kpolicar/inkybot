@@ -42,11 +42,14 @@ namespace Inkybot.Services
                     case State.CALCULATING_SINK_CHANGE:
                         CalculateSinkChange();
                         break;
+                    case State.CALCULATING_PRICE_CHANGE:
+                        CalculatePriceChange();
+                        break;
                 }
             }
 
             private void DoMainMageAction() {
-                job.dataProvider.FetchData();
+                //job.dataProvider.FetchData();
                 var action = job.previousAction = DoAction();
 
                 if (action is CombineRune) {
@@ -86,7 +89,8 @@ namespace Inkybot.Services
                 job.dataProvider.FetchData();
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
 
-                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory);
+                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory) ||
+                                        (job.previousHistory == null && itemHistory.history.Count() > 0);
 
                 if (!historyHasChanged) {
                     Thread.Sleep(100);
@@ -130,9 +134,19 @@ namespace Inkybot.Services
 
                 ChangeSinkFromLastAction(latestChange);
                 job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
-                job.state = State.STANDARD;
+                job.state = State.CALCULATING_PRICE_CHANGE;
                 job.previousHistory = itemLatestHistory;
                 HistoryChangedChecksCount = 0;
+            }
+            
+            private void CalculatePriceChange() {
+                Task.Run(() => {
+                    var balance = job.dataProvider.AverageItemBalance();
+                    if (balance == null) return;
+
+                    job.Balance = (int) balance;
+                });
+                job.state = State.STANDARD;
             }
 
             private void HandleChangeCheckTimeout() {
@@ -193,6 +207,28 @@ namespace Inkybot.Services
 
             private IAction DoAction() {
                 var item = job.dataProvider.Item();
+
+                if (job.previousItem != null) {
+                    var areDifferent = job.previousItem.Stats.StandardStats.Any(itemstat => {
+                        var itemstatbefore = item.Stats.Stats.First(itemstatbeforee =>
+                            itemstatbeforee.stat.Identifier == itemstat.stat.Identifier);
+
+                        return itemstat.value != itemstatbefore.value;
+                    });
+
+                    areDifferent = areDifferent ||
+                                   job.previousHistory.history.First().attempted.Equals(default(StatChanged));
+                
+                    Debug.WriteLine("******************");
+                    Debug.WriteLine("items different: "+(job.previousHistory.history.First().attempted));
+                    Debug.WriteLine("items different: "+(areDifferent));
+                    Debug.WriteLine("******************");
+                    if (!areDifferent)
+                        throw new Exception("that's weird!");
+                }
+
+                job.previousItem = item;
+                
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
 

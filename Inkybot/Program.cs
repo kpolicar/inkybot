@@ -16,6 +16,8 @@ using Inkybot.Domain;
 using Inkybot.Services;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
+using StatisticsManager = Inkybot.Services.StatisticsManager;
+using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 
 namespace Inkybot
 {
@@ -50,9 +52,9 @@ namespace Inkybot
             { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
             { typeof(ApiClient), new ApiClient() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
-            { typeof(DofusMagingAI), new BasicDofusMagingAI() }
+            { typeof(DofusMagingAI), new BasicDofusMagingAI() },
+            { typeof(StatisticsManagerContract), new StatisticsManager() },
         };
-
 
         /// <summary>
         ///     The main entry point for the application.
