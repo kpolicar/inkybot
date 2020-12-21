@@ -14,6 +14,7 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Services;
+using Newtonsoft.Json;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
 using StatisticsManager = Inkybot.Services.StatisticsManager;

@@ -42,7 +42,6 @@ namespace Inkybot.Actions
             Height = 1017
         };
         
-        public ItemStat Target { get; set; }
         public Rune Rune { get; private set; }
         private Control targetControl;
         public readonly bool Exo;

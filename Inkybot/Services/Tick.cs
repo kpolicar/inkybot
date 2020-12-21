@@ -159,11 +159,12 @@ namespace Inkybot.Services
             // Todo: We can also check if the expected result is correct by comparing sink change.
             // Todo: the previous history is sometimes missing the last mage record: take a screenshot
             private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
-                var attempted = lastHistoryRecord?.Landed;
-                var statLanded = attempted?.stat;
-                if (attempted == null || statLanded == null) {
+                Debug.WriteLine("it is null: ");
+                var attempted = lastHistoryRecord.Landed;
+                if (!attempted.HasValue) {
                     return;
                 }
+                var statLanded = lastHistoryRecord.Landed?.stat;
 
                 var previousCombine = (CombineRune) job.previousAction;
                 var expectedStat = previousCombine.Rune.stat;

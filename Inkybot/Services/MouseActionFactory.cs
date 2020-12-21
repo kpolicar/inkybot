@@ -13,8 +13,8 @@ namespace Inkybot.Services
             this.targetControl = targetControl;
         }
         
-        public IAction Finish() {
-            return new Finish(targetControl);
+        public IAction Finish(Item item) {
+            return new Finish(targetControl, item);
         }
 
         public IAction CombineRune(Rune rune, bool exo) {

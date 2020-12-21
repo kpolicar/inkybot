@@ -53,7 +53,7 @@ namespace Inkybot.Services
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage == null)
-                return actions.Finish();
+                return actions.Finish(item);
             
             var itemMage = proposedItemMage.Value;
 

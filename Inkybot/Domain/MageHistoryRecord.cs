@@ -50,7 +50,11 @@ namespace Inkybot.Domain
         public StatChanged? Landed =>
             changed.Cast<StatChanged?>()
                 .DefaultIfEmpty(null)
-                .FirstOrDefault(change => change!.Value.value >= 0);
+                .FirstOrDefault(change => {
+                    if (change == null)
+                        return false;
+                    return change.Value.value >= 0;
+                });
 
         public StatChanged[] Fell =>
             changed.Where(change => change.value < 0).ToArray();

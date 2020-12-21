@@ -13,8 +13,11 @@ namespace Inkybot.Actions
             Width = 2513,
             Height = 1511
         };
+
+        public readonly Item Item;
         
-        public Finish(Control targetControl) : base(targetControl) {
+        public Finish(Control targetControl, Item item) : base(targetControl) {
+            Item = item;
         }
 
         public override void Execute() {
