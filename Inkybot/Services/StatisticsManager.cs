@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Inkybot.Api;
 using Inkybot.Contracts;
@@ -27,6 +28,7 @@ namespace Inkybot.Services
         private void OnBalanceChanged(object sender, BalanceChangedEventArgs e) {
             changesCount++;
             balanceDifference += e.OldBalance - e.Balance;
+            balanceDifference = Math.Max(balanceDifference, 0);
 
             if (changesCount >= MinChangesToSendCount)
                 Send();

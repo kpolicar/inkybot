@@ -184,18 +184,33 @@ namespace Inkybot.Services
 
             private void ChangeSinkFromLastAction(MageHistoryRecord lastHistoryRecord) {
                 var sink = job.Sink;
+                float sinkChange;
+                float attemptedSinkChange;
+                
                 try {
-                    sink += lastHistoryRecord.ChangeInSink;
+                    sinkChange = lastHistoryRecord.ChangeInSink;
+                    
+                    if (sinkChange != 0)
+                        attemptedSinkChange = lastHistoryRecord.attempted.SinkModifier;
+                    else
+                        attemptedSinkChange = 0;
+                    
                     Debug.WriteLine("sink change:" +
                                     lastHistoryRecord.ChangeInSink);
                 } catch (CouldNotResolveSinkException e) {
 
                     var previousCombine = (CombineRune) job.previousAction;
-                    sink += lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
+                    sinkChange = lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
+                    
+                    attemptedSinkChange = -previousCombine.Rune.Sink;
 
                     Debug.WriteLine("sink change:" +
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }
+
+                if (sinkChange > 0 && -attemptedSinkChange <= sink)
+                    throw new Exception($"Something had to have gone wrong in sink calculation! {sinkChange} {attemptedSinkChange} {sink}");
+                sink += sinkChange;
 
                 if (sink < 0) {
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));

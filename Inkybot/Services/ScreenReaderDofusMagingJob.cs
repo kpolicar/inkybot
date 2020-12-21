@@ -121,10 +121,10 @@ namespace Inkybot.Services
         }
 
         private void DoMage() {
-            actions.Execute(actionFactory.InventorySelectResourcesAction());
-            
             try {
                 PrepareMage();
+                actions.Execute(actionFactory.InventorySelectResourcesAction());
+                
                 while (IsMaging) new Tick(this).Execute();
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");

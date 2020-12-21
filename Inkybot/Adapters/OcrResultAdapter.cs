@@ -10,7 +10,7 @@ namespace Inkybot.Adapters
         public OcrResultAdapter() {
             if (init) return;
 
-            spellCorrect = new SymSpell(16, 5);
+            spellCorrect = new SymSpell(16, 3);
             Dictionary.LoadInto(spellCorrect);
             
             init = true;
