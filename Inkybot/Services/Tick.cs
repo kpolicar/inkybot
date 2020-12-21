@@ -159,7 +159,7 @@ namespace Inkybot.Services
             // Todo: We can also check if the expected result is correct by comparing sink change.
             // Todo: the previous history is sometimes missing the last mage record: take a screenshot
             private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
-                var attempted = lastHistoryRecord?.attempted;
+                var attempted = lastHistoryRecord?.Landed;
                 var statLanded = attempted?.stat;
                 if (attempted == null || statLanded == null) {
                     return;
@@ -191,7 +191,7 @@ namespace Inkybot.Services
                     sinkChange = lastHistoryRecord.ChangeInSink;
                     
                     if (sinkChange != 0)
-                        attemptedSinkChange = lastHistoryRecord.attempted.SinkModifier;
+                        attemptedSinkChange = lastHistoryRecord.Landed!.Value.SinkModifier;
                     else
                         attemptedSinkChange = 0;
                     
@@ -208,9 +208,12 @@ namespace Inkybot.Services
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }
 
-                if (sinkChange > 0 && -attemptedSinkChange <= sink)
-                    throw new Exception($"Something had to have gone wrong in sink calculation! {sinkChange} {attemptedSinkChange} {sink}");
-                sink += sinkChange;
+                if (sinkChange > 0 && -attemptedSinkChange <= sink) {
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkIncorrectException(sinkChange, sink, attemptedSinkChange), "Something had to have gone wrong in sink calculation! Resetting sink!"));
+                    sink = 0;
+                } else {
+                    sink += sinkChange;
+                }
 
                 if (sink < 0) {
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));
@@ -222,30 +225,11 @@ namespace Inkybot.Services
 
             private IAction DoAction() {
                 var item = job.dataProvider.Item();
-
-                if (job.previousItem != null) {
-                    var areDifferent = job.previousItem.Stats.StandardStats.Any(itemstat => {
-                        var itemstatbefore = item.Stats.Stats.First(itemstatbeforee =>
-                            itemstatbeforee.stat.Identifier == itemstat.stat.Identifier);
-
-                        return itemstat.value != itemstatbefore.value;
-                    });
-
-                    areDifferent = areDifferent ||
-                                   job.previousHistory.history.First().attempted.Equals(default(StatChanged));
-                
-                    Debug.WriteLine("******************");
-                    Debug.WriteLine("items different: "+(job.previousHistory.history.First().attempted));
-                    Debug.WriteLine("items different: "+(areDifferent));
-                    Debug.WriteLine("******************");
-                    if (!areDifferent)
-                        throw new Exception("that's weird!");
-                }
-
-                job.previousItem = item;
-                
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
+                
+                EnforceStatsChanged(item);
+                job.previousItem = item;
 
                 previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item);
@@ -261,6 +245,17 @@ namespace Inkybot.Services
                 Debug.WriteLine("executed action "+action);
 
                 return action;
+            }
+
+            private void EnforceStatsChanged(Item item) {
+                if (job.previousItem != null) {
+                    var areDifferent =
+                        job.previousHistory?.history.First().Landed == null ||
+                        job.previousItem != item;
+                
+                    if (!areDifferent)
+                        throw new UnexpectedMageResultException("Expected Stats to change but didn't");
+                }
             }
 
             private void EnforceChangeTimeoutRunningAndNotFinished() {

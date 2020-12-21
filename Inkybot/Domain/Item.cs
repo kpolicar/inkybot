@@ -1,6 +1,7 @@
 using System.Linq;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
+using Inkybot.Helpers;
 
 namespace Inkybot.Domain
 {
@@ -32,6 +33,19 @@ namespace Inkybot.Domain
             return stats1.Zip(stats2,
                     (s1, s2) => s1.stat == s2.stat)
                 .All(equal => equal);
+        }
+
+        public static bool operator ==(Item op1, Item op2) {
+            var comparison = op1.Stats.Stats.ZipWithDefault(op2.Stats.Stats, (stats1, stats2) => new {
+                Stats1 = stats1, Stats2 = stats2
+            });
+
+            return comparison.All(comparison =>
+                comparison.Stats1 == comparison.Stats2);
+        }
+
+        public static bool operator !=(Item op1, Item op2) {
+            return !(op1 == op2);
         }
     }
 }

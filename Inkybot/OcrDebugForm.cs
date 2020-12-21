@@ -33,9 +33,9 @@ namespace Inkybot
 
             var item = dataProvider.LatestHistory();
             foreach (var itemStat in item) {
-                if (!Equals(itemStat.attempted, default(StatChanged)))
-                    Debug.WriteLine(itemStat.attempted);
-                foreach (var statChanged in itemStat.fell) {
+                if (itemStat.Landed != null)
+                    Debug.WriteLine(itemStat.Landed);
+                foreach (var statChanged in itemStat.Fell) {
                     Debug.WriteLine(statChanged);
                 }
             }

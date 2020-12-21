@@ -37,20 +37,22 @@ namespace Inkybot.Domain
             get {
                 if (!sinkChanged)
                     return 0f;
-                if (attempted.Equals(default(StatChanged)))
+                if (Landed == null)
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
                 
-                return ChangeInSinkFromFallen + attempted.SinkModifier;
+                return ChangeInSinkFromFallen + Landed.Value.SinkModifier;
             }
         }
 
         public float ChangeInSinkFromFallen =>
-            fell.Sum(statChange => statChange.SinkModifier);
+            Fell.Sum(statChange => statChange.SinkModifier);
 
-        public StatChanged attempted =>
-            changed.FirstOrDefault(change => change.value >= 0);
+        public StatChanged? Landed =>
+            changed.Cast<StatChanged?>()
+                .DefaultIfEmpty(null)
+                .FirstOrDefault(change => change!.Value.value >= 0);
 
-        public StatChanged[] fell =>
+        public StatChanged[] Fell =>
             changed.Where(change => change.value < 0).ToArray();
 
         public static bool operator ==(MageHistoryRecord operand1, MageHistoryRecord operand2) {
