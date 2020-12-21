@@ -22,7 +22,7 @@
         <value>^(-?\d+|-) +(-?\d+|-) +(-?\d*) *(%? ?[A-z() ]+)$</value>
     </data>
     <data name="SinkHasChangedPattern" xml:space="preserve">
-        <value>[+-] ?sink</value>
+        <value>[+-] ?sin[kt]?</value>
     </data>
     <data name="FailurePattern" xml:space="preserve">
         <value>Failure</value>

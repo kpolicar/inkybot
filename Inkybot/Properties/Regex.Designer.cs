@@ -97,7 +97,7 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [+-] ?sink.
+        ///   Looks up a localized string similar to [+-] ?sin[kt]?.
         /// </summary>
         internal static string SinkHasChangedPattern {
             get {

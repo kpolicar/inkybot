@@ -12,7 +12,7 @@ namespace Inkybot.Services
     {
         private ApiClient api;
         private int changesCount = 0;
-        const int MinChangesToSendCount = 1;
+        const int MinChangesToSendCount = 10;
         
         private int balanceDifference = 0;
 
