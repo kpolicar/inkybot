@@ -56,7 +56,7 @@ namespace Inkybot.Services
                     job.state = State.EXECUTING_COMBINE;
                 }
                 
-                Thread.Sleep(150);
+                Thread.Sleep(100);
             }
 
             private void DoRuneCheckForChanges() {
@@ -80,7 +80,7 @@ namespace Inkybot.Services
                 }
                 job.RuneQuantityChanged?.Invoke(this, new RuneQuantityChangedEventArgs(userRune.Rune, userRune.Quantity, previousUserRune.Quantity));
 
-                Thread.Sleep(30);
+                Thread.Sleep(100);
             }
             
             private void DoHistoryCheckForChanges() {
