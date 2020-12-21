@@ -15,7 +15,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, InjectableService
     {
-        public event EventHandler Started;
+        public event EventHandler<MagingJobEventArgs> Started;
         public event EventHandler Stopped;
         public event EventHandler Preparing;
         public event EventHandler<MagingJobFinishedEventArgs> Finished;
@@ -44,7 +44,7 @@ namespace Inkybot.Services
         private ConfigManager configManager;
         internal Stopwatch changeTimeout;
         internal CurrentItemInfo itemInfo;
-        
+
 
         public ScreenReaderDofusMagingJob() {
             previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
@@ -73,7 +73,7 @@ namespace Inkybot.Services
         internal float Sink {
             get => sink;
             set {
-                SinkChanged?.Invoke(this, new SinkChangedEventArgs(sink, value));
+                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem, sink, value));
                 sink = value;
             }
         }
@@ -111,13 +111,13 @@ namespace Inkybot.Services
             previousItem = null;
             
             dataProvider.FetchData();
-            dataProvider.Item();
+            var item = dataProvider.Item();
             itemInfo = new CurrentItemInfo {
                 Runes = dataProvider.Runes()
             };
             
             IsMaging = true;
-            Started?.Invoke(this, EventArgs.Empty);
+            Started?.Invoke(this, new MagingJobEventArgs(item));
         }
 
         private void DoMage() {
@@ -128,9 +128,7 @@ namespace Inkybot.Services
                 while (IsMaging) new Tick(this).Execute();
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
-            }
-            catch (AggregateException agg_ex)
-            {
+            } catch (AggregateException agg_ex) {
                 //just get first exception, it will contain the most relevant error.
                 var ex = agg_ex.InnerExceptions[0];
                 Debug.WriteLine("/---aggregate");
@@ -160,7 +158,7 @@ namespace Inkybot.Services
             IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             
-            Finished?.Invoke(this, new MagingJobFinishedEventArgs());
+            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem));
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {

@@ -197,6 +197,7 @@
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
+        <Compile Include="Events\MagingJobEventArgs.cs" />
         <Compile Include="Events\PathChangedEventArgs.cs" />
         <Compile Include="Events\RuneQuantityChangedEventArgs.cs" />
         <Compile Include="Events\ScanBoundsChanged.cs" />
@@ -214,6 +215,7 @@
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />
         <Compile Include="Exceptions\OcrEngineNotReadyYetException.cs" />
         <Compile Include="Exceptions\OcrException.cs" />
+        <Compile Include="Exceptions\OperationRequiresUserConfirmationException.cs" />
         <Compile Include="Exceptions\SinkIncorrectException.cs" />
         <Compile Include="Exceptions\SinkNegativeException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />

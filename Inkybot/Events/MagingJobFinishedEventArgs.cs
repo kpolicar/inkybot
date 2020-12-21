@@ -1,11 +1,11 @@
 ﻿using System;
+using Inkybot.Domain;
 
 namespace Inkybot.Events
 {
-    public class MagingJobFinishedEventArgs : EventArgs
+    public class MagingJobFinishedEventArgs : MagingJobEventArgs
     {
-        public MagingJobFinishedEventArgs() {
-        
+        public MagingJobFinishedEventArgs(Item item) : base(item) {
         }
     }
 }

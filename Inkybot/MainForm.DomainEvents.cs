@@ -54,11 +54,23 @@ namespace Inkybot
             }));
         }
 
-        private void OnMagingStarted(object sender, EventArgs e) {
+        private void OnMagingStarted(object sender, MagingJobEventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                // Todo: check if is configured for exos
                 toggleMageButton.Enabled = true;
             }));
+
+            if (!e.Item.HasExo && !e.Item.IsOvermaged)
+                return;
+            
+            var confirmation =
+                MessageBox.Show(
+                    "This item contains sensitive stats (exo/overmaged). Are you sure you want to mage this item?", 
+                "Confirmation",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmation == DialogResult.No)
+                magingJob.StopMage();
         }
 
         private void OnMagingPreparing(object sender, EventArgs e) {
