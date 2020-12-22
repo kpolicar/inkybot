@@ -7,7 +7,7 @@ namespace Inkybot.Exceptions
     {
         public readonly Rune Rune;
 
-        public OutOfRunesException(Rune rune) : base($"You have ran out of: {rune}") {
+        public OutOfRunesException(Rune rune) : base($"You have run out of runes ({rune})!") {
             Rune = rune;
         }
     }

@@ -76,9 +76,12 @@ namespace Inkybot.Api
         }
 
         public async Task NotifyOutOfRunes(Rune rune) {
+            var data = new[] {
+                new KeyValuePair<string, string>("rune", rune.ToString()), 
+            };
             await WaitForStableConnection();
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/runes", new StringContent(rune.ToString()));
+                .PostAsync($"{Server.ApiUrl}/notify/runes", new FormUrlEncodedContent(data));
         }
     }
 }
