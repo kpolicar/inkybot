@@ -1,6 +1,7 @@
 using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 
 #pragma warning disable 4014
 namespace Inkybot.Api
@@ -20,7 +21,10 @@ namespace Inkybot.Api
         }
         
         public void Notify(object sender, MagingJobErrorEventArgs e) {
-            api.NotifyError();
+            _ = e.exception switch {
+                OutOfRunesException exception => api.NotifyOutOfRunes(exception.Rune),
+                _ => api.NotifyError(),
+            };
         }
     }
 }

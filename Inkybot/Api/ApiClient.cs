@@ -79,5 +79,12 @@ namespace Inkybot.Api
             var client = Connection.Request();
             client.PostAsync($"{Server.ApiUrl}/notify/error", new StringContent(""));
         }
+
+        public async Task NotifyOutOfRunes(Rune rune) {
+            await WaitForStableConnection();
+            
+            var client = Connection.Request();
+            client.PostAsync($"{Server.ApiUrl}/notify/outofrunes", new StringContent(rune.ToString()));
+        }
     }
 }
