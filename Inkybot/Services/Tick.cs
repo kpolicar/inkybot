@@ -254,10 +254,14 @@ namespace Inkybot.Services
             }
 
             private void EnforceHasRunesForCombine(CombineRune combine) {
-                var previousUserRune = job
+                var hasRune = job
                     .itemInfo
-                    .Runes[combine.Rune.stat]
-                    .First(userRune => userRune.Rune == combine.Rune);
+                    .Runes.TryGetValue(combine.Rune.stat, out var previousUserRunes);
+                if (!hasRune)
+                    return;
+                
+                var previousUserRune = 
+                    previousUserRunes.First(userRune => userRune.Rune == combine.Rune);
                 if (previousUserRune.Quantity == 0)
                     throw new OutOfRunesException(previousUserRune.Rune);
             }

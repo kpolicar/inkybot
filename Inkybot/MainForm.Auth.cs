@@ -60,6 +60,7 @@ namespace Inkybot
                     _ => ""
                 };
                 Debug.WriteLine(exception.Message);
+                magingJob.StopMage();
                 DoLoginDialog(message);
             }
         }

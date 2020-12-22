@@ -109,7 +109,7 @@ namespace Inkybot.Domain
         public int ChangeToPaRuneThreshold {
             get {
                 var val = Numbers.Parse(Config.ChangeToPaRuneThreshold);
-                return val == 0 ? int.MaxValue : val;
+                return val ?? int.MaxValue;
             }
             set {
                 Config.ChangeToPaRuneThreshold = value.ToString();
@@ -119,7 +119,7 @@ namespace Inkybot.Domain
         public int ChangeToRaRuneThreshold {
             get {
                 var val = Numbers.Parse(Config.ChangeToRaRuneThreshold);
-                return val == 0 ? int.MaxValue : val;
+                return val ?? int.MaxValue;
             }
             set {
                 Config.ChangeToRaRuneThreshold = value.ToString();
@@ -129,7 +129,7 @@ namespace Inkybot.Domain
         public int MaxValueAtWhichSmRuneCanLand {
             get {
                 var val = Numbers.Parse(Config.MaxValueAtWhichSmRuneCanLand);
-                return val == 0 ? ChangeToPaRuneThreshold : val;
+                return val ?? ChangeToPaRuneThreshold;
             }
             set {
                 Config.MaxValueAtWhichSmRuneCanLand = value.ToString();
@@ -139,7 +139,7 @@ namespace Inkybot.Domain
         public int MaxValueAtWhichPaRuneCanLand {
             get {
                 var val = Numbers.Parse(Config.MaxValueAtWhichPaRuneCanLand);
-                return val == 0 ? ChangeToRaRuneThreshold : val;
+                return val ?? ChangeToRaRuneThreshold;
             }
             set {
                 Config.MaxValueAtWhichPaRuneCanLand = value.ToString();
