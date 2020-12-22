@@ -11,6 +11,8 @@ namespace Inkybot
 {
     public partial class MainForm
     {
+        private const int SubscriptionCheckRequestMaxAttempts = 3;
+        private int SubscriptionCheckRequestAttempts = 0;
 
         private void InitAuth() {
             api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
@@ -48,11 +50,17 @@ namespace Inkybot
 
 
         private async void OnSubscriptionCheckTimer(object sender, EventArgs eventArgs) {
+            SubscriptionCheckRequestAttempts++;
             try {
                 var user = await api.User();
                 if (!user.is_subscribed && !user.is_free_trial)
                     throw new UserNotSubscribedException();
             } catch (Exception exception) {
+                if (exception is HttpRequestException && SubscriptionCheckRequestAttempts < SubscriptionCheckRequestMaxAttempts) {
+                    OnSubscriptionCheckTimer(sender, eventArgs);
+                    return;
+                }
+                
                 var message = exception switch {
                     HttpRequestException _ => "Something went wrong!",
                     UserNotSubscribedException _ =>
@@ -63,6 +71,8 @@ namespace Inkybot
                 magingJob.StopMage();
                 DoLoginDialog(message);
             }
+
+            SubscriptionCheckRequestAttempts = 0;
         }
         
         private void OnUserFetched(object sender, FetchedUserEventArgs e) {
