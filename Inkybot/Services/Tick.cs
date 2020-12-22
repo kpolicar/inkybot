@@ -77,10 +77,11 @@ namespace Inkybot.Services
                     job.state = State.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();
                     previousUserRune.Quantity = userRune.Quantity;
+                } else {
+                    Thread.Sleep(30);
                 }
-                job.RuneQuantityChanged?.Invoke(this, new RuneQuantityChangedEventArgs(userRune.Rune, userRune.Quantity, previousUserRune.Quantity));
+                job.RuneQuantityChanged?.Invoke(this, new RuneQuantityChangedEventArgs(userRune.Rune, previousUserRune.Quantity, userRune.Quantity));
 
-                Thread.Sleep(100);
             }
             
             private void DoHistoryCheckForChanges() {
@@ -237,12 +238,11 @@ namespace Inkybot.Services
                 var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine && combine.Exo) {
-
                     previousTickDeferredExecutionTask = Task.Run(() => {
                         job.previousHistory = job.history.Analyse(job.dataProvider.History());
                     });
                 }
-
+                
                 job.actions.Execute(action);
                 Debug.WriteLine("executed action "+action);
 
