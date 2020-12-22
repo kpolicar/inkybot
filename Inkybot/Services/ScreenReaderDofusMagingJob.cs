@@ -130,15 +130,7 @@ namespace Inkybot.Services
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
-            } catch (AggregateException agg_ex) {
-                //just get first exception, it will contain the most relevant error.
-                var ex = agg_ex.InnerExceptions[0];
-                Debug.WriteLine("/---aggregate");
-                Debug.WriteLine(ex.Message);
-                Debug.WriteLine(ex.StackTrace);
-                Debug.WriteLine("---/");
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
 
                 var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
                     ? "Please try running Inkybot as an administrator."
