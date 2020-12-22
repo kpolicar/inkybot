@@ -18,6 +18,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider : DofusDataProvider, InjectableService
     {
+        internal const int MaxSupportedStatsForMage = 12;
         public event EventHandler<ScannedRegionEventArgs> ScannedStats;
         public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
         public event EventHandler<ScanBoundsChanged> LatestHistoryBoundsChanged;
@@ -121,6 +122,14 @@ namespace Inkybot.Services
             var runeQuantityScan = scan.RuneQuantity(column, row).Result;
             
             return new UserRune(rune, runeQuantityScan.Quantity);
+        }
+
+        public bool IsSupportedItem(Item item) {
+            return item.Stats.Length <= MaxSupportedStatsForMage;
+        }
+
+        public bool IsSupportedConfig(Config config) {
+            return config.StatsConfig.Count <= MaxSupportedStatsForMage;
         }
     }
 }

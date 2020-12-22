@@ -59,15 +59,35 @@ namespace Inkybot
                 toggleMageButton.Enabled = true;
             }));
 
-            if (!e.Item.HasExo && !e.Item.IsOvermaged)
-                return;
-            
+            if (e.Item.HasExo || e.Item.IsOvermaged) {
+                StartMageExoOverConfirmDialog();
+            }
+
+            if (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)) {
+                StartMageUnsupportedDialog();
+            }
+        }
+
+        private void StartMageUnsupportedDialog() {
+            var confirmation =
+                MessageBox.Show(
+                    "Inkybot has detected that this item may contain more stats than can be displayed on the screen at once - this is unsupported. " +
+                    "Are you sure you want to mage this item?", 
+                    "Confirmation",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+            if (confirmation == DialogResult.No)
+                magingJob.StopMage();
+        }
+
+        private void StartMageExoOverConfirmDialog() {
             var confirmation =
                 MessageBox.Show(
                     "This item contains sensitive stats (exo/overmaged). Are you sure you want to mage this item?", 
-                "Confirmation",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                    "Confirmation",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
 
             if (confirmation == DialogResult.No)
                 magingJob.StopMage();

@@ -9,7 +9,7 @@ namespace Inkybot.Events
         public readonly float OldSink;
 
 
-        public SinkChangedEventArgs(Item item, float oldSink, float sink) : base(item) {
+        public SinkChangedEventArgs(Item item, Config config, float oldSink, float sink) : base(item, config) {
             this.Sink = sink;
             this.OldSink = oldSink;
         }

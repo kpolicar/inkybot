@@ -274,25 +274,25 @@
           <DependentUpon>StatDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Services\ActionHandler.cs" />
-        <Compile Include="Services\BasicDofusMagingAI.cs" />
+        <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\FileEventLogger.cs" />
         <Compile Include="Services\ImagePreprocessor.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ItemMage.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Measurements.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\PerfectionItemMageResolve.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\PrioritizedItemMageResolve.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\RuneQuantityScan.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
@@ -302,7 +302,7 @@
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\StandardItemMageResolve.cs">
-          <DependentUpon>BasicDofusMagingAI.cs</DependentUpon>
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\State.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>

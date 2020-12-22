@@ -10,6 +10,7 @@ using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
+using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Inkybot.Services
 {
@@ -28,13 +29,11 @@ namespace Inkybot.Services
         internal ActionHandler actions;
         internal ActionFactory actionFactory;
 
-        public Config Config;
-
         internal ScreenReaderDataProvider dataProvider;
         internal IItemHistoryAnalyzer history;
 
         public Thread job;
-        internal DofusMagingAI magus;
+        internal Contracts.DofusMagingAI magus;
         internal IAction previousAction;
         internal ItemHistoryAnalysis? previousHistory;
         private Item? previousItem;
@@ -73,7 +72,7 @@ namespace Inkybot.Services
         internal float Sink {
             get => sink;
             set {
-                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem, sink, value));
+                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem, configManager.Config, sink, value));
                 sink = value;
             }
         }
@@ -87,7 +86,7 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (IsMaging) return;
-            magus = (DofusMagingAI) Program.Services.GetService(typeof(DofusMagingAI));
+            magus = (DofusMagingAIContract) Program.Services.GetService(typeof(DofusMagingAIContract));
 
             job = new Thread(DoMage);
             job.Start();
@@ -117,7 +116,7 @@ namespace Inkybot.Services
             };
             
             IsMaging = true;
-            Started?.Invoke(this, new MagingJobEventArgs(item));
+            Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
         }
 
         private void DoMage() {
@@ -152,7 +151,7 @@ namespace Inkybot.Services
             IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             
-            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem));
+            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem, configManager.Config));
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {

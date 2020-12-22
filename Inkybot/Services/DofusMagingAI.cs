@@ -11,10 +11,11 @@ using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
+using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Inkybot.Services
 {
-    public class BasicDofusMagingAI : DofusMagingAI, InjectableService
+    public class DofusMagingAI : DofusMagingAIContract, InjectableService
     {
         private ActionFactory actions;
         private Config config;
@@ -48,8 +49,6 @@ namespace Inkybot.Services
         }
 
         public IAction ResolveAction(Item item) {
-            Debug.WriteLine("has this many exos: "+item.Stats.ExoStats.Length);
-
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage == null)
