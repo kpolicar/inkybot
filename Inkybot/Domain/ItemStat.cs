@@ -9,6 +9,7 @@ namespace Inkybot
         public int value;
         public int min;
         public int max;
+        private bool unmagable;
         public bool Exo => max == 0;
 
         public ItemStat(Stat itemStat, int value, int min, int max) {
@@ -16,6 +17,7 @@ namespace Inkybot
             this.value = value;
             this.min = min;
             this.max = max;
+            this.unmagable = false;
         }
 
         public static bool operator == (ItemStat operand1, ItemStat operand2) {

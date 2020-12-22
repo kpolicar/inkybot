@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
 using Inkybot.Exceptions;
 
@@ -17,47 +18,60 @@ namespace Inkybot.Adapters
         }
 
         public ItemStatRepository ToItemStats() {
-            return new ItemStatRepository(statLines.Select(mageEntry => {
-                var changes = SegmentItemStatLine(mageEntry);
+            return new ItemStatRepository(statLines.Select(statLine => {
+                var (segmentedStatLine, isWeaponEffectStatLine) = SegmentItemStatLine(statLine);
 
                 try {
-                    return StatLineToItemStat(changes.Groups);
+                    return StatLineToItemStat(segmentedStatLine.Groups, isWeaponEffectStatLine);
                 } catch (CouldNotSegmentStatLineException) {
-                    throw new CouldNotSegmentStatLineException($"Error occured trying to segment stat line: {mageEntry}");
+                    throw new CouldNotSegmentStatLineException($"Error occured trying to segment stat line: {statLine}");
                 }
             }).ToArray());
         }
 
-        private (int min, int max, int value) GetMinMaxValueFromScanResult(GroupCollection historyEntrySegments) {
+        private (int? min, int? max, int? value)
+            GetDataFromScanResult(GroupCollection statLineSegments, bool parseMin=true, bool parseMax=true, bool parseValue=true) {
             try {
                 var (min, max, value) =
-                    (historyEntrySegments[1].Value, historyEntrySegments[2].Value, historyEntrySegments[3].Value);
+                    (statLineSegments[1].Value, statLineSegments[2].Value, statLineSegments[3].Value);
                 
-                var parsedMin = min != "-" ? int.Parse(min) : 0;
-                var parsedMax = max != "-" ? int.Parse(max) : 0;
-                var parsedValue = value.Length > 0 ? int.Parse(value) : 0;
+                var parsedMin = parseMin
+                    ? (int?)(min != "-" ? int.Parse(min) : 0)
+                    : null;
+                var parsedMax = parseMax
+                    ? (int?)(max != "-" ? int.Parse(max) : 0)
+                    : null;
+                var parsedValue = parseValue
+                    ? (int?) (value.Length > 0 ? int.Parse(value) : 0)
+                    : null;
 
                 return (parsedMin, parsedMax, parsedValue);
             } catch (Exception exception) {
-                throw new CouldNotResolveStatValueException($"Error occured resolving value for stat {historyEntrySegments[4].Value}", exception);
+                throw new CouldNotResolveStatValueException($"Error occured resolving value for stat {statLineSegments[4].Value}", exception);
             }
         }
         
-        private ItemStat StatLineToItemStat(GroupCollection historyEntrySegments) {
-            if (historyEntrySegments.Count != 5)
+        private ItemStat StatLineToItemStat(GroupCollection statLineSegments, bool isWeaponEffectStatLine) {
+            if (statLineSegments.Count != 5)
                 throw new CouldNotSegmentStatLineException($"Error occured trying to segment stat line");
-
-            var (min, max, value) = GetMinMaxValueFromScanResult(historyEntrySegments);
-
-            var name = historyEntrySegments[4].Value;
+            
+            var name = statLineSegments[4].Value;
+            var (min, max, value) = GetDataFromScanResult(statLineSegments, parseValue: !isWeaponEffectStatLine);
+            
+            if (isWeaponEffectStatLine) {
+                return new ItemStat(new Stat("Weapon " + name), 0, min.Value, max.Value);
+            }
+            
             var stat = GetStatFromName(name);
-
-            return new ItemStat(stat, value, min, max);
+            return new ItemStat(stat, value.Value, min.Value, max.Value);
         }
 
-        private Match SegmentItemStatLine(string historyLine) {
-            var segments = Regex.Match(historyLine, Properties.Regex.ItemStatLinePattern);
-            return segments;
+        private (Match segmentedStatLine, bool isWeaponEffectStatLine) SegmentItemStatLine(string statLine) {
+            var segments = Regex.Match(statLine, Properties.Regex.ItemStatLinePattern);
+            if (!segments.Success)
+                return (Regex.Match(statLine, Properties.Regex.ItemWeaponEffectStatLinePattern), true);
+            
+            return (segments, false);
         }
     }
 }

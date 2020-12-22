@@ -97,6 +97,15 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ^(-?\d+|-) +(-?\d+|-) +((?:-?\d+) *to *(?:-?\d+)) ?(\([A-z ]+\))$.
+        /// </summary>
+        internal static string ItemWeaponEffectStatLinePattern {
+            get {
+                return ResourceManager.GetString("ItemWeaponEffectStatLinePattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [+-] ?sin[kt]?.
         /// </summary>
         internal static string SinkHasChangedPattern {

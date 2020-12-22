@@ -37,9 +37,10 @@ namespace Inkybot.Services
                 new StandardItemMageResolve(config, item).Resolve() ??
                 new StandardItemMageResolve(config, item, 1).Resolve();
                 
-            proposedMage ??=
-                new PerfectionItemMageResolve(config, item, sink).Resolve() ??
-                new PerfectionItemMageResolve(config, item, sink, 1).Resolve();
+            if (!item.IsOvermaged && !item.HasExo)
+                proposedMage ??=
+                    new PerfectionItemMageResolve(config, item, sink).Resolve() ??
+                    new PerfectionItemMageResolve(config, item, sink, 1).Resolve();
 
             return proposedMage;
         }

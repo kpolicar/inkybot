@@ -82,6 +82,8 @@ namespace Inkybot
                 var row = statsDataGridView.Rows[i];
                 var updatingFallenExos = i >= item.Stats.Length;
                 var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
+                if (!stat.Mageable)
+                    continue;
                     
                 if (updatingFallenExos) {
                     if (configManager.Config.For(stat).Target == 0) {
@@ -124,8 +126,9 @@ namespace Inkybot
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
                 var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
+                Debug.WriteLine(stat);
                 
-                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Target, itemStat.Exo || itemStat == default);
+                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Target, itemStat.Exo || itemStat == default, stat.Mageable);
                 row.Tag = new ItemStatRow(stat);
             }
         }
@@ -134,17 +137,25 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max, itemStat.Exo);
+                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
             }
         }
 
-        private DataGridViewRow AddNewStatRow(string displayName, int value, int max, bool exo) {
-            statsDataGridView.Rows.Add(displayName, value, max);
+        private DataGridViewRow AddNewStatRow(string displayName, int value, int max, bool exo, bool mageable) {
+            if (mageable) {
+                statsDataGridView.Rows.Add(displayName, value, max);
+            } else {
+                statsDataGridView.Rows.Add(displayName, "-", "-");
+            }
             var index = statsDataGridView.Rows.Count-1;
             var row = statsDataGridView.Rows[index];
             if (exo)
                 row.DefaultCellStyle = exoCellStyle;
+            if (!mageable) {
+                row.ReadOnly = true;
+                row.DefaultCellStyle = unmageableCellStyle;
+            }
             return row;
         }
 
@@ -190,6 +201,8 @@ namespace Inkybot
 
             var statRow = (ItemStatRow) row.Tag;
             var stat = statRow.Stat;
+            if (!stat.Mageable)
+                return;
             
             int max;
             var newTargetIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
@@ -275,7 +288,7 @@ namespace Inkybot
             
             var preset = Properties.Settings.Default.presets.Presets.Skip(index-1).First();
             var itemStats = preset.Stats.Select(statPreset => {
-                var stat = Stat.Stats.First(stat => stat.Identifier == statPreset.Stat);
+                var stat = Stat.FirstOrNew(statPreset.Stat);
 
                 return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
             }).ToArray();
@@ -283,7 +296,10 @@ namespace Inkybot
             configManager.ResetConfig(item);
             
             foreach (var statPreset in preset.Stats) {
-                configManager.ChangeStatConfigTarget(Stat.Stats.First(stat => stat.Identifier == statPreset.Stat), statPreset.Target);
+                var stat = Stat.FirstOrNew(statPreset.Stat);
+                if (!stat.Mageable)
+                    continue;
+                configManager.ChangeStatConfigTarget(stat, statPreset.Target);
             }
         }
 

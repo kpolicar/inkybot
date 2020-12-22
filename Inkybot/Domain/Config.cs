@@ -76,7 +76,8 @@ namespace Inkybot.Domain
             get {
                 var configuredExoStats = from itemConfig in StatsConfig 
                     where !(from standardStat in Item.Stats.StandardStats.Select(itemStat => itemStat.stat) 
-                        select standardStat).Contains(itemConfig.Key) 
+                        select standardStat).Contains(itemConfig.Key) ||
+                          Item.Stats.UnmageableStats.Select(itemStat => itemStat.stat).Contains(itemConfig.Key)
                     select itemConfig;
 
                 return configuredExoStats.ToArray();

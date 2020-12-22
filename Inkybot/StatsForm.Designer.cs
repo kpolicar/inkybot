@@ -32,6 +32,15 @@ namespace Inkybot
             exoCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(60, 60, 60);
             exoCellStyle.SelectionForeColor = System.Drawing.Color.FromArgb(20, 20, 20);
             exoCellStyle.WrapMode = DataGridViewTriState.True;
+            
+            unmageableCellStyle = new DataGridViewCellStyle();
+            unmageableCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            unmageableCellStyle.BackColor = System.Drawing.Color.FromArgb(50,50,50);
+            unmageableCellStyle.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            unmageableCellStyle.ForeColor = System.Drawing.SystemColors.Control;
+            unmageableCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(50,50,50);
+            unmageableCellStyle.SelectionForeColor = System.Drawing.SystemColors.Control;
+            unmageableCellStyle.WrapMode = DataGridViewTriState.True;
         }
 
         #region Windows Form Designer generated code
@@ -277,6 +286,7 @@ namespace Inkybot
         #endregion
         
         private DataGridViewCellStyle exoCellStyle;
+        private DataGridViewCellStyle unmageableCellStyle;
         private System.Windows.Forms.DataGridView statsDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ValueColumn;

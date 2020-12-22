@@ -13,6 +13,11 @@ namespace Inkybot.Domain
 {
     public class Stat
     {
+        public static Stat FirstOrNew(string identifier) {
+            var stat = Stats.DefaultIfEmpty(null).FirstOrDefault(stat => stat.Identifier == identifier);
+            return stat ?? new Stat(identifier);
+        }
+        
         public static void Init() {
             StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
                 .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
@@ -84,7 +89,7 @@ namespace Inkybot.Domain
                 new Stat("summons", 3, 30f, 30f),
                 new Stat("range", 1, 51f, 25f),
                 new Stat("mp", 1, 90f, 45f),
-                new Stat("ap", 1, 100f, 50f)
+                new Stat("ap", 1, 100f, 50f),
             };
         }
 
@@ -153,6 +158,7 @@ namespace Inkybot.Domain
         public readonly int Maximum;
         public readonly float NegSinkValue;
         public readonly float SinkValue;
+        public readonly bool Mageable;
 
         private Stat(string identifier,
             int maximum,
@@ -166,6 +172,12 @@ namespace Inkybot.Domain
             Maximum = maximum;
             SinkValue = sinkValue;
             NegSinkValue = negSinkValue;
+            Mageable = true;
+        }
+        
+        public Stat(string displayName) {
+            Identifier = DisplayName = displayName;
+            Mageable = false;
         }
 
         private static Stat ElementStatData(string identifier) {

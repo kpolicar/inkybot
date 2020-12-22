@@ -12,6 +12,7 @@ namespace Inkybot.Services
         // Todo: it's iterating over all the item stats instead of only exos
         protected override IEnumerable<ItemMage> PotentialMages() {
             return config.StatsConfig
+                .Where(statConfig => statConfig.Key.Mageable)
                 .Select(statConfig =>
                     new ItemMage(
                         statConfig.Key,

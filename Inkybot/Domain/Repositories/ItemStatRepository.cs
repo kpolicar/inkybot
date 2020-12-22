@@ -13,11 +13,17 @@ namespace Inkybot.Domain.Repositories
             Stats = stats;
         }
         
+        public ItemStat[] MageableStats =>
+            Stats.Where(itemStat => itemStat.stat.Mageable).ToArray();
+        
+        public ItemStat[] UnmageableStats =>
+            Stats.Where(itemStat => !itemStat.stat.Mageable).ToArray();
+        
         public ItemStat[] StandardStats =>
-            Stats.Where(stat => !stat.Exo).ToArray();
+            MageableStats.Where(itemStat => !itemStat.Exo).ToArray();
         
         public ItemStat[] ExoStats =>
-            Stats.Where(stat => stat.Exo).ToArray();
+            MageableStats.Where(itemStat => itemStat.Exo).ToArray();
 
         public IEnumerator<ItemStat> GetEnumerator() {
             return Stats.Select(stat => stat).GetEnumerator();

@@ -21,6 +21,9 @@
     <data name="ItemStatLinePattern" xml:space="preserve">
         <value>^(-?\d+|-) +(-?\d+|-) +(-?\d*) *(%? ?[A-z() ]+)$</value>
     </data>
+    <data name="ItemWeaponEffectStatLinePattern" xml:space="preserve">
+        <value>^(-?\d+|-) +(-?\d+|-) +((?:-?\d+) *to *(?:-?\d+)) ?(\([A-z ]+\))$</value>
+    </data>
     <data name="SinkHasChangedPattern" xml:space="preserve">
         <value>[+-] ?sin[kt]?</value>
     </data>
