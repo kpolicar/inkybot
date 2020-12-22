@@ -59,32 +59,26 @@ namespace Inkybot.Api
 
         public async Task SendStatistics(IEnumerable<KeyValuePair<string, string>> data) {
             await WaitForStableConnection();
-            
-            var client = Connection.Request();
-            var response = await client.PostAsync($"{Server.ApiUrl}/statistics", new FormUrlEncodedContent(data));
-            var result = response.Content.ReadAsStringAsync().Result;
-            Debug.WriteLine(result);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/statistics", new FormUrlEncodedContent(data));
         }
 
         public async Task NotifyFinished() {
             await WaitForStableConnection();
-            
-            var client = Connection.Request();
-            client.PostAsync($"{Server.ApiUrl}/notify/finished", new StringContent(""));
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/finished", new StringContent(""));
         }
 
         public async Task NotifyError() {
             await WaitForStableConnection();
-            
-            var client = Connection.Request();
-            client.PostAsync($"{Server.ApiUrl}/notify/error", new StringContent(""));
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/error", new StringContent(""));
         }
 
         public async Task NotifyOutOfRunes(Rune rune) {
             await WaitForStableConnection();
-            
-            var client = Connection.Request();
-            client.PostAsync($"{Server.ApiUrl}/notify/outofrunes", new StringContent(rune.ToString()));
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/outofrunes", new StringContent(rune.ToString()));
         }
     }
 }
