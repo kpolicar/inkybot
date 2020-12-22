@@ -47,6 +47,15 @@ namespace Inkybot.Api
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
             return user;
         }
+        
+        public async Task<FreeTrial> BeginFreeTrial() {
+            await WaitForStableConnection();
+            var response = await Connection!.Request()
+                .PostAsync($"{Server.ApiUrl}/trial/begin", new StringContent(""));
+            
+            var result = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<FreeTrial>(result);
+        }
 
         public async Task<VersionDetails> NewestVersion() {
             var client = new HttpClient();

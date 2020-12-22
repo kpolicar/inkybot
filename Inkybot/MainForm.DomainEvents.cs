@@ -71,9 +71,8 @@ namespace Inkybot
         private void StartMageUnsupportedDialog() {
             var confirmation =
                 MessageBox.Show(
-                    "Inkybot has detected that this item may contain more stats than can be displayed on the screen at once - this is unsupported. " +
-                    "Are you sure you want to mage this item?", 
-                    "Confirmation",
+                    resources.GetString("popup.warning_unsupported"),
+                    resources.GetString("popup.title_confirmation"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
 
@@ -84,8 +83,8 @@ namespace Inkybot
         private void StartMageExoOverConfirmDialog() {
             var confirmation =
                 MessageBox.Show(
-                    "This item contains sensitive stats (exo/overmaged). Are you sure you want to mage this item?", 
-                    "Confirmation",
+                    resources.GetString("popup.warning_sensitive"),
+                    resources.GetString("popup.title_confirmation"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
 
@@ -101,12 +100,6 @@ namespace Inkybot
                 mageInfoPanel.Show();
                 toggleMageButton.Enabled = false;
             }));
-        }
-
-        private void OnUserDetailsUpdated(object sender, FetchedUserEventArgs e) {
-            var user = e.user;
-            usernameLabel.Text = user.name;
-            subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.Text") + "\n" + user.subscribed_to!.Value.ToString("dd/MM/yyyy");
         }
     }
 }

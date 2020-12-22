@@ -1,10 +1,13 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
+using Inkybot.Api.Resources;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 
 namespace Inkybot
 {
@@ -39,10 +42,16 @@ namespace Inkybot
                 }
 
                 var user = await api.User();
-                if (!user.is_subscribed) {
-                    errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
-                    return;
-                }
+                await HandleUserSubscriptionStatus(user);
+
+            } catch (UserTrialHasExpiredException) {
+                button1.Enabled = true;
+                errorMessage.Text = resources.GetString("errorMessage.TextTrialExpired");
+                return;
+            } catch (UserNotSubscribedException) {
+                button1.Enabled = true;
+                errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
+                return;
             } catch (HttpRequestException) {
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
@@ -55,14 +64,40 @@ namespace Inkybot
             DialogResult = DialogResult.OK;
         }
 
+        private async Task HandleUserSubscriptionStatus(User user) {
+            _ = (user.is_subscribed, user.is_free_trial, user.free_trial_available) switch {
+                (true, _, _) => true,
+                (false, true, _) => true,
+                (false, false, true) => await TryStartFreeTrial()
+                    ? true
+                    : throw new UserNotSubscribedException(),
+                _ => throw new UserNotSubscribedException(),
+            };
+        }
+
+        private async Task<bool> TryStartFreeTrial() {
+            var confirmation =
+                MessageBox.Show(
+                    resources.GetString("popup.ask_trial"),
+                    resources.GetString("popup.title_trial"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+            if (confirmation == DialogResult.Yes) {
+                var trial = await api.BeginFreeTrial();
+                if (trial.expired)
+                    throw new UserTrialHasExpiredException();
+                return true;
+            }
+            return false;
+        }
+
         private async void LoginForm_Load(object sender, EventArgs e) {
             try {
                 var newestVersion = await api.NewestVersion();
                 if (Program.VersionNumber != newestVersion.number)
                     newVersionLabel.Show();
-            } 
-            catch (Exception exception) {
-                
+            } catch (Exception exception) {
             }
         }
 

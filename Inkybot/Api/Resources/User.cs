@@ -7,6 +7,8 @@ namespace Inkybot.Api.Resources
     {
         public string email;
         public bool is_subscribed;
+        public bool is_free_trial;
+        public bool free_trial_available;
         public string name;
         public string password;
         public DateTime? subscribed_to;

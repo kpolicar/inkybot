@@ -2634,4 +2634,13 @@
   <data name="errorMessage.TextConnectionError" xml:space="preserve">
     <value>Could not connect to Inkybot!</value>
   </data>
+  <data name="errorMessage.TextTrialExpired" xml:space="preserve">
+    <value>You have already used your free trial!</value>
+  </data>
+  <data name="popup.ask_trial" xml:space="preserve">
+    <value>You are not subscribed to Inkybot. Would you like to activate your 15 minute free trial?</value>
+  </data>
+  <data name="popup.title_trial" xml:space="preserve">
+    <value>Free Trial</value>
+  </data>
 </root>

@@ -157,6 +157,7 @@
         </Compile>
         <Compile Include="Api\ApiNotifier.cs" />
         <Compile Include="Api\Resources\AuthDetails.cs" />
+        <Compile Include="Api\Resources\FreeTrial.cs" />
         <Compile Include="Api\Resources\User.cs" />
         <Compile Include="Api\Resources\VersionDetails.cs" />
         <Compile Include="Api\Auth.cs">
@@ -220,6 +221,8 @@
         <Compile Include="Exceptions\SinkIncorrectException.cs" />
         <Compile Include="Exceptions\SinkNegativeException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
+        <Compile Include="Exceptions\UserAuthException.cs" />
+        <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Enumerable.cs" />
