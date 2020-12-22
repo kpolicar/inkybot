@@ -3,7 +3,7 @@ using Inkybot.Domain;
 
 namespace Inkybot.Domain
 {
-    public struct UserRune
+    public class UserRune
     {
         public readonly Rune Rune;
         public int Quantity;

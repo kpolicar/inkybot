@@ -17,7 +17,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider
     {
-        public class ScreenScanner
+        public class ScreenScanner : IDisposable
         {
             public event EventHandler<TesseractPageProcessed> PageProcessed;
 
@@ -95,6 +95,10 @@ namespace Inkybot.Services
                     throw new OcrEngineNotReadyYetException("OCR engine is unavailable, try again in a moment.",
                         exception);
                 }
+            }
+
+            public void Dispose() {
+                engine?.Dispose();
             }
         }
 

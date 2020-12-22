@@ -25,7 +25,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider
     {
-        public class DofusScreenScan
+        public class DofusScreenScan : IDisposable
         {
             private Rectangle latestHistoryLastTextLineBounds;
             public Responsive.Measurement LatestHistoryBounds;
@@ -90,7 +90,6 @@ namespace Inkybot.Services
                         new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
 
                 latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
-
             }
 
             private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
@@ -220,6 +219,10 @@ namespace Inkybot.Services
                 var bitmap = screen.CaptureWindow(handle);
 
                 return bitmap;
+            }
+
+            public void Dispose() {
+                screenshot?.Dispose();
             }
         }
     }

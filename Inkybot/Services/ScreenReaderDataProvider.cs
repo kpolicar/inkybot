@@ -46,10 +46,12 @@ namespace Inkybot.Services
         public void FetchData() {
             if (handle == IntPtr.Zero)
                 throw new SystemException();
+            scan?.Dispose();
             scan = new DofusScreenScan(handle, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
+            scan?.Dispose();
             scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
         }
 
@@ -119,9 +121,6 @@ namespace Inkybot.Services
             var runeQuantityScan = scan.RuneQuantity(column, row).Result;
             
             return new UserRune(rune, runeQuantityScan.Quantity);
-        }
-
-        public void SetupForActiveItem() {
         }
     }
 }
