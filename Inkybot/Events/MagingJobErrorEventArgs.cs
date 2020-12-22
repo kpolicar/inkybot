@@ -6,7 +6,7 @@ namespace Inkybot.Events
     {
         private string additionalInfo;
 
-        public MagingJobErrorEventArgs(Exception exception, string additionalInfo) : base(exception, additionalInfo) {
+        public MagingJobErrorEventArgs(Exception exception, string additionalInfo="") : base(exception, additionalInfo) {
         }
     }
 }

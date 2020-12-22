@@ -126,6 +126,8 @@ namespace Inkybot.Services
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 
                 while (IsMaging) new Tick(this).Execute();
+            } catch (OutOfRunesException exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
             } catch (AggregateException agg_ex) {

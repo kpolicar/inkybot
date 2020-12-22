@@ -237,16 +237,29 @@ namespace Inkybot.Services
                 previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item);
 
-                if (action is CombineRune combine && combine.Exo) {
-                    previousTickDeferredExecutionTask = Task.Run(() => {
-                        job.previousHistory = job.history.Analyse(job.dataProvider.History());
-                    });
+                if (action is CombineRune combine) {
+                    EnforceHasRunesForCombine(combine);
+
+                    if (combine.Exo) {
+                        previousTickDeferredExecutionTask = Task.Run(() => {
+                            job.previousHistory = job.history.Analyse(job.dataProvider.History());
+                        });
+                    }
                 }
                 
                 job.actions.Execute(action);
                 Debug.WriteLine("executed action "+action);
 
                 return action;
+            }
+
+            private void EnforceHasRunesForCombine(CombineRune combine) {
+                var previousUserRune = job
+                    .itemInfo
+                    .Runes[combine.Rune.stat]
+                    .First(userRune => userRune.Rune == combine.Rune);
+                if (previousUserRune.Quantity == 0)
+                    throw new OutOfRunesException(previousUserRune.Rune);
             }
 
             private void EnforceStatsChanged(Item item) {
