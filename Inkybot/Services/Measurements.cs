@@ -97,5 +97,11 @@ namespace Inkybot.Services
             Width = 1920,
             Height = 1017
         };
+        
+        public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(2100, 1165, 2100, 1165),
+            Width = 2310,
+            Height = 1530
+        };
     }
 }

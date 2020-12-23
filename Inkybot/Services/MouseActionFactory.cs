@@ -24,5 +24,9 @@ namespace Inkybot.Services
         public IAction InventorySelectResourcesAction() {
             return new InventorySelectResourcesAction(targetControl);
         }
+
+        public IAction InventoryClearSelectionAction() {
+            return new InventoryClearSelectionAction(targetControl);
+        }
     }
 }

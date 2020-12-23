@@ -7,5 +7,6 @@ namespace Inkybot.Contracts
         IAction Finish(Item item);
         IAction CombineRune(Rune rune, bool exo);
         IAction InventorySelectResourcesAction();
+        IAction InventoryClearSelectionAction();
     }
 }

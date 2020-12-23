@@ -24,12 +24,6 @@ namespace Inkybot.Actions
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(2100, 1165, 2100, 1165),
-            Width = 2310,
-            Height = 1530
-        };
-        
         public static readonly Responsive.Measurement FirstItemInInventoryMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
             Width = 1920,
@@ -108,7 +102,7 @@ namespace Inkybot.Actions
             Thread.Sleep(1000);
             
             Cancel?.ThrowIfCancellationRequested();
-            var eraseSearchPosition = GetCursorTarget(InventorySearchTextBoxErase);
+            var eraseSearchPosition = GetCursorTarget(Measurements.InventorySearchTextBoxErase);
             Input.Click(eraseSearchPosition.X, eraseSearchPosition.Y);
             
             

@@ -142,6 +142,7 @@
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\InputAction.cs" />
         <Compile Include="Actions\CombineRune.cs" />
+        <Compile Include="Actions\InventoryClearSelectionAction.cs" />
         <Compile Include="Actions\InventorySelectResourcesAction.cs" />
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />

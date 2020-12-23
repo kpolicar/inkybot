@@ -22,7 +22,6 @@ namespace Inkybot.Services
             private static Task previousTickDeferredExecutionTask;
             private const int MaxHistoryChangedChecks = 5;
             private static int HistoryChangedChecksCount = 0;
-            private static bool previousCheckHadRunOutOfRunes = false;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
@@ -264,11 +263,11 @@ namespace Inkybot.Services
                 var previousUserRune = 
                     previousUserRunes.First(userRune => userRune.Rune == combine.Rune);
                 if (previousUserRune.Quantity == 0) {
-                    if (previousCheckHadRunOutOfRunes)
+                    if (job.previousCheckHadRunOutOfRunes)
                         throw new OutOfRunesException(previousUserRune.Rune);
-                    previousCheckHadRunOutOfRunes = true;
+                    job.previousCheckHadRunOutOfRunes = true;
                 } else {
-                    previousCheckHadRunOutOfRunes = false;
+                    job.previousCheckHadRunOutOfRunes = false;
                 }
             }
 

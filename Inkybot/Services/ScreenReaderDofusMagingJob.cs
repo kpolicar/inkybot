@@ -43,6 +43,7 @@ namespace Inkybot.Services
         private ConfigManager configManager;
         internal Stopwatch changeTimeout;
         internal CurrentItemInfo itemInfo;
+        internal bool previousCheckHadRunOutOfRunes = false;
 
 
         public ScreenReaderDofusMagingJob() {
@@ -88,6 +89,7 @@ namespace Inkybot.Services
             if (IsMaging) return;
             magus = (DofusMagingAIContract) Program.Services.GetService(typeof(DofusMagingAIContract));
 
+            previousCheckHadRunOutOfRunes = false;
             job = new Thread(DoMage);
             job.Start();
             Preparing?.Invoke(this, EventArgs.Empty);
@@ -128,6 +130,8 @@ namespace Inkybot.Services
             try {
                 PrepareMage();
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
+                Thread.Sleep(30);
+                actions.Execute(actionFactory.InventoryClearSelectionAction());
                 
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
