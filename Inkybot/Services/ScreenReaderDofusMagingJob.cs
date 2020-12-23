@@ -108,15 +108,20 @@ namespace Inkybot.Services
             previousAction = null;
             previousHistory = null;
             previousItem = null;
+
+            try {
+                IsMaging = true;
+                dataProvider.FetchData();
+                var item = dataProvider.Item();
+                itemInfo = new CurrentItemInfo {
+                    Runes = dataProvider.Runes()
+                };
             
-            dataProvider.FetchData();
-            var item = dataProvider.Item();
-            itemInfo = new CurrentItemInfo {
-                Runes = dataProvider.Runes()
-            };
-            
-            IsMaging = true;
-            Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
+                Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
+            } catch (Exception) {
+                IsMaging = false;
+                throw;
+            }
         }
 
         private void DoMage() {

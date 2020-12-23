@@ -55,10 +55,6 @@ namespace Inkybot
         }
 
         private void OnMagingStarted(object sender, MagingJobEventArgs e) {
-            Invoke(new MethodInvoker(delegate {
-                toggleMageButton.Enabled = true;
-            }));
-
             if (e.Item.HasExo || e.Item.IsOvermaged) {
                 StartMageExoOverConfirmDialog();
             }
@@ -98,7 +94,6 @@ namespace Inkybot
                 exoAttemptsValueLabel.Show();
                 toggleMageButton.Text = resources.GetString("toggleMageButton.TextStop");
                 mageInfoPanel.Show();
-                toggleMageButton.Enabled = false;
             }));
         }
     }
