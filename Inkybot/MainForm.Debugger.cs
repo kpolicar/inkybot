@@ -27,7 +27,6 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatMinBounds);
             RegisterOcrIndicator(Measurements.StatMaxBounds);
             RegisterOcrIndicator(Measurements.StatValuesBounds);
-            RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {

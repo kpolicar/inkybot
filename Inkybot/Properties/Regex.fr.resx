@@ -26,4 +26,7 @@
     <data name="FailurePattern" xml:space="preserve">
         <value>Échec</value>
     </data>
+    <data name="ItemWeaponEffectStatLinePattern" xml:space="preserve">
+        <value>^(-?\d+|-) +(-?\d+|-) +((?:-?\d+) *à *(?:-?\d+)) ?(\([A-zÀ-ÿ ]+\))$</value>
+    </data>
 </root>
