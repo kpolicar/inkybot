@@ -6,10 +6,11 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager : InjectableService
+    public class ConfigManager
     {
         public event EventHandler<ConfigModifiedEventArgs> ConfigModified;
 
@@ -17,18 +18,8 @@ namespace Inkybot.Services
             get;
             private set;
         }
-        
-        public void BindDependencies() {
-            var dataProvider = Program.Services.GetService<DofusDataProvider>();
-            dataProvider.FetchedItem += StatsUpdated;
-        }
 
-        private void StatsUpdated(object sender, ItemEventArgs e) {
-            EnforceConfigSetForItem(e.Item);
-            RemoveFallenUnconfiguredStats(e.Item);
-        }
-
-        private void RemoveFallenUnconfiguredStats(Item item) {
+        public void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
                 Config.StatsConfig.Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
@@ -60,9 +51,8 @@ namespace Inkybot.Services
         }
 
         public void EnforceConfigSetForItem(Item item) {
-            if (!ConfigIsSetForItem(item)) {
+            if (!ConfigIsSetForItem(item))
                 ResetConfig(item);
-            }
         }
 
         private bool ConfigIsSetForItem(Item item) {

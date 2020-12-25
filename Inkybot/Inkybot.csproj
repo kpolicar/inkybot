@@ -221,6 +221,7 @@
         <Compile Include="Exceptions\OutOfRunesException.cs" />
         <Compile Include="Exceptions\SinkIncorrectException.cs" />
         <Compile Include="Exceptions\SinkNegativeException.cs" />
+        <Compile Include="Exceptions\ItemHasChangedException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />

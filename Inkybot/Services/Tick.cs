@@ -22,6 +22,8 @@ namespace Inkybot.Services
             private static Task previousTickDeferredExecutionTask;
             private const int MaxHistoryChangedChecks = 5;
             private static int HistoryChangedChecksCount = 0;
+            private const int MaxStatsChangedChecks = 3;
+            private static int StatsChangedChecksCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
@@ -49,11 +51,22 @@ namespace Inkybot.Services
             }
 
             private void DoMainMageAction() {
-                //job.dataProvider.FetchData();
-                var action = job.previousAction = DoAction();
+                StatsChangedChecksCount++;
 
-                if (action is CombineRune) {
-                    job.state = State.EXECUTING_COMBINE;
+                try {
+                    var action = job.previousAction = DoAction();
+
+                    if (action is CombineRune) {
+                        job.state = State.EXECUTING_COMBINE;
+                    }
+                } catch (ItemHasChangedException exception) {
+                    if (MaxStatsChangedChecks >= StatsChangedChecksCount)
+                        throw;
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{StatsChangedChecksCount} out of ${MaxStatsChangedChecks}"));
+                    job.dataProvider.FetchData();
+
+                    Thread.Sleep(100);
+                    return;
                 }
                 
                 Thread.Sleep(100);
@@ -231,8 +244,11 @@ namespace Inkybot.Services
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
                 
+                EnforceItemHasNotChanged(item);
                 EnforceStatsChanged(item);
                 job.previousItem = item;
+                job.configManager.EnforceConfigSetForItem(item);
+                job.configManager.RemoveFallenUnconfiguredStats(item);
 
                 previousTickDeferredExecutionTask?.Wait();
                 var action = job.magus.ResolveAction(item);
@@ -251,6 +267,11 @@ namespace Inkybot.Services
                 Debug.WriteLine("executed action "+action);
 
                 return action;
+            }
+
+            private void EnforceItemHasNotChanged(Item item) {
+                if (job.previousItem != null && !item.MatchesStandardStats(job.previousItem))
+                    throw new ItemHasChangedException(item);
             }
 
             private void EnforceHasRunesForCombine(CombineRune combine) {

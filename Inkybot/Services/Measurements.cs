@@ -69,7 +69,7 @@ namespace Inkybot.Services
         };
 
         public static readonly Responsive.Measurement StatValuesBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(800, 307, 1025, 805),
+            Rectangle = Rect.FromCoords(800, 307, 1030, 805),
             Width = 1920,
             Height = 1017
         };

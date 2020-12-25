@@ -115,11 +115,14 @@ namespace Inkybot.Services
                 IsMaging = true;
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
+                configManager.EnforceConfigSetForItem(item);
+                configManager.RemoveFallenUnconfiguredStats(item);
                 itemInfo = new CurrentItemInfo {
                     Runes = dataProvider.Runes()
                 };
             
-                Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
+                if (IsMaging)
+                    Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
             } catch (Exception) {
                 IsMaging = false;
                 throw;
@@ -136,6 +139,8 @@ namespace Inkybot.Services
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (ItemHasChangedException) {
+                Debug.WriteLine("item has changed!");
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
             } catch (Exception exception) {

@@ -13,6 +13,7 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
+using Inkybot.Domain.Repositories;
 using Inkybot.Services;
 using Newtonsoft.Json;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
