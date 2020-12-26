@@ -17,9 +17,6 @@ namespace Inkybot
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
             foreach (var stat in Stat.Stats) {
                 
-                if (stat.DisplayName == null)
-                    Debug.WriteLine(stat.Identifier);
-                
                 var rowIndex = statsDataGridView.Rows.Add(
                     stat.DisplayName,
                     ParseConfigThreshold(stat.ChangeToPaRuneThreshold),
@@ -62,15 +59,6 @@ namespace Inkybot
             } catch (FormatException) {
                 
             }
-        }
-
-        private void ConfigForm_OnValidatingValue(object sender, DataGridViewCellValidatingEventArgs e) {
-            if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
-            var row = statsDataGridView.Rows[e.RowIndex];
-            var cell = row.Cells[e.ColumnIndex];
-
-            var isNumber = int.TryParse(cell.Value.ToString(), out _);
-            e.Cancel = !isNumber;
         }
 
         private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
