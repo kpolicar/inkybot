@@ -48,6 +48,6 @@
     <value>La valeur maximale à laquelle les runes PA doivent encore être utilisées</value>
   </data>
     <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
-    <value>Redémarrez automatiquement le bot en cas d'erreur</value>
+    <value>Relancer automatiquement le bot en cas d’erreur.</value>
   </data>
 </root>

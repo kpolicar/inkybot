@@ -50,4 +50,13 @@
     <data name="subscribedInfoLabel.FreeTrial" xml:space="preserve">
     <value>Essai gratuit</value>
   </data>
+    <data name="popup.title_confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+    <data name="popup.warning_sensitive" xml:space="preserve">
+    <value>Cet objet contient des caractéristiques sensibles (exo/over). Êtes-vous sûr de vouloir forgemager cet objet?</value>
+  </data>
+    <data name="popup.warning_unsupported" xml:space="preserve">
+    <value>InkyBot a détecté que cet objet peut contenir des statistiques qui n’apparaîtraient pas toutes en même temps à l’écran. Êtes-vous sûr de vouloir forgemager cet objet?</value>
+  </data>
 </root>
