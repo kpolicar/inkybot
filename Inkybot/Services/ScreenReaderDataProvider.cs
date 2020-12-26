@@ -25,7 +25,10 @@ namespace Inkybot.Services
         public event EventHandler<ItemEventArgs> FetchedItem;
         private IntPtr handle;
         public Item previousScannedItem;
-        private DofusScreenScan scan;
+        public DofusScreenScan Scan {
+            get;
+            private set;
+        }
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
 
 
@@ -47,23 +50,23 @@ namespace Inkybot.Services
         public void FetchData() {
             if (handle == IntPtr.Zero)
                 throw new SystemException();
-            scan?.Dispose();
-            scan = new DofusScreenScan(handle, LatestHistoryBounds);
+            Scan?.Dispose();
+            Scan = new DofusScreenScan(handle, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
-            scan?.Dispose();
-            scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
+            Scan?.Dispose();
+            Scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
         }
 
         public int? AverageItemBalance() {
-            var scanResults = scan.AverageItemBalance().Result;
+            var scanResults = Scan.AverageItemBalance().Result;
 
             return scanResults;
         }
 
         public IEnumerable<MageHistoryRecord> LatestHistory() {
-            var scanResults = scan.LatestHistory()
+            var scanResults = Scan.LatestHistory()
                 .Result
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
@@ -75,12 +78,12 @@ namespace Inkybot.Services
         }
         
         public void ApproveLatestHistoryContinueToNextScanBounds() {
-            LatestHistoryBounds = scan.CalculateNextHistoryBounds();
+            LatestHistoryBounds = Scan.CalculateNextHistoryBounds();
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
         }
 
         public IEnumerable<MageHistoryRecord> History() {
-            var scanResults = scan.History()
+            var scanResults = Scan.History()
                 .Result
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
@@ -92,7 +95,7 @@ namespace Inkybot.Services
         }
 
         public Item Item() {
-            var scanResults = scan.Stats().Result;
+            var scanResults = Scan.Stats().Result;
             ScannedStats?.Invoke(this, new ScannedRegionEventArgs(scanResults));
             
             var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
@@ -104,7 +107,7 @@ namespace Inkybot.Services
 
         public Dictionary<Stat, UserRune[]> Runes() {
             var item = Item();
-            var scanResults = scan.RunesQuantities().Result;
+            var scanResults = Scan.RunesQuantities().Result;
 
             var userRunes = new DofusStatUserRunesOcrResultAdapter(item, scanResults).ToUserRunes();
 
@@ -119,7 +122,7 @@ namespace Inkybot.Services
                 .Index;
             
             var column = (int) rune.type;
-            var runeQuantityScan = scan.RuneQuantity(column, row).Result;
+            var runeQuantityScan = Scan.RuneQuantity(column, row).Result;
             
             return new UserRune(rune, runeQuantityScan.Quantity);
         }

@@ -135,11 +135,12 @@ namespace Inkybot.Services
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 Thread.Sleep(30);
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
-                
+                 
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException) {
+                dataProvider.Scan.Save();
                 Debug.WriteLine("item has changed!");
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");

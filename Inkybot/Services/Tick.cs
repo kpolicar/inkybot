@@ -68,7 +68,8 @@ namespace Inkybot.Services
                     Thread.Sleep(100);
                     return;
                 }
-                
+
+                StatsChangedChecksCount = 0;
                 Thread.Sleep(100);
             }
 
