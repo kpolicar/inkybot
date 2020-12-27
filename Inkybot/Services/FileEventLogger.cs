@@ -56,6 +56,8 @@ namespace Inkybot.Services
             return action switch {
                 Finish a => "Finished maging",
                 CombineRune a => $"Combined rune \"{a.Rune}\"",
+                InventoryClearSelectionAction a => $"Cleared inventory selection",
+                InventorySelectResourcesAction a => $"Selected resource category in inventory",
                 _ => "Unknown action",
             };
         }
