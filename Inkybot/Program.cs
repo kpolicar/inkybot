@@ -14,6 +14,7 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
+using Inkybot.Properties;
 using Inkybot.Services;
 using Newtonsoft.Json;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
@@ -65,6 +66,14 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         private static void Main() {
+            if (Settings.Default.UpgradeRequired)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.Reload();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
+            
             SetAppLocale();
             Stat.Init();
 
