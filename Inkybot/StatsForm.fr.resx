@@ -29,4 +29,7 @@
     <data name="StatColumn.HeaderText" xml:space="preserve">
         <value>Statistique</value>
     </data>
+    <data name="addPresetButton.Text" xml:space="preserve">
+    <value>ENREGISTRER COMME PRESET</value>
+  </data>
 </root>

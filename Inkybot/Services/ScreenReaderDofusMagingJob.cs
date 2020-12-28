@@ -115,8 +115,8 @@ namespace Inkybot.Services
                 IsMaging = true;
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
-                configManager.EnforceConfigSetForItem(item);
                 configManager.RemoveFallenUnconfiguredStats(item);
+                configManager.EnforceConfigSetForItem(item);
                 itemInfo = new CurrentItemInfo {
                     Runes = dataProvider.Runes()
                 };

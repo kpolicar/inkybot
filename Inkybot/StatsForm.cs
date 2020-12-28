@@ -174,7 +174,6 @@ namespace Inkybot
                     dataProvider.FetchData();
                     var item = dataProvider.Item();
                     configManager.EnforceConfigSetForItem(item);
-                    configManager.RemoveFallenUnconfiguredStats(item);
                     
                 } catch (Exception exception) {
                     Error?.Invoke(this, new ExceptionEventArgs(exception));
