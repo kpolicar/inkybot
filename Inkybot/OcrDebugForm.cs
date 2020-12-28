@@ -37,6 +37,19 @@ namespace Inkybot
             }
         }
         
+        private void tesseractOn5() {
+            var engine = new TesseractEngine(
+                    "./Resources/Tesseract",
+                    Program.Lang.ThreeLetterISOLanguageName,
+                    EngineMode.Default);
+            engine.SetVariable("tessedit_char_whitelist", "-0123456789");
+            var done = engine.Process(
+                Pix.LoadFromFile(@"C:\Users\Klemen\Desktop\-5.bmp"),
+                PageSegMode.SingleChar);
+            
+            Debug.WriteLine(Regex.Escape(done.GetText()));
+        }
+        
         private void button1_Click(object sender, EventArgs e) {
             try {
                 tesseract();

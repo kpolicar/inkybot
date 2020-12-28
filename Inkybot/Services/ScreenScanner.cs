@@ -135,7 +135,7 @@ namespace Inkybot.Services
                 Func<string, string[]> split = null,
                 ImagePreprocessor preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
-                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890"); });
+                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "0123456789"); });
             }
         }
 

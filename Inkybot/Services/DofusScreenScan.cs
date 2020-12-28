@@ -87,9 +87,9 @@ namespace Inkybot.Services
                 statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                     new ResizeImagePreprocessor(150));
                 statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                    new ResizeImagePreprocessor(300));
+                    new ResizeImagePreprocessor(200));
                 statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                    new ResizeImagePreprocessor(300));
+                    new ResizeImagePreprocessor(200));
                 runeScanner =
                     new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                 averageItemPriceScanner =
@@ -118,32 +118,8 @@ namespace Inkybot.Services
 
             public async Task<string[]> MinMaxStats() {
 
-                var minstask = Task.Run(() => {
-                    var results = new List<string>();
-                    foreach (var bounds in
-                        Measurements.SplitBoundsToStatNumber(Measurements.StatMinBounds)) {
-                        statMinsScanner.SetRegion(bounds);
-                        var result = statMinsScanner.ScanRegionAsync(screenshot, true).Result;
-                        if (result.Length == 0)
-                            break;
-                        results.Add(result[0]);
-                    }
-
-                    return results.ToArray();
-                });
-                var maxesTask = Task.Run(() => {
-                    var results = new List<string>();
-                    foreach (var bounds in
-                        Measurements.SplitBoundsToStatNumber(Measurements.StatMaxBounds)) {
-                        statMaxesScanner.SetRegion(bounds);
-                        var result = statMaxesScanner.ScanRegionAsync(screenshot, true).Result;
-                        if (result.Length == 0)
-                            break;
-                        results.Add(result[0]);
-                    }
-
-                    return results.ToArray();
-                });
+                var minstask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
+                var maxesTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
 
                 Task.WaitAll(minstask, maxesTask);
 
