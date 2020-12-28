@@ -126,7 +126,6 @@ namespace Inkybot
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
                 var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
-                Debug.WriteLine(stat);
                 
                 var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Target, itemStat.Exo || itemStat == default, stat.Mageable);
                 row.Tag = new ItemStatRow(stat);

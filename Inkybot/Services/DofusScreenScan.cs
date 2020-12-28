@@ -50,6 +50,10 @@ namespace Inkybot.Services
                 Init();
                 LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
                 this.screenshot = image;
+                this.saveToDisk = saveToDisk;
+                
+                if (saveToDisk)
+                    Save();
             }
 
             public DofusScreenScan(IntPtr hwnd, Responsive.Measurement latestHistoryBounds = null, bool saveToDisk = false) {
@@ -112,30 +116,54 @@ namespace Inkybot.Services
                 return text.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
             }
 
+            public async Task<string[]> MinMaxStats() {
+
+                var minstask = Task.Run(() => {
+                    var results = new List<string>();
+                    foreach (var bounds in
+                        Measurements.SplitBoundsToStatNumber(Measurements.StatMinBounds)) {
+                        statMinsScanner.SetRegion(bounds);
+                        var result = statMinsScanner.ScanRegionAsync(screenshot, true).Result;
+                        if (result.Length == 0)
+                            break;
+                        results.Add(result[0]);
+                    }
+
+                    return results.ToArray();
+                });
+                var maxesTask = Task.Run(() => {
+                    var results = new List<string>();
+                    foreach (var bounds in
+                        Measurements.SplitBoundsToStatNumber(Measurements.StatMaxBounds)) {
+                        statMaxesScanner.SetRegion(bounds);
+                        var result = statMaxesScanner.ScanRegionAsync(screenshot, true).Result;
+                        if (result.Length == 0)
+                            break;
+                        results.Add(result[0]);
+                    }
+
+                    return results.ToArray();
+                });
+
+                Task.WaitAll(minstask, maxesTask);
+
+                var mins = await minstask;
+                var maxes = await maxesTask;
+
+                return mins.ZipWithDefault(maxes, (min, valuemax) => (min ?? "-") + " " + valuemax)
+                    .ToArray();
+            }
+
             public async Task<string[]> Stats() {
                 var statValuesScanTask = statValuesScanner.ScanRegionAsync(screenshot, saveToDisk);
-                var statMinScanTask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
-                var statMaxScanTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
-
-                await Task.WhenAll(statValuesScanTask, statMinScanTask, statMaxScanTask);
-
-                var statValues = await statValuesScanTask;
-                var statMins = await statMinScanTask;
-                var statMaxes = await statMaxScanTask;
-
-                var stats = statValues
-                    .ZipWithDefault(statMaxes, (value, max) => (max ?? "-") + " " + value)
-                    .ZipWithDefault(statMins, (valuemax, min) => (min ?? "-") + " " + valuemax)
-                    .ToArray();
-
-                return stats;
-
+                statValuesScanTask.Wait();
+                return await statValuesScanTask;
             }
 
             public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
                 var runeBounds = Measurements.RuneBoxBounds(column, row);
                 runeScanner.SetRegion(runeBounds);
-                var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
+                var scanned = await runeScanner.ScanRegionAsync(screenshot);
                 var result = scanned.First();
                 
                 int runeQuantity;

@@ -7,6 +7,18 @@ namespace Inkybot.Services
 {
     public static class Measurements
     {
+        const int StatLineCount = 13;
+
+        public static IEnumerable<Responsive.Measurement> SplitBoundsToStatNumber(Responsive.Measurement measurement) {
+            for (var i = 0; i < StatLineCount; i++) {
+                var r = measurement.Rectangle;
+                yield return new Responsive.Measurement {
+                    Height = measurement.Height,
+                    Width = measurement.Width,
+                    Rectangle = new Rect(r.X1, r.Y1 + (r.Height / StatLineCount) * i, r.Width, r.Height / StatLineCount)
+                };
+            }
+        }
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
             var x1 = 1100 + column * 51;
@@ -24,7 +36,7 @@ namespace Inkybot.Services
         public static Responsive.Measurement[] SplitStatLineMeasurementsIntoIndividualLineMeasurements(
             Responsive.Measurement measurement) {
             var b = measurement.Rectangle;
-            var n = 13; // number of stat lines
+            var n = StatLineCount;
 
             var measurements = new Responsive.Measurement[n];
             for (int i = 0; i < n; ++i) {

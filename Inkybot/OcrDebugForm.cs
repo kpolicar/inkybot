@@ -27,66 +27,22 @@ namespace Inkybot
         private void tesseract() {
             label1.Text = "";
 
-            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\debug.png");
+            var image = Image.FromFile(@"C:\Users\Klemen\Desktop\example.png");
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.FetchData(image, true);
+            dataProvider.FetchData(image, false);
 
-            var item = dataProvider.LatestHistory();
-            foreach (var itemStat in item) {
-                if (itemStat.Landed != null)
-                    Debug.WriteLine(itemStat.Landed);
-                foreach (var statChanged in itemStat.Fell) {
-                    Debug.WriteLine(statChanged);
-                }
+            var item = dataProvider.Item();
+            foreach (var itemStat in item.Stats) {
+                Debug.WriteLine(itemStat);
             }
-            // var runes = dataProvider.Runes();
-            //
-            // foreach (var statRunes in runes) {
-            //     Debug.WriteLine(statRunes.Key);
-            //     foreach (var statRune in statRunes.Value) {
-            //         Debug.WriteLine(statRune);
-            //     }
-            // }
-
-            // var history = new DofusMagingJob().history.Analyse(dataProvider.History());
-            // foreach (var sad in history.history) {
-            //     foreach (var ex in sad.fell) {
-            //         label1.Text += ex.stat.DisplayName + " " + ex.value + "\n";
-            //     }
-            // }
-            //
-            // foreach (var item in dataProvider.Item().Stats) {
-            //     Debug.WriteLine(item.stat.DisplayName +" " + item.value);
-            // }
         }
         
         private void button1_Click(object sender, EventArgs e) {
-            timerLabel.Text = "";
-            var timer = Stopwatch.StartNew();
-
             try {
                 tesseract();
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
-
-            timer.Stop();
-            TimeSpan timespan = timer.Elapsed;
-            var timeelapsed = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
-            timerLabel.Text += "\n"+timeelapsed;
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e) {
-            var input = textBox1.Text;
-            var term = spellCorrect.Lookup(input, SymSpell.Verbosity.Closest).FirstOrDefault();
-
-            string outp;
-            if (term != null)
-                outp = term.term;
-            else
-                outp = "null";
-
-            label1.Text = outp;
         }
     }
 }

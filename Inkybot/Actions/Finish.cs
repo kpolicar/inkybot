@@ -9,9 +9,9 @@ namespace Inkybot.Actions
     public class Finish : InputAction
     {
         public static readonly Responsive.Measurement FinishItemMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1050, 247, 1050, 247),
-            Width = 2513,
-            Height = 1511
+            Rectangle = Rect.FromCoords(885, 165, 885, 165),
+            Width = 1920,
+            Height = 1017
         };
 
         public readonly Item Item;

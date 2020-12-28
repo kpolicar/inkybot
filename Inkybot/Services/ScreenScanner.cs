@@ -55,8 +55,8 @@ namespace Inkybot.Services
                 }
             }
 
-            public async Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
-                return await Task.Run(() => ScanRegion(screenshot, saveToDisk));
+            public Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
+                return Task.Run(() => ScanRegion(screenshot, saveToDisk));
             }
 
             public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
@@ -123,7 +123,9 @@ namespace Inkybot.Services
                 Func<string, string[]> split = null,
                 ImagePreprocessor preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
-                SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890-"); });
+                SetVariables(engine => {
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789-");
+                });
             }
         }
 

@@ -25,26 +25,13 @@ namespace Inkybot.Domain
             return StandardStatsStructureMatch(this, op1);
         }
 
-        public bool MatchesStandardStats(Item op1) {
-            return StandardStatsMatch(this, op1);
+        public bool HasDifferentStatValues(Item op1) {
+            return Stats.ZipWithDefault(op1.Stats, (stats1, stats2) =>
+                (stats1.stat, stats1.max, stats1.min, stats1.value) !=
+                (stats2.stat, stats2.max, stats2.min, stats2.value))
+                .Any(match => match);
         }
-        
-        private static bool StandardStatsMatch(Item item1, Item item2) {
-            var stats1 = item1.Stats;
-            var stats2 = item2.Stats;
-            
-            return stats1.ZipWithDefault(stats2,
-                    (s1, s2) =>
-                        s1 != default && s2 != default
-                            ? (s1.stat, s1.min, s1.max) == (s2.stat, s2.min, s2.max)
-                            : s1 == default
-                                ? s2.Exo == true
-                                : s1.Exo == true
-                            
-                            )
-                .All(equal => equal);
-        }
-        
+
         private static bool StandardStatsStructureMatch(Item item1, Item item2) {
             var stats1 = item1.Stats.StandardStats;
             var stats2 = item2.Stats.StandardStats;

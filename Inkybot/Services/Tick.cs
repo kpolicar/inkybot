@@ -106,7 +106,8 @@ namespace Inkybot.Services
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
 
                 var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory) ||
-                                        (job.previousHistory == null && itemHistory.history.Count() > 0);
+                                        (job.previousHistory == null && itemHistory.history.Any());
+                Debug.WriteLine("history has changed: "+ historyHasChanged);
 
                 if (!historyHasChanged) {
                     Thread.Sleep(100);
@@ -175,7 +176,6 @@ namespace Inkybot.Services
             // Todo: We can also check if the expected result is correct by comparing sink change.
             // Todo: the previous history is sometimes missing the last mage record: take a screenshot
             private void EnforceValidPreviousActionResult(MageHistoryRecord lastHistoryRecord) {
-                Debug.WriteLine("it is null: ");
                 var attempted = lastHistoryRecord.Landed;
                 if (!attempted.HasValue) {
                     return;
@@ -271,7 +271,7 @@ namespace Inkybot.Services
             }
 
             private void EnforceItemHasNotChanged(Item item) {
-                if (job.previousItem != null && !item.MatchesStandardStats(job.previousItem))
+                if (job.previousItem != null && !item.MatchesStandardStatsStructure(job.previousItem))
                     throw new ItemHasChangedException(item);
             }
 
@@ -297,7 +297,7 @@ namespace Inkybot.Services
                 if (job.previousItem != null) {
                     var areDifferent =
                         job.previousHistory?.history.First().Landed == null ||
-                        job.previousItem != item;
+                        job.previousItem.HasDifferentStatValues(item);
                 
                     if (!areDifferent)
                         throw new UnexpectedMageResultException("Expected Stats to change but didn't");

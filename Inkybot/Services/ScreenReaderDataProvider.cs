@@ -13,6 +13,7 @@ using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot.Services
 {
@@ -30,6 +31,7 @@ namespace Inkybot.Services
             private set;
         }
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
+        private string[] previousMinMaxScan = {};
 
 
         public void BindDependencies() {
@@ -41,6 +43,7 @@ namespace Inkybot.Services
             LatestHistoryBounds = Measurements.HistoryBounds;
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             previousScannedItem = null;
+            previousMinMaxScan = new string[] {};
         }
         
         public void BindTo(IntPtr handle) {
@@ -95,10 +98,17 @@ namespace Inkybot.Services
         }
 
         public Item Item() {
+            if (previousMinMaxScan.Length == 0) {
+                previousMinMaxScan = Scan.MinMaxStats().Result;
+            }
             var scanResults = Scan.Stats().Result;
-            ScannedStats?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            var statsResult = scanResults
+                .ZipWithDefault(previousMinMaxScan, (value, minmax) => (minmax ?? "- -") + " " + value)
+                .ToArray();
             
-            var stats = new DofusStatsOcrResultAdapter(scanResults).ToItemStats();
+            ScannedStats?.Invoke(this, new ScannedRegionEventArgs(statsResult));
+            
+            var stats = new DofusStatsOcrResultAdapter(statsResult).ToItemStats();
             var item = new Item(stats);
             FetchedItem?.Invoke(this, new ItemEventArgs(item));
 
