@@ -32,7 +32,7 @@ namespace Inkybot.Services
                 ImagePreprocessor preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) {
                 engine = new TesseractEngine(
-                    "./Resources/Tesseract",
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Resources\Tesseract",
                     Program.Lang.ThreeLetterISOLanguageName,
                     EngineMode.Default);
                 this.preprocessor = preprocessor ?? new ImagePreprocessor();
