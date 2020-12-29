@@ -29,12 +29,14 @@ namespace Inkybot
 
             var image = Image.FromFile(@"C:\Users\Klemen\Desktop\example.png");
             var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            dataProvider.FetchData(image, false);
+            dataProvider.FetchData(image, true);
 
             var item = dataProvider.Item();
             foreach (var itemStat in item.Stats) {
                 Debug.WriteLine(itemStat);
             }
+
+            dataProvider.Reset();
         }
         
         private void tesseractOn5() {
