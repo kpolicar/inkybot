@@ -34,14 +34,16 @@ namespace Inkybot.Services
             }
         }
 
-        public class ResizeAndSharpenImagePreprocessor : ResizeImagePreprocessor
+        public class ResizeAndBinarizationImagePreprocessor : ResizeImagePreprocessor
         {
-            public ResizeAndSharpenImagePreprocessor(int resizePercentage) : base(resizePercentage) {
+            public ResizeAndBinarizationImagePreprocessor(int resizePercentage) : base(resizePercentage) {
             }
 
             protected override void PreprocessingSteps(MagickImage image) {
                 base.PreprocessingSteps(image);
                 image.Sharpen();
+                image.BlackThreshold(new Percentage(60));
+                image.WhiteThreshold(new Percentage(60));
             }
         }
 

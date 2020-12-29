@@ -87,9 +87,9 @@ namespace Inkybot.Services
                 statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                     new ResizeImagePreprocessor(150));
                 statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                    new ResizeAndSharpenImagePreprocessor(300));
+                    new ResizeAndBinarizationImagePreprocessor(300));
                 statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                    new ResizeAndSharpenImagePreprocessor(300));
+                    new ResizeAndBinarizationImagePreprocessor(300));
                 runeScanner =
                     new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                 averageItemPriceScanner =
