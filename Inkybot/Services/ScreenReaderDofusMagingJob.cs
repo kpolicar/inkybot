@@ -137,8 +137,8 @@ namespace Inkybot.Services
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
                  
                 while (IsMaging) new Tick(this).Execute();
-            } catch (OutOfRunesException exception) {
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            // } catch (OutOfRunesException exception) {
+                // Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException) {
                 dataProvider.Scan.Save();
                 Debug.WriteLine("item has changed!");
