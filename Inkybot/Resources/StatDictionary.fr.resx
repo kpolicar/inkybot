@@ -84,7 +84,7 @@
         <value>Dommages</value>
     </data>
     <data name="critical_damage" xml:space="preserve">
-        <value>Dommages Critique</value>
+        <value>Dommages Critiques</value>
     </data>
     <data name="neutral_damage" xml:space="preserve">
         <value>Dommages Neutre</value>
