@@ -17,8 +17,8 @@ namespace Inkybot.Services
         private DofusMagingJob magingJob;
 
         
-        public void BindDependencies() {
-            magingJob = Program.Services.GetService<DofusMagingJob>();
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.Stopped += OnStoppedMaging;
         }
 

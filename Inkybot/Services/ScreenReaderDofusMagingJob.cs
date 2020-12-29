@@ -51,12 +51,12 @@ namespace Inkybot.Services
             changeTimeout = new Stopwatch();
         }
         
-        public void BindDependencies() {
-            actions = Program.Services.GetService<ActionHandler>();
-            actionFactory = Program.Services.GetService<ActionFactory>();
-            history = Program.Services.GetService<IItemHistoryAnalyzer>();
-            configManager = Program.Services.GetService<ConfigManager>();
-            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            actions = serviceContainer.GetService<ActionHandler>();
+            actionFactory = serviceContainer.GetService<ActionFactory>();
+            history = serviceContainer.GetService<IItemHistoryAnalyzer>();
+            configManager = serviceContainer.GetService<ConfigManager>();
+            dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;
         }
 

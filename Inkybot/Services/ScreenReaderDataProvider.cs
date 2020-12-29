@@ -34,8 +34,8 @@ namespace Inkybot.Services
         private string[] previousMinMaxScan = {};
 
 
-        public void BindDependencies() {
-            var magingJob = Program.Services.GetService<DofusMagingJob>();
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.Stopped += (sender, args) => Reset();
         }
 
@@ -51,8 +51,6 @@ namespace Inkybot.Services
         }
 
         public void FetchData() {
-            if (handle == IntPtr.Zero)
-                throw new SystemException();
             Scan?.Dispose();
             Scan = new DofusScreenScan(handle, LatestHistoryBounds);
         }

@@ -97,7 +97,7 @@ namespace Inkybot
             foreach (var serviceBinding in _services) {
                 var concrete = serviceBinding.Value;
                 if (concrete is InjectableService service) {
-                    service.BindDependencies();
+                    service.BindDependencies(Services);
                 }
             }
         }

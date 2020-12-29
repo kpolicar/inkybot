@@ -22,13 +22,13 @@ namespace Inkybot.Services
         private float sink;
 
         
-        public void BindDependencies() {
-            actions = (ActionFactory) Program.Services.GetService(typeof(ActionFactory));
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            actions = (ActionFactory) serviceContainer.GetService(typeof(ActionFactory));
             
-            var configManager = Program.Services.GetService<ConfigManager>();
+            var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
             
-            var magingJob = Program.Services.GetService<DofusMagingJob>();
+            var magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.SinkChanged += (sender, args) => sink = args.Sink;
         }
 

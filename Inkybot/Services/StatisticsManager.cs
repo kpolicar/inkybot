@@ -23,11 +23,11 @@ namespace Inkybot.Services
         private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
         private IAction? previousAction;
 
-        public void BindDependencies() {
-            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            api = (ApiClient) serviceContainer.GetService(typeof(ApiClient));
             
-            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
-            var magus = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            var actionHandler = (ActionHandler) serviceContainer.GetService(typeof(ActionHandler));
+            var magus = (DofusMagingJob) serviceContainer.GetService(typeof(DofusMagingJob));
             if (magus != null) {
                 magus.BalanceChanged += OnBalanceChanged;
                 magus.Stopped += (sender, args) => Send();
