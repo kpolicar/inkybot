@@ -232,17 +232,6 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig neutral_steal {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["neutral_steal"]));
-            }
-            set {
-                this["neutral_steal"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
         public global::Inkybot.Resources.StatConfig ap_reduction {
             get {
                 return ((global::Inkybot.Resources.StatConfig)(this["ap_reduction"]));
@@ -287,34 +276,12 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig air_steal {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["air_steal"]));
-            }
-            set {
-                this["air_steal"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
         public global::Inkybot.Resources.StatConfig earth_resistance {
             get {
                 return ((global::Inkybot.Resources.StatConfig)(this["earth_resistance"]));
             }
             set {
                 this["earth_resistance"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig fire_steal {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["fire_steal"]));
-            }
-            set {
-                this["fire_steal"] = value;
             }
         }
         [global::System.Configuration.UserScopedSettingAttribute()]
@@ -386,17 +353,6 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig earth_steal {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["earth_steal"]));
-            }
-            set {
-                this["earth_steal"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
         public global::Inkybot.Resources.StatConfig dodge {
             get {
                 return ((global::Inkybot.Resources.StatConfig)(this["dodge"]));
@@ -447,17 +403,6 @@ namespace Inkybot.Properties {
             }
             set {
                 this["agility"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig water_steal {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["water_steal"]));
-            }
-            set {
-                this["water_steal"] = value;
             }
         }
         [global::System.Configuration.UserScopedSettingAttribute()]
@@ -524,17 +469,6 @@ namespace Inkybot.Properties {
             }
             set {
                 this["spell_damage"] = value;
-            }
-        }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
-        public global::Inkybot.Resources.StatConfig hp_restored {
-            get {
-                return ((global::Inkybot.Resources.StatConfig)(this["hp_restored"]));
-            }
-            set {
-                this["hp_restored"] = value;
             }
         }
         [global::System.Configuration.UserScopedSettingAttribute()]

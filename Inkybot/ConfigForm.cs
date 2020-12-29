@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Inkybot.Domain;
+using Inkybot.Helpers;
 
 namespace Inkybot
 {
@@ -44,16 +45,16 @@ namespace Inkybot
             try {
                 switch (e.ColumnIndex) {
                     case 1:
-                        stat.ChangeToPaRuneThreshold = int.Parse(cell.Value.ToString());
+                        stat.ChangeToPaRuneThreshold = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
                         break;
                     case 2:
-                        stat.ChangeToRaRuneThreshold = int.Parse(cell.Value.ToString());
+                        stat.ChangeToRaRuneThreshold = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
                         break;
                     case 3:
-                        stat.MaxValueAtWhichSmRuneCanLand = int.Parse(cell.Value.ToString());
+                        stat.MaxValueAtWhichSmRuneCanLand = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
                         break;
                     case 4:
-                        stat.MaxValueAtWhichPaRuneCanLand = int.Parse(cell.Value.ToString());
+                        stat.MaxValueAtWhichPaRuneCanLand = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
                         break;
                 }
             } catch (FormatException) {

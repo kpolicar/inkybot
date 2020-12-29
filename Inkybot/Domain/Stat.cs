@@ -117,7 +117,7 @@ namespace Inkybot.Domain
                 return val ?? int.MaxValue;
             }
             set {
-                Config.ChangeToPaRuneThreshold = value.ToString();
+                Config.ChangeToPaRuneThreshold = value == int.MaxValue ? "-" : value.ToString();
                 Properties.Settings.Default.Save();
             }
         }
@@ -127,7 +127,7 @@ namespace Inkybot.Domain
                 return val ?? int.MaxValue;
             }
             set {
-                Config.ChangeToRaRuneThreshold = value.ToString();
+                Config.ChangeToRaRuneThreshold = value == int.MaxValue ? "-" : value.ToString();
                 Properties.Settings.Default.Save();
             }
         }
@@ -137,7 +137,7 @@ namespace Inkybot.Domain
                 return val ?? ChangeToPaRuneThreshold;
             }
             set {
-                Config.MaxValueAtWhichSmRuneCanLand = value.ToString();
+                Config.MaxValueAtWhichSmRuneCanLand = value == int.MaxValue ? "-" : value.ToString();
                 Properties.Settings.Default.Save();
             }
         }
@@ -147,7 +147,7 @@ namespace Inkybot.Domain
                 return val ?? ChangeToRaRuneThreshold;
             }
             set {
-                Config.MaxValueAtWhichPaRuneCanLand = value.ToString();
+                Config.MaxValueAtWhichPaRuneCanLand = value == int.MaxValue ? "-" : value.ToString();
                 Properties.Settings.Default.Save();
             }
         }

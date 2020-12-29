@@ -166,24 +166,6 @@
         <value>Résistance Mélée</value>
     </data>
 
-    <data name="neutral_steal" xml:space="preserve">
-        <value>Vol Neutre</value>
-    </data>
-    <data name="earth_steal" xml:space="preserve">
-        <value>Vol Terre</value>
-    </data>
-    <data name="fire_steal" xml:space="preserve">
-        <value>Vol Feu</value>
-    </data>
-    <data name="water_steal" xml:space="preserve">
-        <value>Vol Eau</value>
-    </data>
-    <data name="air_steal" xml:space="preserve">
-        <value>Vol Air</value>
-    </data>
-    <data name="hp_restored" xml:space="preserve">
-        <value>PV rendus</value>
-    </data>
     <data name="hunting_weapon" xml:space="preserve">
         <value>Arme de Chasse</value>
     </data>

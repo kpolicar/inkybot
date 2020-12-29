@@ -173,24 +173,6 @@
         <value>me res per</value>
     </data>
 
-    <data name="neutral_steal" xml:space="preserve">
-        <value>Neutral Steal</value>
-    </data>
-    <data name="earth_steal" xml:space="preserve">
-        <value>Earth Steal</value>
-    </data>
-    <data name="fire_steal" xml:space="preserve">
-        <value>Fire Steal</value>
-    </data>
-    <data name="water_steal" xml:space="preserve">
-        <value>Water Steal</value>
-    </data>
-    <data name="air_steal" xml:space="preserve">
-        <value>Air Steal</value>
-    </data>
-    <data name="hp_restored" xml:space="preserve">
-        <value>HP Restored</value>
-    </data>
     <data name="hunting_weapon" xml:space="preserve">
         <value>hunting</value>
     </data>

@@ -97,15 +97,6 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Air Steal.
-        /// </summary>
-        internal static string air_steal {
-            get {
-                return ResourceManager.GetString("air_steal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ap ga.
         /// </summary>
         internal static string ap {
@@ -205,15 +196,6 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earth Steal.
-        /// </summary>
-        internal static string earth_steal {
-            get {
-                return ResourceManager.GetString("earth_steal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to fire dam.
         /// </summary>
         internal static string fire_damage {
@@ -232,29 +214,11 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fire Steal.
-        /// </summary>
-        internal static string fire_steal {
-            get {
-                return ResourceManager.GetString("fire_steal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hea.
         /// </summary>
         internal static string heals {
             get {
                 return ResourceManager.GetString("heals", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to HP Restored.
-        /// </summary>
-        internal static string hp_restored {
-            get {
-                return ResourceManager.GetString("hp_restored", resourceCulture);
             }
         }
         
@@ -345,15 +309,6 @@ namespace Inkybot.Resources {
         internal static string neutral_resistance {
             get {
                 return ResourceManager.GetString("neutral_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Neutral Steal.
-        /// </summary>
-        internal static string neutral_steal {
-            get {
-                return ResourceManager.GetString("neutral_steal", resourceCulture);
             }
         }
         
@@ -543,15 +498,6 @@ namespace Inkybot.Resources {
         internal static string water_resistance {
             get {
                 return ResourceManager.GetString("water_resistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Water Steal.
-        /// </summary>
-        internal static string water_steal {
-            get {
-                return ResourceManager.GetString("water_steal", resourceCulture);
             }
         }
         
