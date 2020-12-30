@@ -21,6 +21,18 @@ namespace Inkybot
 
             base.Dispose(disposing);
         }
+        
+        private DataGridViewCellStyle readonlyCellStyle;
+        private void InitializeCustomComponents() {
+            readonlyCellStyle = new DataGridViewCellStyle();
+            readonlyCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            readonlyCellStyle.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            readonlyCellStyle.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            readonlyCellStyle.ForeColor = System.Drawing.SystemColors.ControlDark;
+            readonlyCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (60)))), ((int) (((byte) (60)))), ((int) (((byte) (60)))));
+            readonlyCellStyle.SelectionForeColor = System.Drawing.SystemColors.ControlDark;
+            readonlyCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+        }
 
         #region Windows Form Designer generated code
 
@@ -41,9 +53,7 @@ namespace Inkybot
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
-            this.creditsNameLabel = new System.Windows.Forms.Label();
             this.bottomPanel = new System.Windows.Forms.Panel();
-            this.creditsLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
@@ -135,26 +145,12 @@ namespace Inkybot
             this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
             this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
             // 
-            // creditsNameLabel
-            // 
-            resources.ApplyResources(this.creditsNameLabel, "creditsNameLabel");
-            this.creditsNameLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.creditsNameLabel.Name = "creditsNameLabel";
-            // 
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
-            this.bottomPanel.Controls.Add(this.creditsLabel);
-            this.bottomPanel.Controls.Add(this.creditsNameLabel);
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.bottomPanel.Name = "bottomPanel";
-            // 
-            // creditsLabel
-            // 
-            resources.ApplyResources(this.creditsLabel, "creditsLabel");
-            this.creditsLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.creditsLabel.Name = "creditsLabel";
             // 
             // ConfigForm
             // 
@@ -173,9 +169,6 @@ namespace Inkybot
         }
 
         private System.Windows.Forms.Panel bottomPanel;
-
-        private System.Windows.Forms.Label creditsLabel;
-        private System.Windows.Forms.Label creditsNameLabel;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;

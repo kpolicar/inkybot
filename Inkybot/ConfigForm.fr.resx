@@ -14,9 +14,6 @@
     <data name="$this.Text" xml:space="preserve">
         <value>Inkybot - Config</value>
     </data>
-    <data name="creditsLabel.Text" xml:space="preserve">
-        <value>Coniguré avec  ❤  par</value>
-    </data>
     <data name="MaxPaRuneCanHitColumn.HeaderText" xml:space="preserve">
         <value>Max (PA Rune)</value>
     </data>

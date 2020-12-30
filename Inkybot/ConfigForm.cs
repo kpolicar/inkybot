@@ -12,6 +12,7 @@ namespace Inkybot
     {
         public ConfigForm() {
             InitializeComponent();
+            InitializeCustomComponents();
             //var ini = Stat.Stats.Where(sta => sta.Identifier == "initiative").First();
         }
 
@@ -25,7 +26,16 @@ namespace Inkybot
                     ParseConfigThreshold(stat.MaxValueAtWhichSmRuneCanLand),
                     ParseConfigThreshold(stat.MaxValueAtWhichPaRuneCanLand)
                     );
-                statsDataGridView.Rows[rowIndex].Tag = stat;
+                var row = statsDataGridView.Rows[rowIndex];
+                row.Tag = stat;
+                if (!stat.CanUsePaRunes) {
+                    row.Cells[1].ReadOnly = row.Cells[4].ReadOnly = true;
+                    row.Cells[1].Style = row.Cells[4].Style = readonlyCellStyle;
+                }
+                if (!stat.CanUseRaRunes) {
+                    row.Cells[2].ReadOnly = true;
+                    row.Cells[2].Style = readonlyCellStyle;
+                }
             }
 
             restoreHighSinkStatsCheckbox.Checked = Properties.Settings.Default.restoreHighSinkStatImmediately;

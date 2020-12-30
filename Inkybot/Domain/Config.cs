@@ -16,15 +16,17 @@ namespace Inkybot.Domain
         public readonly int ChangeToRaRuneThreshold => stat.ChangeToRaRuneThreshold;
         public readonly int MaxValueAtWhichSmRuneCanHit => stat.MaxValueAtWhichSmRuneCanLand;
         public readonly int MaxValueAtWhichPaRuneCanHit => stat.MaxValueAtWhichPaRuneCanLand;
+        public readonly bool CanUsePaRunes => stat.CanUsePaRunes;
+        public readonly bool CanUseRaRunes => stat.CanUseRaRunes;
         private Stat stat;
 
-        public bool CanUsePaRunes => ChangeToPaRuneThreshold != int.MaxValue;
-        public bool CanUseRaRunes => ChangeToRaRuneThreshold != int.MaxValue;
+        public bool ShouldUsePaRunes => CanUsePaRunes && ChangeToPaRuneThreshold != int.MaxValue;
+        public bool ShouldUseRaRunes => CanUseRaRunes && ChangeToRaRuneThreshold != int.MaxValue;
         
         public Rune.Type StrongestRuneType {
             get {
-                if (CanUsePaRunes) return Rune.Type.Ra;
-                if (CanUsePaRunes) return Rune.Type.Pa;
+                if (ShouldUsePaRunes) return Rune.Type.Ra;
+                if (ShouldUsePaRunes) return Rune.Type.Pa;
 
                 return Rune.Type.Sm;
             }
@@ -51,10 +53,10 @@ namespace Inkybot.Domain
         }
 
         public override string ToString() {
-            var changeToPaRuneThresholdString = CanUsePaRunes ? ChangeToPaRuneThreshold.ToString() : "-";
-            var changeToRaRuneThresholdString = CanUseRaRunes ? ChangeToRaRuneThreshold.ToString() : "-";
-            var maxValueAtWhichSmRuneCanHitString = CanUsePaRunes ? MaxValueAtWhichSmRuneCanHit.ToString() : "-";
-            var maxValueAtWhichPaRuneCanHitString = CanUseRaRunes ? MaxValueAtWhichPaRuneCanHit.ToString() : "-";
+            var changeToPaRuneThresholdString = ShouldUsePaRunes ? ChangeToPaRuneThreshold.ToString() : "-";
+            var changeToRaRuneThresholdString = ShouldUseRaRunes ? ChangeToRaRuneThreshold.ToString() : "-";
+            var maxValueAtWhichSmRuneCanHitString = ShouldUsePaRunes ? MaxValueAtWhichSmRuneCanHit.ToString() : "-";
+            var maxValueAtWhichPaRuneCanHitString = ShouldUseRaRunes ? MaxValueAtWhichPaRuneCanHit.ToString() : "-";
             
             return $"{stat} | " +
                    $"Max: {Maximum}, " +

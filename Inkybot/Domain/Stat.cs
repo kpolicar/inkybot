@@ -151,6 +151,20 @@ namespace Inkybot.Domain
                 Properties.Settings.Default.Save();
             }
         }
+        public bool CanUsePaRunes {
+            get => Config.CanUsePaRunes;
+            set {
+                Config.CanUsePaRunes = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public bool CanUseRaRunes {
+            get => Config.CanUseRaRunes;
+            set {
+                Config.CanUseRaRunes = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         public readonly string DisplayName;
         public readonly string Identifier;

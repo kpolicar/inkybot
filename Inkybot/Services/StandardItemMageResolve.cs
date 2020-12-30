@@ -46,8 +46,8 @@ namespace Inkybot.Services
         protected override Rune.Type ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config.For(itemStat);
 
-            if (itemConfig.CanUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra - runeTypeOffset;
-            if (itemConfig.CanUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa - runeTypeOffset;
+            if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra - runeTypeOffset;
+            if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa - runeTypeOffset;
 
             return Rune.Type.Sm;
         }
