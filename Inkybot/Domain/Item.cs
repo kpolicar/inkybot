@@ -42,14 +42,14 @@ namespace Inkybot.Domain
                 .All(equal => equal);
         }
 
-        public static bool operator ==(Item op1, Item op2) {
+        public static bool operator ==(Item? op1, Item? op2) {
             if (ReferenceEquals(null, op1) && ReferenceEquals(null, op2))
                 return true;
             if (!ReferenceEquals(null, op1) && ReferenceEquals(null, op2))
                 return false;
             if (ReferenceEquals(null, op1) && !ReferenceEquals(null, op2))
                 return false;
-            var comparison = op1.Stats.Stats.ZipWithDefault(op2.Stats.Stats, (stats1, stats2) => new {
+            var comparison = op1!.Stats.Stats.ZipWithDefault(op2!.Stats.Stats, (stats1, stats2) => new {
                 Stats1 = stats1, Stats2 = stats2
             });
 
@@ -57,7 +57,7 @@ namespace Inkybot.Domain
                 comparison.Stats1 == comparison.Stats2);
         }
 
-        public static bool operator !=(Item op1, Item op2) {
+        public static bool operator !=(Item? op1, Item? op2) {
             return !(op1 == op2);
         }
     }

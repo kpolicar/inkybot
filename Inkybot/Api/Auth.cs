@@ -14,7 +14,7 @@ namespace Inkybot.Api
 {
     public class AuthManager : InjectableService
     {
-        public event EventHandler<ApiConnectionChangedEventArgs> ConnectionChanged;
+        public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
         public User? User;
 
         public async Task<ApiConnection?> Login(string username, string password) {

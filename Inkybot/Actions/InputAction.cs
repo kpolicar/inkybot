@@ -19,8 +19,8 @@ namespace Inkybot.Actions
         protected CancellationToken? Cancel;
 
         public InputAction(Control targetControl) {
-            Input = (Input) Program.Services.GetService(typeof(Input));
-            screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            Input = Program.Services.GetService<Input>();
+            screenDataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             this.targetControl = targetControl;
         }
 

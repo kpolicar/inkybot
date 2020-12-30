@@ -44,9 +44,9 @@ namespace Inkybot
         
 
         public static ServiceContainer Services = new ServiceContainer();
-        public static CultureInfo Lang;
+        public static CultureInfo Lang = null!;
         
-        public static Dictionary<Type, object> _services = new Dictionary<Type, object> {
+        public static readonly Dictionary<Type, object> _services = new Dictionary<Type, object> {
             { typeof(MageConfig), new SettingsMageConfig() },
             { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
             { typeof(ScreenCapture), new Win32ScreenCapture() },
@@ -85,9 +85,7 @@ namespace Inkybot
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new OcrDebugForm());
             Application.Run(new MainForm());
-            //Print();
         }
 
         private static void BindServices() {
@@ -104,32 +102,6 @@ namespace Inkybot
             }
         }
 
-        #if DEBUG
-        private static void Print() {
-            var StatDictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            var MagingDictionary = new ResourceManager("Inkybot.Resources.MagingDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-            var words = new List<string>();
-
-            foreach (DictionaryEntry dictionaryEntry in StatDictionary) {
-                foreach (var word in dictionaryEntry.Value.ToString().Split(' ')) {
-                    if (words.Contains(word)) continue;
-                    words.Add(word);
-                    Debug.WriteLine(word);
-                }
-            }
-            foreach (DictionaryEntry dictionaryEntry in MagingDictionary) {
-                foreach (var word in dictionaryEntry.Value.ToString().Split(' ')) {
-                    if (words.Contains(word)) continue;
-                    words.Add(word);
-                    Debug.WriteLine(word);
-                }
-            }
-        }
-        #endif
-        
         private static void SetAppLocale() {
             if (Properties.Settings.Default.locale == Properties.Resources.FrenchLocaleCode) {
                 Lang =
@@ -152,8 +124,8 @@ namespace Inkybot
         }
 
         private static void BindNotifications() {
-            var actions = (ActionHandler) Services.GetService(typeof(ActionHandler));
-            var magingJob = (DofusMagingJobContract) Services.GetService(typeof(DofusMagingJobContract));
+            var actions = Services.GetService<ActionHandler>();
+            var magingJob = Services.GetService<DofusMagingJobContract>();
             var notified = new[] { new ApiNotifier() };
 
             foreach (var notifier in notified) {

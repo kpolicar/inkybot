@@ -2,6 +2,7 @@ using System;
 
 namespace Inkybot.Api.Resources
 {
+    #pragma warning disable 8618
     [Serializable]
     public class AuthDetails
     {
@@ -10,4 +11,5 @@ namespace Inkybot.Api.Resources
         public string refresh_token;
         public string token_type;
     }
+    #pragma warning restore 8618
 }

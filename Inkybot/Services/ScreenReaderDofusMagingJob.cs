@@ -18,35 +18,34 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : IDisposable, DofusMagingJobContract, InjectableService
     {
-        public event EventHandler<MagingJobEventArgs> Started;
-        public event EventHandler Stopped;
-        public event EventHandler Preparing;
-        public event EventHandler<MagingJobFinishedEventArgs> Finished;
-        public event EventHandler<SinkChangedEventArgs> SinkChanged;
-        public event EventHandler<BalanceChangedEventArgs> BalanceChanged;
-        public event EventHandler<RuneQuantityChangedEventArgs> RuneQuantityChanged;
-        public event EventHandler<MagingJobErrorEventArgs> Error;
-        public event EventHandler<MagingJobErrorEventArgs> Warning;
+        public event EventHandler<MagingJobEventArgs>? Started;
+        public event EventHandler? Stopped;
+        public event EventHandler? Preparing;
+        public event EventHandler<MagingJobFinishedEventArgs>? Finished;
+        public event EventHandler<SinkChangedEventArgs>? SinkChanged;
+        public event EventHandler<BalanceChangedEventArgs>? BalanceChanged;
+        public event EventHandler<RuneQuantityChangedEventArgs>? RuneQuantityChanged;
+        public event EventHandler<MagingJobErrorEventArgs>? Error;
+        public event EventHandler<MagingJobErrorEventArgs>? Warning;
 
-        internal ActionHandler actions;
-        internal ActionFactory actionFactory;
+        internal ActionHandler actions = null!;
+        internal ActionFactory actionFactory = null!;
+        internal ScreenReaderDataProvider dataProvider = null!;
+        internal IItemHistoryAnalyzer history = null!;
+        private ConfigManager configManager = null!;
+        private ServiceContainer serviceContainer = null!;
 
-        internal ScreenReaderDataProvider dataProvider;
-        internal IItemHistoryAnalyzer history;
-
-        public Thread job;
-        internal Contracts.DofusMagingAI magus;
-        internal IAction previousAction;
+        public Thread? job;
+        internal Contracts.DofusMagingAI? magus;
+        internal IAction? previousAction;
         internal ItemHistoryAnalysis? previousHistory;
         private Item? previousItem;
         private float sink;
         private int balance;
         internal State state;
-        private ConfigManager configManager;
         internal Stopwatch changeTimeout;
         internal CurrentItemInfo itemInfo;
         internal bool previousCheckHadRunOutOfRunes = false;
-        private ServiceContainer serviceContainer;
 
 
         public ScreenReaderDofusMagingJob() {
@@ -78,7 +77,7 @@ namespace Inkybot.Services
         internal float Sink {
             get => sink;
             set {
-                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem, configManager.Config, sink, value));
+                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem!, configManager.Config!, sink, value));
                 sink = value;
             }
         }
@@ -92,7 +91,7 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (IsMaging) return;
-            magus = (DofusMagingAIContract) serviceContainer.GetService(typeof(DofusMagingAIContract));
+            magus = serviceContainer.GetService<DofusMagingAIContract>();
 
             previousCheckHadRunOutOfRunes = false;
             job = new Thread(DoMage);
@@ -129,7 +128,7 @@ namespace Inkybot.Services
                 };
             
                 if (IsMaging)
-                    Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config));
+                    Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config!));
             } catch (Exception) {
                 IsMaging = false;
                 throw;
@@ -148,7 +147,7 @@ namespace Inkybot.Services
             // } catch (OutOfRunesException exception) {
                 // Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException) {
-                dataProvider.Scan.Save();
+                dataProvider.Scan!.Save();
                 Debug.WriteLine("item has changed!");
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
@@ -174,7 +173,7 @@ namespace Inkybot.Services
             IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             
-            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem, configManager.Config));
+            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem!, configManager.Config!));
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {

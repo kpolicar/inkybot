@@ -37,7 +37,6 @@ namespace Inkybot.Actions
         };
         
         public Rune Rune { get; private set; }
-        private Control targetControl;
         public readonly bool Exo;
 
         public CombineRune(Control targetControl, Rune rune, bool exo) : base(targetControl) {
@@ -45,25 +44,9 @@ namespace Inkybot.Actions
             Rune = rune;
             Exo = exo;
         }
-
-        public CombineRune(Control targetControl) : base(targetControl) {
-            this.targetControl = targetControl;
-        }
-
-        public void Test() {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 13; j++) {
-                    
-                    var pos = RunePosition(i, j);
-                    Cursor.Position = targetControl.PointToScreen(new Point(pos.X, pos.Y));
-                    Thread.Sleep(200);
-                    
-                }
-            }
-        }
         
         public override void Execute() {
-            var itemStats = screenDataProvider.previousScannedItem.Stats;
+            var itemStats = screenDataProvider.previousScannedItem!.Stats;
             var column = (int) Rune.type;
 
             for (var row = 0; row < itemStats.Length; row++) {

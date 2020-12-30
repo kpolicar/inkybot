@@ -7,9 +7,9 @@ namespace Inkybot.Services
 {
     public class MouseActionFactory : ActionFactory
     {
-        private Control targetControl;
+        private Control targetControl = null!;
 
-        public void setRelativeToControl(Control targetControl) {
+        public void SetRelativeToControl(Control targetControl) {
             this.targetControl = targetControl;
         }
         

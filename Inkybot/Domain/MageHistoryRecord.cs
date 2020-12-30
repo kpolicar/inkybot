@@ -59,11 +59,11 @@ namespace Inkybot.Domain
         public StatChanged[] Fell =>
             changed.Where(change => change.value < 0).ToArray();
 
-        public static bool operator ==(MageHistoryRecord operand1, MageHistoryRecord operand2) {
+        public static bool operator ==(MageHistoryRecord? operand1, MageHistoryRecord? operand2) {
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
-            if (operand1.changed.Count() != operand2.changed.Count())
+            if (operand1!.changed.Count() != operand2!.changed.Count())
                 return false;
             
             var comparison = operand1.changed.Zip(operand2.changed,
@@ -74,11 +74,11 @@ namespace Inkybot.Domain
                 comparison.Record1.value == comparison.Record2.value) && operand1.sinkChanged == operand2.sinkChanged;
         }
 
-        public static bool operator !=(MageHistoryRecord operand1, MageHistoryRecord operand2) {
+        public static bool operator !=(MageHistoryRecord? operand1, MageHistoryRecord? operand2) {
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return true;
-            if (operand1.changed.Count() != operand2.changed.Count())
+            if (operand1!.changed.Count() != operand2!.changed.Count())
                 return true;
             
             var comparison = operand1.changed.Zip(operand2.changed,

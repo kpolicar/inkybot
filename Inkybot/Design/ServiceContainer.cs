@@ -14,7 +14,7 @@ namespace Inkybot.Design
             AddService(serviceType, serviceInstance);
         }
 
-        public void ReplaceService<T>(T serviceType) {
+        public void ReplaceService<T>(T serviceType) where T : notnull {
             ReplaceService(typeof(T), serviceType);
         }
     }

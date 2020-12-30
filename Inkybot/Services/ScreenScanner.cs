@@ -20,17 +20,17 @@ namespace Inkybot.Services
     {
         public class ScreenScanner : IDisposable
         {
-            public event EventHandler<TesseractPageProcessed> PageProcessed;
+            public event EventHandler<TesseractPageProcessed>? PageProcessed;
 
             private TesseractEngine engine;
             private Responsive.Measurement regionOfInterest;
-            private Func<string, string[]> split;
+            private Func<string, string[]>? split;
             private ImagePreprocessor preprocessor;
             private PageSegMode segMode;
 
             public ScreenScanner(Responsive.Measurement regionOfInterest,
-                Func<string, string[]> split = null,
-                ImagePreprocessor preprocessor = null,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) {
                 engine = new TesseractEngine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Resources\Tesseract",
@@ -108,8 +108,8 @@ namespace Inkybot.Services
         public class TextScreenScanner : ScreenScanner
         {
             public TextScreenScanner(Responsive.Measurement regionOfInterest,
-                Func<string, string[]> split = null,
-                ImagePreprocessor preprocessor = null,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
                     engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
@@ -123,8 +123,8 @@ namespace Inkybot.Services
         public class NumberScreenScanner : ScreenScanner
         {
             public NumberScreenScanner(Responsive.Measurement regionOfInterest,
-                Func<string, string[]> split = null,
-                ImagePreprocessor preprocessor = null,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
                     engine.SetVariable("tessedit_char_whitelist", "0123456789-");
@@ -136,8 +136,8 @@ namespace Inkybot.Services
         public class PositiveNumberScreenScanner : ScreenScanner
         {
             public PositiveNumberScreenScanner(Responsive.Measurement regionOfInterest,
-                Func<string, string[]> split = null,
-                ImagePreprocessor preprocessor = null,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => { 
                     engine.SetVariable("tessedit_char_whitelist", "0123456789");
@@ -149,8 +149,8 @@ namespace Inkybot.Services
         public class KamasScanner : ScreenScanner
         {
             public KamasScanner(Responsive.Measurement regionOfInterest,
-                Func<string, string[]> split = null,
-                ImagePreprocessor preprocessor = null,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => { engine.SetVariable("tessedit_char_whitelist", "01234567890k,"); });
             }

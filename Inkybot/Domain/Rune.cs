@@ -6,11 +6,11 @@ namespace Inkybot.Domain
 {
     public class Rune
     {
-        public static bool operator == (Rune operand1, Rune operand2) {
+        public static bool operator == (Rune? operand1, Rune? operand2) {
             return operand1?.type == operand2?.type && operand1?.stat == operand2?.stat;
         }
             
-        public static bool operator != (Rune operand1, Rune operand2) {
+        public static bool operator != (Rune? operand1, Rune? operand2) {
             return !(operand1 == operand2);
         }
         

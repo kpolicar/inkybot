@@ -5,14 +5,12 @@ namespace Inkybot.Adapters
     public abstract class OcrResultAdapter
     {
         private static bool init;
-        protected static SymSpell spellCorrect;
+        protected static readonly SymSpell spellCorrect = new SymSpell(16, 3);
 
         public OcrResultAdapter() {
             if (init) return;
 
-            spellCorrect = new SymSpell(16, 3);
             Dictionary.LoadInto(spellCorrect);
-            
             init = true;
         }
     }

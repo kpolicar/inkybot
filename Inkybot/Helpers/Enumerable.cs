@@ -6,7 +6,10 @@ namespace Inkybot.Helpers
 {
     public static class Enumerable
     {
-        public static IEnumerable<TResult> ZipWithDefault<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> selector)
+        public static IEnumerable<TResult> ZipWithDefault<TFirst, TSecond, TResult>(
+            this IEnumerable<TFirst> first,
+            IEnumerable<TSecond> second,
+            Func<TFirst, TSecond, TResult> selector)
         {
             bool firstMoveNext, secondMoveNext;
 
@@ -18,18 +21,18 @@ namespace Inkybot.Helpers
 
                 if (firstMoveNext && !secondMoveNext)
                 {
-                    yield return selector(enum1.Current, default(TSecond));
+                    yield return selector(enum1.Current, default(TSecond)!);
                     while (enum1.MoveNext())
                     {
-                        yield return selector(enum1.Current, default(TSecond));
+                        yield return selector(enum1.Current, default(TSecond)!);
                     }
                 }
                 else if (!firstMoveNext && secondMoveNext)
                 {
-                    yield return selector(default(TFirst), enum2.Current);
+                    yield return selector(default(TFirst)!, enum2.Current);
                     while (enum2.MoveNext())
                     {
-                        yield return selector(default(TFirst), enum2.Current);
+                        yield return selector(default(TFirst)!, enum2.Current);
                     }
                 }
             }

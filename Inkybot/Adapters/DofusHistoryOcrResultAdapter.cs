@@ -42,7 +42,7 @@ namespace Inkybot.Adapters
                     return null;
                 }
                 
-            }).Where(mageHistoryRecord => mageHistoryRecord != null);
+            }).Where(mageHistoryRecord => mageHistoryRecord != null).Cast<MageHistoryRecord>();
         }
 
         private StatChanged HistoryEntrySegmentToStatChange(GroupCollection historyEntrySegments) {

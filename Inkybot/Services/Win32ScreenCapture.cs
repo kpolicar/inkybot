@@ -12,8 +12,8 @@ namespace Inkybot
     /// </summary>
     public class Win32ScreenCapture : ScreenCapture
     {
-        public event EventHandler BeginScreenshot;
-        public event EventHandler EndScreenshot;
+        public event EventHandler? BeginScreenshot;
+        public event EventHandler? EndScreenshot;
 
         /// <summary>
         ///     Creates an Image object containing a screen shot of a specific window

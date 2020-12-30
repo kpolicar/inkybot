@@ -2,6 +2,7 @@ using System;
 
 namespace Inkybot.Api.Resources
 {
+    #pragma warning disable 8618
     [Serializable]
     public class User
     {
@@ -13,4 +14,5 @@ namespace Inkybot.Api.Resources
         public string password;
         public DateTime? subscribed_to;
     }
+    #pragma warning restore 8618
 }

@@ -17,13 +17,13 @@ namespace Inkybot.Services
 {
     public class DofusMagingAI : DofusMagingAIContract, InjectableService
     {
-        private ActionFactory actions;
-        private Config config;
+        private ActionFactory actions = null!;
+        private Config config = null!;
         private float sink;
 
         
         public void BindDependencies(ServiceContainer serviceContainer) {
-            actions = (ActionFactory) serviceContainer.GetService(typeof(ActionFactory));
+            actions = serviceContainer.GetService<ActionFactory>();
             
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;

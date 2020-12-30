@@ -21,17 +21,17 @@ namespace Inkybot
     public partial class MainForm : Form
     {
         private StatsForm statsForm;
-        private ApiClient api;
+        private ApiClient api = null!;
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
-        private AuthManager auth;
+        private AuthManager auth = null!;
 
         public MainForm() {
             InitializeComponent();
             
-            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            screenReader = (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            magingJob = Program.Services.GetService<DofusMagingJob>();
+            screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             
             InitOcrIndicators();
             toastPanel.Hide();

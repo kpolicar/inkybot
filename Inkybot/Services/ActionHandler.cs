@@ -12,9 +12,9 @@ namespace Inkybot.Services
 {
     public class ActionHandler : InjectableService
     {
-        public event EventHandler<ActionExecutedEventArgs> ActionExecuted;
-        private CancellationTokenSource cancelExecutingTask;
-        private DofusMagingJob magingJob;
+        public event EventHandler<ActionExecutedEventArgs>? ActionExecuted;
+        private CancellationTokenSource? cancelExecutingTask;
+        private DofusMagingJob magingJob = null!;
 
         
         public void BindDependencies(ServiceContainer serviceContainer) {

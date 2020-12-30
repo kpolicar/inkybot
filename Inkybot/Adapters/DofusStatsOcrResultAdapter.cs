@@ -59,11 +59,11 @@ namespace Inkybot.Adapters
             var (min, max, value) = GetDataFromScanResult(statLineSegments, parseValue: !isWeaponEffectStatLine);
             
             if (isWeaponEffectStatLine) {
-                return new ItemStat(new Stat("Weapon " + name), 0, min.Value, max.Value);
+                return new ItemStat(new Stat("Weapon " + name), 0, min!.Value, max!.Value);
             }
             
             var stat = GetStatFromName(name);
-            return new ItemStat(stat, value.Value, min.Value, max.Value);
+            return new ItemStat(stat, value!.Value, min!.Value, max!.Value);
         }
 
         private (Match segmentedStatLine, bool isWeaponEffectStatLine) SegmentItemStatLine(string statLine) {

@@ -20,19 +20,19 @@ namespace Inkybot.Services
     public partial class ScreenReaderDataProvider : DofusDataProvider, InjectableService
     {
         internal const int MaxSupportedStatsForMage = 12;
-        public event EventHandler<ScannedRegionEventArgs> ScannedStats;
-        public event EventHandler<ScannedRegionEventArgs> ScannedHistory;
-        public event EventHandler<ScanBoundsChanged> LatestHistoryBoundsChanged;
-        public event EventHandler<ItemEventArgs> FetchedItem;
+        public event EventHandler<ScannedRegionEventArgs>? ScannedStats;
+        public event EventHandler<ScannedRegionEventArgs>? ScannedHistory;
+        public event EventHandler<ScanBoundsChanged>? LatestHistoryBoundsChanged;
+        public event EventHandler<ItemEventArgs>? FetchedItem;
         private IntPtr handle;
-        public Item previousScannedItem;
-        public DofusScreenScan Scan {
+        public Item? previousScannedItem;
+        public DofusScreenScan? Scan {
             get;
             private set;
         }
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
         private string[] previousMinMaxScan = {};
-        private ServiceContainer serviceContainer;
+        private ServiceContainer? serviceContainer;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -54,22 +54,22 @@ namespace Inkybot.Services
 
         public void FetchData() {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(handle, serviceContainer, LatestHistoryBounds);
+            Scan = new DofusScreenScan(handle, serviceContainer!, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(image, serviceContainer, LatestHistoryBounds, saveToDisk);
+            Scan = new DofusScreenScan(image, serviceContainer!, LatestHistoryBounds, saveToDisk);
         }
 
         public int? AverageItemBalance() {
-            var scanResults = Scan.AverageItemBalance().Result;
+            var scanResults = Scan!.AverageItemBalance().Result;
 
             return scanResults;
         }
 
         public IEnumerable<MageHistoryRecord> LatestHistory() {
-            var scanResults = Scan.LatestHistory()
+            var scanResults = Scan!.LatestHistory()
                 .Result
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
@@ -81,12 +81,12 @@ namespace Inkybot.Services
         }
         
         public void ApproveLatestHistoryContinueToNextScanBounds() {
-            LatestHistoryBounds = Scan.CalculateNextHistoryBounds();
+            LatestHistoryBounds = Scan!.CalculateNextHistoryBounds();
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
         }
 
         public IEnumerable<MageHistoryRecord> History() {
-            var scanResults = Scan.History()
+            var scanResults = Scan!.History()
                 .Result
                 .Select(line => line.Replace("\n", " "))
                 .ToArray();
@@ -99,9 +99,9 @@ namespace Inkybot.Services
 
         public Item Item() {
             if (previousMinMaxScan.Length == 0) {
-                previousMinMaxScan = Scan.MinMaxStats().Result;
+                previousMinMaxScan = Scan!.MinMaxStats().Result;
             }
-            var scanResults = Scan.Stats().Result;
+            var scanResults = Scan!.Stats().Result;
             var statsResult = scanResults
                 .ZipWithDefault(previousMinMaxScan, (value, minmax) => (minmax ?? "- -") + " " + value)
                 .ToArray();
@@ -117,7 +117,7 @@ namespace Inkybot.Services
 
         public Dictionary<Stat, UserRune[]> Runes() {
             var item = Item();
-            var scanResults = Scan.RunesQuantities().Result;
+            var scanResults = Scan!.RunesQuantities();
 
             var userRunes = new DofusStatUserRunesOcrResultAdapter(item, scanResults).ToUserRunes();
 
@@ -126,13 +126,13 @@ namespace Inkybot.Services
         }
 
         public UserRune RuneQuantity(Rune rune) {
-            var row = previousScannedItem.Stats
+            var row = previousScannedItem!.Stats
                 .Select((Value, Index) => new { Value, Index })
                 .Single(p => p.Value.stat == rune.stat)
                 .Index;
             
             var column = (int) rune.type;
-            var runeQuantityScan = Scan.RuneQuantity(column, row).Result;
+            var runeQuantityScan = Scan!.RuneQuantity(column, row).Result;
             
             return new UserRune(rune, runeQuantityScan.Quantity);
         }

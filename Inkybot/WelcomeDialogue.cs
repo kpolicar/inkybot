@@ -13,12 +13,11 @@ namespace Inkybot
 {
     public partial class WelcomeDialogue : Form
     {
-        public event EventHandler<PathChangedEventArgs> PathChanged; 
+        public event EventHandler<PathChangedEventArgs>? PathChanged; 
         private readonly ApiClient api;
         private AuthManager auth;
 
         public WelcomeDialogue(MainForm mainForm, string errorMessage) : this() {
-            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             this.errorMessage.Text = errorMessage;
         }
 
@@ -29,6 +28,7 @@ namespace Inkybot
             newVersionLabel.Hide();
             rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
+            api = Program.Services.GetService<ApiClient>();
         }
 
         private async void button1_Click(object sender, EventArgs e) {
@@ -103,7 +103,8 @@ namespace Inkybot
                     var tooltip = new ToolTip();
                     tooltip.SetToolTip(newVersionLabel, Program.Version+" » "+newestVersion.name);
                 }
-            } catch (Exception exception) {
+            } catch (Exception) {
+                // ignored
             }
         }
 

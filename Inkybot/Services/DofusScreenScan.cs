@@ -33,17 +33,17 @@ namespace Inkybot.Services
             
             private ScreenCapture screen;
 
-            private static ScreenScanner historyScanner;
-            private static ScreenScanner latestHistoryScanner;
-            private static ScreenScanner statValuesScanner;
-            private static ScreenScanner statMinsScanner;
-            private static ScreenScanner statMaxesScanner;
-            private static ScreenScanner runeScanner;
-            private static ScreenScanner averageItemPriceScanner;
+            private static ScreenScanner? historyScanner;
+            private static ScreenScanner? latestHistoryScanner;
+            private static ScreenScanner? statValuesScanner;
+            private static ScreenScanner? statMinsScanner;
+            private static ScreenScanner? statMaxesScanner;
+            private static ScreenScanner? runeScanner;
+            private static ScreenScanner? averageItemPriceScanner;
 
-            private static CultureInfo lang;
+            private static CultureInfo? lang;
             private readonly IntPtr handle;
-            private readonly Image screenshot;
+            private readonly Image screenshot = null!;
             private bool saveToDisk;
 
 
@@ -110,7 +110,7 @@ namespace Inkybot.Services
                             new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
                 }
                 
-                latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
+                latestHistoryScanner!.PageProcessed += OnLatestHistoryPageProcessed;
             }
 
             private void OnLatestHistoryPageProcessed(object sender, TesseractPageProcessed e) {
@@ -132,8 +132,8 @@ namespace Inkybot.Services
 
             public async Task<string[]> MinMaxStats() {
 
-                var minstask = statMinsScanner.ScanRegionAsync(screenshot, saveToDisk);
-                var maxesTask = statMaxesScanner.ScanRegionAsync(screenshot, saveToDisk);
+                var minstask = statMinsScanner!.ScanRegionAsync(screenshot, saveToDisk);
+                var maxesTask = statMaxesScanner!.ScanRegionAsync(screenshot, saveToDisk);
 
                 Task.WaitAll(minstask, maxesTask);
 
@@ -145,14 +145,14 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> Stats() {
-                var statValuesScanTask = statValuesScanner.ScanRegionAsync(screenshot, saveToDisk);
+                var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, saveToDisk);
                 statValuesScanTask.Wait();
                 return await statValuesScanTask;
             }
 
             public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
                 var runeBounds = Measurements.RuneBoxBounds(column, row);
-                runeScanner.SetRegion(runeBounds);
+                runeScanner!.SetRegion(runeBounds);
                 var scanned = await runeScanner.ScanRegionAsync(screenshot);
                 var result = scanned.First();
                 
@@ -167,12 +167,12 @@ namespace Inkybot.Services
                 };
             }
 
-            public async Task<RuneQuantityScan[]> RunesQuantities() {
+            public RuneQuantityScan[] RunesQuantities() {
                 var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
 
                 var scanIndex = 0;
                 return runeBoxes.Select(runeBox => {
-                    runeScanner.SetRegion(runeBox);
+                    runeScanner!.SetRegion(runeBox);
                     var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
                     var result = scanned.First();
 
@@ -192,11 +192,11 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> History() {
-                return await historyScanner.ScanRegionAsync(screenshot, saveToDisk);
+                return await historyScanner!.ScanRegionAsync(screenshot, saveToDisk);
             }
 
             public async Task<int?> AverageItemBalance() {
-                var scanned = await averageItemPriceScanner.ScanRegionAsync(screenshot);
+                var scanned = await averageItemPriceScanner!.ScanRegionAsync(screenshot);
                 var result = scanned.First();
 
                 var success = int.TryParse(result
@@ -207,7 +207,7 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> LatestHistory() {
-                latestHistoryScanner.SetRegion(LatestHistoryBounds);
+                latestHistoryScanner!.SetRegion(LatestHistoryBounds);
                 return await latestHistoryScanner.ScanRegionAsync(screenshot, saveToDisk);
             }
 
@@ -244,8 +244,8 @@ namespace Inkybot.Services
             }
 
             public void Dispose() {
-                screenshot?.Dispose();
-                latestHistoryScanner.PageProcessed -= OnLatestHistoryPageProcessed;
+                screenshot.Dispose();
+                latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Inkybot.Domain
     public class Stat
     {
         public static Stat FirstOrNew(string identifier) {
-            var stat = Stats.DefaultIfEmpty(null).FirstOrDefault(stat => stat.Identifier == identifier);
+            var stat = Stats.FirstOrDefault(stat => stat.Identifier == identifier);
             return stat ?? new Stat(identifier);
         }
         
@@ -105,9 +105,9 @@ namespace Inkybot.Domain
             return !(operand1 == operand2);
         }
         
-        public static Stat[] Stats;
-        private static ResourceSet StatDictionary;
-        private static ResourceSet RuneDictionary;
+        public static Stat[] Stats = null!;
+        private static ResourceSet StatDictionary = null!;
+        private static ResourceSet RuneDictionary = null!;
 
         public StatConfigResource Config => (StatConfigResource) Properties.Settings.Default[Identifier];
         
@@ -179,8 +179,8 @@ namespace Inkybot.Domain
             float sinkValue,
             float negSinkValue) {
                 
-            DisplayName = StatDictionary.GetString(identifier);
-            RuneName = RuneDictionary.GetString(identifier);
+            DisplayName = StatDictionary.GetString(identifier)!;
+            RuneName = RuneDictionary.GetString(identifier)!;
 
             Identifier = identifier;
             Maximum = maximum;
@@ -190,7 +190,7 @@ namespace Inkybot.Domain
         }
         
         public Stat(string displayName) {
-            Identifier = DisplayName = displayName;
+            Identifier = DisplayName = RuneName = displayName;
             Mageable = false;
         }
 

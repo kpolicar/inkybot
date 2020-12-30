@@ -12,16 +12,16 @@ namespace Inkybot.Services
 {
     public class ConfigManager
     {
-        public event EventHandler<ConfigModifiedEventArgs> ConfigModified;
+        public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
 
-        public Config Config {
+        public Config? Config {
             get;
             private set;
         }
 
         public void RemoveFallenUnconfiguredStats(Item item) {
             var fallenUnconfiguredStats =
-                Config.StatsConfig.Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
+                Config!.StatsConfig.Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
@@ -33,7 +33,7 @@ namespace Inkybot.Services
         }
 
         public void RemoveExos() {
-            var configuredExoStats = Config
+            var configuredExoStats = Config!
                 .Exos
                 .Select(config => config.Key)
                 .ToArray();
@@ -60,13 +60,13 @@ namespace Inkybot.Services
         }
 
         public void ChangeStatConfigTarget(Stat stat, int target) {
-            var statConfig = Config.StatsConfig[stat];
+            var statConfig = Config!.StatsConfig[stat];
             var newStatConfig = new StatConfig(stat, target, statConfig.Maximum, statConfig.Minimum);
             ChangeStatConfig(stat, newStatConfig);
         }
 
         public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
-            var isNewStatConfiguration = !Config.StatsConfig.ContainsKey(stat);
+            var isNewStatConfiguration = !Config!.StatsConfig.ContainsKey(stat);
             if (!isNewStatConfiguration && statConfig == Config.StatsConfig[stat])
                 return;
             

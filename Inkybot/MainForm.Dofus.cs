@@ -11,7 +11,7 @@ namespace Inkybot
 {
     public partial class MainForm
     {
-        private Process pDofus;
+        private Process? pDofus;
         private IntPtr hWndDocked;
 
         private bool InitializeDofusClient() {
@@ -27,9 +27,8 @@ namespace Inkybot
                 }
             }
 
-            //pDofus = Process.Start("notepad.exe");
             pDofus = Process.Start(Properties.Settings.Default.dofusPath);
-            WindowHelpers.DockProcess(pDofus, dofusClientPanel, ref hWndDocked);
+            WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 
             BindServicesToDockedWindow();
@@ -46,7 +45,7 @@ namespace Inkybot
             mouse.SetRelativeToHandle(hWndDocked);
             
             var actions = (MouseActionFactory) Program.Services.GetService<ActionFactory>();
-            actions.setRelativeToControl(dofusClientPanel);
+            actions.SetRelativeToControl(dofusClientPanel);
         }
     }
 }

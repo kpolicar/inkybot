@@ -16,7 +16,7 @@ namespace Inkybot.Api
     {
         public ApiConnection? Connection { private set; get; }
 
-        public event EventHandler<FetchedUserEventArgs> UserFetched;
+        public event EventHandler<FetchedUserEventArgs>? UserFetched;
 
         private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e) {
             Connection?.Terminate();
@@ -33,7 +33,7 @@ namespace Inkybot.Api
         public async Task<User> User() {
             await WaitForStableConnection();
 
-            var client = Connection.Request();
+            var client = Connection!.Request();
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
             
             response.EnsureSuccessStatusCode();

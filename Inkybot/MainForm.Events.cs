@@ -61,8 +61,8 @@ namespace Inkybot
 
                 for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
                     try {
-                        scan.History();
-                        scan.Stats();
+                        scan.History().Start();
+                        scan.Stats().Start();
                         break;
                     } catch (OcrEngineNotReadyYetException) {
                     }

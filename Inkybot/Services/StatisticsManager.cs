@@ -14,7 +14,7 @@ namespace Inkybot.Services
 {
     public class StatisticsManager : StatisticsManagerContract, InjectableService
     {
-        private ApiClient api;
+        private ApiClient api = null!;
         private int changesCount = 0;
         const int MinChangesToSendCount = 10;
         
@@ -24,18 +24,14 @@ namespace Inkybot.Services
         private IAction? previousAction;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
-            api = (ApiClient) serviceContainer.GetService(typeof(ApiClient));
+            api = serviceContainer.GetService<ApiClient>();
             
-            var actionHandler = (ActionHandler) serviceContainer.GetService(typeof(ActionHandler));
-            var magus = (DofusMagingJob) serviceContainer.GetService(typeof(DofusMagingJob));
-            if (magus != null) {
-                magus.BalanceChanged += OnBalanceChanged;
-                magus.Stopped += (sender, args) => Send();
-            }
+            var actionHandler = serviceContainer.GetService<ActionHandler>();
+            var magus = serviceContainer.GetService<DofusMagingJob>();
+            magus.BalanceChanged += OnBalanceChanged;
+            magus.Stopped += (sender, args) => Send();
 
-            if (actionHandler != null) {
-                actionHandler.ActionExecuted += OnMagingAction;
-            }
+            actionHandler.ActionExecuted += OnMagingAction;
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {

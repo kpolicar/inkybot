@@ -19,7 +19,7 @@ namespace Inkybot.Services
         {
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;
-            private static Task previousTickDeferredExecutionTask;
+            private static Task? previousTickDeferredExecutionTask;
             private const int MaxHistoryChangedChecks = 5;
             private static int HistoryChangedChecksCount = 0;
             private const int MaxStatsChangedChecks = 3;
@@ -105,7 +105,7 @@ namespace Inkybot.Services
                 job.dataProvider.FetchData();
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
 
-                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory) ||
+                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory!) ||
                                         (job.previousHistory == null && itemHistory.history.Any());
                 Debug.WriteLine("history has changed: "+ historyHasChanged);
 
@@ -130,7 +130,7 @@ namespace Inkybot.Services
                 var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);
                 var latestChange = itemLatestHistory.history.FirstOrDefault();
 
-                if (latestChange == default) {
+                if (latestChange == null) {
                     job.dataProvider.FetchData();
                     return;
                 }
@@ -182,10 +182,10 @@ namespace Inkybot.Services
                 }
                 var statLanded = lastHistoryRecord.Landed?.stat;
 
-                var previousCombine = (CombineRune) job.previousAction;
+                var previousCombine = (CombineRune) job.previousAction!;
                 var expectedStat = previousCombine.Rune.stat;
 
-                if (statLanded != expectedStat)
+                if (statLanded != null && statLanded != expectedStat)
                     throw new UnexpectedMageResultException(
                         $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
                         $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
@@ -214,9 +214,9 @@ namespace Inkybot.Services
                     
                     Debug.WriteLine("sink change:" +
                                     lastHistoryRecord.ChangeInSink);
-                } catch (CouldNotResolveSinkException e) {
+                } catch (CouldNotResolveSinkException) {
 
-                    var previousCombine = (CombineRune) job.previousAction;
+                    var previousCombine = (CombineRune) job.previousAction!;
                     sinkChange = lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
                     
                     attemptedSinkChange = -previousCombine.Rune.Sink;
@@ -252,7 +252,7 @@ namespace Inkybot.Services
                 job.configManager.RemoveFallenUnconfiguredStats(item);
 
                 previousTickDeferredExecutionTask?.Wait();
-                var action = job.magus.ResolveAction(item);
+                var action = job.magus!.ResolveAction(item);
 
                 if (action is CombineRune combine) {
                     EnforceHasRunesForCombine(combine);

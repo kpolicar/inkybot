@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using DataGridViewElement = System.Windows.Forms.DataGridView;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Inkybot.Helpers

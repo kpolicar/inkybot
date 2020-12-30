@@ -17,7 +17,7 @@ namespace Inkybot
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
             
-            var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
+            var actionHandler = Program.Services.GetService<ActionHandler>();
             actionHandler.ActionExecuted += OnMagingAction;
         }
 
@@ -45,13 +45,13 @@ namespace Inkybot
                 mageInfoPanel.Hide();
                 exoAttemptsLabel.Hide();
                 exoAttemptsValueLabel.Hide();
-                debugScreenshotButton.Enabled = true;
             }));
         }
 
         private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
+                debugScreenshotButton.Enabled = true;
             }));
         }
 

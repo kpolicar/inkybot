@@ -30,7 +30,7 @@ namespace Inkybot.Api
             refreshTokenTimer.Dispose();
         }
 
-        public Task RefreshTask { private set; get; }
+        public Task? RefreshTask { private set; get; }
 
         public HttpClient Request() {
             var client = new HttpClient();

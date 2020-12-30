@@ -8,7 +8,7 @@ namespace Inkybot.Contracts
 {
     public interface DofusDataProvider
     {
-        public event EventHandler<ItemEventArgs> FetchedItem;
+        public event EventHandler<ItemEventArgs>? FetchedItem;
 
         Item Item();
         void FetchData();

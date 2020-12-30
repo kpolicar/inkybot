@@ -21,7 +21,7 @@ namespace Inkybot
         #if DEBUG
         private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         #endif
-        private Rectangle latestHistoryOcrIndicatorControl;
+        private Rectangle latestHistoryOcrIndicatorControl = null!;
 
         private void InitOcrIndicators() {
             RegisterOcrIndicator(Measurements.StatMinBounds);

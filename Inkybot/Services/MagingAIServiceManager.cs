@@ -8,9 +8,9 @@ namespace Inkybot.Services
 {
     public class MagingAIServiceManager : InjectableService
     {
-        private ServiceContainer serviceContainer;
+        private ServiceContainer serviceContainer = null!;
         private bool? previousUserFetchedIsFreeTrial;
-        public event EventHandler<MagingAIChangedEventArgs> MagingAIChanged; 
+        public event EventHandler<MagingAIChangedEventArgs>? MagingAIChanged; 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var apiClient = serviceContainer.GetService<ApiClient>();

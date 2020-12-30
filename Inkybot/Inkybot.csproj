@@ -14,6 +14,7 @@
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <Deterministic>true</Deterministic>
         <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -341,12 +342,6 @@
         <Compile Include="MainForm.Events.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="OcrDebugForm.cs">
-          <SubType>Form</SubType>
-        </Compile>
-        <Compile Include="OcrDebugForm.Designer.cs">
-          <DependentUpon>OcrDebugForm.cs</DependentUpon>
-        </Compile>
         <Compile Include="Services\ConfigManager.cs" />
         <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
@@ -384,7 +379,6 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.fr.resx" />
-        <EmbeddedResource Include="OcrDebugForm.fr.resx" />
         <EmbeddedResource Include="Properties\Regex.fr.resx" />
         <EmbeddedResource Include="Properties\Regex.resx">
           <Generator>ResXFileCodeGenerator</Generator>
@@ -416,9 +410,6 @@
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>
-        </EmbeddedResource>
-        <EmbeddedResource Include="OcrDebugForm.resx">
-          <DependentUpon>OcrDebugForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>

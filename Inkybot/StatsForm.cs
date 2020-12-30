@@ -20,7 +20,7 @@ namespace Inkybot
 {
     public partial class StatsForm : Form
     {
-        public event EventHandler<ExceptionEventArgs> Error;
+        public event EventHandler<ExceptionEventArgs>? Error;
         private readonly ScreenReaderDataProvider dataProvider;
         private DofusMagingJob magingJob;
         private ConfigManager configManager;
@@ -89,7 +89,7 @@ namespace Inkybot
                     continue;
                     
                 if (updatingFallenExos) {
-                    if (configManager.Config.For(stat).Target == 0) {
+                    if (configManager.Config!.For(stat).Target == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -211,7 +211,7 @@ namespace Inkybot
             int max;
             var newTargetIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
             if (!newTargetIsValidNumber) {
-                cell.Value = configManager.Config.For(stat).Target;
+                cell.Value = configManager.Config!.For(stat).Target;
                 return;
             }
 
@@ -270,7 +270,7 @@ namespace Inkybot
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
             
-            var config = configManager.Config.StatsConfig
+            var config = configManager.Config!.StatsConfig
                 .Select(statConfig =>
                     new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
                 .ToArray();
