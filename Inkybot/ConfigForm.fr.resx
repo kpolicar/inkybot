@@ -47,4 +47,22 @@
     <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
     <value>Relancer automatiquement le bot en cas d’erreur.</value>
   </data>
+  <data name="config.neverchange" xml:space="preserve">
+    <value>Ne jamais passer à :rune</value>
+  </data>
+  <data name="config.prefer" xml:space="preserve">
+    <value>Toujours préférer :rune1 au lieu de :rune2</value>
+  </data>
+  <data name="config.changeonthreshold" xml:space="preserve">
+    <value>Passer à :rune quand :stat atteint :threshold</value>
+  </data>
+  <data name="config.neverchange_threshold" xml:space="preserve">
+    <value>IA ne passera jamais à :rune à cause du :threshold</value>
+  </data>
+  <data name="config.alwaysland" xml:space="preserve">
+    <value>:rune peut toujours être utilisée</value>
+  </data>
+  <data name="config.canland_maxvalue" xml:space="preserve">
+    <value>:rune peut être utilisée uniquement quand la valeur est inférieure ou égale à :maxvalue</value>
+  </data>
 </root>
