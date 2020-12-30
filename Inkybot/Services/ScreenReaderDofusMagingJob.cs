@@ -16,7 +16,7 @@ using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, InjectableService
+    public partial class ScreenReaderDofusMagingJob : IDisposable, DofusMagingJobContract, InjectableService
     {
         public event EventHandler<MagingJobEventArgs> Started;
         public event EventHandler Stopped;
@@ -46,6 +46,7 @@ namespace Inkybot.Services
         internal Stopwatch changeTimeout;
         internal CurrentItemInfo itemInfo;
         internal bool previousCheckHadRunOutOfRunes = false;
+        private ServiceContainer serviceContainer;
 
 
         public ScreenReaderDofusMagingJob() {
@@ -60,6 +61,7 @@ namespace Inkybot.Services
             configManager = serviceContainer.GetService<ConfigManager>();
             dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;
+            this.serviceContainer = serviceContainer;
         }
 
         public bool IsPreparing;
@@ -90,7 +92,7 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (IsMaging) return;
-            magus = (DofusMagingAIContract) Program.Services.GetService(typeof(DofusMagingAIContract));
+            magus = (DofusMagingAIContract) serviceContainer.GetService(typeof(DofusMagingAIContract));
 
             previousCheckHadRunOutOfRunes = false;
             job = new Thread(DoMage);
@@ -177,6 +179,10 @@ namespace Inkybot.Services
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             if (e.Changed && !IsPreparing)
                 StopMage();
+        }
+
+        public void Dispose() {
+            StopMage();
         }
     }
 }

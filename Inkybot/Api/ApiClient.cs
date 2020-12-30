@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Api.Resources;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Newtonsoft.Json;
 
 namespace Inkybot.Api
 {
-    public class ApiClient
+    public class ApiClient : InjectableService
     {
         public ApiConnection? Connection { private set; get; }
-
-        public ApiClient() {
-            AuthManager.ConnectionChanged += OnConnectionChanged;
-        }
 
         public event EventHandler<FetchedUserEventArgs> UserFetched;
 
@@ -91,6 +88,11 @@ namespace Inkybot.Api
             await WaitForStableConnection();
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/notify/runes", new FormUrlEncodedContent(data));
+        }
+
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var authManager = serviceContainer.GetService<AuthManager>();
+            authManager.ConnectionChanged += OnConnectionChanged;
         }
     }
 }

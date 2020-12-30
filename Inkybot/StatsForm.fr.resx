@@ -32,4 +32,10 @@
     <data name="addPresetButton.Text" xml:space="preserve">
     <value>ENREGISTRER COMME PRESET</value>
   </data>
+    <data name="popup.error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+    <data name="popup.error_notavailable_freetrial" xml:space="preserve">
+    <value>Cette fonctionnalité est réservée aux utilisateurs abonnés! Visitez le site Web officiel d'Inkybot pour souscrire à votre compte.</value>
+  </data>
 </root>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Adapters;
+using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
@@ -20,16 +21,18 @@ namespace Inkybot
     public partial class StatsForm : Form
     {
         public event EventHandler<ExceptionEventArgs> Error;
-        private readonly DofusDataProvider dataProvider;
+        private readonly ScreenReaderDataProvider dataProvider;
         private DofusMagingJob magingJob;
         private ConfigManager configManager;
+        private AuthManager auth;
 
         public StatsForm() {
             InitializeComponent();
             InitializeCustomComponents();
-            magingJob = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
-            dataProvider = (DofusDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
-            configManager = (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            magingJob = Program.Services.GetService<DofusMagingJob>();
+            dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
+            configManager = Program.Services.GetService<ConfigManager>();
+            auth = Program.Services.GetService<AuthManager>();
             actionsPanel.Hide();
         }
 
@@ -171,6 +174,7 @@ namespace Inkybot
                         selectPresetPanel.Enabled = false;
                     }));
                     
+                    dataProvider.Reset();
                     dataProvider.FetchData();
                     var item = dataProvider.Item();
                     configManager.EnforceConfigSetForItem(item);
@@ -220,6 +224,14 @@ namespace Inkybot
         }
 
         private void addExoButton_Click(object sender, EventArgs e) {
+            if (auth.User != null && auth.User.is_free_trial) {
+                MessageBox.Show(
+                    resources.GetString("popup.error_notavailable_freetrial"),
+                    resources.GetString("popup.error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
             var stat = Stat.Stats.First(stat => stat.DisplayName == exoStatComboBox.Text);
             var exoConfig = new StatConfig(stat, 0, 0, 0);
             

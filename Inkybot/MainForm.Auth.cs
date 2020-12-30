@@ -18,6 +18,7 @@ namespace Inkybot
             api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
             api.UserFetched += OnUserFetched;
             VisibleChanged += AuthenticatedForm_VisibleChanged;
+            auth = Program.Services.GetService<AuthManager>();
         }
 
         private void AuthenticatedForm_VisibleChanged(object sender, EventArgs e) {
@@ -25,7 +26,7 @@ namespace Inkybot
                 subscriptionCheckTimer.Start();
             } else {
                 subscriptionCheckTimer.Stop();
-                AuthManager.Logout();
+                auth.Logout();
             }
         }
 

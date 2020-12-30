@@ -25,6 +25,7 @@ namespace Inkybot
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
+        private AuthManager auth;
 
         public MainForm() {
             InitializeComponent();

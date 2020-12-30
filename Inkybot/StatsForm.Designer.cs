@@ -11,6 +11,8 @@ namespace Inkybot
         /// </summary>
         private IContainer components = null;
 
+        private System.ComponentModel.ComponentResourceManager resources;
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -50,7 +52,7 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(StatsForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();

@@ -56,9 +56,11 @@ namespace Inkybot
             { typeof(ActionHandler), new ActionHandler() },
             { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
             { typeof(ApiClient), new ApiClient() },
+            { typeof(AuthManager), new AuthManager() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
             { typeof(DofusMagingAIContract), new DofusMagingAI() },
             { typeof(StatisticsManagerContract), new StatisticsManager() },
+            { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
         };
 
         /// <summary>

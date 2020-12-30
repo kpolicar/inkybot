@@ -5,17 +5,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Api.Resources;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Newtonsoft.Json;
 using static System.Configuration.ConfigurationManager;
 
 namespace Inkybot.Api
 {
-    public class AuthManager
+    public class AuthManager : InjectableService
     {
-        public static event EventHandler<ApiConnectionChangedEventArgs> ConnectionChanged;
+        public event EventHandler<ApiConnectionChangedEventArgs> ConnectionChanged;
+        public User? User;
 
-        public static async Task<ApiConnection?> Login(string username, string password) {
+        public async Task<ApiConnection?> Login(string username, string password) {
             var client = new HttpClient();
             var url =  $"{Server.AuthUrl}/token";
 
@@ -41,8 +43,13 @@ namespace Inkybot.Api
             return connection;
         }
 
-        public static void Logout() {
+        public void Logout() {
             ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(null));
+        }
+
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var apiClient = serviceContainer.GetService<ApiClient>();
+            apiClient.UserFetched += (sender, args) => User = args.user;
         }
     }
 }

@@ -2160,4 +2160,10 @@
   <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>fr</value>
   </metadata>
+  <data name="popup.error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="popup.error_notavailable_freetrial" xml:space="preserve">
+    <value>This feature is restricted to subscribed users! Visit the official Inkybot website to subscribe your account.</value>
+  </data>
 </root>

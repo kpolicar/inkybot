@@ -18,10 +18,22 @@ namespace Inkybot.Services
         public void BindToServices() {
             BindToScreenReaderDataProvider();
             BindToMagingJob();
+            BindToMagingAIServiceManager();
+        }
+
+        private void BindToMagingAIServiceManager() {
+            var aiServiceManager =  Program.Services.GetService<MagingAIServiceManager>();
+            if (aiServiceManager == null)
+                return;
+            
+            aiServiceManager.MagingAIChanged += (sender, args) =>
+                MagingLogger.Info("Maging AI updated: "+FormatMagingAI(args.AI));
         }
 
         private void BindToScreenReaderDataProvider() {
             var dataProvider =  (ScreenReaderDataProvider) Program.Services.GetService(typeof(DofusDataProvider));
+            if (dataProvider == null)
+                return;
             
             dataProvider.ScannedStats += (sender, args) =>
                 OcrLogger.Info("Stats scanned:\r\n" + string.Join("\r\n", args.Lines)+"\r\n");
@@ -68,6 +80,14 @@ namespace Inkybot.Services
             }
 
             return exception.Message;
+        }
+        
+        private string FormatMagingAI(Contracts.DofusMagingAI magingAI) {
+            return magingAI switch {
+                DofusMagingAI _ => "Maging AI",
+                DofusStandardStatsMagingAI _ => "Free Trial Maging AI",
+                _ => "Unknown Maging AI"
+            };
         }
     }
 }

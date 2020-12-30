@@ -15,6 +15,7 @@ namespace Inkybot
     {
         public event EventHandler<PathChangedEventArgs> PathChanged; 
         private readonly ApiClient api;
+        private AuthManager auth;
 
         public WelcomeDialogue(MainForm mainForm, string errorMessage) : this() {
             api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
@@ -27,13 +28,14 @@ namespace Inkybot
             passwordTextBox.Text = Properties.Settings.Default.password;
             newVersionLabel.Hide();
             rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
+            auth = Program.Services.GetService<AuthManager>();
         }
 
         private async void button1_Click(object sender, EventArgs e) {
             errorMessage.Text = "";
             button1.Enabled = false;
             try {
-                var connection = await AuthManager.Login(usernameTextBox.Text, passwordTextBox.Text);
+                var connection = await auth.Login(usernameTextBox.Text, passwordTextBox.Text);
                 button1.Enabled = true;
 
                 if (connection == null) {
@@ -87,6 +89,7 @@ namespace Inkybot
                 var trial = await api.BeginFreeTrial();
                 if (trial.expired)
                     throw new UserTrialHasExpiredException();
+                await api.User();
                 return true;
             }
             return false;
