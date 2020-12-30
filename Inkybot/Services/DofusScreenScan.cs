@@ -57,8 +57,6 @@ namespace Inkybot.Services
                 LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
 
                 this.saveToDisk = saveToDisk;
-                if (saveToDisk)
-                    Save();
             }
 
             public DofusScreenScan(
@@ -68,6 +66,8 @@ namespace Inkybot.Services
                 bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
                 
                 screenshot = image;
+                if (saveToDisk)
+                    Save();
             }
 
             public DofusScreenScan(
@@ -78,6 +78,8 @@ namespace Inkybot.Services
                 
                 handle = hwnd;
                 screenshot = TakeScreenshot();
+                if (saveToDisk)
+                    Save();
             }
 
             public void Save() {

@@ -119,6 +119,7 @@ namespace Inkybot.Services
 
             try {
                 IsMaging = true;
+                dataProvider.Reset();
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
                 configManager.EnforceConfigSetForItem(item);

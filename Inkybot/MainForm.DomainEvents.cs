@@ -45,6 +45,7 @@ namespace Inkybot
                 mageInfoPanel.Hide();
                 exoAttemptsLabel.Hide();
                 exoAttemptsValueLabel.Hide();
+                debugScreenshotButton.Enabled = true;
             }));
         }
 
@@ -62,6 +63,10 @@ namespace Inkybot
             if (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)) {
                 StartMageUnsupportedDialog();
             }
+            
+            Invoke(new MethodInvoker(delegate {
+                debugScreenshotButton.Enabled = false;
+            }));
         }
 
         private void StartMageUnsupportedDialog() {
