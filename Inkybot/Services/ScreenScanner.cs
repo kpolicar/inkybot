@@ -47,7 +47,9 @@ namespace Inkybot.Services
             }
 
             public void SetRegion(Responsive.Measurement regionOfInterest) {
-                this.regionOfInterest = regionOfInterest;
+                lock (this) {
+                    this.regionOfInterest = regionOfInterest;
+                }
             }
 
             public Rectangle CalculateBounds(Image image) {

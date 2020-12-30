@@ -23,7 +23,7 @@ namespace Inkybot.Helpers
             }
         }
 
-        public class Measurement
+        public struct Measurement
         {
             public Rect Rectangle;
             public int Width;

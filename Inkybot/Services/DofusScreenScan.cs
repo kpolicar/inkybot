@@ -49,13 +49,13 @@ namespace Inkybot.Services
 
             private DofusScreenScan(
                 ServiceContainer serviceContainer,
-                Responsive.Measurement latestHistoryBounds = null,
+                Responsive.Measurement? latestHistoryBounds,
                 bool saveToDisk = false) {
                 
                 Init();
                 screen = serviceContainer.GetService<ScreenCapture>();
                 LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
-                
+
                 this.saveToDisk = saveToDisk;
                 if (saveToDisk)
                     Save();
@@ -64,7 +64,7 @@ namespace Inkybot.Services
             public DofusScreenScan(
                 Image image,
                 ServiceContainer serviceContainer,
-                Responsive.Measurement latestHistoryBounds = null,
+                Responsive.Measurement latestHistoryBounds,
                 bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
                 
                 screenshot = image;
@@ -73,7 +73,7 @@ namespace Inkybot.Services
             public DofusScreenScan(
                 IntPtr hwnd,
                 ServiceContainer serviceContainer,
-                Responsive.Measurement latestHistoryBounds = null,
+                Responsive.Measurement latestHistoryBounds,
                 bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
                 
                 handle = hwnd;
@@ -88,27 +88,26 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (lang != null && lang.Equals(Program.Lang))
-                    return;
+                if (lang == null || !lang.Equals(Program.Lang)) {
+                    lang = CultureInfo.CurrentUICulture;
 
-                lang = CultureInfo.CurrentUICulture;
-
-                historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                    new ResizeImagePreprocessor(200));
-                latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                    new ResizeImagePreprocessor(200));
-                statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                    new ResizeImagePreprocessor(150));
-                statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                    new ResizeAndBinarizationImagePreprocessor(300));
-                statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                    new ResizeAndBinarizationImagePreprocessor(300));
-                runeScanner =
-                    new PositiveNumberScreenScanner(null, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
-                averageItemPriceScanner =
-                    new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
-                        new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
-
+                    historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
+                        new ResizeImagePreprocessor(200));
+                    latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
+                        new ResizeImagePreprocessor(200));
+                    statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
+                        new ResizeImagePreprocessor(150));
+                    statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
+                        new ResizeAndBinarizationImagePreprocessor(300));
+                    statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
+                        new ResizeAndBinarizationImagePreprocessor(300));
+                    runeScanner =
+                        new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
+                    averageItemPriceScanner =
+                        new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
+                            new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
+                }
+                
                 latestHistoryScanner.PageProcessed += OnLatestHistoryPageProcessed;
             }
 
@@ -212,9 +211,10 @@ namespace Inkybot.Services
 
             public Responsive.Measurement CalculateNextHistoryBounds() {
                 var region = latestHistoryLastTextLineBounds;
-                if (region == default)
+                if (region == default) {
                     return LatestHistoryBounds;
-                
+                }
+
                 var bounds =
                     Responsive.ResponsiveRectangle(Measurements.ShortHistoryBounds, screenshot.Width, screenshot.Height);
                 var historyBounds =
@@ -243,6 +243,7 @@ namespace Inkybot.Services
 
             public void Dispose() {
                 screenshot?.Dispose();
+                latestHistoryScanner.PageProcessed -= OnLatestHistoryPageProcessed;
             }
         }
     }
