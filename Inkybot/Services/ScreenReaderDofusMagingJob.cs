@@ -8,7 +8,9 @@ using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Inkybot.Helpers;
 using Inkybot.Services;
+using Debug = System.Diagnostics.Debug;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
@@ -60,6 +62,7 @@ namespace Inkybot.Services
             configManager.ConfigModified += OnConfigModified;
         }
 
+        public bool IsPreparing;
         public bool IsMaging { get; private set; }
 
         internal int Balance {
@@ -110,13 +113,14 @@ namespace Inkybot.Services
             previousAction = null;
             previousHistory = null;
             previousItem = null;
+            IsPreparing = true;
 
             try {
                 IsMaging = true;
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
-                configManager.RemoveFallenUnconfiguredStats(item);
                 configManager.EnforceConfigSetForItem(item);
+                configManager.RemoveFallenUnconfiguredStats(item);
                 itemInfo = new CurrentItemInfo {
                     Runes = dataProvider.Runes()
                 };
@@ -127,6 +131,7 @@ namespace Inkybot.Services
                 IsMaging = false;
                 throw;
             }
+            IsPreparing = false;
         }
 
         private void DoMage() {
@@ -170,7 +175,7 @@ namespace Inkybot.Services
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
-            if (e.Changed)
+            if (e.Changed && !IsPreparing)
                 StopMage();
         }
     }
