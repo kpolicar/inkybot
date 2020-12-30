@@ -98,8 +98,11 @@ namespace Inkybot
         private async void LoginForm_Load(object sender, EventArgs e) {
             try {
                 var newestVersion = await api.NewestVersion();
-                if (Program.VersionNumber != newestVersion.number)
+                if (Program.VersionNumber != newestVersion.number) {
                     newVersionLabel.Show();
+                    var tooltip = new ToolTip();
+                    tooltip.SetToolTip(newVersionLabel, Program.Version+" » "+newestVersion.name);
+                }
             } catch (Exception exception) {
             }
         }
