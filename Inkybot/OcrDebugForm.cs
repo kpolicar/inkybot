@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -42,7 +43,7 @@ namespace Inkybot
         private void tesseractOn5() {
             var engine = new TesseractEngine(
                     "./Resources/Tesseract",
-                    Program.Lang.ThreeLetterISOLanguageName,
+                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
                     EngineMode.Default);
             engine.SetVariable("tessedit_char_whitelist", "-0123456789");
             var done = engine.Process(

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
@@ -30,7 +31,7 @@ namespace Inkybot.Services
             private Rectangle latestHistoryLastTextLineBounds;
             public Responsive.Measurement LatestHistoryBounds;
             
-            private static ScreenCapture screen;
+            private ScreenCapture screen;
 
             private static ScreenScanner historyScanner;
             private static ScreenScanner latestHistoryScanner;
@@ -46,25 +47,37 @@ namespace Inkybot.Services
             private bool saveToDisk;
 
 
-            public DofusScreenScan(Image image, Responsive.Measurement latestHistoryBounds = null, bool saveToDisk = false) {
-                Init();
-                LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
-                this.screenshot = image;
-                this.saveToDisk = saveToDisk;
+            private DofusScreenScan(
+                ServiceContainer serviceContainer,
+                Responsive.Measurement latestHistoryBounds = null,
+                bool saveToDisk = false) {
                 
+                Init();
+                screen = serviceContainer.GetService<ScreenCapture>();
+                LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
+                
+                this.saveToDisk = saveToDisk;
                 if (saveToDisk)
                     Save();
             }
 
-            public DofusScreenScan(IntPtr hwnd, Responsive.Measurement latestHistoryBounds = null, bool saveToDisk = false) {
-                Init();
-                LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
+            public DofusScreenScan(
+                Image image,
+                ServiceContainer serviceContainer,
+                Responsive.Measurement latestHistoryBounds = null,
+                bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
+                
+                screenshot = image;
+            }
+
+            public DofusScreenScan(
+                IntPtr hwnd,
+                ServiceContainer serviceContainer,
+                Responsive.Measurement latestHistoryBounds = null,
+                bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
+                
                 handle = hwnd;
                 screenshot = TakeScreenshot();
-                this.saveToDisk = saveToDisk;
-
-                if (saveToDisk)
-                    Save();
             }
 
             public void Save() {
@@ -75,10 +88,10 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                //if (lang != null && lang.Equals(Program.Lang)) return;
+                if (lang != null && lang.Equals(Program.Lang))
+                    return;
 
-                lang = Program.Lang;
-                screen = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
+                lang = CultureInfo.CurrentUICulture;
 
                 historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                     new ResizeImagePreprocessor(200));

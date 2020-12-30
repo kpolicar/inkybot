@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,7 +34,7 @@ namespace Inkybot.Services
                 PageSegMode segMode = PageSegMode.SingleBlock) {
                 engine = new TesseractEngine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Resources\Tesseract",
-                    Program.Lang.ThreeLetterISOLanguageName,
+                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
                     EngineMode.Default);
                 this.preprocessor = preprocessor ?? new ImagePreprocessor();
                 this.regionOfInterest = regionOfInterest;

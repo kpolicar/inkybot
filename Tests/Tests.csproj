@@ -46,6 +46,8 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Design\ScreenReaderTest.cs" />
+        <Compile Include="Design\SingleImageScreenReaderTest.cs" />
         <Compile Include="FileScreenCapture.cs" />
         <Compile Include="Tests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +57,19 @@
         <Project>{a3d66fb2-1b40-45bd-9b0d-98947fba69bd}</Project>
         <Name>Inkybot</Name>
       </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\Inkybot\Resources\Tesseract\eng.traineddata">
+        <Link>Resources\Tesseract\eng.traineddata</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\Inkybot\Resources\Tesseract\fra.traineddata">
+        <Link>Resources\Tesseract\fra.traineddata</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Resources\Screenshots\1.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

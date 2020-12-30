@@ -32,10 +32,12 @@ namespace Inkybot.Services
         }
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
         private string[] previousMinMaxScan = {};
+        private ServiceContainer serviceContainer;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
+            this.serviceContainer = serviceContainer;
             magingJob.Stopped += (sender, args) => Reset();
         }
 
@@ -52,12 +54,12 @@ namespace Inkybot.Services
 
         public void FetchData() {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(handle, LatestHistoryBounds);
+            Scan = new DofusScreenScan(handle, serviceContainer, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(image, LatestHistoryBounds, saveToDisk);
+            Scan = new DofusScreenScan(image, serviceContainer, LatestHistoryBounds, saveToDisk);
         }
 
         public int? AverageItemBalance() {

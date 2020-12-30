@@ -17,7 +17,7 @@ namespace Inkybot.Domain
 
         private static void LoadResourceInto(ResourceManager rm, SymSpell spellCorrect) {
             var resourceSet =
-                rm.GetResourceSet(Program.Lang, true, true);
+                rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
             foreach (DictionaryEntry entry in resourceSet)
             {

@@ -12,8 +12,12 @@ namespace Inkybot
         private bool unmagable;
         public bool Exo => max == 0;
 
-        public ItemStat(Stat itemStat, int value, int min, int max) {
-            stat = itemStat;
+        public ItemStat(string statIdentifier, int value, int min, int max)
+            : this (Stat.FirstOrNew(statIdentifier), value, min, max) {
+        }
+
+        public ItemStat(Stat stat, int value, int min, int max) {
+            this.stat = stat;
             this.value = value;
             this.min = min;
             this.max = max;
