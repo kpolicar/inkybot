@@ -2086,4 +2086,22 @@
   <metadata name="MaxSmRuneCanHitColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="config.neverchange" xml:space="preserve">
+    <value>Never change to :rune</value>
+  </data>
+  <data name="config.prefer" xml:space="preserve">
+    <value>Always prefer :rune1 over :rune2</value>
+  </data>
+  <data name="config.changeonthreshold" xml:space="preserve">
+    <value>Change to :rune when :stat reaches :threshold</value>
+  </data>
+  <data name="config.neverchange_threshold" xml:space="preserve">
+    <value>AI will never change to :rune due to :threshold</value>
+  </data>
+  <data name="config.alwaysland" xml:space="preserve">
+    <value>:rune can always land</value>
+  </data>
+  <data name="config.canland_maxvalue" xml:space="preserve">
+    <value>:rune can land while value is lower or equal to :maxvalue</value>
+  </data>
 </root>

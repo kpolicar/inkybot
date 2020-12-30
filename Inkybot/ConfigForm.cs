@@ -36,10 +36,77 @@ namespace Inkybot
                     row.Cells[2].ReadOnly = true;
                     row.Cells[2].Style = readonlyCellStyle;
                 }
+
+                SetConfigRowTooltips(row);
             }
 
             restoreHighSinkStatsCheckbox.Checked = Properties.Settings.Default.restoreHighSinkStatImmediately;
             autoRestartBotCheckbox.Checked = Properties.Settings.Default.autoRestartBot;
+        }
+
+        private void SetConfigRowTooltips(DataGridViewRow row) {
+            var stat = (Stat) row.Tag;
+            var smRune = new Rune(stat, Rune.Type.Sm);
+            var paRune = new Rune(stat, Rune.Type.Pa);
+            var raRune = new Rune(stat, Rune.Type.Ra);
+
+            if (stat.CanUsePaRunes) {
+                row.Cells[1].ToolTipText = stat.ChangeToPaRuneThreshold switch {
+                    int.MaxValue => resources.GetString("config.neverchange")!
+                        .Replace(":rune", paRune.ToString()),
+                    
+                    0 => resources.GetString("config.prefer")!
+                        .Replace(":rune1", paRune.ToString())
+                        .Replace(":rune2", smRune.ToString()),
+                    
+                    _ => resources.GetString("config.changeonthreshold")!
+                        .Replace(":rune", paRune.ToString())
+                        .Replace(":stat", stat.ToString())
+                        .Replace(":threshold", stat.ChangeToPaRuneThreshold.ToString())
+                };
+                row.Cells[4].ToolTipText = (stat.MaxValueAtWhichPaRuneCanLand, stat.ChangeToPaRuneThreshold) switch {
+                    (_, int.MaxValue) => resources.GetString("config.neverchange_threshold")!
+                        .Replace(":rune", paRune.ToString())
+                        .Replace(":threshold", resources.GetString("PaRuneThresholdColumn.HeaderText")),
+                    
+                    (int.MaxValue, _) => resources.GetString("config.alwaysland")!
+                        .Replace(":rune", paRune.ToString()),
+                    
+                    (0, _) => resources.GetString("config.neverchange")!
+                        .Replace(":rune", paRune.ToString()),
+                    
+                    _ => resources.GetString("config.canland_maxvalue")!
+                        .Replace(":rune", paRune.ToString())
+                        .Replace(":maxvalue", stat.MaxValueAtWhichPaRuneCanLand.ToString())
+                };
+            }
+            if (stat.CanUseRaRunes) {
+                row.Cells[2].ToolTipText = stat.ChangeToRaRuneThreshold switch {
+                    int.MaxValue => resources.GetString("config.neverchange")!
+                        .Replace(":rune", raRune.ToString()),
+                    
+                    0 => resources.GetString("config.prefer")!
+                        .Replace(":rune1", raRune.ToString())
+                        .Replace(":rune2", paRune.ToString()),
+                    
+                    _ => resources.GetString("config.changeonthreshold")!
+                        .Replace(":rune", raRune.ToString())
+                        .Replace(":stat", stat.ToString())
+                        .Replace(":threshold", stat.ChangeToRaRuneThreshold.ToString()),
+                };
+            }
+            row.Cells[3].ToolTipText = stat.MaxValueAtWhichSmRuneCanLand switch {
+                int.MaxValue => resources.GetString("config.alwaysland")!
+                    .Replace(":rune", smRune.ToString()),
+                
+                0 => resources.GetString("config.neverchange")!
+                    .Replace(":rune", smRune.ToString())
+                    .Replace(":rune", smRune.ToString()),
+                
+                _ => resources.GetString("config.canland_maxvalue")!
+                    .Replace(":rune", smRune.ToString())
+                    .Replace(":maxvalue", stat.MaxValueAtWhichSmRuneCanLand.ToString()),
+            };
         }
 
         protected string ParseConfigThreshold(int threshold) {
@@ -70,6 +137,7 @@ namespace Inkybot
             } catch (FormatException) {
                 
             }
+            SetConfigRowTooltips(row);
         }
 
         private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {

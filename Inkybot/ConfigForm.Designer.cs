@@ -9,6 +9,7 @@ namespace Inkybot
         /// Required designer variable.
         /// </summary>
         private IContainer components = null;
+        System.ComponentModel.ComponentResourceManager resources;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -41,11 +42,12 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
+            statsDataGridView.ShowCellToolTips = true;
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
