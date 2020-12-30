@@ -2909,4 +2909,13 @@
   <data name="popup.title_confirmation" xml:space="preserve">
     <value>Confirmation</value>
   </data>
+  <data name="subscriptiontimer.httpexception" xml:space="preserve">
+    <value>Something went wrong!</value>
+  </data>
+  <data name="subscriptiontimer.nolongersubscribed" xml:space="preserve">
+    <value>User is no longer subscribed!</value>
+  </data>
+  <data name="subscriptiontimer.nolongersubscribed_pleaseextend" xml:space="preserve">
+    <value>Please extend your subscription to resume.</value>
+  </data>
 </root>

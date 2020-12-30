@@ -63,9 +63,10 @@ namespace Inkybot
                 }
                 
                 var message = exception switch {
-                    HttpRequestException _ => "Something went wrong!",
+                    HttpRequestException _ => resources.GetString("subscriptiontimer.httpexception"),
                     UserNotSubscribedException _ =>
-                        "User is no longer subscribed!\nPlease extend your subscription to resume.",
+                        resources.GetString("subscriptiontimer.nolongersubscribed")+"\n"+
+                        resources.GetString("subscriptiontimer.nolongersubscribed_pleaseextend"),
                     _ => ""
                 };
                 Debug.WriteLine(exception.Message);

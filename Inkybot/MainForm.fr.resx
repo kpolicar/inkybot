@@ -59,4 +59,13 @@
     <data name="popup.warning_unsupported" xml:space="preserve">
     <value>InkyBot a détecté que cet objet peut contenir des statistiques qui n’apparaîtraient pas toutes en même temps à l’écran. Êtes-vous sûr de vouloir forgemager cet objet?</value>
   </data>
+    <data name="subscriptiontimer.nolongersubscribed" xml:space="preserve">
+    <value>L'utilisateur n'est plus abonné!</value>
+  </data>
+    <data name="subscriptiontimer.httpexception" xml:space="preserve">
+    <value>Un problème est survenu!</value>
+  </data>
+    <data name="subscriptiontimer.nolongersubscribed_pleaseextend" xml:space="preserve">
+    <value>Veuillez prolonger votre abonnement pour reprendre.</value>
+  </data>
 </root>
