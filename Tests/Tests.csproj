@@ -47,10 +47,13 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="MagingAITest.cs" />
+        <Compile Include="Design\MagingAITest.cs" />
         <Compile Include="Design\ScreenReaderTest.cs" />
         <Compile Include="Design\SingleImageScreenReaderTest.cs" />
-        <Compile Include="FileScreenCapture.cs" />
-        <Compile Include="Tests.cs" />
+        <Compile Include="Design\Test.cs" />
+        <Compile Include="Services\FileScreenCapture.cs" />
+        <Compile Include="OcrItemTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

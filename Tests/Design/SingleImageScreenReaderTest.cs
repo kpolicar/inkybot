@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Inkybot.Contracts;
+using NUnit.Framework;
+using Tests.Services;
 
 namespace Tests.Design
 {
@@ -8,9 +12,12 @@ namespace Tests.Design
             get;
         }
 
-        protected override void AddServices() {
+        protected override Dictionary<Type, object> Services() {
+            var services = base.Services();
             var screen = new FileScreenCapture(Path);
-            _services[typeof(ScreenCapture)] = screen;
+            services[typeof(ScreenCapture)] = screen;
+            
+            return services;
         }
     }
 }

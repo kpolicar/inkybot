@@ -90,7 +90,7 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (lang == null || !lang.Equals(Program.Lang)) {
+                if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,

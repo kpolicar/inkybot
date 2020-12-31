@@ -24,7 +24,7 @@ namespace Inkybot.Services
         public event EventHandler<ScannedRegionEventArgs>? ScannedHistory;
         public event EventHandler<ScanBoundsChanged>? LatestHistoryBoundsChanged;
         public event EventHandler<ItemEventArgs>? FetchedItem;
-        private IntPtr handle;
+        private IntPtr handle = IntPtr.Zero;
         public Item? previousScannedItem;
         public DofusScreenScan? Scan {
             get;
@@ -32,8 +32,7 @@ namespace Inkybot.Services
         }
         public Responsive.Measurement LatestHistoryBounds = Measurements.HistoryBounds;
         private string[] previousMinMaxScan = {};
-        private ServiceContainer? serviceContainer;
-
+        private ServiceContainer serviceContainer = null!;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
@@ -54,12 +53,12 @@ namespace Inkybot.Services
 
         public void FetchData() {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(handle, serviceContainer!, LatestHistoryBounds);
+            Scan = new DofusScreenScan(handle, serviceContainer, LatestHistoryBounds);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(image, serviceContainer!, LatestHistoryBounds, saveToDisk);
+            Scan = new DofusScreenScan(image, serviceContainer, LatestHistoryBounds, saveToDisk);
         }
 
         public int? AverageItemBalance() {

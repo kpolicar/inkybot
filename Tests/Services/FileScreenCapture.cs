@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using Inkybot.Contracts;
 
-namespace Tests
+namespace Tests.Services
 {
     public class FileScreenCapture : ScreenCapture
     {

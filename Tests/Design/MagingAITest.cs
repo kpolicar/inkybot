@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
 using Inkybot;
 using Inkybot.Api;
 using Inkybot.Contracts;
-using Inkybot.Design;
 using Inkybot.Domain;
 using Inkybot.Services;
 using NUnit.Framework;
-
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
@@ -20,10 +15,12 @@ using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Tests.Design
 {
-    public abstract class ScreenReaderTest : Test
+    public abstract class MagingAITest : Test
     {
-        protected ScreenReaderDataProvider DataProvider =>
-            (ScreenReaderDataProvider) ServiceContainer.GetService<DofusDataProvider>();
+        protected ConfigManager Config =>
+            ServiceContainer.GetService<ConfigManager>();
+        protected DofusMagingAI AI =>
+            (DofusMagingAI) ServiceContainer.GetService<DofusMagingAIContract>();
 
         protected override void Init() {
             Stat.Init();

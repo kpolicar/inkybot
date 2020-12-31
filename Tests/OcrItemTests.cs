@@ -22,12 +22,12 @@ using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 namespace Tests
 {
     [TestFixture]
-    public class Tests : SingleImageScreenReaderTest
+    public class OcrItemTests : SingleImageScreenReaderTest
     {
         protected override string Path => "./Resources/Screenshots/1.png";
 
         [Test]
-        public void Test1() {
+        public void TestItemStatsMatch() {
             DataProvider.FetchData();
             var item = DataProvider.Item();
             var expected = new Item(new ItemStatRepository(new [] {
