@@ -19,7 +19,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider : DofusDataProvider, InjectableService
     {
-        internal const int MaxSupportedStatsForMage = 12;
+        internal const int MaxSupportedStatsForMage = 13;
         public event EventHandler<ScannedRegionEventArgs>? ScannedStats;
         public event EventHandler<ScannedRegionEventArgs>? ScannedHistory;
         public event EventHandler<ScanBoundsChanged>? LatestHistoryBoundsChanged;
@@ -137,7 +137,7 @@ namespace Inkybot.Services
         }
 
         public bool IsSupportedItem(Item item) {
-            return item.Stats.Length <= MaxSupportedStatsForMage;
+            return item.Stats.Length <= MaxSupportedStatsForMage-1;
         }
 
         public bool IsSupportedConfig(Config config) {
