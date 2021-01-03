@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inkybot", "Inkybot\Inkybot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{E930EA8E-087D-47F8-9CB8-E174EFDBFF3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inkybot.Dofus", "Inkybot.Dofus\Inkybot.Dofus.csproj", "{172EE759-8286-4479-AA27-B77B98CB6AEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{E930EA8E-087D-47F8-9CB8-E174EFDBFF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E930EA8E-087D-47F8-9CB8-E174EFDBFF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E930EA8E-087D-47F8-9CB8-E174EFDBFF3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{172EE759-8286-4479-AA27-B77B98CB6AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{172EE759-8286-4479-AA27-B77B98CB6AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{172EE759-8286-4479-AA27-B77B98CB6AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{172EE759-8286-4479-AA27-B77B98CB6AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
