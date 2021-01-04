@@ -25,16 +25,8 @@ namespace Inkybot.Services
         }
 
         protected virtual ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
-        
-            return prioritized.FirstOrDefault(itemMage => {
-                if (itemMage.WillOvertarget)
-                    return false;
-                if (itemMage.Rune.type == Rune.Type.Sm && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichSmRuneCanHit)
-                    return false;
-                if (itemMage.Rune.type == Rune.Type.Pa && itemMage.Value > itemMage.MageConfig.MaxValueAtWhichPaRuneCanHit)
-                    return false;
-                return true;
-            });
+            return prioritized.FirstOrDefault(itemMage =>
+                itemMage.CanHit && !itemMage.WillOvertarget);
         }
 
         protected abstract IEnumerable<ItemMage> PotentialMages();

@@ -34,8 +34,9 @@ namespace Inkybot.Services
 
         private ItemMage? ResolveItemMage(Item item) {
             var proposedMage =
-                new StandardItemMageResolve(config, item).Resolve() ??
-                new StandardItemMageResolve(config, item, 1).Resolve();
+                new TargetItemMageResolve(config, item).Resolve() ??
+                new TargetItemMageResolve(config, item, 1).Resolve() ??
+                new OverTargetItemMageResolve(config, item).Resolve();
                 
             if (!item.IsOvermaged && !item.HasExo)
                 proposedMage ??=

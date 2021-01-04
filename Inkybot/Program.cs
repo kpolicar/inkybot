@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
@@ -75,7 +76,6 @@ namespace Inkybot
                 Settings.Default.UpgradeRequired = false;
                 Settings.Default.Save();
             }
-            
             SetAppLocale();
             Stat.Init();
 

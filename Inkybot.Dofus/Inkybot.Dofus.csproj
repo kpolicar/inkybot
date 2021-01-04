@@ -43,7 +43,6 @@
         <Compile Include="..\Inkybot\Contracts\MageConfig.cs">
           <Link>Bot\MageConfig.cs</Link>
         </Compile>
-        <Compile Include="Class1.cs" />
         <Compile Include="Config.cs" />
         <Compile Include="Extensions\Enumerable.cs" />
         <Compile Include="IAction.cs" />

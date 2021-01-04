@@ -5,7 +5,7 @@ using Inkybot.Domain;
 
 namespace Inkybot.Services
 {
-    internal class PerfectionItemMageResolve : StandardItemMageResolve
+    internal class PerfectionItemMageResolve : TargetItemMageResolve
     {
         private float sink;
         

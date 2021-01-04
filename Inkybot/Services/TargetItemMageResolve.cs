@@ -5,11 +5,11 @@ using Inkybot.Domain;
 
 namespace Inkybot.Services
 {
-    internal class StandardItemMageResolve : PrioritizedItemMageResolve
+    internal class TargetItemMageResolve : PrioritizedItemMageResolve
     {
         private int runeTypeOffset;
 
-        public StandardItemMageResolve(Config config, Item item, int runeTypeOffset = 0) : base(config, item) {
+        public TargetItemMageResolve(Config config, Item item, int runeTypeOffset = 0) : base(config, item) {
             this.runeTypeOffset = runeTypeOffset;
         }
 
@@ -44,12 +44,8 @@ namespace Inkybot.Services
         }
 
         protected override Rune.Type ResolveRuneType(ItemStat itemStat) {
-            var itemConfig = config.For(itemStat);
-
-            if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra - runeTypeOffset;
-            if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa - runeTypeOffset;
-
-            return Rune.Type.Sm;
+            var runeType = base.ResolveRuneType(itemStat);
+            return (Rune.Type) Math.Max(0, (int) runeType - runeTypeOffset);
         }
     }
 }

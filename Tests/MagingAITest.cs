@@ -1,6 +1,7 @@
 using Inkybot;
 using Inkybot.Domain;
 using Inkybot.Domain.Repositories;
+using Inkybot.Services;
 using NUnit.Framework;
 using Tests.Design;
 
@@ -29,7 +30,12 @@ namespace Tests
         [Test]
         public void Test() {
             var config = new Config(item);
-            TestContext.WriteLine(config);
+            TestContext.WriteLine("---");
+            TestContext.WriteLine(item.Stats[0].stat.Config.ChangeToPaRuneThreshold);
+            TestContext.WriteLine("---");
+            
+            Config.ResetConfig(item);
+            //TestContext.WriteLine(AI.ResolveAction(item));
         }
     }
 }

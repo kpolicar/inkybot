@@ -18,6 +18,25 @@ namespace Inkybot.Services
         
         public int NumberOfRunesNeededToReachTarget =>
             Math.Max(0, (int) Math.Ceiling((Target - Value) / (float) Rune.IncreaseInValue));
+
+        public ItemMage? WithLowerRuneStrength =>
+            Rune.Weaker != null
+                ? new ItemMage(Stat, Rune.Weaker, MageConfig, Value, Exo)
+                : (ItemMage?) null;
+        
+        public bool CanHit
+        {
+            get {
+                switch (Rune.type) {
+                    case Rune.Type.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit:
+                    case Rune.Type.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit:
+                    case Rune.Type.Ra:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
             
         public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
         public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;

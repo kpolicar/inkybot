@@ -36,6 +36,11 @@ namespace Inkybot.Domain
         public Stat stat;
         public Type type;
 
+        public Rune? Weaker =>
+            type != Type.Sm
+                ? new Rune(stat, type - 1)
+                : null;
+
         public Rune(Stat stat, Type type) {
             this.stat = stat;
             this.type = type;
