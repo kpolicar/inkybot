@@ -108,12 +108,14 @@ namespace Inkybot
                     Thread.CurrentThread.CurrentUICulture =
                         CultureInfo.CurrentUICulture =
                             CultureInfo.DefaultThreadCurrentCulture =
-                                new CultureInfo(Properties.Resources.FrenchLocaleCode);
+                                CultureInfo.DefaultThreadCurrentUICulture =
+                                    new CultureInfo(Properties.Resources.FrenchLocaleCode);
             } else {
                 Lang =
                     Thread.CurrentThread.CurrentUICulture =
                         CultureInfo.CurrentUICulture =
                             CultureInfo.DefaultThreadCurrentCulture =
+                                CultureInfo.DefaultThreadCurrentUICulture =
                                 new CultureInfo(Properties.Resources.EnglishLocaleCode);
             }
             Properties.Resources.Culture = Lang;
