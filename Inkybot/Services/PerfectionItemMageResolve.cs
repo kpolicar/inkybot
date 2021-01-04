@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
@@ -9,7 +8,7 @@ namespace Inkybot.Services
     {
         private float sink;
         
-        public PerfectionItemMageResolve(Config config, Item item, float sink, int runeTypeOffset = 0) : base(config, item, runeTypeOffset) {
+        public PerfectionItemMageResolve(MageConfig config, Item item, float sink, int runeTypeOffset = 0) : base(config, item, runeTypeOffset) {
             this.sink = sink;
         }
 

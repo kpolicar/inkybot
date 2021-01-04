@@ -1,4 +1,4 @@
-﻿﻿namespace Inkybot.Domain
+﻿﻿namespace Inkybot.Dofus
 {
     public interface IAction
     {

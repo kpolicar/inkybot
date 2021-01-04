@@ -1,10 +1,8 @@
 using System;
-using System.ComponentModel.Design;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
-using Tesseract;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services

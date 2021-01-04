@@ -1,5 +1,5 @@
 using System;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Events
 {

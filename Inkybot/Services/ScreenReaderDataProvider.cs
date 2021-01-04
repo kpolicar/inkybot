@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Design;
+using Inkybot.Dofus;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Events;
-using Inkybot.Exceptions;
 using Inkybot.Helpers;
-using Debug = System.Diagnostics.Debug;
+using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
@@ -140,7 +136,7 @@ namespace Inkybot.Services
             return item.Stats.Length <= MaxSupportedStatsForMage-1;
         }
 
-        public bool IsSupportedConfig(Config config) {
+        public bool IsSupportedConfig(MageConfig config) {
             return config.StatsConfig.Count <= MaxSupportedStatsForMage;
         }
     }

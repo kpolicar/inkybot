@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Inkybot.Helpers;
 using Tesseract;
 

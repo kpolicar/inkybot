@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
 using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
-using Tesseract;
-using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot
 {

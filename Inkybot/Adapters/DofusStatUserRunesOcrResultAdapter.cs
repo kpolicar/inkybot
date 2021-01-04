@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Inkybot.Dofus;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
-using Inkybot.Exceptions;
-using Inkybot.Services;
 using RuneQuantity = Inkybot.Services.ScreenReaderDataProvider.RuneQuantityScan;
 
 namespace Inkybot.Adapters

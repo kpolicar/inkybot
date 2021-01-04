@@ -1,11 +1,10 @@
-﻿using System;
-using Inkybot.Domain;
+﻿using Inkybot.Dofus;
 
 namespace Inkybot.Events
 {
     public class MagingJobFinishedEventArgs : MagingJobEventArgs
     {
-        public MagingJobFinishedEventArgs(Item item, Config config) : base(item, config) {
+        public MagingJobFinishedEventArgs(Item item, MageConfig config) : base(item, config) {
         }
     }
 }

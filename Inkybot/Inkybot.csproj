@@ -171,6 +171,7 @@
         <Compile Include="ConfigForm.Designer.cs">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Contracts\DefaultConfigProvider.cs" />
         <Compile Include="Contracts\DofusMagingJob.cs" />
         <Compile Include="Contracts\MageConfig.cs" />
         <Compile Include="Contracts\StatisticsManager.cs" />
@@ -191,10 +192,7 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
-        <Compile Include="Domain\Item.cs" />
-        <Compile Include="Domain\Repositories\ItemStatRepository.cs" />
         <Compile Include="Domain\RuneAction.cs" />
-        <Compile Include="Domain\UserRune.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
@@ -208,6 +206,7 @@
         <Compile Include="Events\ScannedRegionEventArgs.cs" />
         <Compile Include="Events\SinkIncorrectEventArgs.cs" />
         <Compile Include="Events\TesseractPageProcessed.cs" />
+        <Compile Include="Example.cs" />
         <Compile Include="Exceptions\ApiConnectionNotEstablishedException.cs" />
         <Compile Include="Exceptions\CouldNotResolveStatNameException.cs" />
         <Compile Include="Exceptions\CouldNotResolveStatValueException.cs" />
@@ -227,9 +226,9 @@
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
+        <Compile Include="Extensions\Presentable.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
-        <Compile Include="Helpers\Enumerable.cs" />
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
@@ -242,13 +241,8 @@
         <Compile Include="Contracts\IItemHistoryAnalyzer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
-        <Compile Include="Domain\Config.cs" />
         <Compile Include="Domain\IAction.cs" />
-        <Compile Include="Domain\MageHistoryRecord.cs" />
-        <Compile Include="Domain\Rune.cs" />
-        <Compile Include="Domain\ItemStat.cs" />
         <Compile Include="Domain\Server.cs" />
-        <Compile Include="Domain\Stat.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
         <Compile Include="Events\ApiConnectionChangedEventArgs.cs" />
         <Compile Include="Events\SinkChangedEventArgs.cs" />
@@ -281,6 +275,7 @@
           <DependentUpon>StatDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Services\ActionHandler.cs" />
+        <Compile Include="Services\UserSettingsDefaultStatConfigProvider.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
@@ -447,6 +442,12 @@
       <Content Include="Resources\Tesseract\fra.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
+        <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
+        <Name>Inkybot.Dofus</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

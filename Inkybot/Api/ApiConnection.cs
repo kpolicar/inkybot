@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Timers;
 using Inkybot.Api.Resources;
 using Inkybot.Domain;
 using Newtonsoft.Json;
 using Timer = System.Windows.Forms.Timer;
-using static System.Configuration.ConfigurationManager;
 
 namespace Inkybot.Api
 {

@@ -1,7 +1,4 @@
-﻿﻿using System.Linq;
-using Inkybot.Domain;
-
-namespace Inkybot.Domain
+﻿namespace Inkybot.Dofus
 {
     public class UserRune
     {

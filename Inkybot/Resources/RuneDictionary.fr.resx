@@ -168,4 +168,7 @@
     <data name="hunting_weapon" xml:space="preserve">
         <value>de chasse</value>
     </data>
+    <data name="format" xml:space="preserve">
+        <value>rune :strength :name</value>
+    </data>
 </root>

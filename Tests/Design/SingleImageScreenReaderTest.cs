@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Inkybot.Contracts;
-using NUnit.Framework;
 using Tests.Services;
 
 namespace Tests.Design

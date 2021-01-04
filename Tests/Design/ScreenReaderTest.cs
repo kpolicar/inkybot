@@ -1,19 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
 using Inkybot;
 using Inkybot.Api;
 using Inkybot.Contracts;
-using Inkybot.Design;
-using Inkybot.Domain;
 using Inkybot.Services;
-using NUnit.Framework;
-
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
-using ServiceContainer = Inkybot.Design.ServiceContainer;
 using StatisticsManager = Inkybot.Services.StatisticsManager;
 using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;

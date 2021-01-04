@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Inkybot.Actions;
 using Inkybot.Contracts;
-using Inkybot.Design;
+using Inkybot.Dofus;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {
@@ -187,8 +187,8 @@ namespace Inkybot.Services
 
                 if (statLanded != null && statLanded != expectedStat)
                     throw new UnexpectedMageResultException(
-                        $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
-                        $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
+                        $"Expected \"{expectedStat.Identifier}\" to land, not \"{statLanded.Value.Identifier}\"! " +
+                        $"Have you run out of \"{expectedStat.Identifier}\" runes?");
             }
 
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {

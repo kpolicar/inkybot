@@ -1,7 +1,8 @@
 ﻿using System.Windows.Forms;
 using Inkybot.Actions;
 using Inkybot.Contracts;
-using Inkybot.Domain;
+using Inkybot.Dofus;
+using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {

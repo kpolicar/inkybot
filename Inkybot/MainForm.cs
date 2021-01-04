@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
-using Inkybot.Domain;
 using Inkybot.Events;
-using Inkybot.Helpers;
 using Inkybot.Services;
-using Tesseract;
-using Debug = System.Diagnostics.Debug;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 

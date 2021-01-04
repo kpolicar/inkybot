@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
     internal class OverTargetItemMageResolve : PrioritizedItemMageResolve
     {
-        public OverTargetItemMageResolve(Config config, Item item) : base(config, item) {
+        public OverTargetItemMageResolve(MageConfig config, Item item) : base(config, item) {
         }
 
         protected override IEnumerable<ItemMage> PotentialMages() {
@@ -20,7 +20,7 @@ namespace Inkybot.Services
                     return new ItemMage(
                         itemStat.stat,
                         rune,
-                        config.For(itemStat),
+                        config[itemStat],
                         itemStat.value
                     );
                 }).Where(itemMage =>

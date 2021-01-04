@@ -2,9 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Reflection;
 using ImageMagick;
-using Inkybot.Contracts;
 
 namespace Inkybot.Services
 {

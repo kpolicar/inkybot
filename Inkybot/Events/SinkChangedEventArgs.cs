@@ -1,5 +1,4 @@
-﻿using System;
-using Inkybot.Domain;
+﻿using Inkybot.Dofus;
 
 namespace Inkybot.Events
 {
@@ -9,7 +8,7 @@ namespace Inkybot.Events
         public readonly float OldSink;
 
 
-        public SinkChangedEventArgs(Item item, Config config, float oldSink, float sink) : base(item, config) {
+        public SinkChangedEventArgs(Item item, MageConfig config, float oldSink, float sink) : base(item, config) {
             this.Sink = sink;
             this.OldSink = oldSink;
         }

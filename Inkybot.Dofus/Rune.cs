@@ -1,8 +1,7 @@
-﻿﻿using System;
+﻿using System;
 using System.Globalization;
-using Inkybot.Domain;
 
-namespace Inkybot.Domain
+namespace Inkybot.Dofus
 {
     public class Rune
     {
@@ -21,20 +20,13 @@ namespace Inkybot.Domain
             Ra
         }
 
-        public string DisplayName {
-            get {
-                var prefix = type switch {
-                    Type.Sm => "",
-                    Type.Pa => "Pa ",
-                    Type.Ra => "Ra ",
-                };
-                if (CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName == "fra")
-                    return "rune " + prefix + stat.RuneName;
-                return prefix + stat.RuneName+ " rune";
-            }
-        }
         public Stat stat;
         public Type type;
+
+        public Rune? Weaker =>
+            type != Type.Sm
+                ? new Rune(stat, type - 1)
+                : null;
 
         public Rune(Stat stat, Type type) {
             this.stat = stat;
@@ -58,9 +50,5 @@ namespace Inkybot.Domain
         }
 
         public float Sink => stat.SinkValue * IncreaseInValue;
-
-        public override string ToString() {
-            return DisplayName;
-        }
     }
 }

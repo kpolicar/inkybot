@@ -2,26 +2,38 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 using Inkybot.Events;
-using Inkybot.Exceptions;
+using Inkybot.Helpers;
+using MageConfig = Inkybot.Dofus.MageConfig;
+using StatConfig = Inkybot.Dofus.Stat.StatConfig;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager
+    public class ConfigManager : InjectableService
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
 
-        public Config? Config {
+        public Dictionary<Stat, StatConfig> DefaultStatConfig = null!;
+        public MageConfig? Config {
             get;
             private set;
         }
+        
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var defaultConfig = serviceContainer.GetService<DefaultConfigProvider>();
+            DefaultStatConfig = defaultConfig.DefaultStatConfig();
+        }
 
         public void RemoveFallenUnconfiguredStats(Item item) {
+            if (Config == null)
+                return;
             var fallenUnconfiguredStats =
-                Config!.StatsConfig.Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
+                Config.StatsConfig
+                    .Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
@@ -33,7 +45,9 @@ namespace Inkybot.Services
         }
 
         public void RemoveExos() {
-            var configuredExoStats = Config!
+            if (Config == null)
+                return;
+            var configuredExoStats = Config
                 .Exos
                 .Select(config => config.Key)
                 .ToArray();
@@ -42,12 +56,14 @@ namespace Inkybot.Services
                 Config.StatsConfig.Remove(stat);
             }
             if (configuredExoStats.Length > 0)
-                ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, true));
+                ConfigModified?.Invoke(this,
+                    new ConfigModifiedEventArgs(Config, true, true));
         }
 
         public void ResetConfig(Item item) {
-            Config = new Config(item);
-            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, true));
+            Config = new MageConfig(item, DefaultStatConfig);
+            ConfigModified?.Invoke(this, 
+                new ConfigModifiedEventArgs(Config, true, true));
         }
 
         public void EnforceConfigSetForItem(Item item) {
@@ -55,27 +71,23 @@ namespace Inkybot.Services
                 ResetConfig(item);
         }
 
-        private bool ConfigIsSetForItem(Item item) {
-            return Config != null && Config.IsConfiguredForItem(item);
-        }
+        private bool ConfigIsSetForItem(Item item)
+            => Config != null && Config.IsConfiguredFor(item);
 
         public void ChangeStatConfigTarget(Stat stat, int target) {
             var statConfig = Config!.StatsConfig[stat];
-            var newStatConfig = new StatConfig(stat, target, statConfig.Maximum, statConfig.Minimum);
+            var newStatConfig = statConfig.Clone(target: target);
             ChangeStatConfig(stat, newStatConfig);
         }
 
-        public void ChangeStatConfig(Stat stat, StatConfig statConfig) {
+        public void ChangeStatConfig(Stat stat, MageConfig.ItemStatMageConfig statConfig) {
             var isNewStatConfiguration = !Config!.StatsConfig.ContainsKey(stat);
             if (!isNewStatConfiguration && statConfig == Config.StatsConfig[stat])
                 return;
             
             Config.StatsConfig[stat] = statConfig;
-            ConfigModified?.Invoke(this, new ConfigModifiedEventArgs(Config, true, isNewStatConfiguration));
-            
-            foreach (var keyValuePair in Config.StatsConfig) {
-                Debug.WriteLine(keyValuePair.Key.DisplayName);
-            }
+            ConfigModified?.Invoke(this, 
+                new ConfigModifiedEventArgs(Config, true, isNewStatConfiguration));
         }
     }
 }

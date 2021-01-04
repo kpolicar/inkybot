@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 using Inkybot.Exceptions;
 
 namespace Inkybot

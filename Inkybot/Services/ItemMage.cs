@@ -1,5 +1,7 @@
 using System;
+using Inkybot.Dofus;
 using Inkybot.Domain;
+using ItemStatMageConfig = Inkybot.Dofus.MageConfig.ItemStatMageConfig;
 
 namespace Inkybot.Services
 {
@@ -7,7 +9,7 @@ namespace Inkybot.Services
     {
         public readonly Stat Stat;
         public readonly Rune Rune;
-        public readonly StatConfig MageConfig;
+        public readonly ItemStatMageConfig MageConfig;
         public readonly int Value;
         public readonly bool Exo;
         public readonly int Max => MageConfig.Maximum;
@@ -42,7 +44,7 @@ namespace Inkybot.Services
         public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;
 
             
-        public ItemMage(Stat stat, Rune rune, StatConfig mageConfig, int value, bool exo=false) {
+        public ItemMage(Stat stat, Rune rune, ItemStatMageConfig mageConfig, int value, bool exo=false) {
             Stat = stat;
             Rune = rune;
             MageConfig = mageConfig;

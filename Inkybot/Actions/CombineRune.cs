@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Dofus;
 using Inkybot.Domain;
 using Inkybot.Helpers;
 using Inkybot.Services;
@@ -57,7 +58,7 @@ namespace Inkybot.Actions
                 
                 System.Diagnostics.Debug.WriteLine(pos);
                 Input.Click(pos.X, pos.Y);
-                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.DisplayName}");
+                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.ToString()}");
                 return;
             }
 
@@ -75,7 +76,8 @@ namespace Inkybot.Actions
             Input.SelectAll();
             Thread.Sleep(50);
 
-            Input.TypeMessage(Rune.DisplayName, Cancel);
+            // Todo display name
+            Input.TypeMessage(Rune.ToString(), Cancel);
             Thread.Sleep(2000);
             
             Cancel?.ThrowIfCancellationRequested();
@@ -95,7 +97,7 @@ namespace Inkybot.Actions
             var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;
             Input.Click(combineButtonPosition.X, combineButtonPosition.Y);
             
-            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.stat.DisplayName}");
+            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.stat.ToString()}");
         }
         
         private Point RunePosition(int column, int row) {

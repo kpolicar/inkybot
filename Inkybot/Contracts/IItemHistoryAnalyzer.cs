@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Contracts
 {

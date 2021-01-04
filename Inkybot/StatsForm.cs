@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -8,13 +7,15 @@ using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Dofus;
+using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Events;
+using Inkybot.Extensions;
 using Inkybot.Resources;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
-using StatConfig = Inkybot.Domain.StatConfig;
+using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot
 {
@@ -38,8 +39,8 @@ namespace Inkybot
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
             exoStatComboBox.DataSource =
-                Stat.Stats.Select(stat => stat.DisplayName).ToArray();
-            exoStatComboBox.SelectedIndex = Stat.Stats.Length - 1;
+                Stat.Stats.Values.Select(stat => stat.DisplayName()).ToArray();
+            exoStatComboBox.SelectedIndex = Stat.Stats.Count - 1;
             configManager.ConfigModified += OnConfigModified;
             dataProvider.FetchedItem += OnStatsFetched;
             LoadPresetsToComboBox();
@@ -89,7 +90,7 @@ namespace Inkybot
                     continue;
                     
                 if (updatingFallenExos) {
-                    if (configManager.Config!.For(stat).Target == 0) {
+                    if (configManager.Config![stat].Target == 0) {
                         statsDataGridView.Rows.RemoveAt(i);
                     } else
                         statsDataGridView[1, i].Value = 0;
@@ -122,15 +123,15 @@ namespace Inkybot
             return true;
         }
 
-        private void RebuildDataGridView(Config config) {
+        private void RebuildDataGridView(MageConfig config) {
             statsDataGridView.Rows.Clear();
 
             foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
-                var itemStat = config.Item.Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
+                var mageStatConfig = config.StatsConfig[stat];
                 
-                var row = AddNewStatRow(stat.DisplayName, itemStat.value, cfg.Target, itemStat.Exo || itemStat == default, stat.Mageable);
+                var row = AddNewStatRow(stat.DisplayName(), 0, cfg.Target, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat);
             }
         }
@@ -139,7 +140,7 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
+                var row = AddNewStatRow(itemStat.stat.DisplayName(), itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
             }
         }
@@ -211,7 +212,7 @@ namespace Inkybot
             int max;
             var newTargetIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
             if (!newTargetIsValidNumber) {
-                cell.Value = configManager.Config!.For(stat).Target;
+                cell.Value = configManager.Config![stat].Target;
                 return;
             }
 
@@ -219,7 +220,7 @@ namespace Inkybot
         }
 
         private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            if (Stat.Stats.Any(stat => stat.DisplayName == exoStatComboBox.Text))
+            if (Stat.Stats.Values.Any(stat => stat.DisplayName() == exoStatComboBox.Text))
                 addExoButton.Enabled = true;
         }
 
@@ -232,8 +233,8 @@ namespace Inkybot
                     MessageBoxIcon.Error);
                 return;
             }
-            var stat = Stat.Stats.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new StatConfig(stat, 0, 0, 0);
+            var stat = Stat.Stats.Values.First(stat => stat.DisplayName() == exoStatComboBox.Text);
+            var exoConfig = new MageConfig.ItemStatMageConfig(0, 0, 0, Stat.DefaultConfig[stat]);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }

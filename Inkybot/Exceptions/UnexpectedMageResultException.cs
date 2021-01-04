@@ -1,5 +1,3 @@
-using System;
-
 namespace Inkybot.Exceptions
 {
     public class UnexpectedMageResultException : MagingException

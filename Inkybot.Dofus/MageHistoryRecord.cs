@@ -1,8 +1,8 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Inkybot.Domain
+ namespace Inkybot.Dofus
 {
     public struct StatChanged
     {
@@ -69,7 +69,7 @@ namespace Inkybot.Domain
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
 
             return comparison.All(comparison =>
-                comparison.Record1.stat.DisplayName == comparison.Record2.stat.DisplayName &&
+                comparison.Record1.stat == comparison.Record2.stat &&
                 comparison.Record1.value == comparison.Record2.value) && operand1.sinkChanged == operand2.sinkChanged;
         }
 
@@ -85,7 +85,7 @@ namespace Inkybot.Domain
 
             return operand1.sinkChanged != operand2.sinkChanged ||
                    comparison.Any(comparison =>
-                       comparison.Record1.stat.DisplayName != comparison.Record2.stat.DisplayName ||
+                       comparison.Record1.stat != comparison.Record2.stat ||
                        comparison.Record1.value != comparison.Record2.value);
         }
 

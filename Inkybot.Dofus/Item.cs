@@ -1,9 +1,8 @@
 using System.Linq;
-using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
+using Inkybot.Dofus.Repositories;
 using Inkybot.Helpers;
 
-namespace Inkybot.Domain
+namespace Inkybot.Dofus
 {
     public class Item
     {
@@ -17,9 +16,11 @@ namespace Inkybot.Domain
             Stats = stats;
         }
 
-        public bool HasStat(Stat stat) {
-            return Stats.Any(itemStat => itemStat.stat == stat);
-        }
+        public Stat? this[Stat index]
+            => Stats[index]?.stat ?? null;
+
+        public bool HasStat(Stat stat)
+            => this[stat] != null;
 
         public bool MatchesStandardStatsStructure(Item op1) {
             return StandardStatsStructureMatch(this, op1);

@@ -1,5 +1,4 @@
-﻿﻿using System.Linq;
-using Inkybot.Domain;
+﻿using Inkybot.Dofus;
 
 namespace Inkybot
 {
@@ -30,10 +29,6 @@ namespace Inkybot
         
         public static bool operator != (ItemStat operand1, ItemStat operand2) {
             return !(operand1 == operand2);
-        }
-
-        public override string ToString() {
-            return $"{stat.DisplayName}: {value}; min: {min}, max: {max}";
         }
     }
 }

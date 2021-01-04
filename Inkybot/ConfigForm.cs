@@ -1,30 +1,36 @@
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
+using Inkybot.Dofus;
 using Inkybot.Domain;
+using Inkybot.Extensions;
 using Inkybot.Helpers;
+using Inkybot.Services;
 
 namespace Inkybot
 {
     public partial class ConfigForm : Form
     {
+        private ConfigManager configManager;
+        
         public ConfigForm() {
             InitializeComponent();
             InitializeCustomComponents();
+            configManager = Program.Services.GetService<ConfigManager>();
             //var ini = Stat.Stats.Where(sta => sta.Identifier == "initiative").First();
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
-            foreach (var stat in Stat.Stats) {
+            var config = configManager.DefaultStatConfig!;
+            foreach (var stat in Stat.Stats.Values) {
+                var statConfig = config[stat];
                 
                 var rowIndex = statsDataGridView.Rows.Add(
-                    stat.DisplayName,
-                    ParseConfigThreshold(stat.ChangeToPaRuneThreshold),
-                    ParseConfigThreshold(stat.ChangeToRaRuneThreshold),
-                    ParseConfigThreshold(stat.MaxValueAtWhichSmRuneCanLand),
-                    ParseConfigThreshold(stat.MaxValueAtWhichPaRuneCanLand)
+                    stat.DisplayName(),
+                    ParseConfigThreshold(statConfig.ChangeToPaRuneThreshold),
+                    ParseConfigThreshold(statConfig.ChangeToRaRuneThreshold),
+                    ParseConfigThreshold(statConfig.MaxValueAtWhichSmRuneCanHit),
+                    ParseConfigThreshold(statConfig.MaxValueAtWhichPaRuneCanHit)
                     );
                 var row = statsDataGridView.Rows[rowIndex];
                 row.Tag = stat;
@@ -49,9 +55,10 @@ namespace Inkybot
             var smRune = new Rune(stat, Rune.Type.Sm);
             var paRune = new Rune(stat, Rune.Type.Pa);
             var raRune = new Rune(stat, Rune.Type.Ra);
-
+            var config = configManager.DefaultStatConfig[stat];
+            
             if (stat.CanUsePaRunes) {
-                row.Cells[1].ToolTipText = stat.ChangeToPaRuneThreshold switch {
+                row.Cells[1].ToolTipText = config.ChangeToPaRuneThreshold switch {
                     int.MaxValue => resources.GetString("config.neverchange")!
                         .Replace(":rune", paRune.ToString()),
                     
@@ -62,9 +69,9 @@ namespace Inkybot
                     _ => resources.GetString("config.changeonthreshold")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":stat", stat.ToString())
-                        .Replace(":threshold", stat.ChangeToPaRuneThreshold.ToString())
+                        .Replace(":threshold", config.ChangeToPaRuneThreshold.ToString())
                 };
-                row.Cells[4].ToolTipText = (stat.MaxValueAtWhichPaRuneCanLand, stat.ChangeToPaRuneThreshold) switch {
+                row.Cells[4].ToolTipText = (config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, int.MaxValue) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":threshold", resources.GetString("PaRuneThresholdColumn.HeaderText")),
@@ -77,11 +84,11 @@ namespace Inkybot
                     
                     _ => resources.GetString("config.canland_maxvalue")!
                         .Replace(":rune", paRune.ToString())
-                        .Replace(":maxvalue", stat.MaxValueAtWhichPaRuneCanLand.ToString())
+                        .Replace(":maxvalue", config.MaxValueAtWhichPaRuneCanHit.ToString())
                 };
             }
             if (stat.CanUseRaRunes) {
-                row.Cells[2].ToolTipText = stat.ChangeToRaRuneThreshold switch {
+                row.Cells[2].ToolTipText = config.ChangeToRaRuneThreshold switch {
                     int.MaxValue => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),
                     
@@ -92,10 +99,10 @@ namespace Inkybot
                     _ => resources.GetString("config.changeonthreshold")!
                         .Replace(":rune", raRune.ToString())
                         .Replace(":stat", stat.ToString())
-                        .Replace(":threshold", stat.ChangeToRaRuneThreshold.ToString()),
+                        .Replace(":threshold", config.ChangeToRaRuneThreshold.ToString()),
                 };
             }
-            row.Cells[3].ToolTipText = stat.MaxValueAtWhichSmRuneCanLand switch {
+            row.Cells[3].ToolTipText = config.MaxValueAtWhichSmRuneCanHit switch {
                 int.MaxValue => resources.GetString("config.alwaysland")!
                     .Replace(":rune", smRune.ToString()),
                 
@@ -105,12 +112,13 @@ namespace Inkybot
                 
                 _ => resources.GetString("config.canland_maxvalue")!
                     .Replace(":rune", smRune.ToString())
-                    .Replace(":maxvalue", stat.MaxValueAtWhichSmRuneCanLand.ToString()),
+                    .Replace(":maxvalue", config.MaxValueAtWhichSmRuneCanHit.ToString()),
             };
         }
 
-        protected string ParseConfigThreshold(int threshold) {
-            return threshold == int.MaxValue ? "-" : threshold.ToString();
+        protected string ParseConfigThreshold(int? threshold) {
+            return threshold?.ToString()
+                   ?? "-";
         }
 
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
@@ -119,21 +127,26 @@ namespace Inkybot
             var cell = row.Cells[e.ColumnIndex];
 
             var stat = (Stat) row.Tag;
+            var config = configManager.DefaultStatConfig[stat];
             try {
-                switch (e.ColumnIndex) {
-                    case 1:
-                        stat.ChangeToPaRuneThreshold = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
-                        break;
-                    case 2:
-                        stat.ChangeToRaRuneThreshold = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
-                        break;
-                    case 3:
-                        stat.MaxValueAtWhichSmRuneCanLand = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
-                        break;
-                    case 4:
-                        stat.MaxValueAtWhichPaRuneCanLand = Numbers.Parse(cell.Value.ToString()) ?? int.MaxValue;
-                        break;
-                }
+
+                var current = config.Deconstruct();
+                var newConfig = e.ColumnIndex switch {
+                    1 => new Stat.StatConfig(
+                        current.changeToPaRuneThreshold = Numbers.Parse(cell.Value.ToString())
+                        ),
+                    2 => new Stat.StatConfig(
+                        current.changeToRaRuneThreshold = Numbers.Parse(cell.Value.ToString())
+                        ),
+                    3 => new Stat.StatConfig(
+                        current.maxValueSmRuneCanHit = Numbers.Parse(cell.Value.ToString())
+                        ),
+                    4 => new Stat.StatConfig(
+                        current.maxValuePaRuneCanHit = Numbers.Parse(cell.Value.ToString())
+                        ),
+                };
+                
+                configManager.DefaultStatConfig[stat] = newConfig;
             } catch (FormatException) {
                 
             }

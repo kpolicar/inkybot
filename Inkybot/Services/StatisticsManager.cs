@@ -5,9 +5,10 @@ using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 using Inkybot.Events;
 using Newtonsoft.Json;
+using IAction = Inkybot.Domain.IAction;
 using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 
 namespace Inkybot.Services

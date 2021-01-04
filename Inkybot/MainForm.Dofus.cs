@@ -1,10 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Windows.Forms;
-using Inkybot.Api;
 using Inkybot.Contracts;
-using Inkybot.Exceptions;
 using Inkybot.Services;
 
 namespace Inkybot

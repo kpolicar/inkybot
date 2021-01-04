@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
     internal abstract class PrioritizedItemMageResolve
     {
-        protected Config config;
+        protected MageConfig config;
         protected Item item;
 
-        public PrioritizedItemMageResolve(Config config, Item item) {
+        public PrioritizedItemMageResolve(MageConfig config, Item item) {
             this.config = config;
             this.item = item;
         }
@@ -39,7 +39,7 @@ namespace Inkybot.Services
         }
         
         protected virtual Rune.Type ResolveRuneType(ItemStat itemStat) {
-            var itemConfig = config.For(itemStat);
+            var itemConfig = config[itemStat];
 
             if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra;
             if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa;

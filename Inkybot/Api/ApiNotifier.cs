@@ -1,5 +1,4 @@
 using Inkybot.Actions;
-using Inkybot.Api;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 

@@ -1,15 +1,16 @@
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Domain;
-using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
+using Inkybot.Dofus;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using IAction = Inkybot.Domain.IAction;
+using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
     public class DofusStandardStatsMagingAI : DofusMagingAIContract, InjectableService
     {
         private ActionFactory actions = null!;
-        private Config config = null!;
+        private MageConfig config;
 
         
         public void BindDependencies(ServiceContainer serviceContainer) {

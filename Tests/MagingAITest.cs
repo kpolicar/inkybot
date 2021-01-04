@@ -1,9 +1,4 @@
-using Inkybot;
-using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
-using Inkybot.Services;
 using NUnit.Framework;
-using Tests.Design;
 
 namespace Tests
 {

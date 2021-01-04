@@ -1,10 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
-using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Exceptions;

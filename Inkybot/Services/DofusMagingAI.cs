@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Inkybot.Actions;
+﻿using System.Diagnostics;
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
-using Inkybot.Events;
-using Inkybot.Exceptions;
-using Inkybot.Services;
+using Inkybot.Dofus;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using IAction = Inkybot.Domain.IAction;
+using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
     public class DofusMagingAI : DofusMagingAIContract, InjectableService
     {
         private ActionFactory actions = null!;
-        private Config config = null!;
+        private MageConfig config;
         private float sink;
 
         
@@ -59,7 +53,7 @@ namespace Inkybot.Services
             var itemMage = proposedItemMage.Value;
 
             Debug.WriteLine(
-                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.Stat.Identifier} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
             return actions.CombineRune(itemMage.Rune, itemMage.Exo);

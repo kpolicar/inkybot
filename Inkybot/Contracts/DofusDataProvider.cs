@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Inkybot.Dofus;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Events;
 
 namespace Inkybot.Contracts

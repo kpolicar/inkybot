@@ -1,6 +1,3 @@
-using System.Security.Principal;
-using System.Threading;
-
 namespace Inkybot.Helpers
 {
     public static class Numbers

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
@@ -9,7 +9,7 @@ namespace Inkybot.Services
     {
         private int runeTypeOffset;
 
-        public TargetItemMageResolve(Config config, Item item, int runeTypeOffset = 0) : base(config, item) {
+        public TargetItemMageResolve(MageConfig config, Item item, int runeTypeOffset = 0) : base(config, item) {
             this.runeTypeOffset = runeTypeOffset;
         }
 
@@ -24,14 +24,14 @@ namespace Inkybot.Services
                     return new ItemMage(
                         itemStat.stat,
                         rune,
-                        config.For(itemStat),
+                        config[itemStat],
                         itemStat.value
                     );
             });
         }
 
         protected override int Priority(ItemMage itemMage) {
-            if (IsHighSinkItemMage(itemMage) && config.MageConfig.RestoreHighSinkStatsFirst) {
+            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately) {
                 // 1000 ought to be enough to prioritize it over others
                 return (int) itemMage.Rune.Sink * 1000;
             }

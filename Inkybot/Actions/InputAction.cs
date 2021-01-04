@@ -1,8 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Helpers;

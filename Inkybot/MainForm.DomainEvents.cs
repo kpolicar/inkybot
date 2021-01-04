@@ -1,8 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 using Inkybot.Actions;
-using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
 

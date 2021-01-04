@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Inkybot.Dofus;
+using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters

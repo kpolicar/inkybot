@@ -1,7 +1,5 @@
 ﻿using System;
 using Inkybot.Contracts;
-using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 
 namespace Inkybot.Events
 {

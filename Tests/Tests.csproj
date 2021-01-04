@@ -47,6 +47,27 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="..\Inkybot\Resources\ItemPreset.cs">
+          <Link>Resources\ItemPreset.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\ItemPresets.cs">
+          <Link>Resources\ItemPresets.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\ItemStatPreset.cs">
+          <Link>Resources\ItemStatPreset.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\MagingDictionary.Designer.cs">
+          <Link>Resources\MagingDictionary.Designer.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\RuneDictionary.Designer.cs">
+          <Link>Resources\RuneDictionary.Designer.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\StatConfig.cs">
+          <Link>Resources\StatConfig.cs</Link>
+        </Compile>
+        <Compile Include="..\Inkybot\Resources\StatDictionary.Designer.cs">
+          <Link>Resources\StatDictionary.Designer.cs</Link>
+        </Compile>
         <Compile Include="MagingAITest.cs" />
         <Compile Include="Design\MagingAITest.cs" />
         <Compile Include="Design\ScreenReaderTest.cs" />
@@ -74,6 +95,26 @@
       <Content Include="Resources\Screenshots\1.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="..\Inkybot\Resources\MagingDictionary.fr.resx">
+        <Link>Resources\MagingDictionary.fr.resx</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="..\Inkybot\Resources\MagingDictionary.resx">
+        <Link>Resources\MagingDictionary.resx</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="..\Inkybot\Resources\RuneDictionary.fr.resx">
+        <Link>Resources\RuneDictionary.fr.resx</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="..\Inkybot\Resources\RuneDictionary.resx">
+        <Link>Resources\RuneDictionary.resx</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="..\Inkybot\Resources\StatDictionary.fr.resx">
+        <Link>Resources\StatDictionary.fr.resx</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="..\Inkybot\Resources\StatDictionary.resx">
+        <Link>Resources\StatDictionary.resx</Link>
+      </EmbeddedResource>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

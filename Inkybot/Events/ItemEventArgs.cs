@@ -1,6 +1,5 @@
 ﻿using System;
-using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
+using Inkybot.Dofus;
 
 namespace Inkybot.Events
 {

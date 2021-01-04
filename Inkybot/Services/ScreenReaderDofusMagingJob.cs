@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Security.Principal;
 using System.Threading;
-using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 using Inkybot.Events;
 using Inkybot.Exceptions;
-using Inkybot.Helpers;
-using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {

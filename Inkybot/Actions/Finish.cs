@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 using Inkybot.Helpers;
 using Tesseract;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;

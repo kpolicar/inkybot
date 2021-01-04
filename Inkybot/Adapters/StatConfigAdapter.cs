@@ -1,23 +1,25 @@
+using Inkybot.Dofus;
 using Inkybot.Domain;
+using ItemStatMageConfig = Inkybot.Dofus.MageConfig.ItemStatMageConfig;
 
 namespace Inkybot.Adapters
 {
     public class StatConfigAdapter
     {
         private readonly Stat Stat;
-        private readonly StatConfig StatConfig;
+        private readonly ItemStatMageConfig ItemConfig;
 
-        public StatConfigAdapter(Stat stat, StatConfig statConfig) {
+        public StatConfigAdapter(Stat stat, ItemStatMageConfig itemConfig) {
             Stat = stat;
-            StatConfig = statConfig;
+            ItemConfig = itemConfig;
         }
 
         public Resources.ItemStatPreset ToSerializable() {
             return new Resources.ItemStatPreset {
-                Minimum = StatConfig.Minimum,
-                Maximum = StatConfig.Maximum,
+                Minimum = ItemConfig.Minimum,
+                Maximum = ItemConfig.Maximum,
                 Stat = Stat.Identifier,
-                Target = StatConfig.Target
+                Target = ItemConfig.Target
             };
         }
     }

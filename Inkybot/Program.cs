@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-using Inkybot.Actions;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Domain;
-using Inkybot.Domain.Repositories;
 using Inkybot.Properties;
 using Inkybot.Services;
-using Newtonsoft.Json;
+using Microsoft.CSharp;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
@@ -60,6 +54,7 @@ namespace Inkybot
             { typeof(AuthManager), new AuthManager() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
             { typeof(DofusMagingAIContract), new DofusMagingAI() },
+            { typeof(DefaultConfigProvider), new UserSettingsDefaultConfigProvider() },
             { typeof(StatisticsManagerContract), new StatisticsManager() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
         };
@@ -77,7 +72,6 @@ namespace Inkybot
                 Settings.Default.Save();
             }
             SetAppLocale();
-            Stat.Init();
 
             BindServices();
             BindNotifications();

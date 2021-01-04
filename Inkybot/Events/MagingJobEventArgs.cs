@@ -1,14 +1,14 @@
 ﻿using System;
-using Inkybot.Domain;
+using Inkybot.Dofus;
 
 namespace Inkybot.Events
 {
     public class MagingJobEventArgs : EventArgs
     {
         public readonly Item Item;
-        public readonly Config Config;
+        public readonly MageConfig Config;
 
-        public MagingJobEventArgs(Item item, Config config) {
+        public MagingJobEventArgs(Item item, MageConfig config) {
             Item = item;
             Config = config;
         }

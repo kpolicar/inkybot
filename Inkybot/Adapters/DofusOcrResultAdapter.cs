@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Inkybot.Dofus;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
 
@@ -21,7 +21,7 @@ namespace Inkybot.Adapters
         protected Stat GetStatFromName(string name) {
             try {
                 name = SpellCorrectStatName(name);
-                return Stat.Stats.First(statData => statData.DisplayName == name);
+                return Stat.Stats[name];
             } catch (Exception exception) {
                 Debug.WriteLine(name);
                 throw new CouldNotResolveStatNameException($"Error occured trying to resolve stat name \"{name}\"", exception);

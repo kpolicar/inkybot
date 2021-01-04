@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Inkybot.Domain.Repositories
+namespace Inkybot.Dofus.Repositories
 {
     public class ItemStatRepository : IEnumerable<ItemStat>
     {
@@ -34,6 +34,6 @@ namespace Inkybot.Domain.Repositories
         }
 
         public ItemStat this[int i] => Stats.ElementAt(i);
-        public ItemStat this[Stat stat] => Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
+        public ItemStat? this[Stat? stat] => Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
     }
 }

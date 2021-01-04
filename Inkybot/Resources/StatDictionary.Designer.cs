@@ -214,6 +214,15 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :name :strength rune.
+        /// </summary>
+        internal static string format {
+            get {
+                return ResourceManager.GetString("format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hea.
         /// </summary>
         internal static string heals {

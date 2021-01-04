@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Api.Resources;
 using Inkybot.Design;
+using Inkybot.Dofus;
 using Inkybot.Domain;
 using Newtonsoft.Json;
 
