@@ -56,8 +56,9 @@ namespace Inkybot.Services
                 try {
                     var action = job.previousAction = DoAction();
 
-                    if (action is CombineRune) {
+                    if (action is CombineRune combine) {
                         job.state = State.EXECUTING_COMBINE;
+                        job.previousActionWasExo = combine.Exo;
                     }
                 } catch (ItemHasChangedException exception) {
                     if (MaxStatsChangedChecks >= StatsChangedChecksCount)
@@ -262,6 +263,8 @@ namespace Inkybot.Services
                             job.previousHistory = job.history.Analyse(job.dataProvider.History());
                         });
                     }
+                    if (combine.Exo && job.previousActionWasExo)
+                        throw new ExoAfterExoAttemptException("Something unexpected occured.");
                 }
                 
                 job.actions.Execute(action);

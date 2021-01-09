@@ -41,6 +41,8 @@ namespace Inkybot.Services
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             previousScannedItem = null;
             previousMinMaxScan = new string[] {};
+            Scan?.Dispose();
+            Scan = null;
         }
         
         public void BindTo(IntPtr handle) {
