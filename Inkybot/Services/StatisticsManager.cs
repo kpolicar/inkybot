@@ -13,7 +13,7 @@ using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 
 namespace Inkybot.Services
 {
-    public class StatisticsManager : StatisticsManagerContract, InjectableService
+    public class StatisticsManager : StatisticsManagerContract, HasDependencies
     {
         private ApiClient api = null!;
         private int changesCount = 0;
@@ -39,9 +39,9 @@ namespace Inkybot.Services
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
-                finish.Item.Stats.ExoStats.Any(itemStat => itemStat.stat == previousCombine.Rune.stat)) {
+                finish.Item.Stats.ExoStats.Any(itemStat => itemStat.stat == previousCombine.Rune.Stat)) {
                 
-                var stat = previousCombine.Rune.stat;
+                var stat = previousCombine.Rune.Stat;
                 if (exoSuccesses.ContainsKey(stat))
                     exoSuccesses[stat] += 1;
                 else
@@ -49,7 +49,7 @@ namespace Inkybot.Services
             }
 
             if (e.action is CombineRune combine && combine.Exo) {
-                var stat = combine.Rune.stat;
+                var stat = combine.Rune.Stat;
                 if (exoAttempts.ContainsKey(stat))
                     exoAttempts[stat] += 1;
                 else

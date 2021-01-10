@@ -85,7 +85,7 @@ namespace Inkybot.Services
                 var userRune = job.dataProvider.RuneQuantity(previousAction.Rune);
                 var previousUserRune = job
                     .itemInfo
-                    .Runes[previousAction.Rune.stat]
+                    .Runes[previousAction.Rune.Stat]
                     .First(userRune => userRune.Rune == previousAction.Rune);
 
                 if (userRune.Quantity != previousUserRune.Quantity) {
@@ -184,12 +184,12 @@ namespace Inkybot.Services
                 var statLanded = lastHistoryRecord.Landed?.stat;
 
                 var previousCombine = (CombineRune) job.previousAction!;
-                var expectedStat = previousCombine.Rune.stat;
+                var expectedStat = previousCombine.Rune.Stat;
 
                 if (statLanded != null && statLanded != expectedStat)
                     throw new UnexpectedMageResultException(
-                        $"Expected \"{expectedStat.Identifier}\" to land, not \"{statLanded.Value.Identifier}\"! " +
-                        $"Have you run out of \"{expectedStat.Identifier}\" runes?");
+                        $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
+                        $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
             }
 
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
@@ -281,7 +281,7 @@ namespace Inkybot.Services
             private void EnforceHasRunesForCombine(CombineRune combine) {
                 var hasRune = job
                     .itemInfo
-                    .Runes.TryGetValue(combine.Rune.stat, out var previousUserRunes);
+                    .Runes.TryGetValue(combine.Rune.Stat, out var previousUserRunes);
                 if (!hasRune)
                     return;
                 

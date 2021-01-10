@@ -29,10 +29,10 @@ namespace Inkybot.Services
         public bool CanHit
         {
             get {
-                switch (Rune.type) {
-                    case Rune.Type.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit:
-                    case Rune.Type.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit:
-                    case Rune.Type.Ra:
+                switch (Rune.Type) {
+                    case Rune.RuneType.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit:
+                    case Rune.RuneType.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit:
+                    case Rune.RuneType.Ra:
                         return true;
                     default:
                         return false;
@@ -54,8 +54,8 @@ namespace Inkybot.Services
         
 
         public static ItemMage WithRuneTypeOffset(ItemMage itemMage, int runeTypeOffset) {
-            var runeType = itemMage.Rune.type;
-            runeType = runeType != Rune.Type.Sm ? runeType - runeTypeOffset : runeType;
+            var runeType = itemMage.Rune.Type;
+            runeType = runeType != Rune.RuneType.Sm ? runeType - runeTypeOffset : runeType;
                     
             var rune = new Rune(itemMage.Stat, runeType);
             

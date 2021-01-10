@@ -1,6 +1,6 @@
 namespace Inkybot.Design
 {
-    public interface InjectableService
+    public interface HasDependencies
     {
         public void BindDependencies(ServiceContainer serviceContainer);
     }

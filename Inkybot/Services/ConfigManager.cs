@@ -6,26 +6,31 @@ using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 using Inkybot.Helpers;
 using MageConfig = Inkybot.Dofus.MageConfig;
-using StatConfig = Inkybot.Dofus.Stat.StatConfig;
+using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
+using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager : InjectableService
+    public class ConfigManager : HasDependencies
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
+        public StatConfigProviderContract StatConfig = null!;
+        public MageConfigProviderContract MageConfig = null!;
+        public UserSettingsConfigManager UserSettings = null!;
 
-        public Dictionary<Stat, StatConfig> DefaultStatConfig = null!;
         public MageConfig? Config {
             get;
             private set;
         }
         
         public void BindDependencies(ServiceContainer serviceContainer) {
-            var defaultConfig = serviceContainer.GetService<DefaultConfigProvider>();
-            DefaultStatConfig = defaultConfig.DefaultStatConfig();
+            StatConfig = serviceContainer.GetService<StatConfigProviderContract>();
+            MageConfig = serviceContainer.GetService<MageConfigProviderContract>();
+            UserSettings = serviceContainer.GetService<UserSettingsConfigManager>();
         }
 
         public void RemoveFallenUnconfiguredStats(Item item) {
@@ -47,21 +52,18 @@ namespace Inkybot.Services
         public void RemoveExos() {
             if (Config == null)
                 return;
-            var configuredExoStats = Config
-                .Exos
-                .Select(config => config.Key)
-                .ToArray();
+            var configuredExoStats = Config.Exos.Keys;
             
             foreach (var stat in configuredExoStats) {
                 Config.StatsConfig.Remove(stat);
             }
-            if (configuredExoStats.Length > 0)
+            if (configuredExoStats.Count > 0)
                 ConfigModified?.Invoke(this,
                     new ConfigModifiedEventArgs(Config, true, true));
         }
 
         public void ResetConfig(Item item) {
-            Config = new MageConfig(item, DefaultStatConfig);
+            Config = new MageConfig(item);
             ConfigModified?.Invoke(this, 
                 new ConfigModifiedEventArgs(Config, true, true));
         }

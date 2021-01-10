@@ -39,7 +39,7 @@ namespace Inkybot.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.RuneDictionary", typeof(RuneDictionary).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Inkybot.Resources.StatDictionary", typeof(StatDictionary).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

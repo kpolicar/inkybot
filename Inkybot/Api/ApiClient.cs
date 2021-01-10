@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Inkybot.Api
 {
-    public class ApiClient : InjectableService
+    public class ApiClient : HasDependencies
     {
         public ApiConnection? Connection { private set; get; }
 

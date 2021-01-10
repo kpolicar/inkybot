@@ -1,6 +1,6 @@
 ﻿using Inkybot.Dofus;
 
-namespace Inkybot
+namespace Inkybot.Dofus
 {
     public struct ItemStat
     {

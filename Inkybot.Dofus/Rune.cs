@@ -1,47 +1,40 @@
 ﻿using System;
 using System.Globalization;
+using System.Resources;
 
 namespace Inkybot.Dofus
 {
     public class Rune
     {
-        public static bool operator == (Rune? operand1, Rune? operand2) {
-            return operand1?.type == operand2?.type && operand1?.stat == operand2?.stat;
-        }
-            
-        public static bool operator != (Rune? operand1, Rune? operand2) {
-            return !(operand1 == operand2);
-        }
-        
-        public enum Type
+        public static ResourceSet Dictionary;
+
+        public enum RuneType
         {
             Sm,
             Pa,
             Ra
         }
 
-        public Stat stat;
-        public Type type;
+        public readonly Stat Stat;
+        public readonly RuneType Type;
 
         public Rune? Weaker =>
-            type != Type.Sm
-                ? new Rune(stat, type - 1)
+            Type != RuneType.Sm
+                ? new Rune(Stat, Type - 1)
                 : null;
 
-        public Rune(Stat stat, Type type) {
-            this.stat = stat;
-            this.type = type;
-        }
+        public Rune(Stat stat, RuneType type) =>
+            (Stat, Type) = (stat, type);
 
         public int IncreaseInValue {
             get {
-                var typeValue = type switch {
-                    Type.Sm => 1,
-                    Type.Pa => 3,
-                    Type.Ra => 10
+                var typeValue = Type switch {
+                    RuneType.Sm => 1,
+                    RuneType.Pa => 3,
+                    RuneType.Ra => 10
                 };
-                if (stat.SinkValue < 1) {
-                    var increase = typeValue / stat.SinkValue;
+                if (Stat.SinkValue < 1) {
+                    var increase = typeValue / Stat.SinkValue;
                     return (int) Math.Ceiling(increase);
                 }
 
@@ -49,6 +42,43 @@ namespace Inkybot.Dofus
             }
         }
 
-        public float Sink => stat.SinkValue * IncreaseInValue;
+        public float Sink => Stat.SinkValue * IncreaseInValue;
+        
+        public string DisplayName {
+            get {
+                var runeName = Stat.RuneName;
+                var format = Dictionary.GetString("format")!;
+        
+                return Type switch {
+                    RuneType.Ra =>
+                        format.Replace(":name", runeName)
+                            .Replace(":strength", "RA"),
+                    RuneType.Pa =>
+                        format.Replace(":name", runeName)
+                            .Replace(":strength", "PA"),
+                    RuneType.Sm =>
+                        format.Replace(":name", runeName)
+                            .Replace(":strength ", ""),
+                };
+            }
+        }
+        
+        
+        public static bool operator == (Rune operand1, Rune operand2) => operand1.Equals(operand2);
+        public static bool operator != (Rune operand1, Rune operand2) => !operand1.Equals(operand2);
+        public override string ToString() => DisplayName;
+        
+        public override bool Equals(object? obj) =>
+            obj is Rune other && Equals(other);
+
+        public bool Equals(Rune other) =>
+            (Stat, Type).Equals(
+                (other.Stat, other.Type));
+
+        public override int GetHashCode() {
+            unchecked {
+                return (Stat.GetHashCode() * 397) ^ (int) Type;
+            }
+        }
     }
 }

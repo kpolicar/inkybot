@@ -13,7 +13,7 @@ using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDofusMagingJob : IDisposable, DofusMagingJobContract, InjectableService
+    public partial class ScreenReaderDofusMagingJob : IDisposable, DofusMagingJobContract, HasDependencies
     {
         public event EventHandler<MagingJobEventArgs>? Started;
         public event EventHandler? Stopped;

@@ -48,17 +48,17 @@ namespace Inkybot.Actions
         
         public override void Execute() {
             var itemStats = screenDataProvider.previousScannedItem!.Stats;
-            var column = (int) Rune.type;
+            var column = (int) Rune.Type;
 
             for (var row = 0; row < itemStats.Length; row++) {
-                if (Rune.stat != itemStats[row].stat)
+                if (Rune.Stat != itemStats[row].stat)
                     continue;
 
                 var pos = RunePosition(column, row);
                 
                 System.Diagnostics.Debug.WriteLine(pos);
                 Input.Click(pos.X, pos.Y);
-                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.stat.ToString()}");
+                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.Stat.ToString()}");
                 return;
             }
 
@@ -97,7 +97,7 @@ namespace Inkybot.Actions
             var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;
             Input.Click(combineButtonPosition.X, combineButtonPosition.Y);
             
-            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.stat.ToString()}");
+            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.Stat.ToString()}");
         }
         
         private Point RunePosition(int column, int row) {

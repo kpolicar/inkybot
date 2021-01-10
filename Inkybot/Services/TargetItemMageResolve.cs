@@ -43,9 +43,9 @@ namespace Inkybot.Services
             return itemMage.Rune.Sink >= 30;
         }
 
-        protected override Rune.Type ResolveRuneType(ItemStat itemStat) {
+        protected override Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var runeType = base.ResolveRuneType(itemStat);
-            return (Rune.Type) Math.Max(0, (int) runeType - runeTypeOffset);
+            return (Rune.RuneType) Math.Max(0, (int) runeType - runeTypeOffset);
         }
     }
 }

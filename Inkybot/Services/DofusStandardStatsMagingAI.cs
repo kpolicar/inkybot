@@ -7,7 +7,7 @@ using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
-    public class DofusStandardStatsMagingAI : DofusMagingAIContract, InjectableService
+    public class DofusStandardStatsMagingAI : DofusMagingAIContract, HasDependencies
     {
         private ActionFactory actions = null!;
         private MageConfig config;

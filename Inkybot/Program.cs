@@ -3,11 +3,15 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
+using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
 using Inkybot.Properties;
 using Inkybot.Services;
@@ -18,6 +22,10 @@ using ServiceContainer = Inkybot.Design.ServiceContainer;
 using StatisticsManager = Inkybot.Services.StatisticsManager;
 using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using MageConfigProvider = Inkybot.Services.MageConfigProvider;
+using StatConfigProvider = Inkybot.Services.StatConfigProvider;
+using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
+using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
 
 namespace Inkybot
 {
@@ -42,7 +50,6 @@ namespace Inkybot
         public static CultureInfo Lang = null!;
         
         public static readonly Dictionary<Type, object> _services = new Dictionary<Type, object> {
-            { typeof(MageConfig), new SettingsMageConfig() },
             { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
             { typeof(ScreenCapture), new Win32ScreenCapture() },
             { typeof(Input), new Win32Input() },
@@ -54,25 +61,22 @@ namespace Inkybot
             { typeof(AuthManager), new AuthManager() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
             { typeof(DofusMagingAIContract), new DofusMagingAI() },
-            { typeof(DefaultConfigProvider), new UserSettingsDefaultConfigProvider() },
+            { typeof(StatConfigProviderContract), new StatConfigProvider() },
+            { typeof(MageConfigProviderContract), new MageConfigProvider() },
+            { typeof(UserSettingsConfigManager), new FileSystemUserSettingsConfigManager() },
             { typeof(StatisticsManagerContract), new StatisticsManager() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
         };
-
+        
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main() {
-            if (Settings.Default.UpgradeRequired)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.Reload();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
-            }
+        public static void Main() {
+            UpgradeApp();
             SetAppLocale();
-
+            InitDependencies();
+                
             BindServices();
             BindNotifications();
             BindLogger();
@@ -80,6 +84,24 @@ namespace Inkybot
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
+        }
+
+        public static void UpgradeApp() {
+            if (!Settings.Default.UpgradeRequired) return;
+            
+            Settings.Default.Upgrade();
+            Settings.Default.Reload();
+            Settings.Default.UpgradeRequired = false;
+            Settings.Default.Save();
+        }
+
+        private static void InitDependencies() {
+            MageConfig.ConfigManager = (MageConfigProviderContract) _services[typeof(MageConfigProviderContract)];
+            Stat.ConfigManager = (StatConfigProviderContract) _services[typeof(StatConfigProviderContract)];
+            Stat.Dictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            Rune.Dictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
+                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
         }
 
         private static void BindServices() {
@@ -90,7 +112,7 @@ namespace Inkybot
             }
             foreach (var serviceBinding in _services) {
                 var concrete = serviceBinding.Value;
-                if (concrete is InjectableService service) {
+                if (concrete is HasDependencies service) {
                     service.BindDependencies(Services);
                 }
             }

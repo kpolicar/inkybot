@@ -28,7 +28,7 @@ namespace Tests.Design
             }
             foreach (var serviceBinding in _services) {
                 var concrete = serviceBinding.Value;
-                if (concrete is InjectableService service) {
+                if (concrete is HasDependencies service) {
                     service.BindDependencies(ServiceContainer);
                 }
             }

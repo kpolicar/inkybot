@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Inkybot.Dofus;
+using Inkybot.Dofus.Repositories;
+using NUnit.Framework;
 using Tests.Design;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;

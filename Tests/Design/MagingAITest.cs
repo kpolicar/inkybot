@@ -19,27 +19,14 @@ namespace Tests.Design
         protected DofusMagingAI AI =>
             (DofusMagingAI) ServiceContainer.GetService<DofusMagingAIContract>();
 
-        protected override void Init() {
-            Stat.Init();
-            base.Init();
-        }
-
         protected override Dictionary<Type, object> Services() {
             return new Dictionary<Type, object> {
-                {typeof(MageConfig), new SettingsMageConfig()},
-                {typeof(DofusDataProvider), new ScreenReaderDataProvider()},
-                {typeof(ScreenCapture), new Win32ScreenCapture()},
-                {typeof(Input), new Win32Input()},
-                {typeof(ActionFactory), new MouseActionFactory()},
-                {typeof(ConfigManager), new ConfigManager()},
-                {typeof(ActionHandler), new ActionHandler()},
-                {typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer()},
-                {typeof(ApiClient), new ApiClient()},
-                {typeof(AuthManager), new AuthManager()},
-                {typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob()},
-                {typeof(DofusMagingAIContract), new DofusMagingAI()},
-                {typeof(StatisticsManagerContract), new StatisticsManager()},
-                {typeof(MagingAIServiceManager), new MagingAIServiceManager()},
+                { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
+                { typeof(ScreenCapture), new Win32ScreenCapture() },
+                { typeof(ConfigManager), new ConfigManager() },
+                { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
+                { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
+                { typeof(DofusMagingAIContract), new DofusMagingAI() },
             };
         }
     }

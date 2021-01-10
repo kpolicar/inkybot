@@ -78,6 +78,10 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
+        <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
+        <Name>Inkybot.Dofus</Name>
+      </ProjectReference>
       <ProjectReference Include="..\Inkybot\Inkybot.csproj">
         <Project>{a3d66fb2-1b40-45bd-9b0d-98947fba69bd}</Project>
         <Name>Inkybot</Name>

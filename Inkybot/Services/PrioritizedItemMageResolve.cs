@@ -38,13 +38,13 @@ namespace Inkybot.Services
             return potentialMages.OrderByDescending(Priority);
         }
         
-        protected virtual Rune.Type ResolveRuneType(ItemStat itemStat) {
+        protected virtual Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config[itemStat];
 
-            if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.Type.Ra;
-            if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.Type.Pa;
+            if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
+            if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
 
-            return Rune.Type.Sm;
+            return Rune.RuneType.Sm;
         }
     }
 }

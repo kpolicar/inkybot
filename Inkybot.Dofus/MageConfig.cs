@@ -1,11 +1,54 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using StatConfig = Inkybot.Dofus.Stat.StatConfig;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Inkybot.Dofus.Contracts;
+using Inkybot.Events;
 
 namespace Inkybot.Dofus
 {
     public class MageConfig
     {
+        private static MageConfigProvider? configManager;
+        public static MageConfigProvider ConfigManager {
+            get => configManager ??= DefaultMageConfigProvider.Instance;
+            set => configManager = value;
+        }
+        public readonly ItemMageConfig StatsConfig;
+        public bool RestoreHighSinkStatsImmediately =>
+            ConfigManager.RestoreHighSinkStatsImmediately;
+        
+
+        public ItemStatMageConfig this[Stat index] =>
+            StatsConfig[index];
+
+        public ItemStatMageConfig this[ItemStat index] =>
+            StatsConfig[index.stat];
+
+        public Dictionary<Stat, ItemStatMageConfig> Exos
+            => StatsConfig.ExoStatsConfigs;
+
+        public MageConfig(Item item) {
+            StatsConfig = new ItemMageConfig();
+            
+            foreach (var itemStat in item.Stats) {
+                var stat = itemStat.stat;
+                StatsConfig[stat] = new ItemStatMageConfig(
+                    itemStat.stat,
+                    itemStat.min,
+                    itemStat.max,
+                    itemStat.max);
+            }
+        }
+
+        public bool IsConfiguredFor(Item item)
+            => StatsConfig.IsApplicableTo(item);
+
+        public override string ToString() {
+            return string.Join("\r\n", StatsConfig.Values);
+        }
+        
         public readonly struct ItemStatMageConfig
         {
             public readonly int Minimum;
@@ -20,11 +63,12 @@ namespace Inkybot.Dofus
             public bool ShouldUsePaRunes => ChangeToPaRuneThreshold != null;
             public bool ShouldUseRaRunes => ChangeToRaRuneThreshold != null;
             public bool HighSinkStat => statConfig.HighSinkStat;
-            public readonly StatConfig statConfig;
+            private StatConfig statConfig => Stat.Config;
+            private readonly Stat Stat;
 
-            public ItemStatMageConfig(int minimum, int maximum, int target, StatConfig statConfig) =>
-                (Minimum, Maximum, Target, this.statConfig) =
-                (minimum, maximum, target, statConfig);
+            public ItemStatMageConfig(Stat stat, int minimum, int maximum, int target) =>
+                (Stat, Minimum, Maximum, Target) =
+                (stat, minimum, maximum, target);
 
             public bool IsApplicableTo(ItemStat itemStat) {
                 return (itemStat.min, itemStat.max)
@@ -32,55 +76,33 @@ namespace Inkybot.Dofus
             }
 
             public ItemStatMageConfig Clone
-                (int? minimum=null, int? maximum=null, int? target=null, StatConfig? statConfig=null)
+                (Stat? stat = null, int? minimum=null, int? maximum=null, int? target=null)
                 => new ItemStatMageConfig(
+                    stat ?? Stat,
                     minimum ?? Minimum,
                     maximum ?? Maximum,
-                    target ?? Target,
-                    statConfig ?? this.statConfig);
+                    target ?? Target);
             
             
             public static bool operator ==(ItemStatMageConfig x, ItemStatMageConfig y) => x.Equals(y);
             public static bool operator !=(ItemStatMageConfig x, ItemStatMageConfig y) => !x.Equals(y);
-        }
-        
-        public ItemMageConfig StatsConfig;
-        public bool RestoreHighSinkStatsImmediately;
 
-        public ItemStatMageConfig this[Stat index]
-            => StatsConfig[index];
-        
-        public ItemStatMageConfig this[ItemStat index]
-            => StatsConfig[index.stat];
+            public override bool Equals(object? obj) =>
+                obj is ItemStatMageConfig other && Equals(other);
 
-        public Dictionary<Stat, ItemStatMageConfig> Exos
-            => StatsConfig.ExoStatsConfigs;
+            public bool Equals(ItemStatMageConfig other) =>
+                (Stat, Minimum, Maximum, Target).Equals(
+                    (other.Stat, other.Minimum, other.Maximum, other.Target));
 
-        public MageConfig(Item item, Dictionary<Stat, StatConfig>? config = null) {
-            config ??= Stat.DefaultConfig;
-            StatsConfig = new ItemMageConfig();
-            RestoreHighSinkStatsImmediately = true;
-            
-            foreach (var itemStat in item.Stats) {
-                var stat = itemStat.stat;
-                StatsConfig[stat] = new ItemStatMageConfig(
-                    itemStat.min,
-                    itemStat.max,
-                    itemStat.max,
-                    config[stat]);
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = Minimum;
+                    hashCode = (hashCode * 397) ^ Maximum;
+                    hashCode = (hashCode * 397) ^ Target;
+                    hashCode = (hashCode * 397) ^ Stat.GetHashCode();
+                    return hashCode;
+                }
             }
-        }
-        
-        public MageConfig(ItemMageConfig statConfig) {
-            StatsConfig = statConfig;
-            RestoreHighSinkStatsImmediately = true;
-        }
-
-        public bool IsConfiguredFor(Item item)
-            => StatsConfig.IsApplicableTo(item);
-
-        public override string ToString() {
-            return string.Join("\r\n", StatsConfig.Values);
         }
     }
 }

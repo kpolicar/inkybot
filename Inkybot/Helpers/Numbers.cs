@@ -7,5 +7,10 @@ namespace Inkybot.Helpers
                 return null;
             return int.Parse(number);
         }
+        
+        public static string ToString(int? threshold) {
+            return threshold?.ToString()
+                   ?? "-";
+        }
     }
 }

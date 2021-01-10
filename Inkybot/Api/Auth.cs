@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Inkybot.Api
 {
-    public class AuthManager : InjectableService
+    public class AuthManager : HasDependencies
     {
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
         public User? User;

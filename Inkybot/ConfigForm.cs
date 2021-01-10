@@ -1,36 +1,37 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Inkybot.Contracts;
 using Inkybot.Dofus;
-using Inkybot.Domain;
-using Inkybot.Extensions;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Helpers;
 using Inkybot.Services;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot
 {
     public partial class ConfigForm : Form
     {
-        private ConfigManager configManager;
+        private FileSystemUserSettingsConfigManager userSettingsConfigManager;
         
         public ConfigForm() {
             InitializeComponent();
             InitializeCustomComponents();
-            configManager = Program.Services.GetService<ConfigManager>();
-            //var ini = Stat.Stats.Where(sta => sta.Identifier == "initiative").First();
+            userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
+                Program.Services.GetService<UserSettingsConfigManager>();
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
-            var config = configManager.DefaultStatConfig!;
+            var config = userSettingsConfigManager.Config();
             foreach (var stat in Stat.Stats.Values) {
                 var statConfig = config[stat];
                 
                 var rowIndex = statsDataGridView.Rows.Add(
-                    stat.DisplayName(),
-                    ParseConfigThreshold(statConfig.ChangeToPaRuneThreshold),
-                    ParseConfigThreshold(statConfig.ChangeToRaRuneThreshold),
-                    ParseConfigThreshold(statConfig.MaxValueAtWhichSmRuneCanHit),
-                    ParseConfigThreshold(statConfig.MaxValueAtWhichPaRuneCanHit)
+                    stat.DisplayName,
+                    Numbers.ToString(statConfig.ChangeToPaRuneThreshold),
+                    Numbers.ToString(statConfig.ChangeToRaRuneThreshold),
+                    Numbers.ToString(statConfig.MaxValueAtWhichSmRuneCanHit),
+                    Numbers.ToString(statConfig.MaxValueAtWhichPaRuneCanHit)
                     );
                 var row = statsDataGridView.Rows[rowIndex];
                 row.Tag = stat;
@@ -46,20 +47,20 @@ namespace Inkybot
                 SetConfigRowTooltips(row);
             }
 
-            restoreHighSinkStatsCheckbox.Checked = Properties.Settings.Default.restoreHighSinkStatImmediately;
-            autoRestartBotCheckbox.Checked = Properties.Settings.Default.autoRestartBot;
+            restoreHighSinkStatsCheckbox.Checked = userSettingsConfigManager.RestoreHighSinkStats;
+            autoRestartBotCheckbox.Checked = userSettingsConfigManager.AutoRestartBot;
         }
 
         private void SetConfigRowTooltips(DataGridViewRow row) {
             var stat = (Stat) row.Tag;
-            var smRune = new Rune(stat, Rune.Type.Sm);
-            var paRune = new Rune(stat, Rune.Type.Pa);
-            var raRune = new Rune(stat, Rune.Type.Ra);
-            var config = configManager.DefaultStatConfig[stat];
+            var smRune = new Rune(stat, Rune.RuneType.Sm);
+            var paRune = new Rune(stat, Rune.RuneType.Pa);
+            var raRune = new Rune(stat, Rune.RuneType.Ra);
+            var config = userSettingsConfigManager.Config(stat);
             
             if (stat.CanUsePaRunes) {
                 row.Cells[1].ToolTipText = config.ChangeToPaRuneThreshold switch {
-                    int.MaxValue => resources.GetString("config.neverchange")!
+                    null => resources.GetString("config.neverchange")!
                         .Replace(":rune", paRune.ToString()),
                     
                     0 => resources.GetString("config.prefer")!
@@ -72,11 +73,11 @@ namespace Inkybot
                         .Replace(":threshold", config.ChangeToPaRuneThreshold.ToString())
                 };
                 row.Cells[4].ToolTipText = (config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
-                    (_, int.MaxValue) => resources.GetString("config.neverchange_threshold")!
+                    (_, null) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":threshold", resources.GetString("PaRuneThresholdColumn.HeaderText")),
                     
-                    (int.MaxValue, _) => resources.GetString("config.alwaysland")!
+                    (null, _) => resources.GetString("config.alwaysland")!
                         .Replace(":rune", paRune.ToString()),
                     
                     (0, _) => resources.GetString("config.neverchange")!
@@ -89,7 +90,7 @@ namespace Inkybot
             }
             if (stat.CanUseRaRunes) {
                 row.Cells[2].ToolTipText = config.ChangeToRaRuneThreshold switch {
-                    int.MaxValue => resources.GetString("config.neverchange")!
+                    null => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),
                     
                     0 => resources.GetString("config.prefer")!
@@ -103,7 +104,7 @@ namespace Inkybot
                 };
             }
             row.Cells[3].ToolTipText = config.MaxValueAtWhichSmRuneCanHit switch {
-                int.MaxValue => resources.GetString("config.alwaysland")!
+                null => resources.GetString("config.alwaysland")!
                     .Replace(":rune", smRune.ToString()),
                 
                 0 => resources.GetString("config.neverchange")!
@@ -116,37 +117,30 @@ namespace Inkybot
             };
         }
 
-        protected string ParseConfigThreshold(int? threshold) {
-            return threshold?.ToString()
-                   ?? "-";
-        }
-
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
             if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
 
             var stat = (Stat) row.Tag;
-            var config = configManager.DefaultStatConfig[stat];
+            var currentConfig =
+                userSettingsConfigManager.Config(stat).Deconstruct();
+            
             try {
-
-                var current = config.Deconstruct();
-                var newConfig = e.ColumnIndex switch {
-                    1 => new Stat.StatConfig(
-                        current.changeToPaRuneThreshold = Numbers.Parse(cell.Value.ToString())
-                        ),
-                    2 => new Stat.StatConfig(
-                        current.changeToRaRuneThreshold = Numbers.Parse(cell.Value.ToString())
-                        ),
-                    3 => new Stat.StatConfig(
-                        current.maxValueSmRuneCanHit = Numbers.Parse(cell.Value.ToString())
-                        ),
-                    4 => new Stat.StatConfig(
-                        current.maxValuePaRuneCanHit = Numbers.Parse(cell.Value.ToString())
-                        ),
-                };
+                var value = Numbers.Parse(cell.Value.ToString());
+                var newConfig = new StatConfig(
+                    changeToPaRuneThreshold:
+                        e.ColumnIndex == 1 ? value : currentConfig.changeToPaRuneThreshold,
+                    changeToRaRuneThreshold:
+                        e.ColumnIndex == 2 ? value : currentConfig.changeToRaRuneThreshold,
+                    maxValueSmRuneCanHit:
+                        e.ColumnIndex == 3 ? value : currentConfig.maxValueSmRuneCanHit,
+                    maxValuePaRuneCanHit:
+                        e.ColumnIndex == 4 ? value : currentConfig.maxValuePaRuneCanHit
+                );
+                Debug.WriteLine(newConfig);
                 
-                configManager.DefaultStatConfig[stat] = newConfig;
+                userSettingsConfigManager.SetConfig(stat, newConfig);
             } catch (FormatException) {
                 
             }
@@ -154,18 +148,16 @@ namespace Inkybot
         }
 
         private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
-            Properties.Settings.Default.restoreHighSinkStatImmediately = restoreHighSinkStatsCheckbox.Checked;
-            Properties.Settings.Default.Save();
+            userSettingsConfigManager.RestoreHighSinkStats = restoreHighSinkStatsCheckbox.Checked;
+        }
+        
+        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
+            userSettingsConfigManager.AutoRestartBot = autoRestartBotCheckbox.Checked;
         }
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
-        }
-
-        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
-            Properties.Settings.Default.autoRestartBot = autoRestartBotCheckbox.Checked;
-            Properties.Settings.Default.Save();
         }
     }
 }

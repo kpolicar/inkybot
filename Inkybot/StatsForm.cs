@@ -11,7 +11,6 @@ using Inkybot.Dofus;
 using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
 using Inkybot.Events;
-using Inkybot.Extensions;
 using Inkybot.Resources;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
@@ -39,7 +38,7 @@ namespace Inkybot
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
             exoStatComboBox.DataSource =
-                Stat.Stats.Values.Select(stat => stat.DisplayName()).ToArray();
+                Stat.Stats.Values.Select(stat => stat.DisplayName).ToArray();
             exoStatComboBox.SelectedIndex = Stat.Stats.Count - 1;
             configManager.ConfigModified += OnConfigModified;
             dataProvider.FetchedItem += OnStatsFetched;
@@ -131,7 +130,7 @@ namespace Inkybot
                 var cfg = statConfig.Value;
                 var mageStatConfig = config.StatsConfig[stat];
                 
-                var row = AddNewStatRow(stat.DisplayName(), 0, cfg.Target, mageStatConfig.Exo, stat.Mageable);
+                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat);
             }
         }
@@ -140,7 +139,7 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                var row = AddNewStatRow(itemStat.stat.DisplayName(), itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
+                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
             }
         }
@@ -220,7 +219,7 @@ namespace Inkybot
         }
 
         private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            if (Stat.Stats.Values.Any(stat => stat.DisplayName() == exoStatComboBox.Text))
+            if (Stat.Stats.Values.Any(stat => stat.DisplayName == exoStatComboBox.Text))
                 addExoButton.Enabled = true;
         }
 
@@ -233,8 +232,8 @@ namespace Inkybot
                     MessageBoxIcon.Error);
                 return;
             }
-            var stat = Stat.Stats.Values.First(stat => stat.DisplayName() == exoStatComboBox.Text);
-            var exoConfig = new MageConfig.ItemStatMageConfig(0, 0, 0, Stat.DefaultConfig[stat]);
+            var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
+            var exoConfig = new MageConfig.ItemStatMageConfig(stat, 0, 0, 0);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }

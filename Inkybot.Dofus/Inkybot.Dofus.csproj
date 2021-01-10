@@ -40,9 +40,11 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\Inkybot\Contracts\MageConfig.cs">
-          <Link>Bot\MageConfig.cs</Link>
-        </Compile>
+        <Compile Include="Contracts\MageConfigProvider.cs" />
+        <Compile Include="DefaultMageConfigProvider.cs" />
+        <Compile Include="DefaultStatConfigProvider.cs" />
+        <Compile Include="Contracts\StatConfigProvider.cs" />
+        <Compile Include="Events\ItemStatMageConfigEventArgs.cs" />
         <Compile Include="ItemMageConfig.cs" />
         <Compile Include="MageConfig.cs" />
         <Compile Include="Extensions\Enumerable.cs" />
@@ -54,6 +56,7 @@
         <Compile Include="Repositories\ItemStatRepository.cs" />
         <Compile Include="Rune.cs" />
         <Compile Include="Stat.cs" />
+        <Compile Include="StatConfig.cs" />
         <Compile Include="UserRune.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,7 +6,7 @@ using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Inkybot.Services
 {
-    public class MagingAIServiceManager : InjectableService
+    public class MagingAIServiceManager : HasDependencies
     {
         private ServiceContainer serviceContainer = null!;
         private bool? previousUserFetchedIsFreeTrial;
@@ -27,7 +27,7 @@ namespace Inkybot.Services
                 ? (DofusMagingAIContract) new DofusMagingAI()
                 : (DofusMagingAIContract) new DofusStandardStatsMagingAI();
 
-            if (magus is InjectableService dependant) {
+            if (magus is HasDependencies dependant) {
                 dependant.BindDependencies(serviceContainer);
             }
 

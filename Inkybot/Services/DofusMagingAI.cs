@@ -9,7 +9,7 @@ using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
-    public class DofusMagingAI : DofusMagingAIContract, InjectableService
+    public class DofusMagingAI : DofusMagingAIContract, HasDependencies
     {
         private ActionFactory actions = null!;
         private MageConfig config;
@@ -53,7 +53,7 @@ namespace Inkybot.Services
             var itemMage = proposedItemMage.Value;
 
             Debug.WriteLine(
-                $"Max of {itemMage.Stat.Identifier} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
+                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
             return actions.CombineRune(itemMage.Rune, itemMage.Exo);

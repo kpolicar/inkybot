@@ -1,3 +1,5 @@
+using Inkybot.Dofus;
+using Inkybot.Dofus.Repositories;
 using NUnit.Framework;
 
 namespace Tests
@@ -24,7 +26,7 @@ namespace Tests
 
         [Test]
         public void Test() {
-            var config = new Config(item);
+            var config = new MageConfig(item);
             TestContext.WriteLine("---");
             TestContext.WriteLine(item.Stats[0].stat.Config.ChangeToPaRuneThreshold);
             TestContext.WriteLine("---");

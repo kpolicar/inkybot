@@ -171,10 +171,9 @@
         <Compile Include="ConfigForm.Designer.cs">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="Contracts\DefaultConfigProvider.cs" />
         <Compile Include="Contracts\DofusMagingJob.cs" />
-        <Compile Include="Contracts\MageConfig.cs" />
         <Compile Include="Contracts\StatisticsManager.cs" />
+        <Compile Include="Contracts\UserSettingsConfigManager.cs" />
         <Compile Include="Controls\ComboBox.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
@@ -227,7 +226,6 @@
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
-        <Compile Include="Extensions\Presentable.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Numbers.cs" />
@@ -276,7 +274,9 @@
           <DependentUpon>StatDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Services\ActionHandler.cs" />
-        <Compile Include="Services\UserSettingsDefaultStatConfigProvider.cs" />
+        <Compile Include="Services\FileSystemUserSettingsConfigManager.cs" />
+        <Compile Include="Services\MageConfigProvider.cs" />
+        <Compile Include="Services\StatConfigManager.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
@@ -322,7 +322,6 @@
         <Compile Include="Services\ScreenScanner.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\SettingsMageConfig.cs" />
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
         </Compile>

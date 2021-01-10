@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using Inkybot.Helpers;
 
 namespace Inkybot.Dofus
 {

@@ -61,5 +61,9 @@ namespace Inkybot.Dofus
         public static bool operator !=(Item? op1, Item? op2) {
             return !(op1 == op2);
         }
+        
+        public override int GetHashCode() {
+            return Stats.GetHashCode();
+        }
     }
 }

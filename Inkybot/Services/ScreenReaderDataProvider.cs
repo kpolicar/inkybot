@@ -13,7 +13,7 @@ using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDataProvider : DofusDataProvider, InjectableService
+    public partial class ScreenReaderDataProvider : DofusDataProvider, HasDependencies
     {
         internal const int MaxSupportedStatsForMage = 13;
         public event EventHandler<ScannedRegionEventArgs>? ScannedStats;
@@ -125,10 +125,10 @@ namespace Inkybot.Services
         public UserRune RuneQuantity(Rune rune) {
             var row = previousScannedItem!.Stats
                 .Select((Value, Index) => new { Value, Index })
-                .Single(p => p.Value.stat == rune.stat)
+                .Single(p => p.Value.stat == rune.Stat)
                 .Index;
             
-            var column = (int) rune.type;
+            var column = (int) rune.Type;
             var runeQuantityScan = Scan!.RuneQuantity(column, row).Result;
             
             return new UserRune(rune, runeQuantityScan.Quantity);

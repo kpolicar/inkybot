@@ -8,7 +8,7 @@ using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
-    public class ActionHandler : InjectableService
+    public class ActionHandler : HasDependencies
     {
         public event EventHandler<ActionExecutedEventArgs>? ActionExecuted;
         private CancellationTokenSource? cancelExecutingTask;
