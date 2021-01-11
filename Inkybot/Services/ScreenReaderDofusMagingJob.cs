@@ -35,23 +35,11 @@ namespace Inkybot.Services
         private ServiceContainer serviceContainer = null!;
 
         private Thread? job;
-        private IAction? previousAction;
-        private ItemHistoryAnalysis? previousHistory;
-        private Item? previousItem;
-        private float sink;
-        private int balance;
         private State state;
         private ItemInfo itemInfo;
-        private Stopwatch changeTimeout;
-        private bool previousCheckHadRunOutOfRunes = false;
-        private bool previousActionWasExo = false;
+        private Stopwatch changeTimeout = new Stopwatch();
 
 
-        public ScreenReaderDofusMagingJob() {
-            previousHistory = new ItemHistoryAnalysis(new MageHistoryRecord[] { }, history);
-            changeTimeout = new Stopwatch();
-        }
-        
         public void BindDependencies(ServiceContainer serviceContainer) {
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
@@ -61,24 +49,24 @@ namespace Inkybot.Services
             this.serviceContainer = serviceContainer;
         }
 
-        public bool IsPreparing;
-        public bool IsMaging { get; private set; }
-
         internal int Balance {
-            get => balance;
+            get => state.Balance;
             set {
-                if (balance != 0)
-                    BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(balance, value));
-                balance = value;
+                if (state.Balance != 0)
+                    BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(state.Balance, value));
+                state.Balance = value;
             }
         }
         internal float Sink {
-            get => sink;
+            get => state.Sink;
             set {
-                SinkChanged?.Invoke(this, new SinkChangedEventArgs(previousItem!, configManager.Config!, sink, value));
-                sink = value;
+                SinkChanged?.Invoke(this, 
+                    new SinkChangedEventArgs(state.PreviousItem!, configManager.Config!, state.Sink, value));
+                state.Sink = value;
             }
         }
+
+        public bool IsMaging => state.IsMaging;
 
         public void BeginMage(bool begin) {
             if (begin)
@@ -88,34 +76,28 @@ namespace Inkybot.Services
         }
 
         public void BeginMage() {
-            if (IsMaging) return;
+            if (state.IsMaging) return;
             magus = serviceContainer.GetService<DofusMagingAIContract>();
 
-            previousCheckHadRunOutOfRunes = false;
             job = new Thread(DoMage);
             job.Start();
             Preparing?.Invoke(this, EventArgs.Empty);
         }
 
         public void StopMage() {
-            if (!IsMaging) return;
+            if (!state.IsMaging) return;
             
-            IsMaging = false;
+            state.IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
             changeTimeout.Reset();
         }
 
         private void PrepareMage() {
-            state = State.STANDARD;
-            Sink = 0f;
-            balance = 0;
-            previousAction = null;
-            previousHistory = null;
-            previousItem = null;
-            IsPreparing = true;
+            state.Reset();
+            state.IsPreparing = true;
 
             try {
-                IsMaging = true;
+                state.IsMaging = true;
                 dataProvider.Reset();
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
@@ -128,10 +110,10 @@ namespace Inkybot.Services
                 if (IsMaging)
                     Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config!));
             } catch (Exception) {
-                IsMaging = false;
+                state.IsMaging = false;
                 throw;
             }
-            IsPreparing = false;
+            state.IsPreparing = false;
         }
 
         private void DoMage() {
@@ -172,14 +154,14 @@ namespace Inkybot.Services
                 }
             }
 
-            IsMaging = true; // If an error occured during preparation, we still want to stop properly
+            state.IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             
-            Finished?.Invoke(this, new MagingJobFinishedEventArgs(previousItem!, configManager.Config!));
+            Finished?.Invoke(this, new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!));
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
-            if (e.Changed && !IsPreparing)
+            if (e.Changed && !state.IsPreparing)
                 StopMage();
         }
 

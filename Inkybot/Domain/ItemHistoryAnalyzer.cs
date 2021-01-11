@@ -25,7 +25,9 @@ namespace Inkybot.Domain
             return Math.Max(0f, history.Sum(record => analyzer.ResolveSinkChange(record)));
         }
 
-        public bool IsDifferentFrom(ItemHistoryAnalysis analysis) {
+        public bool IsDifferentFrom(ItemHistoryAnalysis? analysis) {
+            if (analysis == null)
+                return history.Any();
             var comparison = history.Zip(analysis.history,
                 (target, comparator) => new {Target = target, Comparator = comparator});
 

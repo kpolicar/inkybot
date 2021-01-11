@@ -31,20 +31,20 @@ namespace Inkybot.Services
             }
 
             public void Execute() {
-                switch (job.state) {
-                    case State.STANDARD:
+                switch (job.state.Step) {
+                    case State.JobStep.STANDARD:
                         DoMainMageAction();
                         break;
-                    case State.EXECUTING_COMBINE:
-                        if (job.previousAction is CombineRune previousCombine && previousCombine.Exo)
+                    case State.JobStep.EXECUTING_COMBINE:
+                        if (job.state.PreviousCombineWasExoAttempt)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
                         break;
-                    case State.CALCULATING_SINK_CHANGE:
+                    case State.JobStep.CALCULATING_SINK_CHANGE:
                         CalculateSinkChange();
                         break;
-                    case State.CALCULATING_PRICE_CHANGE:
+                    case State.JobStep.CALCULATING_PRICE_CHANGE:
                         CalculatePriceChange();
                         break;
                 }
@@ -54,11 +54,11 @@ namespace Inkybot.Services
                 StatsChangedChecksCount++;
 
                 try {
-                    var action = job.previousAction = DoAction();
+                    var action = job.state.PreviousAction = DoAction();
 
-                    if (action is CombineRune combine) {
-                        job.state = State.EXECUTING_COMBINE;
-                        job.previousActionWasExo = combine.Exo;
+                    if (action is CombineRune combineRune) {
+                        job.state.Step = State.JobStep.EXECUTING_COMBINE;
+                        job.state.PreviousCombineWasExoAttempt = combineRune.Exo;
                     }
                 } catch (ItemHasChangedException exception) {
                     if (MaxStatsChangedChecks >= StatsChangedChecksCount)
@@ -77,7 +77,7 @@ namespace Inkybot.Services
             private void DoRuneCheckForChanges() {
                 EnforceChangeTimeoutRunningAndNotFinished();
                 
-                if (!(job.previousAction is RuneAction previousAction))
+                if (!(job.state.PreviousAction is RuneAction previousAction))
                     throw new SystemException("Cannot check for changes (previous action has no information about rune)");
                 
                 job.dataProvider.FetchData();
@@ -89,7 +89,7 @@ namespace Inkybot.Services
                     .First(userRune => userRune.Rune == previousAction.Rune);
 
                 if (userRune.Quantity != previousUserRune.Quantity) {
-                    job.state = State.CALCULATING_SINK_CHANGE;
+                    job.state.Step = State.JobStep.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();
                     previousUserRune.Quantity = userRune.Quantity;
                 } else {
@@ -106,8 +106,8 @@ namespace Inkybot.Services
                 job.dataProvider.FetchData();
                 var itemHistory = job.history.Analyse(job.dataProvider.History());
 
-                var historyHasChanged = itemHistory.IsDifferentFrom(job.previousHistory!) ||
-                                        (job.previousHistory == null && itemHistory.history.Any());
+                var historyHasChanged = itemHistory.IsDifferentFrom(job.state.PreviousHistory);
+                                        ;
                 Debug.WriteLine("history has changed: "+ historyHasChanged);
 
                 if (!historyHasChanged) {
@@ -117,8 +117,8 @@ namespace Inkybot.Services
                     EnforceValidPreviousActionResult(historyRecord);
                     
                     ChangeSinkFromLastAction(historyRecord);
-                    job.state = State.STANDARD;
-                    job.previousHistory = itemHistory;
+                    job.state.Step = State.JobStep.STANDARD;
+                    job.state.PreviousHistory = itemHistory;
                     job.changeTimeout.Stop();
                 }
             }
@@ -152,8 +152,8 @@ namespace Inkybot.Services
 
                 ChangeSinkFromLastAction(latestChange);
                 job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
-                job.state = State.CALCULATING_PRICE_CHANGE;
-                job.previousHistory = itemLatestHistory;
+                job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
+                job.state.PreviousHistory = itemLatestHistory;
                 HistoryChangedChecksCount = 0;
             }
             
@@ -164,7 +164,7 @@ namespace Inkybot.Services
 
                     job.Balance = (int) balance;
                 });
-                job.state = State.STANDARD;
+                job.state.Step = State.JobStep.STANDARD;
             }
 
             private void HandleChangeCheckTimeout() {
@@ -183,7 +183,7 @@ namespace Inkybot.Services
                 }
                 var statLanded = lastHistoryRecord.Landed?.stat;
 
-                var previousCombine = (CombineRune) job.previousAction!;
+                var previousCombine = (CombineRune) job.state.PreviousAction!;
                 var expectedStat = previousCombine.Rune.Stat;
 
                 if (statLanded != null && statLanded != expectedStat)
@@ -195,8 +195,8 @@ namespace Inkybot.Services
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
                 if (!itemHistory.SuitableForCompare)
                     return;
-                if (job.previousHistory != null && !itemHistory.IsDifferentFrom(job.previousHistory))
-                    throw new HistoryHasntChangedException(itemHistory, job.previousHistory);
+                if (job.state.PreviousHistory != null && !itemHistory.IsDifferentFrom(job.state.PreviousHistory))
+                    throw new HistoryHasntChangedException(itemHistory, job.state.PreviousHistory);
             }
 
 
@@ -217,7 +217,7 @@ namespace Inkybot.Services
                                     lastHistoryRecord.ChangeInSink);
                 } catch (CouldNotResolveSinkException) {
 
-                    var previousCombine = (CombineRune) job.previousAction!;
+                    var previousCombine = (CombineRune) job.state.PreviousAction!;
                     sinkChange = lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink;
                     
                     attemptedSinkChange = -previousCombine.Rune.Sink;
@@ -248,7 +248,7 @@ namespace Inkybot.Services
                 
                 EnforceItemHasNotChanged(item);
                 EnforceStatsChanged(item);
-                job.previousItem = item;
+                job.state.PreviousItem = item;
                 job.configManager.EnforceConfigSetForItem(item);
                 job.configManager.RemoveFallenUnconfiguredStats(item);
 
@@ -260,10 +260,10 @@ namespace Inkybot.Services
 
                     if (combine.Exo) {
                         previousTickDeferredExecutionTask = Task.Run(() => {
-                            job.previousHistory = job.history.Analyse(job.dataProvider.History());
+                            job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                         });
                     }
-                    if (combine.Exo && job.previousActionWasExo)
+                    if (combine.Exo && job.state.PreviousCombineWasExoAttempt)
                         throw new ExoAfterExoAttemptException("Something unexpected occured.");
                 }
                 
@@ -274,7 +274,7 @@ namespace Inkybot.Services
             }
 
             private void EnforceItemHasNotChanged(Item item) {
-                if (job.previousItem != null && !item.MatchesStandardStatsStructure(job.previousItem))
+                if (job.state.PreviousItem != null && !item.MatchesStandardStatsStructure(job.state.PreviousItem))
                     throw new ItemHasChangedException(item);
             }
 
@@ -288,19 +288,19 @@ namespace Inkybot.Services
                 var previousUserRune = 
                     previousUserRunes.First(userRune => userRune.Rune == combine.Rune);
                 if (previousUserRune.Quantity == 0) {
-                    if (job.previousCheckHadRunOutOfRunes)
+                    if (job.state.PreviousCheckHadRunOutOfRunes)
                         throw new OutOfRunesException(previousUserRune.Rune);
-                    job.previousCheckHadRunOutOfRunes = true;
+                    job.state.PreviousCheckHadRunOutOfRunes = true;
                 } else {
-                    job.previousCheckHadRunOutOfRunes = false;
+                    job.state.PreviousCheckHadRunOutOfRunes = false;
                 }
             }
 
             private void EnforceStatsChanged(Item item) {
-                if (job.previousItem != null) {
+                if (job.state.PreviousItem != null) {
                     var areDifferent =
-                        job.previousHistory?.history.First().Landed == null ||
-                        job.previousItem.HasDifferentStatValues(item);
+                        job.state.PreviousHistory?.history.First().Landed == null ||
+                        item.HasDifferentStatValues(job.state.PreviousItem);
                 
                     if (!areDifferent)
                         throw new UnexpectedMageResultException("Expected Stats to change but didn't");

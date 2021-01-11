@@ -48,7 +48,6 @@
         <Compile Include="ItemMageConfig.cs" />
         <Compile Include="MageConfig.cs" />
         <Compile Include="Extensions\Enumerable.cs" />
-        <Compile Include="IAction.cs" />
         <Compile Include="Item.cs" />
         <Compile Include="ItemStat.cs" />
         <Compile Include="MageHistoryRecord.cs" />
