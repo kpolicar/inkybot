@@ -162,8 +162,8 @@
         <Compile Include="Api\Resources\FreeTrial.cs" />
         <Compile Include="Api\Resources\User.cs" />
         <Compile Include="Api\Resources\VersionDetails.cs" />
-        <Compile Include="Api\Auth.cs">
-          <Link>Api\Auth.cs</Link>
+        <Compile Include="Api\ApiAuthManager.cs">
+          <Link>Api\ApiAuthManager.cs</Link>
         </Compile>
         <Compile Include="ConfigForm.cs">
           <SubType>Form</SubType>
@@ -171,8 +171,9 @@
         <Compile Include="ConfigForm.Designer.cs">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Contracts\AuthManager.cs" />
         <Compile Include="Contracts\DofusMagingJob.cs" />
-        <Compile Include="Contracts\StatisticsManager.cs" />
+        <Compile Include="Contracts\AnalyticsReporter.cs" />
         <Compile Include="Contracts\UserSettingsConfigManager.cs" />
         <Compile Include="Controls\ComboBox.cs" />
         <Compile Include="Controls\Rectangle.cs">
@@ -191,6 +192,7 @@
           <DependentUpon>DofusPathForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
+        <Compile Include="Domain\ItemHistoryAnalyzer.cs" />
         <Compile Include="Domain\RuneAction.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
@@ -237,7 +239,6 @@
         <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
-        <Compile Include="Contracts\IItemHistoryAnalyzer.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
         <Compile Include="Domain\IAction.cs" />
@@ -306,7 +307,10 @@
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ScreenReaderDofusMagingJob.cs" />
-        <Compile Include="Services\CurrentItemInfo.cs">
+        <Compile Include="Services\ItemInfo.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\Supervisor.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\TargetItemMageResolve.cs">
@@ -315,7 +319,7 @@
         <Compile Include="Services\State.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\StatisticsManager.cs" />
+        <Compile Include="Services\ApiAnalyticsReporter.cs" />
         <Compile Include="Services\Tick.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
@@ -341,7 +345,6 @@
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ConfigManager.cs" />
-        <Compile Include="Services\ItemHistoryAnalyzer.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
         <Compile Include="StatsForm.cs">

@@ -11,32 +11,6 @@ namespace Inkybot.Actions
 {
     public class CombineRune : InputAction, RuneAction
     {
-        public static readonly Responsive.Measurement CombineButtonMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1050, 225, 1050, 225),
-            Width = 1920,
-            Height = 1017
-        };
-        
-        public bool SelectedExoRune;
-        
-        public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
-            Width = 1920,
-            Height = 1017
-        };
-        
-        public static readonly Responsive.Measurement FirstItemInInventoryMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
-            Width = 1920,
-            Height = 1017
-        };
-        
-        public static readonly Responsive.Measurement SelectRuneMeasurement = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1052, 307, 1186, 812),
-            Width = 1920,
-            Height = 1017
-        };
-        
         public Rune Rune { get; private set; }
         public readonly bool Exo;
 
@@ -68,7 +42,7 @@ namespace Inkybot.Actions
             Thread.Sleep(50);
             
             
-            var searchTextBoxPosition = GetCursorTarget(InventorySearchTextBox);
+            var searchTextBoxPosition = GetCursorTarget(Measurements.InventorySearchTextBox);
             Input.Click(searchTextBoxPosition.X, searchTextBoxPosition.Y);
             Thread.Sleep(500);
             
@@ -76,14 +50,12 @@ namespace Inkybot.Actions
             Input.SelectAll();
             Thread.Sleep(50);
 
-            // Todo display name
-            Input.TypeMessage(Rune.ToString(), Cancel);
+            Input.TypeMessage(Rune.DisplayName, Cancel);
             Thread.Sleep(2000);
             
             Cancel?.ThrowIfCancellationRequested();
-            var targetRunePosition = GetCursorTarget(FirstItemInInventoryMeasurement);
+            var targetRunePosition = GetCursorTarget(Measurements.InventoryFirstItemMeasurement);
             Input.DoubleClick(targetRunePosition.X, targetRunePosition.Y);
-            SelectedExoRune = true;
             Thread.Sleep(1000);
             
             Cancel?.ThrowIfCancellationRequested();
@@ -94,10 +66,10 @@ namespace Inkybot.Actions
             Thread.Sleep(500);
             
             Cancel?.ThrowIfCancellationRequested();
-            var combineButtonPosition = GetCursorTarget(CombineButtonMeasurement);;
+            var combineButtonPosition = GetCursorTarget(Measurements.CombineButtonMeasurement);;
             Input.Click(combineButtonPosition.X, combineButtonPosition.Y);
             
-            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.Stat.ToString()}");
+            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.Stat.DisplayName}");
         }
         
         private Point RunePosition(int column, int row) {

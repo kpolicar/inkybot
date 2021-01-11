@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Api.Resources;
+using Inkybot.Contracts;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 
@@ -15,7 +16,7 @@ namespace Inkybot
         private int SubscriptionCheckRequestAttempts = 0;
 
         private void InitAuth() {
-            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
+            api = Program.Services.GetService<ApiClient>();
             api.UserFetched += OnUserFetched;
             VisibleChanged += AuthenticatedForm_VisibleChanged;
             auth = Program.Services.GetService<AuthManager>();

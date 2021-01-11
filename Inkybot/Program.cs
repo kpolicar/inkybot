@@ -19,8 +19,6 @@ using Microsoft.CSharp;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
-using StatisticsManager = Inkybot.Services.StatisticsManager;
-using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 using MageConfigProvider = Inkybot.Services.MageConfigProvider;
 using StatConfigProvider = Inkybot.Services.StatConfigProvider;
@@ -54,17 +52,16 @@ namespace Inkybot
             { typeof(ScreenCapture), new Win32ScreenCapture() },
             { typeof(Input), new Win32Input() },
             { typeof(ActionFactory), new MouseActionFactory() },
-            { typeof(ConfigManager), new ConfigManager() },
-            { typeof(ActionHandler), new ActionHandler() },
-            { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
-            { typeof(ApiClient), new ApiClient() },
-            { typeof(AuthManager), new AuthManager() },
+            { typeof(AuthManager), new ApiAuthManager() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
             { typeof(DofusMagingAIContract), new DofusMagingAI() },
             { typeof(StatConfigProviderContract), new StatConfigProvider() },
             { typeof(MageConfigProviderContract), new MageConfigProvider() },
             { typeof(UserSettingsConfigManager), new FileSystemUserSettingsConfigManager() },
-            { typeof(StatisticsManagerContract), new StatisticsManager() },
+            { typeof(AnalyticsReporter), new ApiAnalyticsReporter() },
+            { typeof(ConfigManager), new ConfigManager() },
+            { typeof(ActionHandler), new ActionHandler() },
+            { typeof(ApiClient), new ApiClient() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
         };
         

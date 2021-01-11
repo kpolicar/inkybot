@@ -6,16 +6,16 @@ using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Exceptions;
 
-namespace Inkybot
+namespace Inkybot.Domain
 {
     public class ItemHistoryAnalysis
     {
-        private readonly IItemHistoryAnalyzer analyzer;
+        private readonly ItemHistoryAnalyzer analyzer;
         public IEnumerable<MageHistoryRecord> history;
         public readonly bool fullHistory;
         public bool SuitableForCompare => fullHistory || history.Count() >= 3;
 
-        public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, IItemHistoryAnalyzer analyzer, bool fullHistory=true) {
+        public ItemHistoryAnalysis(IEnumerable<MageHistoryRecord> history, ItemHistoryAnalyzer analyzer, bool fullHistory=true) {
             this.history = history;
             this.analyzer = analyzer;
             this.fullHistory = fullHistory;
@@ -37,7 +37,7 @@ namespace Inkybot
         }
     }
 
-    public class ItemHistoryAnalyzer : IItemHistoryAnalyzer
+    public class ItemHistoryAnalyzer
     {
         public ItemHistoryAnalysis Analyse(IEnumerable<MageHistoryRecord> history, bool fullHistory=true) {
             return new ItemHistoryAnalysis(history, this, fullHistory);

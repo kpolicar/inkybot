@@ -5,7 +5,6 @@ namespace Inkybot.Dofus
 {
     public class DefaultMageConfigProvider : MageConfigProvider
     {
-
         private static DefaultMageConfigProvider? _instance;
         public static DefaultMageConfigProvider Instance => _instance ??= new DefaultMageConfigProvider();
 

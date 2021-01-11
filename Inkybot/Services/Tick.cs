@@ -15,7 +15,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob
     {
-        internal class Tick
+        private class Tick
         {
             private readonly ActionFactory actions;
             private readonly ScreenReaderDofusMagingJob job;

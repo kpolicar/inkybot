@@ -1,16 +1,17 @@
 using Inkybot.Actions;
+using Inkybot.Design;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 
 #pragma warning disable 4014
 namespace Inkybot.Api
 {
-    public class ApiNotifier
+    public class ApiNotifier : HasDependencies
     {
-        private ApiClient api;
+        private ApiClient api = null!;
 
-        public ApiNotifier() {
-            api = (ApiClient) Program.Services.GetService(typeof(ApiClient));
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            api = serviceContainer.GetService<ApiClient>();
         }
         
         public void Notify(object sender, ActionExecutedEventArgs e) {

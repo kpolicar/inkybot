@@ -9,11 +9,10 @@ using Inkybot.Dofus;
 using Inkybot.Events;
 using Newtonsoft.Json;
 using IAction = Inkybot.Domain.IAction;
-using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 
 namespace Inkybot.Services
 {
-    public class StatisticsManager : StatisticsManagerContract, HasDependencies
+    public class ApiAnalyticsReporter : AnalyticsReporter, HasDependencies
     {
         private ApiClient api = null!;
         private int changesCount = 0;

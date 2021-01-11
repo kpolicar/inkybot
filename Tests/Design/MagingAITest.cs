@@ -6,8 +6,6 @@ using Inkybot.Contracts;
 using Inkybot.Services;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
-using StatisticsManager = Inkybot.Services.StatisticsManager;
-using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Tests.Design
@@ -24,7 +22,6 @@ namespace Tests.Design
                 { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
                 { typeof(ScreenCapture), new Win32ScreenCapture() },
                 { typeof(ConfigManager), new ConfigManager() },
-                { typeof(IItemHistoryAnalyzer), new ItemHistoryAnalyzer() },
                 { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
                 { typeof(DofusMagingAIContract), new DofusMagingAI() },
             };

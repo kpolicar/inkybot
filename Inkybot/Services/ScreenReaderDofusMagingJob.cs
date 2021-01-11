@@ -4,6 +4,7 @@ using System.Threading;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Debug = System.Diagnostics.Debug;
@@ -13,7 +14,7 @@ using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDofusMagingJob : IDisposable, DofusMagingJobContract, HasDependencies
+    public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
         public event EventHandler<MagingJobEventArgs>? Started;
         public event EventHandler? Stopped;
@@ -25,25 +26,25 @@ namespace Inkybot.Services
         public event EventHandler<MagingJobErrorEventArgs>? Error;
         public event EventHandler<MagingJobErrorEventArgs>? Warning;
 
-        internal ActionHandler actions = null!;
-        internal ActionFactory actionFactory = null!;
-        internal ScreenReaderDataProvider dataProvider = null!;
-        internal IItemHistoryAnalyzer history = null!;
+        private ActionHandler actions = null!;
+        private ActionFactory actionFactory = null!;
+        private ScreenReaderDataProvider dataProvider = null!;
+        private ItemHistoryAnalyzer history = new ItemHistoryAnalyzer();
         private ConfigManager configManager = null!;
+        private DofusMagingAIContract magus = null!;
         private ServiceContainer serviceContainer = null!;
 
-        public Thread? job;
-        internal Contracts.DofusMagingAI? magus;
-        internal IAction? previousAction;
-        internal ItemHistoryAnalysis? previousHistory;
+        private Thread? job;
+        private IAction? previousAction;
+        private ItemHistoryAnalysis? previousHistory;
         private Item? previousItem;
         private float sink;
         private int balance;
-        internal State state;
-        internal Stopwatch changeTimeout;
-        internal CurrentItemInfo itemInfo;
-        internal bool previousCheckHadRunOutOfRunes = false;
-        internal bool previousActionWasExo = false;
+        private State state;
+        private ItemInfo itemInfo;
+        private Stopwatch changeTimeout;
+        private bool previousCheckHadRunOutOfRunes = false;
+        private bool previousActionWasExo = false;
 
 
         public ScreenReaderDofusMagingJob() {
@@ -54,7 +55,6 @@ namespace Inkybot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
-            history = serviceContainer.GetService<IItemHistoryAnalyzer>();
             configManager = serviceContainer.GetService<ConfigManager>();
             dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;
@@ -121,7 +121,7 @@ namespace Inkybot.Services
                 var item = dataProvider.Item();
                 configManager.EnforceConfigSetForItem(item);
                 configManager.RemoveFallenUnconfiguredStats(item);
-                itemInfo = new CurrentItemInfo {
+                itemInfo = new ItemInfo {
                     Runes = dataProvider.Runes()
                 };
             

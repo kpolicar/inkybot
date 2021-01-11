@@ -1,3 +1,5 @@
+using Inkybot.Domain;
+
 namespace Inkybot.Exceptions
 {
     public class HistoryHasntChangedException : UnexpectedMageResultException

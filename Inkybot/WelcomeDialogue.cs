@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Api.Resources;
+using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;

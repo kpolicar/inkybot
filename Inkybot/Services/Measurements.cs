@@ -109,10 +109,28 @@ namespace Inkybot.Services
             Height = 1017
         };
         
+        public static readonly Responsive.Measurement InventoryFirstItemMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
+            Width = 1920,
+            Height = 1017
+        };
+        
+        public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
+            Width = 1920,
+            Height = 1017
+        };
+        
         public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(2100, 1165, 2100, 1165),
             Width = 2310,
             Height = 1530
+        };
+        
+        public static readonly Responsive.Measurement CombineButtonMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1050, 225, 1050, 225),
+            Width = 1920,
+            Height = 1017
         };
     }
 }

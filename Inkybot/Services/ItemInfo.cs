@@ -6,10 +6,9 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob
     {
-        public struct CurrentItemInfo
+        private struct ItemInfo
         {
             public Dictionary<Stat, UserRune[]> Runes;
-
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Inkybot.Actions
             this.targetControl = targetControl;
         }
 
-        public void Execute(CancellationToken cancel) {
+        internal void Execute(CancellationToken cancel) {
             Cancel = cancel;
             Execute();
         }

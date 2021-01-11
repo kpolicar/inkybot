@@ -3,7 +3,6 @@ using Inkybot.Dofus.Repositories;
 using NUnit.Framework;
 using Tests.Design;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
-using StatisticsManagerContract = Inkybot.Contracts.StatisticsManager;
 using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
 
 namespace Tests
