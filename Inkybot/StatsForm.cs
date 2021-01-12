@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -11,8 +11,10 @@ using Inkybot.Dofus;
 using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Helpers;
 using Inkybot.Resources;
 using Inkybot.Services;
+using Debug = System.Diagnostics.Debug;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 using MageConfig = Inkybot.Dofus.MageConfig;
 
@@ -122,7 +124,52 @@ namespace Inkybot
             return true;
         }
 
+        private bool TryRebuildDataGridViewWithExistingRows(MageConfig config) {
+            if (config.StatsConfig.StandardStatsConfigs.Count > statsDataGridView.Rows.Count)
+                return false;
+
+            var index = 0;
+            foreach (var itemStatConfig in config.StatsConfig) {
+                if (index >= statsDataGridView.Rows.Count) {
+                    var stat = itemStatConfig.Key;
+                    var statConfig = itemStatConfig.Value;
+                    if (!statConfig.Exo)
+                        return false;
+
+                    var newRow = AddNewStatRow(
+                        itemStatConfig.Key.DisplayName, 
+                        0,
+                        statConfig.Target,
+                        statConfig.TargetMinimum,
+                        true,
+                        stat.Mageable);
+                    newRow.Tag = new ItemStatRow(stat, true);
+                    index++;
+                    continue;
+                }
+                
+                var row = statsDataGridView.Rows[index++];
+                var rowItemStat = (ItemStatRow) row.Tag;
+                if ((rowItemStat.Stat, rowItemStat.Exo) != (itemStatConfig.Key, itemStatConfig.Value.Exo))
+                    return false;
+
+                row.Cells[2].Value = Numbers.ToString(itemStatConfig.Value.Target);
+                row.Cells[3].Value = Numbers.ToString(itemStatConfig.Value.TargetMinimum);
+            }
+
+            // remove extra rows
+            var len = statsDataGridView.Rows.Count;
+            for (int i = index; i < len; i++) {
+                var row = statsDataGridView.Rows[index];
+                statsDataGridView.Rows.Remove(row);
+            }
+
+            return true;
+        }
+
         private void RebuildDataGridView(MageConfig config) {
+            if (TryRebuildDataGridViewWithExistingRows(config))
+                return;
             statsDataGridView.Rows.Clear();
 
             foreach (var statConfig in config.StatsConfig) {
@@ -130,8 +177,8 @@ namespace Inkybot
                 var cfg = statConfig.Value;
                 var mageStatConfig = config.StatsConfig[stat];
                 
-                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, mageStatConfig.Exo, stat.Mageable);
-                row.Tag = new ItemStatRow(stat);
+                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
+                row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
             }
         }
 
@@ -139,16 +186,16 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max, itemStat.Exo, itemStat.stat.Mageable);
+                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max,  null, itemStat.Exo, itemStat.stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
             }
         }
 
-        private DataGridViewRow AddNewStatRow(string displayName, int value, int max, bool exo, bool mageable) {
+        private DataGridViewRow AddNewStatRow(string displayName, int value, int? target, int? targetMinimum, bool exo, bool mageable) {
             if (mageable) {
-                statsDataGridView.Rows.Add(displayName, value, max);
+                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-");
             } else {
-                statsDataGridView.Rows.Add(displayName, "-", "-");
+                statsDataGridView.Rows.Add(displayName, "-", "-", "-");
             }
             var index = statsDataGridView.Rows.Count-1;
             var row = statsDataGridView.Rows[index];
@@ -199,7 +246,6 @@ namespace Inkybot
         }
 
         private void StatsForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
-            if (e.ColumnIndex != 2) return;
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
 
@@ -207,15 +253,18 @@ namespace Inkybot
             var stat = statRow.Stat;
             if (!stat.Mageable)
                 return;
+            var newValue = Numbers.Parse(cell.Value.ToString());
             
-            int max;
-            var newTargetIsValidNumber = int.TryParse(cell.Value.ToString(), out max);
-            if (!newTargetIsValidNumber) {
-                cell.Value = configManager.Config![stat].Target;
-                return;
+            if (e.ColumnIndex == 2)
+                configManager.ChangeStatConfigTarget(stat, newValue!.Value);
+            else if (e.ColumnIndex == 3) {
+                var target = configManager.Config[stat].Target;
+                newValue = newValue > target
+                    ? target
+                    : newValue;
+                cell.Value = Numbers.ToString(newValue);
+                configManager.ChangeStatConfigTargetMinimum(stat, newValue);
             }
-
-            configManager.ChangeStatConfigTarget(stat, max);
         }
 
         private void exoStatComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -233,7 +282,12 @@ namespace Inkybot
                 return;
             }
             var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new MageConfig.ItemStatMageConfig(stat, 0, 0, 0);
+            var exoConfig = new MageConfig.ItemStatMageConfig(
+                stat, 
+                0, 
+                0, 
+                stat.StrongestRune.IncreaseInValue, 
+                stat.StrongestRune.IncreaseInValue);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }
@@ -243,9 +297,9 @@ namespace Inkybot
             public readonly Stat Stat;
             public readonly bool Exo;
 
-            public ItemStatRow(Stat stat) {
+            public ItemStatRow(Stat stat, bool exo) {
                 Stat = stat;
-                Exo = true;
+                Exo = exo;
             }
 
             public ItemStatRow(ItemStat itemStat) {
@@ -312,6 +366,7 @@ namespace Inkybot
                 if (!stat.Mageable)
                     continue;
                 configManager.ChangeStatConfigTarget(stat, statPreset.Target);
+                configManager.ChangeStatConfigTargetMinimum(stat, statPreset.TargetMinimum);
             }
         }
 

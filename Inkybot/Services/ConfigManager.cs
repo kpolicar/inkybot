@@ -76,9 +76,15 @@ namespace Inkybot.Services
         private bool ConfigIsSetForItem(Item item)
             => Config != null && Config.IsConfiguredFor(item);
 
-        public void ChangeStatConfigTarget(Stat stat, int target) {
+        public void ChangeStatConfigTarget(Stat stat, int? target) {
             var statConfig = Config!.StatsConfig[stat];
-            var newStatConfig = statConfig.Clone(target: target);
+            var newStatConfig = statConfig.Clone(target, statConfig.TargetMinimum);
+            ChangeStatConfig(stat, newStatConfig);
+        }
+        
+        public void ChangeStatConfigTargetMinimum(Stat stat, int? targetMinimum) {
+            var statConfig = Config!.StatsConfig[stat];
+            var newStatConfig = statConfig.Clone(statConfig.Target, targetMinimum);
             ChangeStatConfig(stat, newStatConfig);
         }
 

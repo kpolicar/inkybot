@@ -26,6 +26,8 @@ namespace Inkybot.Dofus
         public readonly bool Mageable;
         public Rune.RuneType StrongestRuneType
             => CanUseRaRunes ? Rune.RuneType.Ra : CanUsePaRunes ? Rune.RuneType.Pa : Rune.RuneType.Sm;
+        public Rune StrongestRune
+            => new Rune(this, StrongestRuneType);
         public string DisplayName => Dictionary.GetString(Identifier)!;
         public string RuneName => Rune.Dictionary.GetString(Identifier)!;
         public StatConfig Config => ConfigManager.Config(this);

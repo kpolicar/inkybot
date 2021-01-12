@@ -19,7 +19,6 @@ namespace Inkybot.Dofus
         public bool RestoreHighSinkStatsImmediately =>
             ConfigManager.RestoreHighSinkStatsImmediately;
         
-
         public ItemStatMageConfig this[Stat index] =>
             StatsConfig[index];
 
@@ -38,7 +37,8 @@ namespace Inkybot.Dofus
                     itemStat.stat,
                     itemStat.min,
                     itemStat.max,
-                    itemStat.max);
+                    itemStat.max,
+                    null);
             }
         }
 
@@ -53,7 +53,8 @@ namespace Inkybot.Dofus
         {
             public readonly int Minimum;
             public readonly int Maximum;
-            public readonly int Target;
+            public readonly int? Target;
+            public readonly int? TargetMinimum;
             public bool Exo => Maximum == 0;
             public bool Overmage => Target > Maximum;
             public int? MaxValueAtWhichSmRuneCanHit => statConfig.MaxValueAtWhichSmRuneCanHit;
@@ -66,9 +67,9 @@ namespace Inkybot.Dofus
             private StatConfig statConfig => Stat.Config;
             private readonly Stat Stat;
 
-            public ItemStatMageConfig(Stat stat, int minimum, int maximum, int target) =>
-                (Stat, Minimum, Maximum, Target) =
-                (stat, minimum, maximum, target);
+            public ItemStatMageConfig(Stat stat, int minimum, int maximum, int? target, int? targetMinimum) =>
+                (Stat, Minimum, Maximum, Target, TargetMinimum) =
+                (stat, minimum, maximum, target, targetMinimum);
 
             public bool IsApplicableTo(ItemStat itemStat) {
                 return (itemStat.min, itemStat.max)
@@ -76,12 +77,13 @@ namespace Inkybot.Dofus
             }
 
             public ItemStatMageConfig Clone
-                (Stat? stat = null, int? minimum=null, int? maximum=null, int? target=null)
+                (int? target, int? targetMinimum, Stat? stat = null, int? minimum=null, int? maximum=null)
                 => new ItemStatMageConfig(
                     stat ?? Stat,
                     minimum ?? Minimum,
                     maximum ?? Maximum,
-                    target ?? Target);
+                    target,
+                    targetMinimum);
             
             
             public static bool operator ==(ItemStatMageConfig x, ItemStatMageConfig y) => x.Equals(y);
@@ -91,14 +93,15 @@ namespace Inkybot.Dofus
                 obj is ItemStatMageConfig other && Equals(other);
 
             public bool Equals(ItemStatMageConfig other) =>
-                (Stat, Minimum, Maximum, Target).Equals(
-                    (other.Stat, other.Minimum, other.Maximum, other.Target));
+                (Stat, Minimum, Maximum, Target, TargetMinimum).Equals(
+                    (other.Stat, other.Minimum, other.Maximum, other.Target, other.TargetMinimum));
 
             public override int GetHashCode() {
                 unchecked {
                     var hashCode = Minimum;
                     hashCode = (hashCode * 397) ^ Maximum;
-                    hashCode = (hashCode * 397) ^ Target;
+                    hashCode = (hashCode * 397) ^ Target ?? 1;
+                    hashCode = (hashCode * 397) ^ TargetMinimum ?? 1;
                     hashCode = (hashCode * 397) ^ Stat.GetHashCode();
                     return hashCode;
                 }

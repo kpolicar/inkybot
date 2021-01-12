@@ -38,4 +38,7 @@
     <data name="popup.error_notavailable_freetrial" xml:space="preserve">
     <value>Cette fonctionnalité est réservée aux utilisateurs abonnés! Visitez le site Web officiel d'Inkybot pour souscrire à votre compte.</value>
   </data>
+    <data name="MinColumn.HeaderText" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
 </root>

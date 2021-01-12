@@ -13,13 +13,15 @@ namespace Inkybot.Services
         public readonly int Value;
         public readonly bool Exo;
         public readonly int Max => MageConfig.Maximum;
-        public readonly int Target => MageConfig.Target;
+        public readonly int? Target => MageConfig.Target;
             
         public int NumberOfRunesNeededForFullMage =>
             Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));
-        
+
         public int NumberOfRunesNeededToReachTarget =>
-            Math.Max(0, (int) Math.Ceiling((Target - Value) / (float) Rune.IncreaseInValue));
+            Target != null
+                ? Math.Max(0, (int) Math.Ceiling((Target.Value - Value) / (float) Rune.IncreaseInValue))
+                : 0;
 
         public ItemMage? WithLowerRuneStrength =>
             Rune.Weaker != null

@@ -15,7 +15,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider : DofusDataProvider, HasDependencies
     {
-        internal const int MaxSupportedStatsForMage = 13;
+        private const int MaxSupportedStatsForMage = 13;
         public event EventHandler<ScannedRegionEventArgs>? ScannedStats;
         public event EventHandler<ScannedRegionEventArgs>? ScannedHistory;
         public event EventHandler<ScanBoundsChanged>? LatestHistoryBoundsChanged;

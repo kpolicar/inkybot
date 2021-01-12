@@ -7,7 +7,8 @@ namespace Inkybot.Resources
     public class ItemStatPreset
     {
         public string Stat { get; set; }
-        public int Target { get; set; }
+        public int? Target { get; set; }
+        public int? TargetMinimum { get; set; }
         public int Maximum { get; set; }
         public int Minimum { get; set; }
     }

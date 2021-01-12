@@ -317,6 +317,9 @@
   <data name="TargetColumn.HeaderText" xml:space="preserve">
     <value>Target</value>
   </data>
+  <data name="MinColumn.HeaderText" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
   <data name="addExoButton.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
