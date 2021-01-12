@@ -8,6 +8,7 @@ using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Extensions;
 using Inkybot.Helpers;
 using MageConfig = Inkybot.Dofus.MageConfig;
 
@@ -112,7 +113,7 @@ namespace Inkybot.Services
             return previousScannedItem = item;
         }
 
-        public Dictionary<Stat, UserRune[]> Runes() {
+        public UserRunes Runes() {
             var item = Item();
             var scanResults = Scan!.RunesQuantities();
 

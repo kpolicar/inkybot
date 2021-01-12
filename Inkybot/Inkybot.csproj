@@ -236,6 +236,7 @@
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
+        <Compile Include="Extensions\IEnumerable.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Numbers.cs" />
@@ -333,6 +334,9 @@
         </Compile>
         <Compile Include="Services\ScreenScanner.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\UserRunes.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Inkybot.Dofus;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Services;
 
 namespace Inkybot.Contracts
 {
@@ -13,7 +14,7 @@ namespace Inkybot.Contracts
         Item Item();
         void FetchData();
         IEnumerable<MageHistoryRecord> History();
-        public Dictionary<Stat, UserRune[]> Runes();
+        public UserRunes Runes();
         public UserRune RuneQuantity(Rune rune);
     }
 }

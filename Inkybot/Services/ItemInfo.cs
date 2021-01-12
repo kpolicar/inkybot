@@ -8,7 +8,7 @@ namespace Inkybot.Services
     {
         private struct ItemInfo
         {
-            public Dictionary<Stat, UserRune[]> Runes;
+            public UserRunes Runes;
         }
     }
 }

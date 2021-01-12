@@ -19,23 +19,23 @@ namespace Inkybot.Services
             public bool IsPreparing { get; set; }
             public bool IsMaging { get; set; }
             public JobStep Step;
-            public bool PreviousCheckHadRunOutOfRunes;
             public float Sink;
             public int Balance;
             public IAction? PreviousAction;
             public ItemHistoryAnalysis? PreviousHistory;
             public Item? PreviousItem;
             public bool PreviousCombineWasExoAttempt;
+            public bool PreviousCheckHadRunOutOfRunes;
 
             public void Reset() {
                 Step = JobStep.STANDARD;
                 PreviousCombineWasExoAttempt = false;
-                PreviousCheckHadRunOutOfRunes = false;
                 Sink = 0f;
                 Balance = 0;
                 PreviousAction = null;
                 PreviousHistory = null;
                 PreviousItem = null;
+                PreviousCheckHadRunOutOfRunes = false;
             }
         }
     }

@@ -34,6 +34,7 @@ namespace Inkybot.Services
         private DofusMagingAIContract magus = null!;
         private ServiceContainer serviceContainer = null!;
 
+        private Supervisor? supervisor;
         private Thread? job;
         private State state;
         private ItemInfo itemInfo;
@@ -95,6 +96,7 @@ namespace Inkybot.Services
         private void PrepareMage() {
             state.Reset();
             state.IsPreparing = true;
+            supervisor = new Supervisor(this);
 
             try {
                 state.IsMaging = true;

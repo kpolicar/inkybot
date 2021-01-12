@@ -82,20 +82,24 @@ namespace Inkybot.Services
                 
                 job.dataProvider.FetchData();
 
-                var userRune = job.dataProvider.RuneQuantity(previousAction.Rune);
-                var previousUserRune = job
+                var newUserRune = job.dataProvider.RuneQuantity(previousAction.Rune);
+                var userRune = job
                     .itemInfo
-                    .Runes[previousAction.Rune.Stat]
-                    .First(userRune => userRune.Rune == previousAction.Rune);
+                    .Runes.Find(previousAction.Rune);
 
-                if (userRune.Quantity != previousUserRune.Quantity) {
+                if (newUserRune.Quantity != userRune.Quantity) {
                     job.state.Step = State.JobStep.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();
-                    previousUserRune.Quantity = userRune.Quantity;
+
+                    var runeQuantityChange = new RuneQuantityChangedEventArgs(
+                        newUserRune.Rune, userRune.Quantity, newUserRune.Quantity);
+
+                    userRune.Quantity = newUserRune.Quantity;
+                    job.RuneQuantityChanged?.Invoke(this, runeQuantityChange);
+                    
                 } else {
                     Thread.Sleep(30);
                 }
-                job.RuneQuantityChanged?.Invoke(this, new RuneQuantityChangedEventArgs(userRune.Rune, previousUserRune.Quantity, userRune.Quantity));
 
             }
             
@@ -281,19 +285,15 @@ namespace Inkybot.Services
             private void EnforceHasRunesForCombine(CombineRune combine) {
                 var hasRune = job
                     .itemInfo
-                    .Runes.TryGetValue(combine.Rune.Stat, out var previousUserRunes);
+                    .Runes.TryGetValue(combine.Rune.Stat, out var userRunes);
                 if (!hasRune)
                     return;
                 
-                var previousUserRune = 
-                    previousUserRunes.First(userRune => userRune.Rune == combine.Rune);
-                if (previousUserRune.Quantity == 0) {
-                    if (job.state.PreviousCheckHadRunOutOfRunes)
-                        throw new OutOfRunesException(previousUserRune.Rune);
-                    job.state.PreviousCheckHadRunOutOfRunes = true;
-                } else {
-                    job.state.PreviousCheckHadRunOutOfRunes = false;
-                }
+                var userRune = userRunes.First(userRune => userRune.Rune == combine.Rune);
+                
+                if (userRune.Quantity == 0 && job.state.PreviousCheckHadRunOutOfRunes)
+                    throw new OutOfRunesException(userRune.Rune);
+                job.state.PreviousCheckHadRunOutOfRunes = userRune.Quantity == 0;
             }
 
             private void EnforceStatsChanged(Item item) {

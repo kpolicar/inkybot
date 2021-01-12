@@ -7,14 +7,14 @@ namespace Inkybot.Events
     {
         
         public readonly Rune Rune;
-        public readonly float Quantity;
-        public readonly float OldQuantity;
+        public readonly int Quantity;
+        public readonly int OldQuantity;
 
 
-        public RuneQuantityChangedEventArgs(Rune rune, float oldQuantity, float quantity) {
-            this.Rune = rune;
-            this.Quantity = quantity;
-            this.OldQuantity = oldQuantity;
+        public RuneQuantityChangedEventArgs(Rune rune, int oldQuantity, int quantity) {
+            Rune = rune;
+            Quantity = quantity;
+            OldQuantity = oldQuantity;
         }
 
     }
