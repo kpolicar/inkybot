@@ -31,7 +31,7 @@ namespace Inkybot.Services
         }
 
         protected override int Priority(ItemMage itemMage) {
-            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately) {
+            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately && !itemMage.WillOvermage) {
                 // 1000 ought to be enough to prioritize it over others
                 return (int) itemMage.Rune.Sink * 1000;
             }
