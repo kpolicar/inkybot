@@ -121,20 +121,31 @@ namespace Inkybot
             Process.Start($"{Server.BaseUrl}/release/latest");
         }
 
-        private void dofusPathLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void dofusPathButton_Clicked(object sender, EventArgs eventArgs) {
             var changedPath = new DofusPathForm().ShowDialog(this);
             if (changedPath == DialogResult.OK)
                 PathChanged?.Invoke(this, new PathChangedEventArgs());
         }
 
-        private void switchLanguageLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void resetSettings_Clicked(object sender, EventArgs eventArgs) {
+            Properties.Settings.Default.Reset();
+            Properties.Settings.Default.Save();
+                
+            Application.Restart();
+        }
+
+        private void switchLanguageButton_Clicked(object sender, EventArgs eventArgs) {
             Properties.Settings.Default.locale =
-                Program.Lang.TwoLetterISOLanguageName == Properties.Resources.EnglishLocaleCode ?
+                Program.Lang.TwoLetterISOLanguageName == "" ?
                     Properties.Resources.FrenchLocaleCode :
                     Properties.Resources.EnglishLocaleCode;
             Properties.Settings.Default.Save();
                 
             Application.Restart();
+        }
+
+        private void settingsDropdownButton_Click(object sender, EventArgs e) {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -267,6 +267,12 @@
   <data name="linkLabel2.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
+    <data name="settingsDropdownButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        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
+    </data>
+    <data name="settingsDropdownButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+        <value>Stretch</value>
+    </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAEBAAAAEAIABoBAAAZgAAACAgAAABACAAqBAAAM4EAAAwMAAAAQAgAKglAAB2FQAAQEAAAAEA
@@ -2045,7 +2051,7 @@
     <value>189, 13</value>
   </data>
   <data name="newVersionLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Right</value>
+    <value>left</value>
   </data>
   <data name="errorMessage.Size" type="System.Drawing.Size, System.Drawing">
     <value>109, 13</value>
@@ -2054,7 +2060,7 @@
     <value>splitContainer1</value>
   </data>
   <data name="panel2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 17</value>
+    <value>269, 26</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
     <value>EMAIL</value>
@@ -2408,7 +2414,10 @@
     <value>True</value>
   </data>
   <data name="switchLanguageLabel.Text" xml:space="preserve">
-    <value>SWITCH TO FRENCH</value>
+    <value>Switch to French</value>
+  </data>
+  <data name="resetSetttingsLabel.Text" xml:space="preserve">
+    <value>Reset User Settings</value>
   </data>
   <data name="button1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2456,6 +2465,9 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="switchLanguageLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="resetSetttingsLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="&gt;&gt;usernameTextBox.ZOrder" xml:space="preserve">
@@ -2575,7 +2587,7 @@
     <value>True</value>
   </data>
   <data name="flowLayoutPanel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>20, 20, 20, 0</value>
+    <value>20, 30, 20, 0</value>
   </data>
   <data name="linkLabel1.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>

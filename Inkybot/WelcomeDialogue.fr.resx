@@ -1988,7 +1988,7 @@
     <value>Impossible de se connecter à Inkybot!</value>
   </data>
     <data name="switchLanguageLabel.Text" xml:space="preserve">
-    <value>PASSER À L'ANGLAIS</value>
+    <value>Passer à l'Anglais</value>
   </data>
   <data name="errorMessage.TextTrialExpired" xml:space="preserve">
     <value>Vous avez déjà utilisé votre essai gratuit!</value>
@@ -1998,5 +1998,8 @@
   </data>
   <data name="popup.title_trial" xml:space="preserve">
     <value>Essai gratuit</value>
+  </data>
+  <data name="resetSetttingsLabel.Text" xml:space="preserve">
+    <value>Réinitialiser les paramètres utilisateur</value>
   </data>
 </root>
