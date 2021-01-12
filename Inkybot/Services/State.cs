@@ -16,8 +16,8 @@ namespace Inkybot.Services
                 CALCULATING_PRICE_CHANGE
             }
 
-            public bool IsPreparing { get; protected internal set; }
-            public bool IsMaging { get; protected internal set; }
+            public bool IsPreparing { get; set; }
+            public bool IsMaging { get; set; }
             public JobStep Step;
             public bool PreviousCheckHadRunOutOfRunes;
             public float Sink;

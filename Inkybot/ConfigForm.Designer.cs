@@ -55,6 +55,7 @@ namespace Inkybot
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
+            this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.bottomPanel.SuspendLayout();
@@ -147,11 +148,20 @@ namespace Inkybot
             this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
             this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
             // 
+            // showWarningsCheckbox
+            // 
+            resources.ApplyResources(this.showWarningsCheckbox, "showWarningsCheckbox");
+            this.showWarningsCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.showWarningsCheckbox.Name = "showWarningsCheckbox";
+            this.showWarningsCheckbox.UseVisualStyleBackColor = true;
+            this.showWarningsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged);
+            // 
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
+            this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
             this.bottomPanel.Name = "bottomPanel";
             // 
             // ConfigForm
@@ -173,6 +183,7 @@ namespace Inkybot
         private System.Windows.Forms.Panel bottomPanel;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
+        private System.Windows.Forms.CheckBox showWarningsCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;

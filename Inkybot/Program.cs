@@ -24,6 +24,7 @@ using MageConfigProvider = Inkybot.Services.MageConfigProvider;
 using StatConfigProvider = Inkybot.Services.StatConfigProvider;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
+using UserSettings = Inkybot.Properties.Settings;
 
 namespace Inkybot
 {
@@ -39,13 +40,14 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "13";
-        public const string Version = "v1.0";
-        public const string VersionEndpoint = "v1";
+        public const string VersionNumber = "14";
+        public const string Version = "v1.1";
+        public const string VersionEndpoint = "v1.1";
         
 
         public static ServiceContainer Services = new ServiceContainer();
         public static CultureInfo Lang = null!;
+        private static string DefaultLocale => Properties.Resources.EnglishLocaleCode;
         
         public static readonly Dictionary<Type, object> _services = new Dictionary<Type, object> {
             { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
@@ -63,6 +65,7 @@ namespace Inkybot
             { typeof(ActionHandler), new ActionHandler() },
             { typeof(ApiClient), new ApiClient() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
+            { typeof(ApiNotifier), new ApiNotifier() },
         };
         
         /// <summary>
@@ -75,7 +78,6 @@ namespace Inkybot
             InitDependencies();
                 
             BindServices();
-            BindNotifications();
             BindLogger();
             
             Application.EnableVisualStyles();
@@ -116,37 +118,30 @@ namespace Inkybot
         }
 
         private static void SetAppLocale() {
-            if (Properties.Settings.Default.locale == Properties.Resources.FrenchLocaleCode) {
-                Lang =
-                    Thread.CurrentThread.CurrentUICulture =
-                        CultureInfo.CurrentUICulture =
-                            CultureInfo.DefaultThreadCurrentCulture =
-                                CultureInfo.DefaultThreadCurrentUICulture =
-                                    new CultureInfo(Properties.Resources.FrenchLocaleCode);
-            } else {
-                Lang =
-                    Thread.CurrentThread.CurrentUICulture =
-                        CultureInfo.CurrentUICulture =
-                            CultureInfo.DefaultThreadCurrentCulture =
-                                CultureInfo.DefaultThreadCurrentUICulture =
-                                new CultureInfo(Properties.Resources.EnglishLocaleCode);
-            }
+            var gameSettings = DetectUserGame.ReadSettings();
+            var locale =
+                gameSettings != null
+                    && DetectUserGame.HasValidAndSupportedLanguage(gameSettings)
+                    && UserSettings.Default.locale == ""
+                ? gameSettings.language.value
+                : UserSettings.Default.locale ?? DefaultLocale;
+
+            var culture = locale == Properties.Resources.FrenchLocaleCode
+                ? new CultureInfo(Properties.Resources.FrenchLocaleCode)
+                : new CultureInfo(Properties.Resources.EnglishLocaleCode);
+            Lang =
+                Thread.CurrentThread.CurrentCulture =
+                Thread.CurrentThread.CurrentUICulture =
+                CultureInfo.CurrentCulture = 
+                CultureInfo.CurrentUICulture =
+                CultureInfo.DefaultThreadCurrentCulture =
+                CultureInfo.DefaultThreadCurrentUICulture =
+                    culture;
             Properties.Resources.Culture = Lang;
             Properties.Regex.Culture = Lang;
             Resources.MagingDictionary.Culture = Lang;
             Resources.RuneDictionary.Culture = Lang;
             Resources.StatDictionary.Culture = Lang;
-        }
-
-        private static void BindNotifications() {
-            var actions = Services.GetService<ActionHandler>();
-            var magingJob = Services.GetService<DofusMagingJobContract>();
-            var notified = new[] { new ApiNotifier() };
-
-            foreach (var notifier in notified) {
-                actions!.ActionExecuted += notifier.Notify;
-                magingJob!.Error += notifier.Notify;
-            }
         }
 
         private static void BindLogger() {

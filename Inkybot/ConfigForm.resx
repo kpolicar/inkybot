@@ -2051,7 +2051,7 @@
     <value>Restore high sink stats immediately</value>
   </data>
   <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
-    <value>Automatically restart bot on error</value>
+    <value>Automatically restart bot</value>
   </data>
   <data name="autoRestartBotCheckbox.AutoSize" xml:space="preserve">
     <value>true</value>
@@ -2063,6 +2063,21 @@
     <value>230, 21</value>
     </data>
     <data name="autoRestartBotCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
+  <data name="showWarningsCheckbox.Text" xml:space="preserve">
+    <value>Show warnings</value>
+  </data>
+  <data name="showWarningsCheckbox.AutoSize" xml:space="preserve">
+    <value>true</value>
+  </data>
+  <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+    <data name="showWarningsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 21</value>
+    </data>
+    <data name="showWarningsCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>
     </data>
   <metadata name="RaRuneThresholdColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

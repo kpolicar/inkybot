@@ -17,12 +17,14 @@ namespace Inkybot
         private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
         private AuthManager auth = null!;
+        private ConfigManager config;
 
         public MainForm() {
             InitializeComponent();
             
             magingJob = Program.Services.GetService<DofusMagingJob>();
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
+            config = Program.Services.GetService<ConfigManager>();
             
             InitOcrIndicators();
             toastPanel.Hide();

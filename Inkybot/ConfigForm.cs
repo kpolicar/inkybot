@@ -49,6 +49,7 @@ namespace Inkybot
 
             restoreHighSinkStatsCheckbox.Checked = userSettingsConfigManager.RestoreHighSinkStats;
             autoRestartBotCheckbox.Checked = userSettingsConfigManager.AutoRestartBot;
+            showWarningsCheckbox.Checked = userSettingsConfigManager.ShowUserWarnings;
         }
 
         private void SetConfigRowTooltips(DataGridViewRow row) {
@@ -153,6 +154,10 @@ namespace Inkybot
         
         private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
             userSettingsConfigManager.AutoRestartBot = autoRestartBotCheckbox.Checked;
+        }
+        
+        private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
+            userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
         }
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {

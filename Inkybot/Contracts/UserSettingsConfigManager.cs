@@ -7,15 +7,9 @@ namespace Inkybot.Contracts
 {
     public interface UserSettingsConfigManager : StatConfigProvider
     {
-        public bool RestoreHighSinkStats {
-            get;
-            set;
-        }
-
-        public bool AutoRestartBot {
-            get;
-            set;
-        }
+        public bool RestoreHighSinkStats { get; set; }
+        public bool AutoRestartBot { get; set; }
+        public bool ShowUserWarnings { get; set; }
         
         public void SetConfig(Stat stat, in StatConfig config);
     }

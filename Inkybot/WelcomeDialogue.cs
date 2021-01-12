@@ -129,7 +129,7 @@ namespace Inkybot
 
         private void switchLanguageLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Properties.Settings.Default.locale =
-                Properties.Settings.Default.locale.Equals(Properties.Resources.EnglishLocaleCode) ?
+                Program.Lang.TwoLetterISOLanguageName == Properties.Resources.EnglishLocaleCode ?
                     Properties.Resources.FrenchLocaleCode :
                     Properties.Resources.EnglishLocaleCode;
             Properties.Settings.Default.Save();

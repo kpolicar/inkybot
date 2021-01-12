@@ -25,6 +25,14 @@ namespace Inkybot.Services
             }
             get => Properties.Settings.Default.autoRestartBot;
         }
+
+        public bool ShowUserWarnings {
+            set {
+                Properties.Settings.Default.showUserWarnings = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.showUserWarnings;
+        }
         
         public StatConfig Config(Stat stat) {
             var config = (Inkybot.Resources.StatConfig) Properties.Settings.Default[stat.Identifier];

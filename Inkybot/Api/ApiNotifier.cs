@@ -1,7 +1,10 @@
+using System.Diagnostics;
 using Inkybot.Actions;
+using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Inkybot.Services;
 
 #pragma warning disable 4014
 namespace Inkybot.Api
@@ -12,6 +15,11 @@ namespace Inkybot.Api
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
+            var actions = serviceContainer.GetService<ActionHandler>();
+            var magingJob = serviceContainer.GetService<DofusMagingJob>();
+            
+            actions!.ActionExecuted += Notify;
+            magingJob!.Error += Notify;
         }
         
         public void Notify(object sender, ActionExecutedEventArgs e) {

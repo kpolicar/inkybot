@@ -193,7 +193,14 @@
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\ItemHistoryAnalyzer.cs" />
+        <Compile Include="Domain\Release.cs">
+          <DependentUpon>DetectUserGame.cs</DependentUpon>
+        </Compile>
         <Compile Include="Domain\RuneAction.cs" />
+        <Compile Include="Domain\Settings.cs">
+          <DependentUpon>DetectUserGame.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Domain\DetectUserGame.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />

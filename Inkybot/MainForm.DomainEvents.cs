@@ -32,7 +32,7 @@ namespace Inkybot
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
             BeginInvoke(new MethodInvoker(delegate {
-                sinkValueLabel.Text = Convert.ToInt32(Math.Floor(e.Sink)) + "";
+                sinkValueLabel.Text = Convert.ToInt32(Math.Floor(e.Sink)).ToString();
             }));
         }
 
@@ -40,9 +40,6 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Text = resources.GetString("toggleMageButton.Text");
                 toggleMageButton.Enabled = false;
-                mageInfoPanel.Hide();
-                exoAttemptsLabel.Hide();
-                exoAttemptsValueLabel.Hide();
             }));
         }
 
@@ -54,11 +51,13 @@ namespace Inkybot
         }
 
         private void OnMagingStarted(object sender, MagingJobEventArgs e) {
-            if (e.Item.HasExo || e.Item.IsOvermaged) {
+            if (config.UserSettings.ShowUserWarnings &&
+                e.Item.HasExo || e.Item.IsOvermaged) {
                 StartMageExoOverConfirmDialog();
             }
 
-            if (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)) {
+            if (config.UserSettings.ShowUserWarnings &&
+                !screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)) {
                 StartMageUnsupportedDialog();
             }
             

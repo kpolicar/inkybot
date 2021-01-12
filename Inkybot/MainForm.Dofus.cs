@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Domain;
 using Inkybot.Services;
+using UserSettings = Inkybot.Properties.Settings;
 
 namespace Inkybot
 {
@@ -17,14 +19,20 @@ namespace Inkybot
                 hWndDocked = IntPtr.Zero;
             }
             
-            if (Properties.Settings.Default.dofusPath == "") {
+            var gameVersion = DetectUserGame.ReadRelease();
+            var dofusPath =
+                gameVersion != null && DetectUserGame.HasValidGamePath(gameVersion) && UserSettings.Default.dofusPath == ""
+                ? gameVersion.ExeLocation
+                : UserSettings.Default.dofusPath;
+            
+            if (dofusPath == "") {
                 var result = new DofusPathForm().ShowDialog(this);
                 if (result != DialogResult.OK) {
                     return false;
                 }
             }
 
-            pDofus = Process.Start(Properties.Settings.Default.dofusPath);
+            pDofus = Process.Start(dofusPath);
             WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 

@@ -61,7 +61,7 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool restoreHighSinkStatImmediately {
             get {
                 return ((bool)(this["restoreHighSinkStatImmediately"]));
@@ -73,13 +73,25 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool autoRestartBot {
             get {
                 return ((bool)(this["autoRestartBot"]));
             }
             set {
                 this["autoRestartBot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool showUserWarnings {
+            get {
+                return ((bool)(this["showUserWarnings"]));
+            }
+            set {
+                this["showUserWarnings"] = value;
             }
         }
         
@@ -97,7 +109,7 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string locale {
             get {
                 return ((string)(this["locale"]));
