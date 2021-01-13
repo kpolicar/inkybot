@@ -2068,14 +2068,23 @@
   <data name="showWarningsCheckbox.Text" xml:space="preserve">
     <value>Show warnings</value>
   </data>
+  <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
+    <value>Monitor rune quantity</value>
+  </data>
   <data name="showWarningsCheckbox.AutoSize" xml:space="preserve">
     <value>true</value>
+  </data>
+  <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
   </data>
   <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
     <data name="showWarningsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 21</value>
+    </data>
+    <data name="enableRuneCheckingCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
     </data>
     <data name="showWarningsCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>

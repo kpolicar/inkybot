@@ -50,6 +50,7 @@ namespace Inkybot
             restoreHighSinkStatsCheckbox.Checked = userSettingsConfigManager.RestoreHighSinkStats;
             autoRestartBotCheckbox.Checked = userSettingsConfigManager.AutoRestartBot;
             showWarningsCheckbox.Checked = userSettingsConfigManager.ShowUserWarnings;
+            enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
         }
 
         private void SetConfigRowTooltips(DataGridViewRow row) {
@@ -148,17 +149,17 @@ namespace Inkybot
             SetConfigRowTooltips(row);
         }
 
-        private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
+        private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.RestoreHighSinkStats = restoreHighSinkStatsCheckbox.Checked;
-        }
         
-        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
+        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.AutoRestartBot = autoRestartBotCheckbox.Checked;
-        }
         
-        private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
+        private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
-        }
+        
+        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+            userSettingsConfigManager.EnableRuneChecking = enableRuneCheckingCheckbox.Checked;
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;

@@ -56,7 +56,8 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
-            this.bottomPanel = new System.Windows.Forms.Panel();
+            this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
+            this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
@@ -156,13 +157,23 @@ namespace Inkybot
             this.showWarningsCheckbox.UseVisualStyleBackColor = true;
             this.showWarningsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged);
             // 
+            // enableRuneCheckingCheckbox
+            // 
+            resources.ApplyResources(this.enableRuneCheckingCheckbox, "enableRuneCheckingCheckbox");
+            this.enableRuneCheckingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.enableRuneCheckingCheckbox.Name = "enableRuneCheckingCheckbox";
+            this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
+            this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckboxCheckedChanged);
+            // 
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
+            this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.bottomPanel.Name = "bottomPanel";
+            this.bottomPanel.AutoSize = true;
             // 
             // ConfigForm
             // 
@@ -180,10 +191,11 @@ namespace Inkybot
             this.ResumeLayout(false);
         }
 
-        private System.Windows.Forms.Panel bottomPanel;
+        private System.Windows.Forms.FlowLayoutPanel bottomPanel;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
+        private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;

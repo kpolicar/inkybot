@@ -33,6 +33,14 @@ namespace Inkybot.Services
             }
             get => Properties.Settings.Default.showUserWarnings;
         }
+
+        public bool EnableRuneChecking {
+            set {
+                Properties.Settings.Default.enableRuneChecking = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.enableRuneChecking;
+        }
         
         public StatConfig Config(Stat stat) {
             var config = (Inkybot.Resources.StatConfig) Properties.Settings.Default[stat.Identifier];

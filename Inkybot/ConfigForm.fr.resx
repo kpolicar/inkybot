@@ -68,4 +68,7 @@
     <data name="showWarningsCheckbox.Text" xml:space="preserve">
     <value>Afficher les avertissements</value>
   </data>
+    <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
+    <value>Surveiller la quantité de runes</value>
+  </data>
 </root>

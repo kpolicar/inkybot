@@ -291,7 +291,7 @@ namespace Inkybot.Services
                 
                 var userRune = userRunes.First(userRune => userRune.Rune == combine.Rune);
                 
-                if (userRune.Quantity == 0 && job.state.PreviousCheckHadRunOutOfRunes)
+                if (userRune.Quantity == 0 && job.state.PreviousCheckHadRunOutOfRunes && job.configManager.UserSettings.EnableRuneChecking)
                     throw new OutOfRunesException(userRune.Rune);
                 job.state.PreviousCheckHadRunOutOfRunes = userRune.Quantity == 0;
             }
