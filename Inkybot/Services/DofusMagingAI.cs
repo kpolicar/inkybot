@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -36,6 +37,9 @@ namespace Inkybot.Services
                 proposedMage ??=
                     new PerfectionItemMageResolve(config, item, sink).Resolve() ??
                     new PerfectionItemMageResolve(config, item, sink, 1).Resolve();
+            
+            proposedMage ??=
+                new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve();
 
             return proposedMage;
         }

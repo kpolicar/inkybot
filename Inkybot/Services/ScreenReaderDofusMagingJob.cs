@@ -135,11 +135,11 @@ namespace Inkybot.Services
                 // } catch (OutOfRunesException exception) {
                 // Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException) {
-                dataProvider.Scan!.Save();
+                dataProvider.Scan?.Save();
                 Debug.WriteLine("item has changed!");
             } catch (ExoAfterExoAttemptException ex) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(ex, "Stopping bot to prevent possibly ruining item."));
-                dataProvider.Scan!.Save();
+                dataProvider.Scan?.Save();
                 Debug.WriteLine("operation cancelled!");
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
@@ -161,7 +161,7 @@ namespace Inkybot.Services
                     }
                 }
             }
-
+            
             state.IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
             

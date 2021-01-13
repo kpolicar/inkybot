@@ -32,8 +32,8 @@ namespace Inkybot.Services
         {
             get {
                 switch (Rune.Type) {
-                    case Rune.RuneType.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit:
-                    case Rune.RuneType.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit:
+                    case Rune.RuneType.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit || MageConfig.MaxValueAtWhichSmRuneCanHit == null:
+                    case Rune.RuneType.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit || MageConfig.MaxValueAtWhichPaRuneCanHit == null:
                     case Rune.RuneType.Ra:
                         return true;
                     default:

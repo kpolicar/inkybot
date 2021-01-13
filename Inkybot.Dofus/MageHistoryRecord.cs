@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Inkybot.Dofus.Exceptions;
 
- namespace Inkybot.Dofus
+namespace Inkybot.Dofus
 {
     public struct StatChanged
     {
@@ -37,7 +38,7 @@ using System.Linq;
                 if (!sinkChanged)
                     return 0f;
                 if (Landed == null)
-                    throw new Exception("Could not resolve sink solely from history record");
+                    throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
                 
                 return ChangeInSinkFromFallen + Landed.Value.SinkModifier;
             }

@@ -257,7 +257,6 @@
         <Compile Include="Events\SinkChangedEventArgs.cs" />
         <Compile Include="Events\ItemEventArgs.cs" />
         <Compile Include="Events\FetchedUserEventArgs.cs" />
-        <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
         <Compile Include="Properties\Regex.Designer.cs">
           <DesignTime>True</DesignTime>
@@ -286,6 +285,9 @@
         <Compile Include="Services\ActionHandler.cs" />
         <Compile Include="Services\FileSystemUserSettingsConfigManager.cs" />
         <Compile Include="Services\MageConfigProvider.cs" />
+        <Compile Include="Services\OverMageToReachTargetMinimumItemMageResolve.cs">
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\StatConfigManager.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">

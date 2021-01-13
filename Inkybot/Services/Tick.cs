@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Exceptions;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
@@ -75,7 +76,13 @@ namespace Inkybot.Services
             }
 
             private void DoRuneCheckForChanges() {
-                EnforceChangeTimeoutRunningAndNotFinished();
+                try {
+                    EnforceChangeTimeoutRunningAndNotFinished();
+                } catch (ChangeCheckTimeoutException) {
+                    DoHistoryCheckForChanges();
+                    if (job.state.Step != State.JobStep.STANDARD)
+                        throw;
+                }
                 
                 if (!(job.state.PreviousAction is RuneAction previousAction))
                     throw new SystemException("Cannot check for changes (previous action has no information about rune)");

@@ -45,6 +45,7 @@
         <Compile Include="DefaultStatConfigProvider.cs" />
         <Compile Include="Contracts\StatConfigProvider.cs" />
         <Compile Include="Events\ItemStatMageConfigEventArgs.cs" />
+        <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="ItemMageConfig.cs" />
         <Compile Include="MageConfig.cs" />
         <Compile Include="Extensions\Enumerable.cs" />

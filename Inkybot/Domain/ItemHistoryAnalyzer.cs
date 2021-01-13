@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Exceptions;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Domain

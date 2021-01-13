@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Inkybot.Exceptions
+namespace Inkybot.Dofus.Exceptions
 {
-    public class CouldNotResolveSinkException : OcrException
+    public class CouldNotResolveSinkException : ApplicationException
     {
         public CouldNotResolveSinkException(string message)
             : base(message)

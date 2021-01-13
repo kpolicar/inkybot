@@ -69,7 +69,7 @@
           <Link>Resources\StatDictionary.Designer.cs</Link>
         </Compile>
         <Compile Include="ItemStatMageConfigTests.cs" />
-        <Compile Include="MagingAITest.cs" />
+        <Compile Include="MagingAITests.cs" />
         <Compile Include="Design\MagingAITest.cs" />
         <Compile Include="Design\ScreenReaderTest.cs" />
         <Compile Include="Design\SingleImageScreenReaderTest.cs" />
