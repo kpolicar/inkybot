@@ -23,7 +23,7 @@ namespace Inkybot.Dofus
             StatsConfig[index];
 
         public ItemStatMageConfig this[ItemStat index] =>
-            StatsConfig[index.stat];
+            StatsConfig[index.Stat];
 
         public Dictionary<Stat, ItemStatMageConfig> Exos
             => StatsConfig.ExoStatsConfigs;
@@ -32,12 +32,12 @@ namespace Inkybot.Dofus
             StatsConfig = new ItemMageConfig();
             
             foreach (var itemStat in item.Stats) {
-                var stat = itemStat.stat;
+                var stat = itemStat.Stat;
                 StatsConfig[stat] = new ItemStatMageConfig(
-                    itemStat.stat,
-                    itemStat.min,
-                    itemStat.max,
-                    itemStat.max,
+                    itemStat.Stat,
+                    itemStat.Min,
+                    itemStat.Max,
+                    itemStat.Max,
                     null);
             }
         }
@@ -72,7 +72,7 @@ namespace Inkybot.Dofus
                 (stat, minimum, maximum, target, targetMinimum);
 
             public bool IsApplicableTo(ItemStat itemStat) {
-                return (itemStat.min, itemStat.max)
+                return (itemStat.Min, itemStat.Max)
                        == (Minimum, Maximum);
             }
 
@@ -86,8 +86,11 @@ namespace Inkybot.Dofus
                     targetMinimum);
             
             
-            public static bool operator ==(ItemStatMageConfig x, ItemStatMageConfig y) => x.Equals(y);
-            public static bool operator !=(ItemStatMageConfig x, ItemStatMageConfig y) => !x.Equals(y);
+            public static bool operator ==(ItemStatMageConfig? x, ItemStatMageConfig? y) => 
+                ReferenceEquals(x, null) == ReferenceEquals(y, null) &&
+                Equals(x, y);
+            public static bool operator !=(ItemStatMageConfig? x, ItemStatMageConfig? y) =>
+                !(x == y);
 
             public override bool Equals(object? obj) =>
                 obj is ItemStatMageConfig other && Equals(other);

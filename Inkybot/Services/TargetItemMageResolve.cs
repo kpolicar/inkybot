@@ -19,13 +19,13 @@ namespace Inkybot.Services
                 .Select(itemStat => {
                     var runeType = ResolveRuneType(itemStat);
                 
-                    var rune = new Rune(itemStat.stat, runeType);
+                    var rune = new Rune(itemStat.Stat, runeType);
                 
                     return new ItemMage(
-                        itemStat.stat,
+                        itemStat.Stat,
                         rune,
                         config[itemStat],
-                        itemStat.value
+                        itemStat.Value
                     );
             });
         }

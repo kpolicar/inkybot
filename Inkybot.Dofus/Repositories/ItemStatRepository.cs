@@ -14,10 +14,10 @@ namespace Inkybot.Dofus.Repositories
         }
         
         public ItemStat[] MageableStats =>
-            Stats.Where(itemStat => itemStat.stat.Mageable).ToArray();
+            Stats.Where(itemStat => itemStat.Stat.Mageable).ToArray();
         
         public ItemStat[] UnmageableStats =>
-            Stats.Where(itemStat => !itemStat.stat.Mageable).ToArray();
+            Stats.Where(itemStat => !itemStat.Stat.Mageable).ToArray();
         
         public ItemStat[] StandardStats =>
             MageableStats.Where(itemStat => !itemStat.Exo).ToArray();
@@ -33,7 +33,22 @@ namespace Inkybot.Dofus.Repositories
             return GetEnumerator();
         }
 
+        public override bool Equals(object obj) =>
+            obj is ItemStatRepository other && Equals(other);
+
+        public bool Equals(ItemStatRepository other) =>
+            Length == other.Length && Stats
+                .Zip(other, (a, b) => a.Equals(b))
+                .All(match => match);
+        
+        public override int GetHashCode() {
+            unchecked {
+                return Stats
+                    .Aggregate(1, (acc, stat) => (stat.GetHashCode() * 397) ^ acc);
+            }
+        }
+
         public ItemStat this[int i] => Stats.ElementAt(i);
-        public ItemStat? this[Stat? stat] => Stats.FirstOrDefault(itemStat => itemStat.stat == stat);
+        public ItemStat? this[Stat? stat] => Stats.FirstOrDefault(itemStat => itemStat.Stat == stat);
     }
 }

@@ -126,7 +126,7 @@ namespace Inkybot.Services
         public UserRune RuneQuantity(Rune rune) {
             var row = previousScannedItem!.Stats
                 .Select((Value, Index) => new { Value, Index })
-                .Single(p => p.Value.stat == rune.Stat)
+                .Single(p => p.Value.Stat == rune.Stat)
                 .Index;
             
             var column = (int) rune.Type;

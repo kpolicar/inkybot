@@ -25,7 +25,7 @@ namespace Inkybot.Actions
             var column = (int) Rune.Type;
 
             for (var row = 0; row < itemStats.Length; row++) {
-                if (Rune.Stat != itemStats[row].stat)
+                if (Rune.Stat != itemStats[row].Stat)
                     continue;
 
                 var pos = RunePosition(column, row);

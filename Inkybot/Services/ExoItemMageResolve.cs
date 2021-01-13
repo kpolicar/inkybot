@@ -18,7 +18,7 @@ namespace Inkybot.Services
                         statConfig.Key,
                         new Rune(statConfig.Key, statConfig.Key.StrongestRuneType),
                         statConfig.Value,
-                        item.Stats[statConfig.Key]!.Value.value,
+                        item.Stats[statConfig.Key]!.Value,
                         true
                     ));
         }

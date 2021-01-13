@@ -23,15 +23,15 @@ namespace Inkybot.Adapters
                 var statRuneQuantities = new UserRune[3];
 
                 var smQuantity = runeQuantities.First();
-                statRuneQuantities[0] = new UserRune(new Rune(itemStat.stat, Rune.RuneType.Sm), smQuantity.Quantity);
+                statRuneQuantities[0] = new UserRune(new Rune(itemStat.Stat, Rune.RuneType.Sm), smQuantity.Quantity);
 
                 var paQuantity = runeQuantities.Skip(1).First();
-                statRuneQuantities[1] = new UserRune(new Rune(itemStat.stat, Rune.RuneType.Pa), paQuantity.Quantity);
+                statRuneQuantities[1] = new UserRune(new Rune(itemStat.Stat, Rune.RuneType.Pa), paQuantity.Quantity);
 
                 var raQuantity = runeQuantities.Skip(2).First();
-                statRuneQuantities[2] = new UserRune(new Rune(itemStat.stat, Rune.RuneType.Ra), raQuantity.Quantity);
+                statRuneQuantities[2] = new UserRune(new Rune(itemStat.Stat, Rune.RuneType.Ra), raQuantity.Quantity);
 
-                return new KeyValuePair<Stat, UserRune[]>(itemStat.stat, statRuneQuantities);
+                return new KeyValuePair<Stat, UserRune[]>(itemStat.Stat, statRuneQuantities);
             });
 
             return statsRuneQuantities;

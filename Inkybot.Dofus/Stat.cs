@@ -49,8 +49,11 @@ namespace Inkybot.Dofus
         public override bool Equals(object? obj) =>
             obj is Stat other && Identifier.Equals(other.Identifier);
         public override int GetHashCode() => Identifier.GetHashCode();
-        public static bool operator ==(Stat x, Stat y) => x.Equals(y);
-        public static bool operator !=(Stat x, Stat y) => !x.Equals(y);
+        public static bool operator ==(Stat? x, Stat? y) => 
+            ReferenceEquals(x, null) == ReferenceEquals(y, null) &&
+            Equals(x, y);
+        public static bool operator !=(Stat x, Stat y) => 
+            !(x == y);
         public override string ToString() => DisplayName;
 
         public static readonly Stat Initiative = new Stat("initiative", 1010, 0.1f, 0.05f, true, true);

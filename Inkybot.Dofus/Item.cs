@@ -9,7 +9,7 @@ namespace Inkybot.Dofus
         public readonly ItemStatRepository Stats;
         public bool IsValid => Stats.Length > 0;
         public bool IsInvalid => !IsValid;
-        public bool IsOvermaged => Stats.StandardStats.Any(itemStat => itemStat.value > itemStat.max);
+        public bool IsOvermaged => Stats.StandardStats.Any(itemStat => itemStat.Value > itemStat.Max);
         public bool HasExo => Stats.ExoStats.Length > 0;
 
         public Item(ItemStatRepository stats) {
@@ -17,7 +17,7 @@ namespace Inkybot.Dofus
         }
 
         public Stat? this[Stat index]
-            => Stats[index]?.stat ?? null;
+            => Stats[index]?.Stat ?? null;
 
         public bool HasStat(Stat stat)
             => this[stat] != null;
@@ -28,8 +28,8 @@ namespace Inkybot.Dofus
 
         public bool HasDifferentStatValues(Item op1) {
             return Stats.ZipWithDefault(op1.Stats, (stats1, stats2) =>
-                (stats1.stat, stats1.max, stats1.min, stats1.value) !=
-                (stats2.stat, stats2.max, stats2.min, stats2.value))
+                (stat: stats1.Stat, max: stats1.Max, min: stats1.Min, value: stats1.Value) !=
+                (stats2.Stat, stats2.Max, stats2.Min, stats2.Value))
                 .Any(match => match);
         }
 
@@ -39,9 +39,18 @@ namespace Inkybot.Dofus
             if (stats1.Length != stats2.Length) return false;
             
             return stats1.Zip(stats2,
-                    (s1, s2) => s1.stat == s2.stat)
+                    (s1, s2) => s1.Stat == s2.Stat)
                 .All(equal => equal);
         }
+
+        public override bool Equals(object obj) {
+            if (obj is Item other)
+                return Equals(other);
+            return false;
+        }
+
+        public bool Equals(Item other) =>
+            Stats.Equals(other.Stats);
 
         public static bool operator ==(Item? op1, Item? op2) {
             if (ReferenceEquals(null, op1) && ReferenceEquals(null, op2))
@@ -50,12 +59,7 @@ namespace Inkybot.Dofus
                 return false;
             if (ReferenceEquals(null, op1) && !ReferenceEquals(null, op2))
                 return false;
-            var comparison = op1!.Stats.Stats.ZipWithDefault(op2!.Stats.Stats, (stats1, stats2) => new {
-                Stats1 = stats1, Stats2 = stats2
-            });
-
-            return comparison.All(comparison =>
-                comparison.Stats1 == comparison.Stats2);
+            return op1!.Equals(op2!);
         }
 
         public static bool operator !=(Item? op1, Item? op2) {

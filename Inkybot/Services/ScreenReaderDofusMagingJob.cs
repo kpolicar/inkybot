@@ -94,6 +94,7 @@ namespace Inkybot.Services
         }
 
         private void PrepareMage() {
+            var (previousItem, previousSink) = (state.PreviousItem, state.Sink);
             state.Reset();
             state.IsPreparing = true;
             supervisor = new Supervisor(this);
@@ -108,6 +109,11 @@ namespace Inkybot.Services
                 itemInfo = new ItemInfo {
                     Runes = dataProvider.Runes()
                 };
+                // Persist item info
+                if (previousItem != null && item.Equals(previousItem)) {
+                    state.Sink = previousSink;
+                    state.PreviousItem = previousItem;
+                }
             
                 if (IsMaging)
                     Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config!));

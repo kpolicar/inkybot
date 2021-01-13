@@ -38,7 +38,7 @@ namespace Inkybot.Services
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
-                finish.Item.Stats.ExoStats.Any(itemStat => itemStat.stat == previousCombine.Rune.Stat)) {
+                finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat)) {
                 
                 var stat = previousCombine.Rune.Stat;
                 if (exoSuccesses.ContainsKey(stat))

@@ -28,7 +28,7 @@ namespace Tests
         public void Test() {
             var config = new MageConfig(item);
             TestContext.WriteLine("---");
-            TestContext.WriteLine(item.Stats[0].stat.Config.ChangeToPaRuneThreshold);
+            TestContext.WriteLine(item.Stats[0].Stat.Config.ChangeToPaRuneThreshold);
             TestContext.WriteLine("---");
             
             Config.ResetConfig(item);

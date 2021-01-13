@@ -41,8 +41,8 @@ namespace Inkybot.Services
         protected virtual Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config[itemStat];
 
-            if (itemConfig.ShouldUseRaRunes && itemStat.value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
-            if (itemConfig.ShouldUsePaRunes && itemStat.value >= itemConfig.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
+            if (itemConfig.ShouldUseRaRunes && itemStat.Value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
+            if (itemConfig.ShouldUsePaRunes && itemStat.Value >= itemConfig.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
 
             return Rune.RuneType.Sm;
         }

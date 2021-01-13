@@ -21,11 +21,11 @@ namespace Inkybot.Dofus
             applicable &= 
                 standardStats.Length == StandardStatsConfigs.Count &&
                 standardStats.All(itemStat =>
-                    StandardStatsConfigs[itemStat.stat].IsApplicableTo(itemStat));
+                    StandardStatsConfigs[itemStat.Stat].IsApplicableTo(itemStat));
             applicable &= 
                 exoStats.Length <= ExoStatsConfigs.Count &&
                 exoStats.All(itemStat =>
-                    ExoStatsConfigs[itemStat.stat].IsApplicableTo(itemStat));
+                    ExoStatsConfigs[itemStat.Stat].IsApplicableTo(itemStat));
 
             return applicable;
         }

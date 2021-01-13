@@ -86,7 +86,7 @@ namespace Inkybot
             for (var i = 0; i < statsDataGridView.Rows.Count; i++) {
                 var row = statsDataGridView.Rows[i];
                 var updatingFallenExos = i >= item.Stats.Length;
-                var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].stat;
+                var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].Stat;
                 if (!stat.Mageable)
                     continue;
                     
@@ -99,7 +99,7 @@ namespace Inkybot
                     continue;
                 }
                 
-                row.Cells[1].Value = item.Stats[i].value;
+                row.Cells[1].Value = item.Stats[i].Value;
             }
         }
 
@@ -115,7 +115,7 @@ namespace Inkybot
 
                 // If there are more configured stats, they must be exos
                     
-                if (onRow.Stat != item.Stats[i].stat) {
+                if (onRow.Stat != item.Stats[i].Stat) {
                     return false;
                 }
             }
@@ -186,7 +186,7 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                var row = AddNewStatRow(itemStat.stat.DisplayName, itemStat.value, itemStat.max,  null, itemStat.Exo, itemStat.stat.Mageable);
+                var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  null, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
             }
         }
@@ -303,7 +303,7 @@ namespace Inkybot
             }
 
             public ItemStatRow(ItemStat itemStat) {
-                Stat = itemStat.stat;
+                Stat = itemStat.Stat;
                 Exo = itemStat.Exo;
             }
 

@@ -64,8 +64,13 @@ namespace Inkybot.Dofus
         }
         
         
-        public static bool operator == (Rune operand1, Rune operand2) => operand1.Equals(operand2);
-        public static bool operator != (Rune operand1, Rune operand2) => !operand1.Equals(operand2);
+        // Todo working on this atm todo todo todo todo
+        public static bool operator == (Rune? operand1, Rune? operand2) =>
+            ReferenceEquals(operand1, null) == ReferenceEquals(operand2, null) &&
+            Equals(operand1, operand2);
+
+        public static bool operator !=(Rune? operand1, Rune? operand2) =>
+            !(operand1 == operand2);
         public override string ToString() => DisplayName;
         
         public override bool Equals(object? obj) =>
