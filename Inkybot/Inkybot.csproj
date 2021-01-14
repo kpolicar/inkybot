@@ -236,6 +236,7 @@
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
+        <Compile Include="Extensions\DataGridViewRowCollection.cs" />
         <Compile Include="Extensions\IEnumerable.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />

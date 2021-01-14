@@ -45,7 +45,7 @@ namespace Inkybot.Services
                 }
             }
         }
-            
+        
         public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
         public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;
 

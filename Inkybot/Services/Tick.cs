@@ -274,8 +274,6 @@ namespace Inkybot.Services
                             job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                         });
                     }
-                    if (combine.Exo && job.state.PreviousCombineWasExoAttempt)
-                        throw new ExoAfterExoAttemptException("Something unexpected occured.");
                 }
                 
                 job.actions.Execute(action);

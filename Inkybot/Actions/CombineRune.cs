@@ -30,7 +30,6 @@ namespace Inkybot.Actions
 
                 var pos = RunePosition(column, row);
                 
-                System.Diagnostics.Debug.WriteLine(pos);
                 Input.Click(pos.X, pos.Y);
                 System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.Stat.ToString()}");
                 return;

@@ -17,6 +17,7 @@ namespace Inkybot.Services
         private ApiClient api = null!;
         private int changesCount = 0;
         const int MinChangesToSendCount = 10;
+        private const int MaxReasonableBalanceDifference = 300000;
         
         private int balanceDifference = 0;
         private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
@@ -61,6 +62,8 @@ namespace Inkybot.Services
             changesCount++;
             balanceDifference += e.OldBalance - e.Balance;
             balanceDifference = Math.Max(balanceDifference, 0);
+            if (balanceDifference > MaxReasonableBalanceDifference)
+                balanceDifference = 0;
 
             if (changesCount >= MinChangesToSendCount)
                 Send();

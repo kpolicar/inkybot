@@ -11,6 +11,7 @@ using Inkybot.Dofus;
 using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Resources;
 using Inkybot.Services;
@@ -83,23 +84,34 @@ namespace Inkybot
         }
 
         private void UpdateDataGridRowValues(Item item) {
-            for (var i = 0; i < statsDataGridView.Rows.Count; i++) {
-                var row = statsDataGridView.Rows[i];
-                var updatingFallenExos = i >= item.Stats.Length;
-                var stat = updatingFallenExos ? ((ItemStatRow) row.Tag).Stat : item.Stats[i].Stat;
+            var updatedStats = new List<Stat>();
+            
+            foreach (var itemStat in item.Stats) {
+                if (!itemStat.Stat.Mageable)
+                    continue;
+                
+                var row = statsDataGridView.Rows
+                    .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat)!;
+                
+                row.Cells[1].Value = itemStat.Value;
+                updatedStats.Add(itemStat.Stat);
+            }
+            
+            var untouchedRows = statsDataGridView.Rows.Cast<DataGridViewRow>()
+                .Where(row => !updatedStats.Contains(((ItemStatRow) row.Tag).Stat));
+
+            foreach (var untouchedRow in untouchedRows) {
+                var stat = ((ItemStatRow) untouchedRow.Tag).Stat;
                 if (!stat.Mageable)
                     continue;
-                    
-                if (updatingFallenExos) {
-                    if (configManager.Config![stat].Target == 0) {
-                        statsDataGridView.Rows.RemoveAt(i);
-                    } else
-                        statsDataGridView[1, i].Value = 0;
-                    
-                    continue;
-                }
                 
-                row.Cells[1].Value = item.Stats[i].Value;
+                var config = configManager.Config![stat];
+                // Remove it if it's not configured
+                if (config.Target == null || config.Target == 0) {
+                    statsDataGridView.Rows.Remove(untouchedRow);
+                } else {
+                    untouchedRow.Cells[1].Value = 0;
+                }
             }
         }
 
@@ -109,15 +121,11 @@ namespace Inkybot
             if (item.Stats.Length > configuredCount)
                 return false;
 
-            for (var i = 0; i < item.Stats.Length; i++) {
-                var row = statsDataGridView.Rows[i];
-                var onRow = (ItemStatRow) row.Tag;
-
-                // If there are more configured stats, they must be exos
-                    
-                if (onRow.Stat != item.Stats[i].Stat) {
+            foreach (var itemStat in item.Stats) {
+                var row = statsDataGridView.Rows
+                    .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat);
+                if (row == null)
                     return false;
-                }
             }
             
 
@@ -127,41 +135,43 @@ namespace Inkybot
         private bool TryRebuildDataGridViewWithExistingRows(MageConfig config) {
             if (config.StatsConfig.StandardStatsConfigs.Count > statsDataGridView.Rows.Count)
                 return false;
-
-            var index = 0;
-            foreach (var itemStatConfig in config.StatsConfig) {
-                if (index >= statsDataGridView.Rows.Count) {
-                    var stat = itemStatConfig.Key;
-                    var statConfig = itemStatConfig.Value;
-                    if (!statConfig.Exo)
-                        return false;
-
-                    var newRow = AddNewStatRow(
-                        itemStatConfig.Key.DisplayName, 
+            
+            var updatedStats = new List<Stat>();
+            
+            foreach (var statConfig in config.StatsConfig) {
+                var stat = statConfig.Key;
+                var itemStatConfig = statConfig.Value;
+                if (!stat.Mageable)
+                    continue;
+                
+                var row = statsDataGridView.Rows
+                    .FindWithTag<ItemStatRow>(tag => tag.Stat == stat);
+                
+                if (row == null && itemStatConfig.Exo) {
+                    row = AddNewStatRow(
+                        stat.DisplayName,
                         0,
-                        statConfig.Target,
-                        statConfig.TargetMinimum,
+                        itemStatConfig.Target,
+                        itemStatConfig.TargetMinimum,
                         true,
                         stat.Mageable);
-                    newRow.Tag = new ItemStatRow(stat, true);
-                    index++;
-                    continue;
+                    row.Tag = new ItemStatRow(stat, true);
                 }
-                
-                var row = statsDataGridView.Rows[index++];
-                var rowItemStat = (ItemStatRow) row.Tag;
-                if ((rowItemStat.Stat, rowItemStat.Exo) != (itemStatConfig.Key, itemStatConfig.Value.Exo))
+                var rowItemStat = (ItemStatRow) row!.Tag;
+
+                if (statConfig.Value.Exo != rowItemStat.Exo)
                     return false;
 
-                row.Cells[2].Value = Numbers.ToString(itemStatConfig.Value.Target);
-                row.Cells[3].Value = Numbers.ToString(itemStatConfig.Value.TargetMinimum);
+                row.Cells[2].Value = Numbers.ToString(itemStatConfig.Target);
+                row.Cells[3].Value = Numbers.ToString(itemStatConfig.TargetMinimum);
+                updatedStats.Add(rowItemStat.Stat);
             }
-
-            // remove extra rows
-            var len = statsDataGridView.Rows.Count;
-            for (int i = index; i < len; i++) {
-                var row = statsDataGridView.Rows[index];
-                statsDataGridView.Rows.Remove(row);
+            
+            var untouchedRows = statsDataGridView.Rows.Cast<DataGridViewRow>()
+                .Where(row => !updatedStats.Contains(((ItemStatRow) row.Tag).Stat)).ToArray();
+            
+            foreach (var dataGridViewRow in untouchedRows) {
+                statsDataGridView.Rows.Remove(dataGridViewRow);
             }
 
             return true;
@@ -258,7 +268,7 @@ namespace Inkybot
             if (e.ColumnIndex == 2)
                 configManager.ChangeStatConfigTarget(stat, newValue!.Value);
             else if (e.ColumnIndex == 3) {
-                var target = configManager.Config[stat].Target;
+                var target = configManager.Config![stat].Target;
                 newValue = newValue > target
                     ? target
                     : newValue;

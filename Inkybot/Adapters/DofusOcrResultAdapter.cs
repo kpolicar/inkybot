@@ -23,7 +23,6 @@ namespace Inkybot.Adapters
                 name = SpellCorrectStatName(name);
                 return Stat.Stats.Values.First(stat => stat.DisplayName == name);
             } catch (Exception exception) {
-                Debug.WriteLine(name);
                 throw new CouldNotResolveStatNameException($"Error occured trying to resolve stat name \"{name}\"", exception);
             }
         }

@@ -38,8 +38,7 @@ namespace Inkybot.Dofus.Repositories
 
         public bool Equals(ItemStatRepository other) =>
             Length == other.Length && Stats
-                .Zip(other, (a, b) => a.Equals(b))
-                .All(match => match);
+                .All(itemStat => other.Stats.Contains(itemStat));
         
         public override int GetHashCode() {
             unchecked {

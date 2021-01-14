@@ -27,8 +27,9 @@ namespace Inkybot.Dofus
         }
 
         public bool HasDifferentStatValues(Item op1) {
-            return Stats.ZipWithDefault(op1.Stats, (stats1, stats2) =>
-                (stat: stats1.Stat, max: stats1.Max, min: stats1.Min, value: stats1.Value) !=
+            return Stats.Length != op1.Stats.Length ||
+                Stats.ZipWithDefault(op1.Stats, (stats1, stats2) =>
+                (stats1.Stat, stats1.Max, stats1.Min, stats1.Value) !=
                 (stats2.Stat, stats2.Max, stats2.Min, stats2.Value))
                 .Any(match => match);
         }

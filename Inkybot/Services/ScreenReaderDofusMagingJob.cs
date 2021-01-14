@@ -137,10 +137,6 @@ namespace Inkybot.Services
             } catch (ItemHasChangedException) {
                 dataProvider.Scan?.Save();
                 Debug.WriteLine("item has changed!");
-            } catch (ExoAfterExoAttemptException ex) {
-                Error?.Invoke(this, new MagingJobErrorEventArgs(ex, "Stopping bot to prevent possibly ruining item."));
-                dataProvider.Scan?.Save();
-                Debug.WriteLine("operation cancelled!");
             } catch (OperationCanceledException) {
                 Debug.WriteLine("operation cancelled!");
             } catch (Exception exception) {
