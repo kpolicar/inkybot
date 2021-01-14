@@ -84,5 +84,9 @@ namespace Inkybot.Actions
             
             return GetCursorTarget(measurement);
         }
+        
+        public override string ToString() {
+            return $"Combine: {Rune}";
+        }
     }
 }

@@ -6,14 +6,17 @@ namespace Inkybot.Services
 {
     internal class PerfectionItemMageResolve : TargetItemMageResolve
     {
-        private float sink;
+        private float Sink;
         
-        public PerfectionItemMageResolve(MageConfig config, Item item, float sink, int runeTypeOffset = 0) : base(config, item, runeTypeOffset) {
-            this.sink = sink;
-        }
+        public PerfectionItemMageResolve(MageConfig config, Item item, float sink, int runeTypeOffset = 0)
+            : base(config, item, runeTypeOffset) =>
+            Sink = sink;
+        
+        protected override bool MatchesCriteria(ItemMage itemMage) =>
+            !itemMage.WillOvermage;
 
         protected override IEnumerable<ItemMage> PotentialMages() {
-            return base.PotentialMages().Where(itemMage => itemMage.Rune.Sink <= sink);
+            return base.PotentialMages().Where(itemMage => itemMage.Rune.Sink <= Sink);
         }
 
         protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {

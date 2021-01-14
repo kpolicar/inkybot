@@ -26,9 +26,11 @@ namespace Inkybot.Services
 
         protected virtual ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
             return prioritized.FirstOrDefault(itemMage =>
-                itemMage.CanHit && !itemMage.WillOvertarget);
+                itemMage.CanHit && MatchesCriteria(itemMage));
         }
 
+        protected abstract bool MatchesCriteria(ItemMage itemMage);
+        
         protected abstract IEnumerable<ItemMage> PotentialMages();
 
         protected abstract int Priority(ItemMage itemMage);

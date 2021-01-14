@@ -22,7 +22,7 @@ namespace Inkybot.Dofus
 
         private Dictionary<Stat, StatConfig> defaultConfig = new Dictionary<Stat, StatConfig> {
             {Stat.Initiative, new StatConfig(210, 170, 570, 470)},
-            {Stat.Vitality, new StatConfig(115, 90, 330, 310)},
+            {Stat.Vitality, new StatConfig(115, 90, 315, 310)},
             {Stat.Pods, new StatConfig(110, 90, 570, 470)},
             {Stat.Strength, new StatConfig(21, 17, 62, 55)},
             {Stat.Intelligence, new StatConfig(21, 17, 62, 55)},

@@ -71,6 +71,7 @@
         </Compile>
         <Compile Include="ItemStatMageConfigTests.cs" />
         <Compile Include="MagingAIFinishedTests.cs" />
+        <Compile Include="MagingAIOverTargetTest.cs" />
         <Compile Include="MagingAITests.cs" />
         <Compile Include="Design\MagingAITest.cs" />
         <Compile Include="Design\ScreenReaderTest.cs" />

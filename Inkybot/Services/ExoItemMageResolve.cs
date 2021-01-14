@@ -13,7 +13,6 @@ namespace Inkybot.Services
             Sink = sink;
         }
 
-
         protected override IEnumerable<ItemMage> PotentialMages() {
             return config.Exos
                 .Where(statConfig => statConfig.Key.Mageable)
@@ -34,23 +33,19 @@ namespace Inkybot.Services
                     }
 
                     return itemMage;
-                })
-                .Where(itemMage =>
-                    itemMage.Rune.Sink <= Sink || !itemMage.HasReachedTargetMinimum);
-            // Todo HEAVY TESTING
+                });
         }
 
-        protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
-            return base.ChooseFromPrioritized(prioritized);
-        }
+        protected override bool MatchesCriteria(ItemMage itemMage) =>
+            !itemMage.WillOvertarget &&
+            (itemMage.Rune.Sink <= Sink || !itemMage.HasReachedTargetMinimum);
 
         protected override IOrderedEnumerable<ItemMage> Prioritize() {
             var potentialMages = PotentialMages();
             return potentialMages.OrderBy(Priority);
         }
         
-        protected override int Priority(ItemMage itemMage) {
-            return (int) itemMage.Rune.Sink;
-        }
+        protected override int Priority(ItemMage itemMage) =>
+            (int) itemMage.Rune.Sink;
     }
 }

@@ -5,7 +5,7 @@ using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
-    internal class TargetItemMageResolve : PrioritizedItemMageResolve
+    internal class TargetItemMageResolve : StandardStatsPrioritizedItemMageResolve
     {
         private int runeTypeOffset;
 
@@ -13,35 +13,18 @@ namespace Inkybot.Services
             this.runeTypeOffset = runeTypeOffset;
         }
 
-        protected override IEnumerable<ItemMage> PotentialMages() {
-            return item.Stats
-                .StandardStats
-                .Select(itemStat => {
-                    var runeType = ResolveRuneType(itemStat);
-                
-                    var rune = new Rune(itemStat.Stat, runeType);
-                
-                    return new ItemMage(
-                        itemStat.Stat,
-                        rune,
-                        config[itemStat],
-                        itemStat.Value
-                    );
-            }).Where(itemMage => itemMage.CanHit && !itemMage.WillOvermage);
-        }
+        protected override bool MatchesCriteria(ItemMage itemMage) =>
+            !itemMage.WillOvermage && !itemMage.WillOvertarget;
 
         protected override int Priority(ItemMage itemMage) {
-            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately && !itemMage.WillOvermage) {
-                // 1000 ought to be enough to prioritize it over others
+            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately) {
                 return (int) itemMage.Rune.Sink * 1000;
             }
             return itemMage.NumberOfRunesNeededForFullMage;
         }
 
-        private bool IsHighSinkItemMage(ItemMage itemMage) {
-            // Summon or higher
-            return itemMage.Rune.Sink >= 30;
-        }
+        private bool IsHighSinkItemMage(ItemMage itemMage) =>
+            itemMage.Rune.Sink >= 30;
 
         protected override Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var runeType = base.ResolveRuneType(itemStat);
