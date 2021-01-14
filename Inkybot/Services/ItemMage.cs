@@ -14,6 +14,10 @@ namespace Inkybot.Services
         public readonly bool Exo;
         public readonly int Max => MageConfig.Maximum;
         public readonly int? Target => MageConfig.Target;
+        public readonly bool HasReachedTargetMinimum =>
+            MageConfig.TargetMinimum == null || Value >= MageConfig.TargetMinimum;
+        public readonly bool HasReachedTarget =>
+            MageConfig.Target == null || Value >= MageConfig.Target;
             
         public int NumberOfRunesNeededForFullMage =>
             Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));
@@ -53,6 +57,15 @@ namespace Inkybot.Services
             Value = value;
             Exo = exo;
         }
+        
+        public ItemMage Clone
+            (Stat? stat=null, Rune? rune=null, ItemStatMageConfig? mageConfig=null, int? value=null, bool? exo=null)
+            => new ItemMage(
+                stat ?? Stat,
+                rune ?? Rune,
+                mageConfig ?? MageConfig,
+                value ?? Value,
+                exo ?? Exo);
         
 
         public static ItemMage WithRuneTypeOffset(ItemMage itemMage, int runeTypeOffset) {

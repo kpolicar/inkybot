@@ -71,6 +71,9 @@ namespace Inkybot.Dofus
                 (Stat, Minimum, Maximum, Target, TargetMinimum) =
                 (stat, minimum, maximum, target, targetMinimum);
 
+            public static ItemStatMageConfig MakeExo(Stat stat, int? target, int? targetMinimum) =>
+                new ItemStatMageConfig(stat, 0, 0, target, targetMinimum);
+
             public bool IsApplicableTo(ItemStat itemStat) {
                 return (itemStat.Min, itemStat.Max)
                        == (Minimum, Maximum);

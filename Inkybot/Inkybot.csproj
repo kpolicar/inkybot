@@ -288,6 +288,9 @@
         <Compile Include="Services\OverMageToReachTargetMinimumItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\OverMageToReachTargetWithSinkItemMageResolve.cs">
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\StatConfigManager.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">

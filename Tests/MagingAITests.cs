@@ -12,17 +12,6 @@ namespace Tests
 
         [SetUp]
         public void InitSetupItem() {
-            // item = new Item(new ItemStatRepository(new[] {
-            //     new ItemStat("vitality", 243, 201, 250),
-            //     new ItemStat("strength", 52, 41, 60),
-            //     new ItemStat("wisdom", 13, 16, 20),
-            //     new ItemStat("critical", 7, 4, 7),
-            //     new ItemStat("neutral_damage", 11, 9, 12),
-            //     new ItemStat("earth_damage", 11, 9, 12),
-            //     new ItemStat("per_water_resistance", 8, 7, 10),
-            //     new ItemStat("ap_parry", -5, -5, -5),
-            //     new ItemStat("critical_damage", 8, 7, 10),
-            // }));
             item = new Item(new ItemStatRepository(new[] {
                 new ItemStat("vitality", 351, 301, 400),
                 new ItemStat("strength", 93, 81, 100),
@@ -38,11 +27,56 @@ namespace Tests
         }
 
         [Test]
-        public void Test() {
+        public void TestOvermageToReachMinimumVitality() {
             Config.ChangeStatConfigTargetMinimum(Stat.Vitality, 370);
             var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(action.Rune.Stat, Stat.Vitality);
+        }
+
+        // Todo he should not be trying to do this - it will fail (strength cannot go over 101)
+        [Test]
+        public void TestOvermageToReachMinimumStrength() {
+            Config.ChangeStatConfigTargetMinimum(Stat.Strength, 94);
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(action.Rune.Stat, Stat.Strength);
+        }
+
+        [Test]
+        public void TestExoSmallerBeforeLarger() {
+            var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Initiative, 
+                10, 
+                10);
+            Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
+            var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Ap, 
+                1, 
+                1);
+            Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
-            TestContext.WriteLine(action?.Rune.ToString() ?? "null");
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(new Rune(Stat.Initiative, Rune.RuneType.Sm), action.Rune);
+        }
+
+        [Test]
+        public void TestExoFocusStatWithTargetMinimum() {
+            var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Intelligence, 
+                10, 
+                null);
+            Config.ChangeStatConfig(Stat.Intelligence, exoIniConfig);
+            var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Ap, 
+                1, 
+                1);
+            Config.ChangeStatConfig(Stat.Ap, exoApConfig);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(new Rune(Stat.Ap, Rune.RuneType.Sm), action.Rune);
         }
     }
 }

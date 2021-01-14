@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Inkybot.Dofus;
@@ -6,22 +7,43 @@ namespace Inkybot.Services
 {
     internal class ExoItemMageResolve : PrioritizedItemMageResolve
     {
-        public ExoItemMageResolve(MageConfig config, Item item) : base(config, item) {
+        public readonly float Sink;
+        
+        public ExoItemMageResolve(MageConfig config, Item item, float sink) : base(config, item) {
+            Sink = sink;
         }
+
 
         protected override IEnumerable<ItemMage> PotentialMages() {
             return config.Exos
                 .Where(statConfig => statConfig.Key.Mageable)
-                .Select(statConfig =>
-                    new ItemMage(
+                .Select(statConfig => {
+                    var itemMage = new ItemMage(
                         statConfig.Key,
                         new Rune(statConfig.Key, statConfig.Key.StrongestRuneType),
                         statConfig.Value,
                         item.Stats[statConfig.Key]?.Value ?? 0,
                         true
-                    ));
+                    );
+                    if (statConfig.Value.TargetMinimum == null || itemMage.Value >= statConfig.Value.TargetMinimum)
+                        return itemMage;
+
+                    while (itemMage.WillOvertarget &&
+                           itemMage.Rune.Weaker != null) {
+                        itemMage = itemMage.Clone(rune: itemMage.Rune.Weaker);
+                    }
+
+                    return itemMage;
+                })
+                .Where(itemMage =>
+                    itemMage.Rune.Sink <= Sink || !itemMage.HasReachedTargetMinimum);
+            // Todo HEAVY TESTING
         }
-        
+
+        protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
+            return base.ChooseFromPrioritized(prioritized);
+        }
+
         protected override IOrderedEnumerable<ItemMage> Prioritize() {
             var potentialMages = PotentialMages();
             return potentialMages.OrderBy(Priority);

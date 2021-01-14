@@ -39,13 +39,14 @@ namespace Inkybot.Services
                     new PerfectionItemMageResolve(config, item, sink, 1).Resolve();
             
             proposedMage ??=
-                new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve();
+                new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve() ??
+                new OverMageToReachTargetWithSinkItemMageResolve(config, item, sink).Resolve();
 
             return proposedMage;
         }
         
         private ItemMage? ResolveItemMageForExo(Item item) {
-            return new ExoItemMageResolve(config, item).Resolve();
+            return new ExoItemMageResolve(config, item, sink).Resolve();
         }
 
         public IAction ResolveAction(Item item) {

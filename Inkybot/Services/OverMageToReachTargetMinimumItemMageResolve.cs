@@ -5,16 +5,30 @@ using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
-    internal class OverMageToReachTargetMinimumItemMageResolve : OverTargetItemMageResolve
+    internal class OverMageToReachTargetMinimumItemMageResolve : PrioritizedItemMageResolve
     {
         public OverMageToReachTargetMinimumItemMageResolve(MageConfig config, Item item) : base(config, item) {
         }
 
         protected override IEnumerable<ItemMage> PotentialMages() {
-            return base.PotentialMages()
-                .Where(itemMage =>
-                    itemMage.MageConfig.TargetMinimum != null &&
-                    itemMage.Value < itemMage.MageConfig.TargetMinimum);
+            return item.Stats
+                .StandardStats
+                .Select(itemStat => {
+                    var runeType = ResolveRuneType(itemStat);
+                
+                    var rune = new Rune(itemStat.Stat, runeType);
+                
+                    return new ItemMage(
+                        itemStat.Stat,
+                        rune,
+                        config[itemStat],
+                        itemStat.Value
+                    );
+                }).Where(itemMage => !itemMage.HasReachedTargetMinimum);
+        }
+
+        protected override int Priority(ItemMage itemMage) {
+            return itemMage.NumberOfRunesNeededForFullMage;
         }
 
 

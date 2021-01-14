@@ -50,7 +50,7 @@ namespace Inkybot.Services
             this.serviceContainer = serviceContainer;
         }
 
-        internal int Balance {
+        private int Balance {
             get => state.Balance;
             set {
                 if (state.Balance != 0)
@@ -58,7 +58,7 @@ namespace Inkybot.Services
                 state.Balance = value;
             }
         }
-        internal float Sink {
+        private float Sink {
             get => state.Sink;
             set {
                 SinkChanged?.Invoke(this, 

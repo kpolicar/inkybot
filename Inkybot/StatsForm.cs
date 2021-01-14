@@ -282,10 +282,8 @@ namespace Inkybot
                 return;
             }
             var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = new MageConfig.ItemStatMageConfig(
+            var exoConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 stat, 
-                0, 
-                0, 
                 stat.StrongestRune.IncreaseInValue, 
                 stat.StrongestRune.IncreaseInValue);
             

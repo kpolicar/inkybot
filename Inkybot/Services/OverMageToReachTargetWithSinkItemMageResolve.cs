@@ -5,9 +5,12 @@ using Inkybot.Dofus;
 
 namespace Inkybot.Services
 {
-    internal class OverTargetItemMageResolve : PrioritizedItemMageResolve
+    internal class OverMageToReachTargetWithSinkItemMageResolve : PrioritizedItemMageResolve
     {
-        public OverTargetItemMageResolve(MageConfig config, Item item) : base(config, item) {
+        public readonly float Sink;
+        
+        public OverMageToReachTargetWithSinkItemMageResolve(MageConfig config, Item item, float sink) : base(config, item) {
+            Sink = sink;
         }
 
         protected override IEnumerable<ItemMage> PotentialMages() {
@@ -24,19 +27,15 @@ namespace Inkybot.Services
                         config[itemStat],
                         itemStat.Value
                     );
-                }).Where(itemMage =>
-                    itemMage.WillOvertarget &&
-                    itemMage.WithLowerRuneStrength != null &&
-                    itemMage.WithLowerRuneStrength.Value.NumberOfRunesNeededToReachTarget >= 2);
+                }).Where(itemMage => itemMage.Rune.Sink <= Sink && !itemMage.HasReachedTarget);
+        }
+        
+        protected override int Priority(ItemMage itemMage) {
+            return itemMage.NumberOfRunesNeededForFullMage;
         }
 
         protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
-            return prioritized.FirstOrDefault(itemMage =>
-                itemMage.CanHit && !itemMage.WillOvermage);
-        }
-
-        protected override int Priority(ItemMage itemMage) {
-            return itemMage.NumberOfRunesNeededForFullMage;
+            return prioritized.FirstOrDefault(itemMage => itemMage.CanHit);
         }
     }
 }

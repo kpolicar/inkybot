@@ -27,7 +27,7 @@ namespace Inkybot.Services
                         config[itemStat],
                         itemStat.Value
                     );
-            });
+            }).Where(itemMage => itemMage.CanHit && !itemMage.WillOvermage);
         }
 
         protected override int Priority(ItemMage itemMage) {

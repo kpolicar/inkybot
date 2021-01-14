@@ -13,6 +13,7 @@
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <LangVersion>8</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,15 +70,18 @@
           <Link>Resources\StatDictionary.Designer.cs</Link>
         </Compile>
         <Compile Include="ItemStatMageConfigTests.cs" />
+        <Compile Include="MagingAIFinishedTests.cs" />
         <Compile Include="MagingAITests.cs" />
         <Compile Include="Design\MagingAITest.cs" />
         <Compile Include="Design\ScreenReaderTest.cs" />
         <Compile Include="Design\SingleImageScreenReaderTest.cs" />
         <Compile Include="Design\Test.cs" />
+        <Compile Include="MagingAITests2.cs" />
         <Compile Include="RuneTests.cs" />
         <Compile Include="Services\FileScreenCapture.cs" />
         <Compile Include="OcrItemTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Services\MagingJobMock.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
