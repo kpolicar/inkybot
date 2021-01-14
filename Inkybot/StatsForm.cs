@@ -180,7 +180,6 @@ namespace Inkybot
         private void RebuildDataGridView(MageConfig config) {
             if (TryRebuildDataGridViewWithExistingRows(config))
                 return;
-            statsDataGridView.Rows.Clear();
 
             foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;

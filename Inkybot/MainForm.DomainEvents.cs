@@ -52,12 +52,12 @@ namespace Inkybot
 
         private void OnMagingStarted(object sender, MagingJobEventArgs e) {
             if (config.UserSettings.ShowUserWarnings &&
-                e.Item.HasExo || e.Item.IsOvermaged) {
+                (e.Item.HasExo || e.Item.IsOvermaged)) {
                 StartMageExoOverConfirmDialog();
             }
 
             if (config.UserSettings.ShowUserWarnings &&
-                !screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)) {
+                (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config))) {
                 StartMageUnsupportedDialog();
             }
             

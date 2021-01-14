@@ -78,7 +78,8 @@ namespace Inkybot.Services
             private void DoRuneCheckForChanges() {
                 try {
                     EnforceChangeTimeoutRunningAndNotFinished();
-                } catch (ChangeCheckTimeoutException) {
+                } catch (ChangeCheckTimeoutException exception) {
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, "Rune quantity check failed, looking for history changes."));
                     DoHistoryCheckForChanges();
                     if (job.state.Step != State.JobStep.STANDARD)
                         throw;
