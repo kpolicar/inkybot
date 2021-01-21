@@ -214,7 +214,7 @@ namespace Inkybot.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :name :strength rune.
+        ///   Looks up a localized string similar to :strength :name rune.
         /// </summary>
         internal static string format {
             get {

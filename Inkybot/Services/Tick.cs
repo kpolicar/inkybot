@@ -83,6 +83,7 @@ namespace Inkybot.Services
                     DoHistoryCheckForChanges();
                     if (job.state.Step != State.JobStep.STANDARD)
                         throw;
+                    return;
                 }
                 
                 if (!(job.state.PreviousAction is RuneAction previousAction))

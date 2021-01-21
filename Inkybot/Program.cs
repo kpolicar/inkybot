@@ -88,8 +88,8 @@ namespace Inkybot
         public static void UpgradeApp() {
             if (!Settings.Default.UpgradeRequired) return;
             
-            Settings.Default.Upgrade();
-            Settings.Default.Reload();
+            // Settings.Default.Upgrade();
+            // Settings.Default.Reload();
             Settings.Default.UpgradeRequired = false;
             Settings.Default.Save();
         }
@@ -98,9 +98,9 @@ namespace Inkybot
             MageConfig.ConfigManager = (MageConfigProviderContract) _services[typeof(MageConfigProviderContract)];
             Stat.ConfigManager = (StatConfigProviderContract) _services[typeof(StatConfigProviderContract)];
             Stat.Dictionary = new ResourceManager("Inkybot.Resources.StatDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                .GetResourceSet(Lang, true, true);
             Rune.Dictionary = new ResourceManager("Inkybot.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
-                .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                .GetResourceSet(Lang, true, true);
         }
 
         private static void BindServices() {

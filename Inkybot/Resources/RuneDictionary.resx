@@ -20,7 +20,7 @@
     </resheader>
 
     <data name="format" xml:space="preserve">
-        <value>:name :strength rune</value>
+        <value>:strength :name rune</value>
     </data>
     <data name="ap" xml:space="preserve">
         <value>ap ga</value>

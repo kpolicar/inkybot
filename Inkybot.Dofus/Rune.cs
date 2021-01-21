@@ -6,7 +6,7 @@ namespace Inkybot.Dofus
 {
     public class Rune
     {
-        public static ResourceSet Dictionary;
+        public static ResourceSet Dictionary = null!;
 
         public enum RuneType
         {

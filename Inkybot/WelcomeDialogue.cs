@@ -136,7 +136,8 @@ namespace Inkybot
 
         private void switchLanguageButton_Clicked(object sender, EventArgs eventArgs) {
             Properties.Settings.Default.locale =
-                Program.Lang.TwoLetterISOLanguageName == "" ?
+                Program.Lang.TwoLetterISOLanguageName == "" ||
+                Program.Lang.TwoLetterISOLanguageName == Properties.Resources.EnglishLocaleCode ?
                     Properties.Resources.FrenchLocaleCode :
                     Properties.Resources.EnglishLocaleCode;
             Properties.Settings.Default.Save();

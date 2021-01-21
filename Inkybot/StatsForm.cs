@@ -181,6 +181,7 @@ namespace Inkybot
             if (TryRebuildDataGridViewWithExistingRows(config))
                 return;
 
+            statsDataGridView.Rows.Clear();
             foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
