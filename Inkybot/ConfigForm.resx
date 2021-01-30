@@ -130,6 +130,38 @@
   <data name="&gt;&gt;MaxPaRuneCanHitColumn.Name" xml:space="preserve">
     <value>MaxPaRuneCanHitColumn</value>
   </data>
+    <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <data name="scriptChangeButton.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt</value>
+    </data>
+
+    <data name="&gt;&gt;scriptChangeButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+    <data name="scriptChangeButton.Text" xml:space="preserve">
+    <value>Choose File</value>
+  </data>
+    <data name="scriptChangeButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>110, 20</value>
+    </data>
+    <data name="&gt;&gt;scriptChangeButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+    <data name="customScriptLabel.Text" xml:space="preserve">
+    <value>Custom Maging Script</value>
+  </data>
+    <data name="customScriptLabel.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt</value>
+    </data>
+    <data name="customScriptPathLabel.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt, style=Bold</value>
+    </data>
+    <data name="scriptChangeButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+        <value>Flat</value>
+    </data>
+    <data name="&gt;&gt;scriptChangeButton.Name" xml:space="preserve">
+    <value>scriptChangeButton</value>
+  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="bottomPanel.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>

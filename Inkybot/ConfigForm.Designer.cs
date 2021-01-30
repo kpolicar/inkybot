@@ -46,18 +46,22 @@ namespace Inkybot
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.scriptFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             statsDataGridView.ShowCellToolTips = true;
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MaxSmRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.customScriptLabel = new System.Windows.Forms.Label();
+            this.customScriptPathLabel = new System.Windows.Forms.Label();
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.scriptChangeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
@@ -172,13 +176,47 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+            this.bottomPanel.SetFlowBreak(enableRuneCheckingCheckbox, true);
+            this.bottomPanel.Controls.Add(this.customScriptLabel);
+            this.bottomPanel.Controls.Add(this.scriptChangeButton);
+            this.bottomPanel.Controls.Add(this.customScriptPathLabel);
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.AutoSize = true;
+            // 
+            // selectPathLabel
+            // 
+            resources.ApplyResources(this.customScriptLabel, "customScriptLabel");
+            this.customScriptLabel.Name = "customScriptLabel";
+            this.customScriptLabel.AutoSize = true;
+            this.customScriptLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.customScriptLabel.Padding = new Padding(0, 7, 0, 0);
+            // 
+            // pathChangeButton
+            // 
+            resources.ApplyResources(this.scriptChangeButton, "scriptChangeButton");
+            this.scriptChangeButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
+            this.scriptChangeButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.scriptChangeButton.Name = "scriptChangeButton";
+            this.scriptChangeButton.UseVisualStyleBackColor = false;
+            this.scriptChangeButton.Click += new System.EventHandler(this.scriptChangeButton_Click);
+            // 
+            // customScriptPathLabel
+            // 
+            resources.ApplyResources(this.customScriptPathLabel, "customScriptPathLabel");
+            this.customScriptPathLabel.Name = "customScriptLabel";
+            this.customScriptPathLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.customScriptPathLabel.Padding = new Padding(0, 7, 0, 0);
+            // 
+            // scriptFileDialog
+            // 
+            this.scriptFileDialog.DefaultExt = "cs";
+            this.scriptFileDialog.Filter = "C# Script (*.cs)|*.cs";
             // 
             // ConfigForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.MinimumSize = new System.Drawing.Size(600, 600);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.statsDataGridView);
             this.Controls.Add(this.bottomPanel);
@@ -192,6 +230,7 @@ namespace Inkybot
         }
 
         private System.Windows.Forms.FlowLayoutPanel bottomPanel;
+        private System.Windows.Forms.Button scriptChangeButton;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
@@ -202,10 +241,13 @@ namespace Inkybot
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxSmRuneCanHitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn PaRuneThresholdColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn RaRuneThresholdColumn;
+        private System.Windows.Forms.Label customScriptLabel;
+        private System.Windows.Forms.Label customScriptPathLabel;
 
         private System.Windows.Forms.DataGridView statsDataGridView;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
+        private System.Windows.Forms.OpenFileDialog scriptFileDialog;
 
         #endregion
     }

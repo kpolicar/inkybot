@@ -71,4 +71,10 @@
     <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
     <value>Surveiller la quantité de runes</value>
   </data>
+    <data name="customScriptLabel.Text" xml:space="preserve">
+    <value>Script de forgemagie personnalisé</value>
+  </data>
+    <data name="scriptChangeButton.Text" xml:space="preserve">
+    <value>Choisir le Fichier</value>
+  </data>
 </root>

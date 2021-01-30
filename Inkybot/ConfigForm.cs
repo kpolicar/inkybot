@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
@@ -164,6 +165,15 @@ namespace Inkybot
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
+        }
+
+        private void scriptChangeButton_Click(object sender, EventArgs e) {
+        
+            var result = scriptFileDialog.ShowDialog();
+            if (result == DialogResult.OK) {
+                var path = scriptFileDialog.FileName;
+                customScriptPathLabel.Text = Path.GetFileName(path);
+            }
         }
     }
 }
