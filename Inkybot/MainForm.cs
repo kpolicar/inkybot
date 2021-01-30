@@ -21,6 +21,7 @@ namespace Inkybot
 
         public MainForm() {
             InitializeComponent();
+            Text += $" ({Program.Version})";
             
             magingJob = Program.Services.GetService<DofusMagingJob>();
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
