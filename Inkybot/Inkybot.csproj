@@ -213,6 +213,7 @@
         <Compile Include="Events\RuneQuantityChangedEventArgs.cs" />
         <Compile Include="Events\ScanBoundsChanged.cs" />
         <Compile Include="Events\ScannedRegionEventArgs.cs" />
+        <Compile Include="Events\ImageEventArgs.cs" />
         <Compile Include="Events\SinkIncorrectEventArgs.cs" />
         <Compile Include="Events\TesseractPageProcessed.cs" />
         <Compile Include="Example.cs" />

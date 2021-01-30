@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Api;
@@ -22,6 +25,7 @@ namespace Inkybot.Services
         private int balanceDifference = 0;
         private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
         private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
+        private Image? previousImage;
         private IAction? previousAction;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -32,10 +36,20 @@ namespace Inkybot.Services
             magus.BalanceChanged += OnBalanceChanged;
             magus.Stopped += (sender, args) => Send();
 
+            ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
             actionHandler.ActionExecuted += OnMagingAction;
         }
 
+        private void OnMagingScreenshot(object sender, ImageEventArgs e) {
+            previousImage?.Dispose();
+            using var ms = new MemoryStream();
+            e.Image.Save(ms, ImageFormat.Bmp);
+            previousImage = Image.FromStream(ms);
+        }
+
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
+            if (e.action is CombineRune)
+                Publish();
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
@@ -67,6 +81,11 @@ namespace Inkybot.Services
 
             if (changesCount >= MinChangesToSendCount)
                 Send();
+        }
+        
+        private void Publish() {
+            if (previousImage != null)
+                _ = api.Publish(previousImage);
         }
 
         private void Send() {

@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Exceptions;
@@ -68,6 +73,25 @@ namespace Inkybot.Api
             await WaitForStableConnection();
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/statistics", new FormUrlEncodedContent(data));
+        }
+
+        public async Task Publish(Image image) {
+            using var ms = new MemoryStream();
+            image.Save(ms, ImageFormat.Bmp);
+            
+            var fileStreamContent = new StreamContent(ms);
+            fileStreamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") {
+                Name = "file",
+                FileName = DateTime.Now.ToString(CultureInfo.InvariantCulture)+".png"
+            };
+            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            using var formData = new MultipartFormDataContent {
+                fileStreamContent
+            };
+
+            await WaitForStableConnection();
+            var request = Connection?.Request();
+            request?.PostAsync($"{Server.ApiUrl}/publish", formData);
         }
 
         public async Task NotifyFinished() {

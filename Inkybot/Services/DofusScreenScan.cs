@@ -35,6 +35,7 @@ namespace Inkybot.Services
             private readonly IntPtr handle;
             private readonly Image screenshot = null!;
             private bool saveToDisk;
+            public static event EventHandler<ImageEventArgs>? Screenshot;
 
 
             private DofusScreenScan(
@@ -229,6 +230,7 @@ namespace Inkybot.Services
             private Image TakeScreenshot() {
                 //times = times >= 3 ? times : ++times;
                 var bitmap = screen.CaptureWindow(handle);
+                Screenshot?.Invoke(this, new ImageEventArgs(bitmap));
 
                 return bitmap;
             }
