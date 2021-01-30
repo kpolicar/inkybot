@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using ImageMagick;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Api.Resources;
@@ -14,6 +16,8 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Domain;
+using Inkybot.Helpers;
+using Inkybot.Services;
 using Newtonsoft.Json;
 
 namespace Inkybot.Api
@@ -78,20 +82,30 @@ namespace Inkybot.Api
         public async Task Publish(Image image) {
             using var ms = new MemoryStream();
             image.Save(ms, ImageFormat.Bmp);
+            ms.Position = 0;
             
+            var b =
+                Responsive.ResponsiveRectangle(Measurements.MagingTable, image.Width, image.Height);
+            var optimizer = new ImageOptimizer();
+            using var compressedImage = new MagickImage(ms);
+            compressedImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
+            compressedImage.SetCompression(CompressionMethod.JPEG);
+            compressedImage.Resize(new MagickGeometry(908,750));
+            compressedImage.Write(ms, MagickFormat.Jpeg);
+            ms.Position = 0;
+            optimizer.LosslessCompress(ms);
+            ms.Position = 0;
+
             var fileStreamContent = new StreamContent(ms);
-            fileStreamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") {
-                Name = "file",
-                FileName = DateTime.Now.ToString(CultureInfo.InvariantCulture)+".png"
-            };
-            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            using var formData = new MultipartFormDataContent {
-                fileStreamContent
-            };
+            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var name = $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.jpg";
+            
+            using var formData = new MultipartFormDataContent();
+            formData.Add(fileStreamContent, "image", name);
 
             await WaitForStableConnection();
-            var request = Connection?.Request();
-            request?.PostAsync($"{Server.ApiUrl}/publish", formData);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/publish", formData);
         }
 
         public async Task NotifyFinished() {

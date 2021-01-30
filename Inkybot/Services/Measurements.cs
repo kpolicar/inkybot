@@ -67,6 +67,12 @@ namespace Inkybot.Services
         public static Responsive.Measurement[] StatMaxBoundsIndividualLines =>
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBounds);
         
+        public static readonly Responsive.Measurement MagingTable = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(230, 56, 1386, 1013),
+            Width = 2050,
+            Height = 1212
+        };
+        
         public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(346, 127, 628, 844),
             Width = 1920,

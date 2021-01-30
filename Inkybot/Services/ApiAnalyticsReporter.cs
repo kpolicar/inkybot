@@ -42,7 +42,7 @@ namespace Inkybot.Services
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
             previousImage?.Dispose();
-            using var ms = new MemoryStream();
+            var ms = new MemoryStream();
             e.Image.Save(ms, ImageFormat.Bmp);
             previousImage = Image.FromStream(ms);
         }
