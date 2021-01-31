@@ -1,5 +1,5 @@
 ﻿using System;
-using Inkybot.Contracts;
+using Inkybot.Dofus.Contracts;
 
 namespace Inkybot.Events
 {

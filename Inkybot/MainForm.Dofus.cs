@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
 using Inkybot.Services;
 using UserSettings = Inkybot.Properties.Settings;

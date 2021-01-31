@@ -3,23 +3,23 @@ using System.Diagnostics;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
+using Inkybot.Dofus.Domain;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
-using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
-using IAction = Inkybot.Domain.IAction;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
     public class DofusMagingAI : DofusMagingAIContract, HasDependencies
     {
-        private ActionFactory actions = null!;
         private MageConfig config;
         private float sink;
 
-        
         public void BindDependencies(ServiceContainer serviceContainer) {
-            actions = serviceContainer.GetService<ActionFactory>();
-            
+            var actions = serviceContainer.GetService<ActionFactory>();
+            AddServices(actions);
+
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
             
@@ -50,11 +50,11 @@ namespace Inkybot.Services
             return new ExoItemMageResolve(config, item, sink).Resolve();
         }
 
-        public IAction ResolveAction(Item item) {
+        public override IAction ResolveAction(Item item) {
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage == null)
-                return actions.Finish(item);
+                return Action.Finish(item);
             
             var itemMage = proposedItemMage.Value;
 
@@ -62,7 +62,7 @@ namespace Inkybot.Services
                 $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
-            return actions.CombineRune(itemMage.Rune, itemMage.Exo);
+            return Action.CombineRune(itemMage.Rune, itemMage.Exo);
         }
     }
 }

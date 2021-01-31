@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 using Inkybot.Helpers;
 using Inkybot.Services;

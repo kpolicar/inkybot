@@ -11,7 +11,7 @@ using Inkybot.Services;
 using NUnit.Framework;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
-using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 
 namespace Tests.Design
 {

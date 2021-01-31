@@ -2,6 +2,7 @@
 using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Design;
+using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 using Inkybot.Events;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;

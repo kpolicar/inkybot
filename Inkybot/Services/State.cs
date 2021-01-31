@@ -1,5 +1,6 @@
 using Inkybot.Actions;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 
 namespace Inkybot.Services

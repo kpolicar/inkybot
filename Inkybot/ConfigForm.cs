@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
@@ -14,12 +16,15 @@ namespace Inkybot
     public partial class ConfigForm : Form
     {
         private FileSystemUserSettingsConfigManager userSettingsConfigManager;
+        private MagingAIServiceManager magingAiManager;
         
         public ConfigForm() {
             InitializeComponent();
             InitializeCustomComponents();
             userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
                 Program.Services.GetService<UserSettingsConfigManager>();
+            magingAiManager =
+                Program.Services.GetService<MagingAIServiceManager>();
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -173,7 +178,39 @@ namespace Inkybot
             if (result == DialogResult.OK) {
                 var path = scriptFileDialog.FileName;
                 customScriptPathLabel.Text = Path.GetFileName(path);
+                resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxLoading");
+                scriptValidPictureBox.Show();
+                
+                _ = Task.Run(() => {
+                    Thread.Sleep(1000);
+                    TrySwitchToCustomAIScript();
+                });
             }
+        }
+
+        private void TrySwitchToCustomAIScript() {
+            try {
+                magingAiManager.UseCustomAIScript(scriptFileDialog.FileName);
+                
+                Invoke(new MethodInvoker(() => {
+                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
+                }));
+            } catch (Exception) {
+                Invoke(new MethodInvoker(() => {
+                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
+                }));
+            }
+            
+            Invoke(new MethodInvoker(() => {
+                scriptResetButton.Show();
+            }));
+        }
+
+        private void scriptResetButton_Click(object sender, EventArgs e) {
+            scriptResetButton.Hide();
+            scriptValidPictureBox.Hide();
+            customScriptPathLabel.Text = "";
+            magingAiManager.UseBuiltInAIScript();
         }
     }
 }

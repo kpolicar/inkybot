@@ -46,6 +46,7 @@ namespace Inkybot
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.scriptValidPictureBox = new System.Windows.Forms.PictureBox();
             this.scriptFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             statsDataGridView.ShowCellToolTips = true;
@@ -62,7 +63,9 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
+            this.scriptResetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).BeginInit();
             this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -179,11 +182,13 @@ namespace Inkybot
             this.bottomPanel.SetFlowBreak(enableRuneCheckingCheckbox, true);
             this.bottomPanel.Controls.Add(this.customScriptLabel);
             this.bottomPanel.Controls.Add(this.scriptChangeButton);
+            this.bottomPanel.Controls.Add(this.scriptResetButton);
             this.bottomPanel.Controls.Add(this.customScriptPathLabel);
+            this.bottomPanel.Controls.Add(this.scriptValidPictureBox);
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.AutoSize = true;
             // 
-            // selectPathLabel
+            // customScriptLabel
             // 
             resources.ApplyResources(this.customScriptLabel, "customScriptLabel");
             this.customScriptLabel.Name = "customScriptLabel";
@@ -191,7 +196,7 @@ namespace Inkybot
             this.customScriptLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.customScriptLabel.Padding = new Padding(0, 7, 0, 0);
             // 
-            // pathChangeButton
+            // scriptChangeButton
             // 
             resources.ApplyResources(this.scriptChangeButton, "scriptChangeButton");
             this.scriptChangeButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
@@ -200,12 +205,33 @@ namespace Inkybot
             this.scriptChangeButton.UseVisualStyleBackColor = false;
             this.scriptChangeButton.Click += new System.EventHandler(this.scriptChangeButton_Click);
             // 
+            // scriptResetButton
+            // 
+            resources.ApplyResources(this.scriptResetButton, "scriptResetButton");
+            this.scriptResetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
+            this.scriptResetButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.scriptResetButton.Name = "scriptResetButton";
+            this.scriptResetButton.UseVisualStyleBackColor = false;
+            this.scriptResetButton.Visible = false;
+            this.scriptResetButton.Click += new System.EventHandler(this.scriptResetButton_Click);
+            // 
             // customScriptPathLabel
             // 
             resources.ApplyResources(this.customScriptPathLabel, "customScriptPathLabel");
             this.customScriptPathLabel.Name = "customScriptLabel";
             this.customScriptPathLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.customScriptPathLabel.Padding = new Padding(0, 7, 0, 0);
+            this.customScriptPathLabel.AutoSize = true;
+            // 
+            // toastIconPictureBox
+            // 
+            resources.ApplyResources(this.scriptValidPictureBox, "scriptValidPictureBox");
+            this.scriptValidPictureBox.Name = "scriptValidPictureBox";
+            this.scriptValidPictureBox.TabStop = false;
+            this.scriptValidPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            this.scriptValidPictureBox.Size = new System.Drawing.Size(20, 20);
+            this.scriptValidPictureBox.Visible = false;
+            
             // 
             // scriptFileDialog
             // 
@@ -224,6 +250,7 @@ namespace Inkybot
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             this.Load += new System.EventHandler(this.ConfigForm_OnLoad);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).EndInit();
             this.bottomPanel.ResumeLayout(false);
             this.bottomPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -231,6 +258,7 @@ namespace Inkybot
 
         private System.Windows.Forms.FlowLayoutPanel bottomPanel;
         private System.Windows.Forms.Button scriptChangeButton;
+        private System.Windows.Forms.Button scriptResetButton;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
@@ -245,6 +273,7 @@ namespace Inkybot
         private System.Windows.Forms.Label customScriptPathLabel;
 
         private System.Windows.Forms.DataGridView statsDataGridView;
+        private System.Windows.Forms.PictureBox scriptValidPictureBox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
         private System.Windows.Forms.OpenFileDialog scriptFileDialog;

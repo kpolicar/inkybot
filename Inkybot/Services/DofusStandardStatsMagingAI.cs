@@ -1,21 +1,19 @@
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
-using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
-using IAction = Inkybot.Domain.IAction;
+using Inkybot.Dofus.Contracts;
+using Inkybot.Dofus.Domain;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
     public class DofusStandardStatsMagingAI : DofusMagingAIContract, HasDependencies
     {
-        private ActionFactory actions = null!;
         private MageConfig config;
 
         
         public void BindDependencies(ServiceContainer serviceContainer) {
-            actions = serviceContainer.GetService<ActionFactory>();
-            
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
         }
@@ -28,15 +26,15 @@ namespace Inkybot.Services
             return proposedMage;
         }
         
-        public IAction ResolveAction(Item item) {
+        public override IAction ResolveAction(Item item) {
             var proposedItemMage = ResolveItemMage(item);
             
             if (proposedItemMage == null)
-                return actions.Finish(item);
+                return Action.Finish(item);
             
             var itemMage = proposedItemMage.Value;
 
-            return actions.CombineRune(itemMage.Rune, itemMage.Exo);
+            return Action.CombineRune(itemMage.Rune, itemMage.Exo);
         }
     }
 }

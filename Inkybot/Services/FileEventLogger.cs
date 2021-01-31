@@ -1,6 +1,7 @@
 using System;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
@@ -80,7 +81,7 @@ namespace Inkybot.Services
             return exception.Message;
         }
         
-        private string FormatMagingAI(Contracts.DofusMagingAI magingAI) {
+        private string FormatMagingAI(Dofus.Contracts.DofusMagingAI magingAI) {
             return magingAI switch {
                 DofusMagingAI _ => "Maging AI",
                 DofusStandardStatsMagingAI _ => "Free Trial Maging AI",

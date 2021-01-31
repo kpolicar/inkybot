@@ -62,6 +62,10 @@
           <HintPath>..\packages\Microsoft.Build.Utilities.Core.15.7.179\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
           <HintPath>..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
           <Private>True</Private>
@@ -136,6 +140,10 @@
         <Reference Include="System.Xml" />
         <Reference Include="Tesseract, Version=4.1.1.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\Tesseract.4.1.1\lib\net45\Tesseract.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Westwind.Scripting, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\Westwind.Scripting.0.3.0\lib\net472\Westwind.Scripting.dll</HintPath>
           <Private>True</Private>
         </Reference>
     </ItemGroup>
@@ -247,12 +255,9 @@
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
-        <Compile Include="Contracts\ActionFactory.cs" />
         <Compile Include="Contracts\DofusDataProvider.cs" />
-        <Compile Include="Contracts\DofusMagingAI.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
-        <Compile Include="Domain\IAction.cs" />
         <Compile Include="Domain\Server.cs" />
         <Compile Include="Events\ActionExecutedEventArgs.cs" />
         <Compile Include="Events\ApiConnectionChangedEventArgs.cs" />
@@ -293,6 +298,7 @@
         <Compile Include="Services\OverMageToReachTargetWithSinkItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\ScriptDofusMagingAI.cs" />
         <Compile Include="Services\StandardStatsPrioritizedItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
@@ -481,7 +487,9 @@
       </PropertyGroup>
       <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
       <Error Condition="!Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.1\build\Tesseract.targets'))" />
+      <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
     </Target>
     <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
     <Import Project="..\packages\Tesseract.4.1.1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" />
+    <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
 </Project>

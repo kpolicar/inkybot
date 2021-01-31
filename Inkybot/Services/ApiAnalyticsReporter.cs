@@ -9,9 +9,9 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Domain;
 using Inkybot.Events;
 using Newtonsoft.Json;
-using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {

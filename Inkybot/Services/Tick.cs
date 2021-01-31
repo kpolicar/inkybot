@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
+using Inkybot.Dofus.Domain;
 using Inkybot.Dofus.Exceptions;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
-using IAction = Inkybot.Domain.IAction;
 
 namespace Inkybot.Services
 {

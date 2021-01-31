@@ -1,7 +1,7 @@
 ﻿using Inkybot.Dofus;
-using IAction = Inkybot.Domain.IAction;
+using Inkybot.Dofus.Domain;
 
-namespace Inkybot.Contracts
+namespace Inkybot.Dofus.Contracts
 {
     public interface ActionFactory
     {

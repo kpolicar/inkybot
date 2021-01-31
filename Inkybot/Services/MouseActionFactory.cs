@@ -2,7 +2,8 @@
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
-using IAction = Inkybot.Domain.IAction;
+using Inkybot.Dofus.Contracts;
+using Inkybot.Dofus.Domain;
 
 namespace Inkybot.Services
 {

@@ -19,7 +19,7 @@ using Microsoft.CSharp;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
-using DofusMagingAIContract = Inkybot.Contracts.DofusMagingAI;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using MageConfigProvider = Inkybot.Services.MageConfigProvider;
 using StatConfigProvider = Inkybot.Services.StatConfigProvider;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;

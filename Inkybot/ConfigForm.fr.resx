@@ -77,4 +77,7 @@
     <data name="scriptChangeButton.Text" xml:space="preserve">
     <value>Choisir le Fichier</value>
   </data>
+    <data name="scriptResetButton.Text" xml:space="preserve">
+    <value>Réinitialiser IA</value>
+  </data>
 </root>
