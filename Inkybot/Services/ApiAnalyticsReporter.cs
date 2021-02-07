@@ -17,6 +17,7 @@ namespace Inkybot.Services
 {
     public class ApiAnalyticsReporter : AnalyticsReporter, HasDependencies
     {
+        private ConfigManager config = null!;
         private ApiClient api = null!;
         private int changesCount = 0;
         const int MinChangesToSendCount = 10;
@@ -38,6 +39,8 @@ namespace Inkybot.Services
 
             ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
             actionHandler.ActionExecuted += OnMagingAction;
+            
+            config = Program.Services.GetService<ConfigManager>();
         }
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
@@ -85,7 +88,7 @@ namespace Inkybot.Services
         }
         
         private void Publish() {
-            if (previousImage != null)
+            if (previousImage != null && config.UserSettings.PublishExos)
                 _ = api.Publish(previousImage);
         }
 

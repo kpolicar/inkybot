@@ -80,4 +80,7 @@
     <data name="scriptResetButton.Text" xml:space="preserve">
     <value>Réinitialiser IA</value>
   </data>
+    <data name="publishExosCheckbox.Text" xml:space="preserve">
+    <value>Publier des exo mages au Hall of fame</value>
+  </data>
 </root>

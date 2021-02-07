@@ -56,6 +56,7 @@ namespace Inkybot
             restoreHighSinkStatsCheckbox.Checked = userSettingsConfigManager.RestoreHighSinkStats;
             autoRestartBotCheckbox.Checked = userSettingsConfigManager.AutoRestartBot;
             showWarningsCheckbox.Checked = userSettingsConfigManager.ShowUserWarnings;
+            publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
         }
 
@@ -164,8 +165,11 @@ namespace Inkybot
         private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
         
-        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.EnableRuneChecking = enableRuneCheckingCheckbox.Checked;
+
+        private void ConfigForm_OnPublishExosCheckboxCheckedChanged(object sender, EventArgs e) =>
+            userSettingsConfigManager.PublishExos = publishExosCheckbox.Checked;
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;

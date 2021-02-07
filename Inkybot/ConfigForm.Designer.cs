@@ -60,6 +60,7 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
+            this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
@@ -164,13 +165,21 @@ namespace Inkybot
             this.showWarningsCheckbox.UseVisualStyleBackColor = true;
             this.showWarningsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged);
             // 
+            // publishExosCheckbox
+            // 
+            resources.ApplyResources(this.publishExosCheckbox, "publishExosCheckbox");
+            this.publishExosCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.publishExosCheckbox.Name = "publishExosCheckbox";
+            this.publishExosCheckbox.UseVisualStyleBackColor = true;
+            this.publishExosCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnPublishExosCheckboxCheckedChanged);
+            // 
             // enableRuneCheckingCheckbox
             // 
             resources.ApplyResources(this.enableRuneCheckingCheckbox, "enableRuneCheckingCheckbox");
             this.enableRuneCheckingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
             this.enableRuneCheckingCheckbox.Name = "enableRuneCheckingCheckbox";
             this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
-            this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckboxCheckedChanged);
+            this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
             // 
             // bottomPanel
             // 
@@ -179,7 +188,8 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
-            this.bottomPanel.SetFlowBreak(enableRuneCheckingCheckbox, true);
+            this.bottomPanel.Controls.Add(this.publishExosCheckbox);
+            this.bottomPanel.SetFlowBreak(publishExosCheckbox, true);
             this.bottomPanel.Controls.Add(this.customScriptLabel);
             this.bottomPanel.Controls.Add(this.scriptChangeButton);
             this.bottomPanel.Controls.Add(this.scriptResetButton);
@@ -262,6 +272,7 @@ namespace Inkybot
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
+        private System.Windows.Forms.CheckBox publishExosCheckbox;
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
 

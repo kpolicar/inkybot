@@ -34,6 +34,14 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.showUserWarnings;
         }
 
+        public bool PublishExos {
+            set {
+                Properties.Settings.Default.publishExos = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.publishExos;
+        }
+
         public bool EnableRuneChecking {
             set {
                 Properties.Settings.Default.enableRuneChecking = value;

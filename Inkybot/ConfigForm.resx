@@ -2186,16 +2186,19 @@
   <data name="showWarningsCheckbox.Text" xml:space="preserve">
     <value>Show warnings</value>
   </data>
+  <data name="publishExosCheckbox.Text" xml:space="preserve">
+    <value>Publish exo mages to Hall of fame</value>
+  </data>
   <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
     <value>Monitor rune quantity</value>
-  </data>
-  <data name="showWarningsCheckbox.AutoSize" xml:space="preserve">
-    <value>true</value>
   </data>
   <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
   <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+  <data name="publishExosCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
     <data name="showWarningsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
@@ -2205,6 +2208,9 @@
         <value>true</value>
     </data>
     <data name="showWarningsCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
+    <data name="publishExosCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>
     </data>
   <metadata name="RaRuneThresholdColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
