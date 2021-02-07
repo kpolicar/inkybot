@@ -48,8 +48,6 @@ namespace Inkybot.Services
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
-            if (e.action is CombineRune)
-                Publish();
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
@@ -60,6 +58,8 @@ namespace Inkybot.Services
                     exoSuccesses[stat] += 1;
                 else
                     exoSuccesses[stat] = 1;
+                
+                Publish();
             }
 
             if (e.action is CombineRune combine && combine.Exo) {
