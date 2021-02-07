@@ -37,6 +37,8 @@ namespace Inkybot.Services
         public bool CanHit
         {
             get {
+                if ((Value + Rune.IncreaseInValue) * Stat.SinkValue > 101)
+                    return false;
                 switch (Rune.Type) {
                     case Rune.RuneType.Sm when Value <= MageConfig.MaxValueAtWhichSmRuneCanHit || MageConfig.MaxValueAtWhichSmRuneCanHit == null:
                     case Rune.RuneType.Pa when Value <= MageConfig.MaxValueAtWhichPaRuneCanHit || MageConfig.MaxValueAtWhichPaRuneCanHit == null:
