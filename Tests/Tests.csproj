@@ -70,6 +70,7 @@
           <Link>Resources\StatDictionary.Designer.cs</Link>
         </Compile>
         <Compile Include="ItemStatMageConfigTests.cs" />
+        <Compile Include="OversinkTests.cs" />
         <Compile Include="MagingAIFinishedTests.cs" />
         <Compile Include="MagingAIOverTargetTest.cs" />
         <Compile Include="MagingAITests.cs" />

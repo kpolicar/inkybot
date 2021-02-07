@@ -11,6 +11,7 @@ namespace Inkybot.Dofus
         public bool IsInvalid => !IsValid;
         public bool IsOvermaged => Stats.StandardStats.Any(itemStat => itemStat.Value > itemStat.Max);
         public bool HasExo => Stats.ExoStats.Length > 0;
+        public float Oversink => Stats.Sum(itemStat => itemStat.Oversink);
 
         public Item(ItemStatRepository stats) {
             Stats = stats;

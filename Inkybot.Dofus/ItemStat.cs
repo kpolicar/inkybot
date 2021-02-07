@@ -1,4 +1,4 @@
-﻿using Inkybot.Dofus;
+﻿using System;
 
 namespace Inkybot.Dofus
 {
@@ -9,6 +9,7 @@ namespace Inkybot.Dofus
         public readonly int Min;
         public readonly int Max;
         public bool Exo => Max == 0;
+        public float Oversink => Math.Max(Value-Max, 0) * Stat.SinkValue;
 
         public ItemStat(string statIdentifier, int value, int min, int max)
             : this (Stat.FirstOrNew(statIdentifier), value, min, max) {
