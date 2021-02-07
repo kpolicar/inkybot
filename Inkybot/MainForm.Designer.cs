@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Timers;
+using Inkybot.Domain;
 
 namespace Inkybot
 {
@@ -46,6 +47,7 @@ namespace Inkybot
             this.exoAttemptsValueLabel = new System.Windows.Forms.Label();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.helpButton = new System.Windows.Forms.Button();
+            this.hallOfFameButton = new System.Windows.Forms.Button();
             this.configButton = new System.Windows.Forms.Button();
             this.debugScreenshotButton = new System.Windows.Forms.Button();
             this.debugButton = new System.Windows.Forms.Button();
@@ -164,6 +166,7 @@ namespace Inkybot
             // secondaryButtonsPanel
             // 
             resources.ApplyResources(this.secondaryButtonsPanel, "secondaryButtonsPanel");
+            this.secondaryButtonsPanel.Controls.Add(this.hallOfFameButton);
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
             this.secondaryButtonsPanel.Controls.Add(this.configButton);
             this.secondaryButtonsPanel.Controls.Add(this.debugScreenshotButton);
@@ -181,6 +184,18 @@ namespace Inkybot
             this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
             System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
             ToolTip1.SetToolTip(this.helpButton, $"{Inkybot.Domain.Server.BaseUrl}/release/{Program.VersionEndpoint}");
+            // 
+            // hallOfFameButton
+            // 
+            resources.ApplyResources(this.hallOfFameButton, "hallOfFameButton");
+            this.hallOfFameButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.hallOfFameButton.FlatAppearance.BorderSize = 0;
+            this.hallOfFameButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.hallOfFameButton.Name = "hallOfFameButton";
+            this.hallOfFameButton.UseVisualStyleBackColor = false;
+            this.hallOfFameButton.Click += new System.EventHandler(this.hallOfFameButton_Click);
+            System.Windows.Forms.ToolTip ToolTip2 = new System.Windows.Forms.ToolTip();
+            ToolTip2.SetToolTip(this.hallOfFameButton, Server.HallOfFameUrl);
             // 
             // configButton
             // 
@@ -322,6 +337,7 @@ namespace Inkybot
         private System.Windows.Forms.FlowLayoutPanel secondaryButtonsPanel;
 
         private System.Windows.Forms.Button debugButton;
+        private System.Windows.Forms.Button hallOfFameButton;
         private System.Windows.Forms.Button helpButton;
         private System.Windows.Forms.Label subscribedInfoLabel;
         private System.Windows.Forms.Button toggleMageButton;

@@ -262,6 +262,9 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot</value>
   </data>
+  <data name="hallOfFameButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
+  </data>
   <data name="helpButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 45</value>
   </data>
@@ -412,6 +415,9 @@
   <data name="&gt;&gt;helpButton.Name" xml:space="preserve">
     <value>helpButton</value>
   </data>
+  <data name="&gt;&gt;hallOfFameButton.Name" xml:space="preserve">
+    <value>hallOfFameButton</value>
+  </data>
   <data name="&gt;&gt;toastIconPictureBox.Name" xml:space="preserve">
     <value>toastIconPictureBox</value>
   </data>
@@ -423,6 +429,9 @@
   </data>
   <data name="&gt;&gt;userInfoPanel.Name" xml:space="preserve">
     <value>userInfoPanel</value>
+  </data>
+  <data name="hallOfFameButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
   </data>
   <data name="helpButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
@@ -465,6 +474,9 @@
   </data>
   <data name="helpButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 149</value>
+  </data>
+  <data name="hallOfFameButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 180</value>
   </data>
   <data name="exoAttemptsValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -733,6 +745,9 @@
   <data name="helpButton.Text" xml:space="preserve">
     <value>HELP</value>
   </data>
+  <data name="hallOfFameButton.Text" xml:space="preserve">
+    <value>HALL OF FAME</value>
+  </data>
   <data name="configButton.Text" xml:space="preserve">
     <value>CONFIG</value>
   </data>
@@ -847,6 +862,9 @@
   <data name="helpButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
+  <data name="hallOfFameButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="&gt;&gt;buttonsPanel.Parent" xml:space="preserve">
     <value>sidebarPanel</value>
   </data>
@@ -865,6 +883,9 @@
   <data name="helpButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="hallOfFameButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="debugButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 5</value>
   </data>
@@ -878,6 +899,9 @@
     <value>secondaryButtonsPanel</value>
   </data>
   <data name="&gt;&gt;helpButton.Parent" xml:space="preserve">
+    <value>secondaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;hallOfFameButton.Parent" xml:space="preserve">
     <value>secondaryButtonsPanel</value>
   </data>
   <data name="debugScreenshotButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
@@ -2826,6 +2850,9 @@
     <value>0</value>
   </data>
   <data name="helpButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 3, 0, 0</value>
+  </data>
+  <data name="hallOfFameButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 3, 0, 0</value>
   </data>
   <data name="loggedInAsLabel.Size" type="System.Drawing.Size, System.Drawing">

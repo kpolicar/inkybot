@@ -74,5 +74,9 @@ namespace Inkybot
             new Thread(takeScreenshot).Start();
             debugScreenshotButton.Enabled = false;
         }
+
+        private void hallOfFameButton_Click(object sender, EventArgs e) {
+            Process.Start(Server.HallOfFameUrl);
+        }
     }
 }
