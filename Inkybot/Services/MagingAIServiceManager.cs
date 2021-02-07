@@ -60,7 +60,8 @@ namespace Inkybot.Services
                     Debug.WriteLine("error: " + script.ErrorMessage);
                     return;
                 }
-                magus.AddServices(actionFactory, statConfigProvider);
+                if (magus is HasDependencies dependant)
+                    dependant.BindDependencies(serviceContainer);
                 magus.Init();
             
                 serviceContainer.ReplaceService<DofusMagingAIContract>(magus);
@@ -81,10 +82,8 @@ namespace Inkybot.Services
                 ? (DofusMagingAIContract) new DofusMagingAI()
                 : (DofusMagingAIContract) new DofusStandardStatsMagingAI();
 
-            if (magus is HasDependencies dependant) {
+            if (magus is HasDependencies dependant)
                 dependant.BindDependencies(serviceContainer);
-            }
-            magus.AddServices(actionFactory, statConfigProvider);
             magus.Init();
 
             serviceContainer.ReplaceService<DofusMagingAIContract>(magus);

@@ -1,3 +1,4 @@
+using System;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -28,7 +29,7 @@ namespace Inkybot.Services
         
         public override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item);
-            
+
             if (proposedItemMage == null)
                 return Finish();
             

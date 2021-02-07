@@ -85,6 +85,10 @@
         <Compile Include="Services\MagingJobMock.cs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">
+        <Project>{0a7966c1-0372-4263-94fd-1770544a0312}</Project>
+        <Name>Inkybot.Design</Name>
+      </ProjectReference>
       <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
         <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
         <Name>Inkybot.Dofus</Name>

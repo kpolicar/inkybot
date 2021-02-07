@@ -1,16 +1,20 @@
+using System;
+using System.Linq;
+using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Domain;
 
 namespace Inkybot.Dofus.Contracts
 {
-    public abstract class DofusMagingAI
+    public abstract class DofusMagingAI : HasDependencies
     {
         private ActionFactory Action = null!;
         private StatConfigProvider ConfigProvider = null!;
         private Item resolving = null!;
 
-        public void AddServices(ActionFactory actions, StatConfigProvider statConfigProvider) =>
-            (Action, ConfigProvider) = (actions, statConfigProvider);
+        public virtual void BindDependencies(ServiceContainer serviceContainer) =>
+            (Action, ConfigProvider) = 
+            (serviceContainer.GetService<ActionFactory>(), serviceContainer.GetService<StatConfigProvider>());
 
         public virtual void Init() {
         }

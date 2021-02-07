@@ -16,12 +16,13 @@ namespace Inkybot.Services
         private MageConfig config;
         private float sink;
 
-        public void BindDependencies(ServiceContainer serviceContainer) {
+        public override void BindDependencies(ServiceContainer serviceContainer) {
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
             
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.SinkChanged += (sender, args) => sink = args.Sink;
+            base.BindDependencies(serviceContainer);
         }
 
         private ItemMage? ResolveItemMage(Item item) {
