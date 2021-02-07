@@ -267,9 +267,10 @@ namespace Inkybot.Services
                 job.configManager.RemoveFallenUnconfiguredStats(item);
 
                 previousTickDeferredExecutionTask?.Wait();
-                var action = job.magus!.ResolveAction(item);
+                var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine) {
+                    
                     EnforceHasRunesForCombine(combine);
 
                     if (combine.Exo) {

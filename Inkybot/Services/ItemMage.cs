@@ -11,7 +11,6 @@ namespace Inkybot.Services
         public readonly Rune Rune;
         public readonly ItemStatMageConfig MageConfig;
         public readonly int Value;
-        public readonly bool Exo;
         public readonly int Max => MageConfig.Maximum;
         public readonly int? Target => MageConfig.Target;
         public readonly bool HasReachedTargetMinimum =>
@@ -29,7 +28,7 @@ namespace Inkybot.Services
 
         public ItemMage? WithLowerRuneStrength =>
             Rune.Weaker != null
-                ? new ItemMage(Stat, Rune.Weaker, MageConfig, Value, Exo)
+                ? new ItemMage(Stat, Rune.Weaker, MageConfig, Value)
                 : (ItemMage?) null;
         
         public bool CanHit
@@ -50,22 +49,20 @@ namespace Inkybot.Services
         public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;
 
             
-        public ItemMage(Stat stat, Rune rune, ItemStatMageConfig mageConfig, int value, bool exo=false) {
+        public ItemMage(Stat stat, Rune rune, ItemStatMageConfig mageConfig, int value) {
             Stat = stat;
             Rune = rune;
             MageConfig = mageConfig;
             Value = value;
-            Exo = exo;
         }
         
         public ItemMage Clone
-            (Stat? stat=null, Rune? rune=null, ItemStatMageConfig? mageConfig=null, int? value=null, bool? exo=null)
+            (Stat? stat=null, Rune? rune=null, ItemStatMageConfig? mageConfig=null, int? value=null)
             => new ItemMage(
                 stat ?? Stat,
                 rune ?? Rune,
                 mageConfig ?? MageConfig,
-                value ?? Value,
-                exo ?? Exo);
+                value ?? Value);
         
 
         public static ItemMage WithRuneTypeOffset(ItemMage itemMage, int runeTypeOffset) {
@@ -74,7 +71,7 @@ namespace Inkybot.Services
                     
             var rune = new Rune(itemMage.Stat, runeType);
             
-            return new ItemMage(itemMage.Stat, rune, itemMage.MageConfig, itemMage.Value, itemMage.Exo);
+            return new ItemMage(itemMage.Stat, rune, itemMage.MageConfig, itemMage.Value);
         }
     }
 }

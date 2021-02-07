@@ -26,15 +26,15 @@ namespace Inkybot.Services
             return proposedMage;
         }
         
-        public override IAction ResolveAction(Item item) {
+        public override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item);
             
             if (proposedItemMage == null)
-                return Action.Finish(item);
+                return Finish();
             
             var itemMage = proposedItemMage.Value;
 
-            return Action.CombineRune(itemMage.Rune, itemMage.Exo);
+            return Combine(itemMage.Rune);
         }
     }
 }

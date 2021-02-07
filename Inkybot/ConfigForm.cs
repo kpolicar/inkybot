@@ -182,7 +182,7 @@ namespace Inkybot
                 scriptValidPictureBox.Show();
                 
                 _ = Task.Run(() => {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     TrySwitchToCustomAIScript();
                 });
             }

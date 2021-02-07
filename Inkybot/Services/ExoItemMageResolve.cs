@@ -21,8 +21,7 @@ namespace Inkybot.Services
                         statConfig.Key,
                         new Rune(statConfig.Key, statConfig.Key.StrongestRuneType),
                         statConfig.Value,
-                        item.Stats[statConfig.Key]?.Value ?? 0,
-                        true
+                        item.Stats[statConfig.Key]?.Value ?? 0
                     );
                     if (statConfig.Value.TargetMinimum == null || itemMage.Value >= statConfig.Value.TargetMinimum)
                         return itemMage;

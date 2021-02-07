@@ -48,7 +48,7 @@ namespace Inkybot
         public static ServiceContainer Services = new ServiceContainer();
         public static CultureInfo Lang = null!;
         private static string DefaultLocale => Properties.Resources.EnglishLocaleCode;
-        
+            
         public static readonly Dictionary<Type, object> _services = new Dictionary<Type, object> {
             { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
             { typeof(ScreenCapture), new Win32ScreenCapture() },
@@ -82,7 +82,7 @@ namespace Inkybot
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConfigForm());
+            Application.Run(new MainForm());
         }
 
         public static void UpgradeApp() {

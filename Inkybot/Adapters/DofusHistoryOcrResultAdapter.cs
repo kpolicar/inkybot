@@ -37,7 +37,7 @@ namespace Inkybot.Adapters
 
                     return new MageHistoryRecord(statChanges, sinkHasChanged);
                 } catch (OcrException) {
-                    Debug.WriteLine($"Failed to segment stat line {mageEntry}");
+                    Debug.WriteLine($"Failed to segment history line {mageEntry}");
                     return null;
                 }
                 

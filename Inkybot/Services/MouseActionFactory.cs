@@ -1,16 +1,20 @@
 ﻿using System.Windows.Forms;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 
 namespace Inkybot.Services
 {
-    public class MouseActionFactory : ActionFactory
+    public class MouseActionFactory : ActionFactory, HasDependencies
     {
         private Control targetControl = null!;
 
+        public void BindDependencies(ServiceContainer serviceContainer) {
+        }
+        
         public void SetRelativeToControl(Control targetControl) {
             this.targetControl = targetControl;
         }

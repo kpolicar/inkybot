@@ -9,6 +9,8 @@ namespace Inkybot.Dofus
         public readonly int? ChangeToPaRuneThreshold;
         public readonly int? MaxValueAtWhichPaRuneCanHit;
         public readonly int? ChangeToRaRuneThreshold;
+        public readonly bool ShouldUsePaRunes => ChangeToPaRuneThreshold != null;
+        public readonly bool ShouldUseRaRunes => ChangeToRaRuneThreshold != null;
         public readonly bool HighSinkStat;
             
         public StatConfig(

@@ -61,8 +61,8 @@ namespace Inkybot.Dofus
             public int? ChangeToPaRuneThreshold => statConfig.ChangeToPaRuneThreshold;
             public int? MaxValueAtWhichPaRuneCanHit=> statConfig.MaxValueAtWhichPaRuneCanHit;
             public int? ChangeToRaRuneThreshold => statConfig.ChangeToRaRuneThreshold;
-            public bool ShouldUsePaRunes => ChangeToPaRuneThreshold != null;
-            public bool ShouldUseRaRunes => ChangeToRaRuneThreshold != null;
+            public bool ShouldUsePaRunes => statConfig.ShouldUsePaRunes;
+            public bool ShouldUseRaRunes => statConfig.ShouldUseRaRunes;
             public bool HighSinkStat => statConfig.HighSinkStat;
             private StatConfig statConfig => Stat.Config;
             private readonly Stat Stat;

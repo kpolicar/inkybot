@@ -17,9 +17,6 @@ namespace Inkybot.Services
         private float sink;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
-            var actions = serviceContainer.GetService<ActionFactory>();
-            AddServices(actions);
-
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
             
@@ -50,11 +47,11 @@ namespace Inkybot.Services
             return new ExoItemMageResolve(config, item, sink).Resolve();
         }
 
-        public override IAction ResolveAction(Item item) {
+        public override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage == null)
-                return Action.Finish(item);
+                return Finish();
             
             var itemMage = proposedItemMage.Value;
 
@@ -62,7 +59,7 @@ namespace Inkybot.Services
                 $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
                 );
             
-            return Action.CombineRune(itemMage.Rune, itemMage.Exo);
+            return Combine(itemMage.Rune);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Inkybot.Dofus;
 using Inkybot.Helpers;
 using Tesseract;
@@ -15,11 +16,10 @@ namespace Inkybot.Actions
         };
 
         public readonly Item Item;
-        
-        public Finish(Control targetControl, Item item) : base(targetControl) {
-            Item = item;
-        }
 
+        public Finish(Control targetControl, Item item) : base(targetControl) =>
+            Item = item;
+        
         public override void Execute() {
             var target = GetCursorTarget(FinishItemMeasurement);
             
@@ -27,6 +27,5 @@ namespace Inkybot.Actions
             var magus = (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             magus.StopMage();
         }
-
     }
 }
