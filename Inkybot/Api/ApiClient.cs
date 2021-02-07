@@ -104,8 +104,9 @@ namespace Inkybot.Api
             formData.Add(fileStreamContent, "image", name);
 
             await WaitForStableConnection();
-            Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/publish", formData);
+            
+            await Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/publish", formData)!;
         }
 
         public async Task NotifyFinished() {
