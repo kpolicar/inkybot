@@ -51,6 +51,9 @@ namespace Inkybot.Services
         public override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
+            if (proposedItemMage != null && !SatisfiesOversinkConstraint(item, proposedItemMage.Value))
+                proposedItemMage = new ReduceOversinkItemMageResolve(config, item).Resolve();
+            
             if (proposedItemMage == null)
                 return Finish();
             
@@ -61,6 +64,19 @@ namespace Inkybot.Services
                 );
             
             return Combine(itemMage.Rune);
+        }
+
+        private bool SatisfiesOversinkConstraint(Item item, ItemMage proposedItemMage) {
+            var currentItemStat = item.Stats[proposedItemMage.Stat];
+            var newItemStat = new ItemStat(
+                proposedItemMage.Stat,
+                proposedItemMage.Rune.IncreaseInValue + (currentItemStat?.Value ?? 0),
+                proposedItemMage.Min,
+                proposedItemMage.Max);
+            var proposedItemOversink =
+                newItemStat.Oversink - (item.Stats[proposedItemMage.Stat]?.Oversink ?? 0) + item.Oversink;
+
+            return proposedItemOversink <= 101;
         }
     }
 }

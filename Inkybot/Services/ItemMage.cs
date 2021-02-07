@@ -12,9 +12,12 @@ namespace Inkybot.Services
         public readonly ItemStatMageConfig MageConfig;
         public readonly int Value;
         public readonly int Max => MageConfig.Maximum;
+        public readonly int Min => MageConfig.Minimum;
         public readonly int? Target => MageConfig.Target;
+        
         public readonly bool HasReachedTargetMinimum =>
             MageConfig.TargetMinimum == null || Value >= MageConfig.TargetMinimum;
+        
         public readonly bool HasReachedTarget =>
             MageConfig.Target == null || Value >= MageConfig.Target;
             

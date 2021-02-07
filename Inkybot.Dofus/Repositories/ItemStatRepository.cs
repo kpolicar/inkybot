@@ -9,9 +9,8 @@ namespace Inkybot.Dofus.Repositories
         public readonly ItemStat[] Stats;
         public int Length => Stats.Length;
 
-        public ItemStatRepository(ItemStat[] stats) {
+        public ItemStatRepository(ItemStat[] stats) =>
             Stats = stats;
-        }
         
         public ItemStat[] MageableStats =>
             Stats.Where(itemStat => itemStat.Stat.Mageable).ToArray();
