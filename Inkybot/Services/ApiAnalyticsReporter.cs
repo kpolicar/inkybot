@@ -59,7 +59,8 @@ namespace Inkybot.Services
                 else
                     exoSuccesses[stat] = 1;
                 
-                Publish();
+                if (stat.Config.HighSinkStat)
+                    Publish();
             }
 
             if (e.action is CombineRune combine && combine.Exo) {
