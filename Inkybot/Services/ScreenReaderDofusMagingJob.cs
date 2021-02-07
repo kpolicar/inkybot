@@ -45,9 +45,11 @@ namespace Inkybot.Services
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
             configManager = serviceContainer.GetService<ConfigManager>();
+            var magingAiManager = serviceContainer.GetService<MagingAIServiceManager>();
             dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;
             this.serviceContainer = serviceContainer;
+            magingAiManager.MagingAIChanged += OnMagingAiChanged;
         }
 
         private int Balance {
@@ -165,12 +167,18 @@ namespace Inkybot.Services
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
+            var magingAI = serviceContainer.GetService<DofusMagingAIContract>();
+            if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI))
+                return;
+            
             if (e.Changed && !state.IsPreparing)
                 StopMage();
         }
-
-        public void Dispose() {
+        
+        private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) =>
             StopMage();
-        }
+
+        public void Dispose() =>
+            StopMage();
     }
 }

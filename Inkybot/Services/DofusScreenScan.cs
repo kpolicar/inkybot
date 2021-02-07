@@ -165,7 +165,7 @@ namespace Inkybot.Services
                 return runeBoxes.Select(runeBox => {
                     runeScanner!.SetRegion(runeBox);
                     var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
-                    var result = scanned.First();
+                    var result = scanned.FirstOrDefault() ?? "";
 
                     int runeQuantity;
                     var hasRune = int.TryParse(result, out runeQuantity);

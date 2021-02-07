@@ -5,6 +5,7 @@ using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
+using Inkybot.Events;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using MageConfig = Inkybot.Dofus.MageConfig;
@@ -13,12 +14,14 @@ namespace Inkybot.Services
 {
     public class DofusMagingAI : DofusMagingAIContract, HasDependencies
     {
-        private MageConfig config;
+        private MageConfig config = null!;
         private float sink;
 
         public override void BindDependencies(ServiceContainer serviceContainer) {
             var configManager = serviceContainer.GetService<ConfigManager>();
-            configManager.ConfigModified += (sender, args) => config = args.Config;
+            configManager.ConfigModified += (sender, args) => config = args.Config;;
+            if (configManager.Config != null)
+                config = configManager.Config;
             
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.SinkChanged += (sender, args) => sink = args.Sink;

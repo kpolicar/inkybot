@@ -274,9 +274,7 @@ namespace Inkybot.Services
                     EnforceHasRunesForCombine(combine);
 
                     if (combine.Exo) {
-                        previousTickDeferredExecutionTask = Task.Run(() => {
-                            job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
-                        });
+                        job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                     }
                 }
                 

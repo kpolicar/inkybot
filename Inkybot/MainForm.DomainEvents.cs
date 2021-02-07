@@ -20,7 +20,8 @@ namespace Inkybot
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
-            if (!(e.action is CombineRune combine) || !combine.Exo) return;
+            if (!(e.action is CombineRune combine) || !combine.Exo || !combine.Rune.Stat.Config.HighSinkStat)
+                return;
             
             BeginInvoke(new MethodInvoker(delegate {
                 int count; 
