@@ -79,7 +79,7 @@ namespace Inkybot.Services
             var proposedItemOversink =
                 newItemStat.Oversink - (item.Stats[proposedItemMage.Stat]?.Oversink ?? 0) + item.Oversink;
 
-            return proposedItemOversink <= 101;
+            return proposedItemOversink <= 101 || !proposedItemMage.WillOvermage;
         }
     }
 }

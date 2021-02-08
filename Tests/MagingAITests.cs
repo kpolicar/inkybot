@@ -1,3 +1,4 @@
+using System;
 using Inkybot.Actions;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Repositories;
@@ -39,8 +40,7 @@ namespace Tests
         public void TestOvermageToReachMinimumStrength() {
             Config.ChangeStatConfigTargetMinimum(Stat.Strength, 94);
             var action = AI.ResolveAction(item) as CombineRune;
-            Assert.NotNull(action);
-            Assert.AreEqual(action.Rune.Stat, Stat.Strength);
+            Assert.Null(action);
         }
 
         [Test]
@@ -77,6 +77,21 @@ namespace Tests
             var action = AI.ResolveAction(item) as CombineRune;
             Assert.NotNull(action);
             Assert.AreEqual(new Rune(Stat.Ap, Rune.RuneType.Sm), action.Rune);
+        }
+
+        [Test]
+        public void TestOversinkOver101Cap() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 390, 301, 400),
+                new ItemStat("strength", 93, 81, 100),
+                new ItemStat("wisdom", 38, 31, 50),
+                new ItemStat("critical", 5, 4, 5),
+            }));
+            Config.ResetConfig(item);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(Stat.Wisdom, action.Rune.Stat);
         }
     }
 }
