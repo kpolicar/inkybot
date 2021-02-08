@@ -11,8 +11,8 @@ namespace Inkybot.Contracts
     {
         public event EventHandler<ItemEventArgs>? FetchedItem;
 
-        Item Item();
         void FetchData();
+        Item Item();
         IEnumerable<MageHistoryRecord> History();
         public UserRunes Runes();
         public UserRune RuneQuantity(Rune rune);

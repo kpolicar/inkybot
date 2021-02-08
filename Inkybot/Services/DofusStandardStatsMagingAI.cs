@@ -14,9 +14,10 @@ namespace Inkybot.Services
         private MageConfig config;
 
         
-        public void BindDependencies(ServiceContainer serviceContainer) {
+        public override void BindDependencies(ServiceContainer serviceContainer) {
             var configManager = serviceContainer.GetService<ConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
+            base.BindDependencies(serviceContainer);
         }
 
         private ItemMage? ResolveItemMage(Item item) {
