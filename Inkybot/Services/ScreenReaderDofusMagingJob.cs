@@ -49,7 +49,8 @@ namespace Inkybot.Services
             dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;
             this.serviceContainer = serviceContainer;
-            magingAiManager.MagingAIChanged += OnMagingAiChanged;
+            if (magingAiManager != null)
+                magingAiManager.MagingAIChanged += OnMagingAiChanged;
         }
 
         private int Balance {
