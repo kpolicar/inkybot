@@ -93,5 +93,29 @@ namespace Tests
             Assert.NotNull(action);
             Assert.AreEqual(Stat.Wisdom, action.Rune.Stat);
         }
+
+        [Test]
+        public void TestOversinkOver101CapRange() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 294, 251, 300),
+                new ItemStat("wisdom", 49, 41, 50),
+                new ItemStat("critical", 4, 3, 4),
+                new ItemStat("range", 1, 2, 2),
+                new ItemStat("neutral_damage", 10, 7, 10),
+                new ItemStat("earth_damage", 10, 7, 10),
+                new ItemStat("air_damage", 10, 7, 10),
+                new ItemStat("per_neutral_resistance", 10, 7, 10),
+            }));
+            Config.ResetConfig(item);
+            var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Ap, 
+                1, 
+                1);
+            Config.ChangeStatConfig(Stat.Ap, exoApConfig);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(Stat.Range, action.Rune.Stat);
+        }
     }
 }
