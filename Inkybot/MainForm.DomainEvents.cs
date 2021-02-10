@@ -49,9 +49,15 @@ namespace Inkybot
                 toggleMageButton.Enabled = true;
                 debugScreenshotButton.Enabled = true;
             }));
+            Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
 
         private void OnMagingStarted(object sender, MagingJobEventArgs e) {
+            Win32.SetThreadExecutionState(
+                Win32.EXECUTION_STATE.ES_CONTINUOUS
+                | Win32.EXECUTION_STATE.ES_DISPLAY_REQUIRED
+                | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
+            
             if (config.UserSettings.ShowUserWarnings &&
                 (e.Item.HasExo || e.Item.IsOvermaged)) {
                 StartMageExoOverConfirmDialog();

@@ -9,9 +9,8 @@ namespace Inkybot.Services
     {
         public readonly float Sink;
         
-        public ExoItemMageResolve(MageConfig config, Item item, float sink) : base(config, item) {
+        public ExoItemMageResolve(MageConfig config, Item item, float sink) : base(config, item) =>
             Sink = sink;
-        }
 
         protected override IEnumerable<ItemMage> PotentialMages() {
             return config.Exos
@@ -23,8 +22,6 @@ namespace Inkybot.Services
                         statConfig.Value,
                         item.Stats[statConfig.Key]?.Value ?? 0
                     );
-                    if (statConfig.Value.TargetMinimum == null || itemMage.Value >= statConfig.Value.TargetMinimum)
-                        return itemMage;
 
                     while (itemMage.WillOvertarget &&
                            itemMage.Rune.Weaker != null) {
@@ -45,6 +42,6 @@ namespace Inkybot.Services
         }
         
         protected override int Priority(ItemMage itemMage) =>
-            (int) itemMage.Rune.Sink;
+            (int) itemMage.Rune.Sink - (itemMage.Rune.Sink <= Sink ? 1 : 0) * 1000;
     }
 }

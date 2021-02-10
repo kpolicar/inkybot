@@ -32,7 +32,6 @@ namespace Inkybot.Actions
                 var pos = RunePosition(column, row);
                 
                 Input.Click(pos.X, pos.Y);
-                System.Diagnostics.Debug.WriteLine($"Rune changed to {Rune.Stat.ToString()}");
                 return;
             }
 
@@ -68,8 +67,6 @@ namespace Inkybot.Actions
             Cancel?.ThrowIfCancellationRequested();
             var combineButtonPosition = GetCursorTarget(Measurements.CombineButtonMeasurement);;
             Input.Click(combineButtonPosition.X, combineButtonPosition.Y);
-            
-            System.Diagnostics.Debug.WriteLine($"EXO Rune changed to {Rune.Stat.DisplayName}");
         }
         
         private Point RunePosition(int column, int row) {

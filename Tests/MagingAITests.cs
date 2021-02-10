@@ -62,6 +62,48 @@ namespace Tests
         }
 
         [Test]
+        public void TestExoSmallerBeforeLargerIfSink() {
+            var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Initiative, 
+                10, 
+                0);
+            Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
+            var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Ap, 
+                1, 
+                1);
+            Config.ChangeStatConfig(Stat.Ap, exoApConfig);
+            
+            var action1 = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action1);
+            Assert.AreEqual(new Rune(Stat.Ap, Rune.RuneType.Sm), action1.Rune);
+            
+            Job.Sink = 1;
+            var action2 = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action2);
+            Assert.AreEqual(new Rune(Stat.Initiative, Rune.RuneType.Sm), action2.Rune);
+            
+            
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 288, 251, 300),
+                new ItemStat("power", 48, 41, 50),
+                new ItemStat("critical", 4, 3, 4),
+                new ItemStat("range", 2, 2, 2),
+                new ItemStat("neutral_damage", 10, 7, 10),
+                new ItemStat("earth_damage", 10, 7, 10),
+                new ItemStat("water_damage", 10, 7, 10),
+                new ItemStat("per_neutral_resistance", 10, 7, 10),
+            }));
+            Config.ResetConfig(item);
+            Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
+            Config.ChangeStatConfig(Stat.Ap, exoApConfig);
+            Job.Sink = 1;
+            var action3 = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action3);
+            Assert.AreEqual(new Rune(Stat.Initiative, Rune.RuneType.Sm), action3.Rune);
+        }
+
+        [Test]
         public void TestExoFocusStatWithTargetMinimum() {
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Intelligence, 

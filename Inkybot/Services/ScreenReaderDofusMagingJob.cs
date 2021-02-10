@@ -97,9 +97,11 @@ namespace Inkybot.Services
         }
 
         private void PrepareMage() {
-            var (previousItem, previousSink) = (state.PreviousItem, state.Sink);
+            var (previousItem, previousSink, previousCheckHadRunOutOfRunes) =
+                (state.PreviousItem, state.Sink, state.PreviousCheckHadRunOutOfRunes);
             state.Reset();
             state.IsPreparing = true;
+            state.PreviousCheckHadRunOutOfRunes = previousCheckHadRunOutOfRunes;
             supervisor = new Supervisor(this);
 
             try {
@@ -135,8 +137,8 @@ namespace Inkybot.Services
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
 
                 while (IsMaging) new Tick(this).Execute();
-                // } catch (OutOfRunesException exception) {
-                // Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (OutOfRunesException exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException) {
                 dataProvider.Scan?.Save();
                 Debug.WriteLine("item has changed!");
@@ -144,20 +146,22 @@ namespace Inkybot.Services
                 Debug.WriteLine("operation cancelled!");
             } catch (Exception exception) {
 
-                var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
-                    ? "Please try running Inkybot as an administrator."
-                    : "";
-
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 Debug.WriteLine(exception.Message);
                 Debug.WriteLine(exception.StackTrace);
 
+                var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
+                    ? "Please try running Inkybot as an administrator."
+                    : "";
+                
                 if (Properties.Settings.Default.autoRestartBot) {
+                    Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     Thread.Sleep(1000);
                     if (IsMaging) {
                         DoMage();
                         return;
                     }
+                } else {
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 }
             }
             

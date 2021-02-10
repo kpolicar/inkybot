@@ -61,10 +61,6 @@ namespace Inkybot.Services
                 return Finish();
             
             var itemMage = proposedItemMage.Value;
-
-            Debug.WriteLine(
-                $"Max of {itemMage.Stat.DisplayName} is {itemMage.MageConfig.Maximum}, target is {itemMage.MageConfig.Target} stat will overmage: {itemMage.WillOvermage}"
-                );
             
             return Combine(itemMage.Rune);
         }

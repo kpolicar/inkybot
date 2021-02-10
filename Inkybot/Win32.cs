@@ -13,6 +13,9 @@ namespace Inkybot
 
         [DllImport("user32.DLL")]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto,SetLastError = true)]
+        public static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags);
 
         [DllImport("user32.DLL")]
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
@@ -41,6 +44,15 @@ namespace Inkybot
             public int Top { get; set; }
             public int Right { get; set; }
             public int Bottom { get; set; }
+        }
+        
+        [FlagsAttribute]
+        public enum EXECUTION_STATE : uint
+        {
+            ES_AWAYMODE_REQUIRED = 0x00000040,
+            ES_CONTINUOUS = 0x80000000,
+            ES_DISPLAY_REQUIRED = 0x00000002,
+            ES_SYSTEM_REQUIRED = 0x00000001
         }
     }
 }
