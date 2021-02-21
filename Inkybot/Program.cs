@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using Inkybot.Adapters;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
