@@ -53,13 +53,13 @@ namespace Inkybot
         }
 
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
-            var takeScreenshot = new ThreadStart(delegate {
+            var takeScreenshot = new ThreadStart(async delegate {
                 var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true);
 
                 for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
                     try {
-                        scan.History().Start();
-                        scan.Stats().Start();
+                        await scan.History();
+                        await scan.Stats();
                         break;
                     } catch (OcrEngineNotReadyYetException) {
                     }

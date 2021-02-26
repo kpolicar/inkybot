@@ -4,10 +4,21 @@ using System.Resources;
 
 namespace Inkybot.Dofus
 {
+    /**
+     * <summary>
+     * The Rune class represents a single rune that can be used on items.
+     * </summary>
+     */
     public class Rune
     {
+        /**
+         * <summary>The active dictionary used to represent runes</summary>
+         */
         public static ResourceSet Dictionary = null!;
 
+        /**
+         * <summary>The type (strength) of the rune.</summary>
+         */
         public enum RuneType
         {
             Sm,
@@ -15,17 +26,37 @@ namespace Inkybot.Dofus
             Ra
         }
 
+        /**
+         * <summary>The stat that the rune represents.</summary>
+         */
         public readonly Stat Stat;
+        
+        /**
+         * <summary>The type (strength) of the rune.</summary>
+         */
         public readonly RuneType Type;
 
+        /**
+         * <summary>
+         *  A rune of the same type, but one strength lower.
+         *  If there is no weaker rune, the property returns null.
+         * </summary>
+         */
         public Rune? Weaker =>
             Type != RuneType.Sm
                 ? new Rune(Stat, Type - 1)
                 : null;
 
+        /**
+         * <param name="stat">The stat that the rune represents.</param>
+         * <param name="type">The type (strength) of the rune.</param>
+         */
         public Rune(Stat stat, RuneType type) =>
             (Stat, Type) = (stat, type);
 
+        /**
+         * <summary>The amount the rune will increase.</summary>
+         */
         public int IncreaseInValue {
             get {
                 var typeValue = Type switch {
@@ -42,8 +73,14 @@ namespace Inkybot.Dofus
             }
         }
 
+        /**
+         * <summary>The amount of sink the rune will consume.</summary>
+         */
         public float Sink => Stat.SinkValue * IncreaseInValue;
         
+        /**
+         * <summary>The representable display name of the rune.</summary>
+         */
         public string DisplayName {
             get {
                 var runeName = Stat.RuneName;

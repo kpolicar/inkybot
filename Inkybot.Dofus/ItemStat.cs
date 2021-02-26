@@ -2,13 +2,42 @@
 
 namespace Inkybot.Dofus
 {
+    /**
+     * <summary>
+     * The ItemStat class represents a single item's stat.
+     * Instance equality is determined by comparing the *Stat*, *Min* and *Max*.
+     * </summary>
+     */
     public class ItemStat
     {
+        /**
+         * <summary>The stat that the instance represents.</summary>
+         */
         public readonly Stat Stat;
+        
+        /**
+         * <summary>The current value of the stat on the item.</summary>
+         */
         public readonly int Value;
+        
+        /**
+         * <summary>The minimum value of the stat on the item.</summary>
+         */
         public readonly int Min;
+        
+        /**
+         * <summary>The maximum value of the stat on the item.</summary>
+         */
         public readonly int Max;
+        
+        /**
+         * <summary>Whether or not the item stat is exotically maged on the item</summary>
+         */
         public bool Exo => Max == 0;
+        
+        /**
+         * <summary>The amount of oversink of the stat on the item.</summary>
+         */
         public float Oversink => Math.Max(Value-Max, 0) * Stat.SinkValue;
 
         public ItemStat(string statIdentifier, int value, int min, int max)

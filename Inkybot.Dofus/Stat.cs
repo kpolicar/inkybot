@@ -8,28 +8,96 @@ using Inkybot.Dofus.Contracts;
 
 namespace Inkybot.Dofus
 {
+    /**
+     * <summary>
+     *  The Stat class represents a single stat that can be found on items.
+     *  All the valid stats that can be found on Dofus items are initialized as
+     *  static members to this class.
+     *  Any Stat objects that are initialized outside these static Stat objects
+     *  are marked as unmageable, meaning they should be ignored by the AI.
+     *  Unmageable stats can be found on weapons, specifically weapon effects.
+     * </summary>
+     */
     public class Stat
     {
-        public static StatConfigProvider? configManager;
+        /**
+         * <summary>
+         * The active configuration manager for all stats.
+         * </summary>
+         */
         public static StatConfigProvider ConfigManager {
             get => configManager ??= DefaultStatConfigProvider.Instance;
             set => configManager = value;
         }
+        private static StatConfigProvider? configManager;
+        
+        /**
+         * <summary>
+         * The active dictionary used to represent stats
+         * </summary>
+         */
         public static ResourceSet Dictionary = null!;
         
+        /**
+         * <summary>A unique stat identifier</summary>
+         */
         public readonly string Identifier;
+        
+        /**
+         * <summary>The absolute maximum value of the stat, unconditional of the item.</summary>
+         */
         public readonly int Maximum;
+        
+        /**
+         * <summary>The amount of sink a single unit of the stat will consume.</summary>
+         */
         public readonly float SinkValue;
+        
+        /**
+         * <summary>The amount of sink a single unit of the stat will consume when the current value of the stat is below 0.</summary>
+         */
         public readonly float NegSinkValue;
+        
+        /**
+         * <summary>Whether or not runes of PA strength can be used on the stat.</summary>
+         */
         public readonly bool CanUsePaRunes;
+        
+        /**
+         * <summary>Whether or not runes of RA strength can be used on the stat.</summary>
+         */
         public readonly bool CanUseRaRunes;
+        
+        /**
+         * <summary>Whether or not the stat can be maged.</summary>
+         */
         public readonly bool Mageable;
+        
+        /**
+         * <summary>The strongest rune strength that can be used on the stat.</summary>
+         */
         public Rune.RuneType StrongestRuneType
             => CanUseRaRunes ? Rune.RuneType.Ra : CanUsePaRunes ? Rune.RuneType.Pa : Rune.RuneType.Sm;
+        
+        /**
+         * <summary>The strongest rune that can be used on the stat.</summary>
+         */
         public Rune StrongestRune
             => new Rune(this, StrongestRuneType);
+        
+        /**
+         * <summary>The representable display name of the stat.</summary>
+         */
         public string DisplayName => Dictionary.GetString(Identifier)!;
+        
+        /**
+         * <summary>The representable display name of the stat's rune.</summary>
+         */
         public string RuneName => Rune.Dictionary.GetString(Identifier)!;
+        
+        /**
+         * <summary>The active stat configuration for the stat.</summary>
+         */
         public StatConfig Config => ConfigManager.Config(this);
 
         private Stat(
@@ -42,18 +110,25 @@ namespace Inkybot.Dofus
             (Identifier, Maximum, SinkValue, NegSinkValue, CanUsePaRunes, CanUseRaRunes, Mageable) =
             (identifier, maximum, sinkValue, negSinkValue, canUsePaRunes, canUseRaRunes, true);
 
+        /**
+         * <param name="identifier">A unique string identifier for the stat.</param>
+         */
         public Stat(string identifier) =>
             (Identifier, Maximum, SinkValue, NegSinkValue, CanUsePaRunes, CanUseRaRunes, Mageable) =
             (identifier, 0, 0, 0, false, false, false);
 
         public override bool Equals(object? obj) =>
             obj is Stat other && Identifier.Equals(other.Identifier);
+        
         public override int GetHashCode() => Identifier.GetHashCode();
+        
         public static bool operator ==(Stat? x, Stat? y) => 
             ReferenceEquals(x, null) == ReferenceEquals(y, null) &&
             Equals(x, y);
+        
         public static bool operator !=(Stat x, Stat y) => 
             !(x == y);
+        
         public override string ToString() => DisplayName;
 
         public static readonly Stat Initiative = new Stat("initiative", 1010, 0.1f, 0.05f, true, true);
@@ -165,6 +240,9 @@ namespace Inkybot.Dofus
         };
         
 
+        /**
+         * <param name="identifier">The identifier for the stat we are looking for</param>
+         */
         public static Stat FirstOrNew(string identifier) {
             return Stats.ContainsKey(identifier)
                 ? Stats[identifier]

@@ -232,6 +232,7 @@
         <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentStatLineException.cs" />
         <Compile Include="Exceptions\ChangeCheckTimeoutException.cs" />
+        <Compile Include="Exceptions\DofusProcessDetachedException.cs" />
         <Compile Include="Exceptions\ExoAfterExoAttemptException.cs" />
         <Compile Include="Exceptions\HistoryHasntChangedException.cs" />
         <Compile Include="Exceptions\MagingException.cs" />

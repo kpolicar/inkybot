@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Inkybot.Contracts;
+using Inkybot.Exceptions;
 
 namespace Inkybot
 {
@@ -20,6 +21,8 @@ namespace Inkybot
         /// <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
         /// <returns></returns>
         public Image CaptureWindow(IntPtr handle) {
+            if (handle == IntPtr.Zero)
+                throw new DofusProcessDetachedException("Handle of window to capture is invalid.");
             BeginScreenshot?.Invoke(this, EventArgs.Empty);
             
             // get te hDC of the target window

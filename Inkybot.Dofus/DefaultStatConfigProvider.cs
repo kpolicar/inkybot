@@ -3,6 +3,9 @@ using Inkybot.Dofus.Contracts;
 
 namespace Inkybot.Dofus
 {
+    /**
+     * <summary>A stat config provider with subjectively-reasonable default values</summary>
+     */
     public class DefaultStatConfigProvider : StatConfigProvider
     {
 
@@ -12,10 +15,16 @@ namespace Inkybot.Dofus
         private DefaultStatConfigProvider() {
         }
         
+        /**
+         * <returns>The default configuration for the stat</returns>
+         */
         public StatConfig Config(Stat stat) {
             return defaultConfig[stat];
         }
 
+        /**
+         * <returns>Default stat configurations</returns>
+         */
         public Dictionary<Stat, StatConfig> Config() {
             return defaultConfig;
         }

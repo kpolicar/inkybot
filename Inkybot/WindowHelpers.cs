@@ -7,7 +7,7 @@ namespace Inkybot
     public class WindowHelpers
     {
         public static IntPtr DockProcess(Process process, Panel destination, ref IntPtr hWndDocked) {
-            if (process == null || hWndDocked != IntPtr.Zero)
+            if (hWndDocked != IntPtr.Zero)
                 return IntPtr.Zero;
 
             while (hWndDocked == IntPtr.Zero) {

@@ -3,8 +3,14 @@ using System.Collections.Generic;
 
 namespace Inkybot.Helpers
 {
+    /**
+     * <summary>Extensions to the instances implementing the IEnumerable interface</summary>
+     */
     public static class Enumerable
     {
+        /**
+         * <summary>Same as Zip(), but with a default that should be used should the collections not match in length</summary>
+         */
         public static IEnumerable<TResult> ZipWithDefault<TFirst, TSecond, TResult>(
             this IEnumerable<TFirst> first,
             IEnumerable<TSecond> second,

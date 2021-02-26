@@ -51,7 +51,7 @@ namespace Inkybot.Services
             return new ExoItemMageResolve(config, item, sink).Resolve();
         }
 
-        public override IAction Resolve(Item item) {
+        protected override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
             
             if (proposedItemMage != null && !SatisfiesOversinkConstraint(item, proposedItemMage.Value))

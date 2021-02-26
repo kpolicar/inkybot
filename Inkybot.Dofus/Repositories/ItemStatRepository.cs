@@ -4,23 +4,51 @@ using System.Linq;
 
 namespace Inkybot.Dofus.Repositories
 {
+    /**
+     * <summary>
+     * The ItemStatRepository class represents a collection of an item's stats with helper methods
+     * for filtering.
+     * </summary>
+     */
     public class ItemStatRepository : IEnumerable<ItemStat>
     {
+        /**
+         * <summary>An array of item stats that the repository represents.</summary>
+         */
         public readonly ItemStat[] Stats;
+        
+        /**
+         * <summary>The number of item stats the repository contains.</summary>
+         */
         public int Length => Stats.Length;
 
+        /**
+         * <param name="stats">An array of item stats that the repository represents.</param>
+         */
         public ItemStatRepository(ItemStat[] stats) =>
             Stats = stats;
         
+        /**
+         * <summary>Subset of item stats that are considered mageable.</summary>
+         */
         public ItemStat[] MageableStats =>
             Stats.Where(itemStat => itemStat.Stat.Mageable).ToArray();
         
+        /**
+         * <summary>Subset of item stats that are considered unmageable.</summary>
+         */
         public ItemStat[] UnmageableStats =>
             Stats.Where(itemStat => !itemStat.Stat.Mageable).ToArray();
         
+        /**
+         * <summary>Subset of item stats that are considered to be standard to the item.</summary>
+         */
         public ItemStat[] StandardStats =>
             MageableStats.Where(itemStat => !itemStat.Exo).ToArray();
         
+        /**
+         * <summary>Subset of item stats that are considered to be exotic to the item.</summary>
+         */
         public ItemStat[] ExoStats =>
             MageableStats.Where(itemStat => itemStat.Exo).ToArray();
 

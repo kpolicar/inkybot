@@ -28,7 +28,7 @@ namespace Inkybot.Services
             return proposedMage;
         }
         
-        public override IAction Resolve(Item item) {
+        protected override IAction Resolve(Item item) {
             var proposedItemMage = ResolveItemMage(item);
 
             if (proposedItemMage == null)

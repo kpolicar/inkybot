@@ -2,6 +2,9 @@
 
 namespace Inkybot.Dofus.Exceptions
 {
+    /**
+     * <summary>An application exception that occurs when the bot cannot correctly resolve sink changes</summary>
+     */
     public class CouldNotResolveSinkException : ApplicationException
     {
         public CouldNotResolveSinkException(string message)

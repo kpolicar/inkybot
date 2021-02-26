@@ -3,6 +3,9 @@ using Inkybot.Dofus.Contracts;
 
 namespace Inkybot.Dofus
 {
+    /**
+     * <summary>A mage config provider with subjectively-reasonable default values</summary>
+     */
     public class DefaultMageConfigProvider : MageConfigProvider
     {
         private static DefaultMageConfigProvider? _instance;
