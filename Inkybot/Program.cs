@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using ImageMagick;
 using Inkybot.Adapters;
 using Inkybot.Api;
 using Inkybot.Contracts;
@@ -74,6 +75,8 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         public static void Main() {
+            // Todo
+            //OpenCL.IsEnabled = false;
             UpgradeApp();
             SetAppLocale();
             InitDependencies();

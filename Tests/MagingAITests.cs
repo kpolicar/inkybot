@@ -104,6 +104,30 @@ namespace Tests
         }
 
         [Test]
+        public void WouldOvermageIfRemainingSink() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 299, 251, 300),
+                new ItemStat("wisdom", 24, 16, 25),
+                new ItemStat("power", 39, 21, 40),
+                new ItemStat("critical", 5, 3, 5),
+                new ItemStat("ap", 1, 1, 1),
+                new ItemStat("critical_resistance", 20, 11, 20),
+                new ItemStat("pushback_resistance", 20, 11, 20),
+            }));
+            Config.ResetConfig(item);
+            
+            var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Ap, 
+                1, 
+                1);
+            Config.ChangeStatConfig(Stat.Mp, exoMpConfig);
+            Job.Sink = 10;
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.NotNull(action);
+            Assert.AreEqual(new Rune(Stat.Vitality, Rune.RuneType.Ra), action.Rune);
+        }
+
+        [Test]
         public void TestExoFocusStatWithTargetMinimum() {
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Intelligence, 

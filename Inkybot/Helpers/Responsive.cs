@@ -1,8 +1,30 @@
+using System;
 using System.Drawing;
 using Tesseract;
 
 namespace Inkybot.Helpers
 {
+    /**
+     * Usage:
+     * 
+     * 1. Define a measurement:
+     *  public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {
+     *      Rectangle = Rect.FromCoords(346, 127, 628, 844),
+     *      Width = 1920,
+     *      Height = 1017
+     *  };
+     * 
+     * Note for Flatybot: You will want to replace your current measurements with a measurement like this, supplying
+     * width=640, height=480 - or whatever client resolution you are currently locked to.
+     * If you would like to define a "point", so not a rectangle, an easy solution would be to simply
+     * set x1=x2 and y1=y2 in the rectangle's arguments.
+     *
+     * 2. Calculate the rectangle relative to the current width & height
+     *  var clientRect = Responsive.ResponsiveRectangle(Measurements.HistoryBounds, client.width, client.height);
+     *
+     * 3. Success.
+     *  win32.click(clientRect.X, clientRect.Y)
+     */
     public static class Responsive
     {
         
@@ -23,10 +45,24 @@ namespace Inkybot.Helpers
             }
         }
 
+        /**
+         * <summary>Recorded measurement of a rectangle with information about the client width & height</summary>
+         */
         public struct Measurement
         {
+            /**
+             * <summary>The rectangle that we're capturing</summary>
+             */
             public Rect Rectangle;
+            
+            /*
+             * <summary>The width of the client during capture</summary>
+             */
             public int Width;
+            
+            /**
+             * <summary>The height of the client during capture</summary>
+             */
             public int Height;
         }
 
