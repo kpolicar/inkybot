@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -44,8 +45,13 @@ namespace Inkybot.Services
                 new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve() ??
                 new OverMageToReachTargetWithSinkItemMageResolve(config, item, sink).Resolve();
 
+            proposedMage ??= new FinishOffRemainingSinkItemMageResolve(config, item, sink).Resolve();
+
             return proposedMage;
         }
+        
+        private bool IsConfiguredForOvermage() => 
+            config.StatsConfig.Any(statConfig => statConfig.Value.Overmage);
         
         private ItemMage? ResolveItemMageForExo(Item item) {
             return new ExoItemMageResolve(config, item, sink).Resolve();

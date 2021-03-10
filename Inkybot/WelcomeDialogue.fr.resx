@@ -2002,4 +2002,13 @@
   <data name="resetSetttingsLabel.Text" xml:space="preserve">
     <value>Réinitialiser les paramètres utilisateur</value>
   </data>
+    <data name="popup.warning_disableopencl" xml:space="preserve">
+    <value>Voulez-vous vraiment désactiver OpenCL? Cela peut affecter les performances d'Inkybot et ne doit être fait que si votre machine a des problèmes avec OpenCL.</value>
+  </data>
+    <data name="popup.warning_disableopencl_title" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+    <data name="disableOpenCLLabel.Text" xml:space="preserve">
+    <value>Désactiver OpenCL</value>
+  </data>
 </root>

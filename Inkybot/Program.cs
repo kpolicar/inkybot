@@ -42,9 +42,9 @@ namespace Inkybot
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
         #endif
-        public const string VersionNumber = "15";
-        public const string Version = "v1.2";
-        public const string VersionEndpoint = "v1.2";
+        public const string VersionNumber = "16";
+        public const string Version = "v1.3";
+        public const string VersionEndpoint = "v1.3";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -75,9 +75,8 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         public static void Main() {
-            // Todo
-            //OpenCL.IsEnabled = false;
             UpgradeApp();
+            ApplyAdditionalUserSettings();
             SetAppLocale();
             InitDependencies();
                 
@@ -96,6 +95,10 @@ namespace Inkybot
             // Settings.Default.Reload();
             Settings.Default.UpgradeRequired = false;
             Settings.Default.Save();
+        }
+
+        private static void ApplyAdditionalUserSettings() {
+            OpenCL.IsEnabled = !Settings.Default.DisableOpenCL;
         }
 
         private static void InitDependencies() {

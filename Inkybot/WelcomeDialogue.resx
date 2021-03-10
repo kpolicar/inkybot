@@ -2419,6 +2419,12 @@
   <data name="resetSetttingsLabel.Text" xml:space="preserve">
     <value>Reset User Settings</value>
   </data>
+  <data name="disableOpenCLLabel.Text" xml:space="preserve">
+    <value>Disable OpenCL</value>
+  </data>
+  <data name="disableOpenCLLabel.Text_enable" xml:space="preserve">
+    <value>Enable OpenCL</value>
+  </data>
   <data name="button1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2468,6 +2474,9 @@
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="resetSetttingsLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="disableOpenCLLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="&gt;&gt;usernameTextBox.ZOrder" xml:space="preserve">
@@ -2654,5 +2663,11 @@
   </data>
   <data name="popup.title_trial" xml:space="preserve">
     <value>Free Trial</value>
+  </data>
+  <data name="popup.warning_disableopencl" xml:space="preserve">
+    <value>Are you sure you would like to disable OpenCL? This may affect Inkybot's performance and should only be done if your machine has issues with OpenCL.</value>
+  </data>
+  <data name="popup.warning_disableopencl_title" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
 </root>

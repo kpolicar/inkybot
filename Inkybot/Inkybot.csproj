@@ -300,6 +300,9 @@
         <Compile Include="Services\OverMageToReachTargetWithSinkItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
+        <Compile Include="Services\OverMageWithRemainingSinkItemMageResolve.cs">
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Services\ReduceOversinkItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>

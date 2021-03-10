@@ -106,7 +106,7 @@ namespace Tests
         [Test]
         public void WouldOvermageIfRemainingSink() {
             item = new Item(new ItemStatRepository(new[] {
-                new ItemStat("vitality", 299, 251, 300),
+                new ItemStat("vitality", 300, 251, 300),
                 new ItemStat("wisdom", 24, 16, 25),
                 new ItemStat("power", 39, 21, 40),
                 new ItemStat("critical", 5, 3, 5),
@@ -117,14 +117,14 @@ namespace Tests
             Config.ResetConfig(item);
             
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
-                Stat.Ap, 
+                Stat.Mp, 
                 1, 
                 1);
             Config.ChangeStatConfig(Stat.Mp, exoMpConfig);
             Job.Sink = 10;
             var action = AI.ResolveAction(item) as CombineRune;
             Assert.NotNull(action);
-            Assert.AreEqual(new Rune(Stat.Vitality, Rune.RuneType.Ra), action.Rune);
+            Assert.AreEqual(new Rune(Stat.Vitality, Rune.RuneType.Pa), action.Rune);
         }
 
         [Test]

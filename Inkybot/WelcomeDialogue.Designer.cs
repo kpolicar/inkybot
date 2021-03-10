@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Inkybot.Properties;
 
 namespace Inkybot
 {
@@ -217,10 +218,15 @@ namespace Inkybot
             var resetSetttingsLabel = new ToolStripMenuItem();
             resetSetttingsLabel.Click += new System.EventHandler(resetSettings_Clicked);
             resources.ApplyResources(resetSetttingsLabel, "resetSetttingsLabel");
+
+            disableOpenCLLabel = new ToolStripButton();
+            disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
+            resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
             
             this.settingsContextMenuStrip.Items.AddRange(new [] {
                 dofusPathLink, switchLanguageLabel, resetSetttingsLabel
             });
+            this.settingsContextMenuStrip.Items.Add(disableOpenCLLabel);
             this.settingsContextMenuStrip.AutoSize = true;
             this.settingsContextMenuStrip.ShowCheckMargin = false;
             this.settingsContextMenuStrip.ShowImageMargin = false;
@@ -301,6 +307,8 @@ namespace Inkybot
         private System.Windows.Forms.Label label1;
 
         private System.Windows.Forms.SplitContainer splitContainer1;
+        
+        private System.Windows.Forms.ToolStripButton disableOpenCLLabel;
 
         #endregion
     }

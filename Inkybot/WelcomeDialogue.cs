@@ -3,12 +3,14 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ImageMagick;
 using Inkybot.Api;
 using Inkybot.Api.Resources;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Inkybot.Properties;
 
 namespace Inkybot
 {
@@ -24,8 +26,10 @@ namespace Inkybot
 
         public WelcomeDialogue() {
             InitializeComponent();
-            usernameTextBox.Text = Properties.Settings.Default.email;
-            passwordTextBox.Text = Properties.Settings.Default.password;
+            usernameTextBox.Text = Settings.Default.email;
+            passwordTextBox.Text = Settings.Default.password;
+            if (Settings.Default.DisableOpenCL)
+                disableOpenCLLabel.Text = resources.GetString("disableOpenCLLabel.Text_enable");
             newVersionLabel.Hide();
             rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
@@ -147,6 +151,28 @@ namespace Inkybot
 
         private void settingsDropdownButton_Click(object sender, EventArgs e) {
             throw new System.NotImplementedException();
+        }
+
+        private void disableOpenCL_Clicked(object sender, EventArgs e) {
+            if (!Settings.Default.DisableOpenCL) {
+                var confirmation =
+                    MessageBox.Show(
+                        resources.GetString("popup.warning_disableopencl"),
+                        resources.GetString("popup.warning_disableopencl_title"),
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+                
+                if (confirmation != DialogResult.Yes) 
+                    return;
+            }
+
+            Settings.Default.DisableOpenCL = !Settings.Default.DisableOpenCL;
+            Settings.Default.Save();
+            OpenCL.IsEnabled = !Settings.Default.DisableOpenCL;
+            
+            disableOpenCLLabel.Text = Settings.Default.DisableOpenCL
+                ? resources.GetString("disableOpenCLLabel.Text_enable")
+                : resources.GetString("disableOpenCLLabel.Text");
         }
     }
 }
