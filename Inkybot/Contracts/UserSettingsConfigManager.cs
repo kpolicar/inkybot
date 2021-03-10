@@ -11,6 +11,7 @@ namespace Inkybot.Contracts
         public bool AutoRestartBot { get; set; }
         public bool ShowUserWarnings { get; set; }
         public bool PublishExos { get; set; }
+        public bool EnableKamasCalculation { get; set; }
         public bool EnableRuneChecking { get; set; }
         
         public void SetConfig(Stat stat, in StatConfig config);

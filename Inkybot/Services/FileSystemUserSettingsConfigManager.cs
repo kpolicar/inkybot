@@ -34,6 +34,14 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.showUserWarnings;
         }
 
+        public bool EnableKamasCalculation {
+            set {
+                Properties.Settings.Default.kamasCalculation = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.kamasCalculation;
+        }
+
         public bool PublishExos {
             set {
                 Properties.Settings.Default.publishExos = value;

@@ -2195,6 +2195,12 @@
   <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
+  <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
+    <value>Calculate average kamas spent</value>
+  </data>
+  <data name="enableKamasCalculationCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
   <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
@@ -2205,6 +2211,9 @@
     <value>230, 21</value>
     </data>
     <data name="enableRuneCheckingCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
+    <data name="enableKamasCalculationCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>
     </data>
     <data name="showWarningsCheckbox.AutoSize" type="System.Boolean, mscorlib">

@@ -83,4 +83,7 @@
     <data name="publishExosCheckbox.Text" xml:space="preserve">
     <value>Publier des exo mages au Hall of fame</value>
   </data>
+    <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
+    <value>Calculer la moyenne des kamas dépensés</value>
+  </data>
 </root>

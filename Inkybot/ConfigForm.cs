@@ -170,6 +170,9 @@ namespace Inkybot
 
         private void ConfigForm_OnPublishExosCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.PublishExos = publishExosCheckbox.Checked;
+        
+        private void ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+            userSettingsConfigManager.EnableKamasCalculation = enableKamasCalculationCheckbox.Checked;
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;

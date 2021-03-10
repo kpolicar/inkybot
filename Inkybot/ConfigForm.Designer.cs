@@ -62,6 +62,7 @@ namespace Inkybot
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
+            this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
             this.scriptResetButton = new System.Windows.Forms.Button();
@@ -181,6 +182,14 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
             this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
             // 
+            // enableKamasCalculationCheckbox
+            // 
+            resources.ApplyResources(this.enableKamasCalculationCheckbox, "enableKamasCalculationCheckbox");
+            this.enableKamasCalculationCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.enableKamasCalculationCheckbox.Name = "enableKamasCalculationCheckbox";
+            this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
+            this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
+            // 
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
@@ -189,7 +198,10 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.bottomPanel.Controls.Add(this.publishExosCheckbox);
-            this.bottomPanel.SetFlowBreak(publishExosCheckbox, true);
+            this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
+            
+            this.bottomPanel.SetFlowBreak(enableKamasCalculationCheckbox, true);
+            
             this.bottomPanel.Controls.Add(this.customScriptLabel);
             this.bottomPanel.Controls.Add(this.scriptChangeButton);
             this.bottomPanel.Controls.Add(this.scriptResetButton);
@@ -275,6 +287,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox publishExosCheckbox;
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
+        private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxSmRuneCanHitColumn;

@@ -100,8 +100,12 @@ namespace Inkybot.Services
                 exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
                     .ToDictionary(x => x.Key, x => x.Value);
             
+            var expended = config.UserSettings.EnableKamasCalculation
+                ? balanceDifference
+                : 0;
+            
             var data = new[] {
-                new KeyValuePair<string, string>("expend", balanceDifference.ToString()), 
+                new KeyValuePair<string, string>("expend", expended.ToString()), 
                 new KeyValuePair<string, string>("attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier)), 
                 new KeyValuePair<string, string>("successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier)), 
             };
