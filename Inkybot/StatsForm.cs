@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -37,6 +39,7 @@ namespace Inkybot
             configManager = Program.Services.GetService<ConfigManager>();
             auth = Program.Services.GetService<AuthManager>();
             actionsPanel.Hide();
+            helpPanel.Hide();
         }
 
         private void StatsForm_Loaded(object sender, EventArgs e) {
@@ -69,8 +72,10 @@ namespace Inkybot
                 
                 if (e.Item.IsValid) {
                     actionsPanel.Show();
+                    helpPanel.Show();
                 } else {
                     actionsPanel.Hide();
+                    helpPanel.Hide();
                 }
             }));
         }
@@ -389,6 +394,10 @@ namespace Inkybot
             };
             Properties.Settings.Default.Save();
             LoadPresetsToComboBox();
+        }
+
+        private void linkLabel1_LinkClicked_1(object sender, EventArgs e) {
+            Process.Start(Server.ConfigsUrl);
         }
     }
 }

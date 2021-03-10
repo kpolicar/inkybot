@@ -180,6 +180,12 @@
   <data name="clearExosButton.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
+    <data name="linkLabel1.Text" xml:space="preserve">
+    <value>See examples</value>
+  </data>
+    <data name="linkLabel1.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt</value>
+    </data>
   <data name="addPresetButton.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>

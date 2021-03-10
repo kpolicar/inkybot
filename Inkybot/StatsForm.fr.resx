@@ -17,6 +17,9 @@
     <data name="addExoButton.Text" xml:space="preserve">
         <value>AJOUTER EXO</value>
     </data>
+    <data name="linkLabel1.Text" xml:space="preserve">
+    <value>Voir des exemples</value>
+  </data>
     <data name="clearExosButton.Text" xml:space="preserve">
         <value>CLAIR EXOS</value>
     </data>

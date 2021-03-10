@@ -57,11 +57,13 @@ namespace Inkybot
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MinColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.actionsPanel = new System.Windows.Forms.Panel();
+            this.helpPanel = new System.Windows.Forms.Panel();
             this.addExoPanel = new System.Windows.Forms.Panel();
             this.presetPanel = new System.Windows.Forms.Panel();
             this.selectPresetPanel = new System.Windows.Forms.Panel();
@@ -156,6 +158,14 @@ namespace Inkybot
             this.actionsPanel.Controls.Add(this.presetPanel);
             this.actionsPanel.Controls.Add(this.clearExosButton);
             this.actionsPanel.Name = "actionsPanel";
+            //
+            // helpPanel
+            // 
+            resources.ApplyResources(this.helpPanel, "helpPanel");
+            this.helpPanel.Controls.Add(this.linkLabel1);
+            this.helpPanel.Name = "helpPanel";
+            this.helpPanel.Dock = DockStyle.Bottom;
+            this.helpPanel.AutoSize = true;
             // 
             // addExoPanel
             // 
@@ -256,18 +266,32 @@ namespace Inkybot
             this.addPresetButton.Location = new Point(0, 0);
             this.addPresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.ActiveLinkColor = System.Drawing.SystemColors.ControlLight;
+            resources.ApplyResources(this.linkLabel1, "linkLabel1");
+            this.linkLabel1.LinkColor = System.Drawing.SystemColors.Control;
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Click += new System.EventHandler(this.linkLabel1_LinkClicked_1);
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Padding = new Padding(0, 5, 0, 5);
+            // 
             // StatsForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.helpPanel);
             this.Controls.Add(this.actionsPanel);
             this.Name = "StatsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
             this.Load += new System.EventHandler(this.StatsForm_Loaded);
             this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
+            this.helpPanel.ResumeLayout(false);
+            this.helpPanel.PerformLayout();
             this.actionsPanel.ResumeLayout(false);
             this.actionsPanel.PerformLayout();
             this.addExoPanel.ResumeLayout(false);
@@ -288,10 +312,12 @@ namespace Inkybot
 
         private System.Windows.Forms.Button addExoButton;
 
+        private System.Windows.Forms.Panel helpPanel;
         private System.Windows.Forms.Panel actionsPanel;
         private System.Windows.Forms.Panel addExoPanel;
         private System.Windows.Forms.Panel presetPanel;
         private System.Windows.Forms.Panel selectPresetPanel;
+        private System.Windows.Forms.LinkLabel linkLabel1;
 
         #endregion
         
