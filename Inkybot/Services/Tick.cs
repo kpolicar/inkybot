@@ -305,10 +305,12 @@ namespace Inkybot.Services
 
             private void EnforceStatsChanged(Item item) {
                 if (job.state.PreviousItem != null) {
-                    var areDifferent =
-                        job.state.PreviousHistory?.history.First().Landed == null ||
-                        item.HasDifferentStatValues(job.state.PreviousItem);
-                
+                    
+                    var shouldBeDifferent = job.state.PreviousHistory?.history.First() != MageHistoryRecord.Failure;
+                    if (!shouldBeDifferent)
+                        return;
+                    
+                    var areDifferent = item.HasDifferentStatValues(job.state.PreviousItem);
                     if (!areDifferent)
                         throw new UnexpectedMageResultException("Expected Stats to change but didn't");
                 }
