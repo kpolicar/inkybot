@@ -56,7 +56,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>An enumerable of all the stat changes that have occured in history record.</summary>
          */
-        private readonly IEnumerable<StatChanged> changed;
+        public readonly IEnumerable<StatChanged> Changed;
         
         /**
          * <summary>Whether or not the item's sink has been modified by the history record.</summary>
@@ -68,7 +68,7 @@ namespace Inkybot.Dofus
          * <param name="sinkChanged">Whether or not the item's sink has been modified by the history record.</param>
          */
         public MageHistoryRecord(IEnumerable<StatChanged> changed, bool sinkChanged) {
-            this.changed = changed;
+            this.Changed = changed;
             this.sinkChanged = sinkChanged;
         }
 
@@ -96,7 +96,7 @@ namespace Inkybot.Dofus
          * <summary>The stat that has landed in the history record. If no stat had landed, the value is null.</summary>
          */
         public StatChanged? Landed =>
-            changed.Cast<StatChanged?>()
+            Changed.Cast<StatChanged?>()
                 .DefaultIfEmpty(null)
                 .FirstOrDefault(change => {
                     if (change == null)
@@ -111,16 +111,16 @@ namespace Inkybot.Dofus
          * </summary>
          */
         public StatChanged[] Fell =>
-            changed.Where(change => change.value < 0).ToArray();
+            Changed.Where(change => change.value < 0).ToArray();
 
         public static bool operator ==(MageHistoryRecord? operand1, MageHistoryRecord? operand2) {
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
-            if (operand1!.changed.Count() != operand2!.changed.Count())
+            if (operand1!.Changed.Count() != operand2!.Changed.Count())
                 return false;
             
-            var comparison = operand1.changed.Zip(operand2.changed,
+            var comparison = operand1.Changed.Zip(operand2.Changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
 
             return comparison.All(comparison =>
@@ -132,10 +132,10 @@ namespace Inkybot.Dofus
             if (ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return false;
             if (!ReferenceEquals(null, operand1) && ReferenceEquals(null, operand2)) return true;
             if (ReferenceEquals(null, operand1) && !ReferenceEquals(null, operand2)) return true;
-            if (operand1!.changed.Count() != operand2!.changed.Count())
+            if (operand1!.Changed.Count() != operand2!.Changed.Count())
                 return true;
             
-            var comparison = operand1.changed.Zip(operand2.changed,
+            var comparison = operand1.Changed.Zip(operand2.Changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
 
             return operand1.sinkChanged != operand2.sinkChanged ||
@@ -147,7 +147,7 @@ namespace Inkybot.Dofus
         public override string ToString() {
             if (this == Failure)
                 return "Failure";
-            return string.Join(", ", changed.Select(change => change.ToString()).Append(sinkChanged ? "sink" : ""));
+            return string.Join(", ", Changed.Select(change => change.ToString()).Append(sinkChanged ? "sink" : ""));
         }
     }
 }
