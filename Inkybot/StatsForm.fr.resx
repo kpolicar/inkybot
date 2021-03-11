@@ -44,4 +44,13 @@
     <data name="MinColumn.HeaderText" xml:space="preserve">
     <value>Minimum</value>
   </data>
+    <data name="popup.multiple_minimums_info_title" xml:space="preserve">
+    <value>Informations</value>
+  </data>
+    <data name="popup.multiple_minimums_info" xml:space="preserve">
+    <value>Le saviez-vous:
+Inkybot fonctionne mieux si vous configurez 1 ou au plus 2 minimum.
+
+Les minimums sont utilisés pour garantir qu'un exo (ou d'autres mages de finition) ne sera pas tenté si la valeur est inférieure à celle spécifiée. Cela ne devrait vraiment être spécifié que pour vos statistiques les plus importantes. Pour le reste, la configuration cible suffira.</value>
+    </data>
 </root>

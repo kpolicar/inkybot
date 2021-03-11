@@ -18,9 +18,9 @@ namespace Inkybot
 {
     public partial class ConfigForm : Form
     {
-        private FileSystemUserSettingsConfigManager userSettingsConfigManager = null!;
-        private MagingAIServiceManager magingAiManager = null!;
-        private StatConfigProvider configProvider = null!;
+        private FileSystemUserSettingsConfigManager userSettingsConfigManager;
+        private MagingAIServiceManager magingAiManager;
+        private StatConfigProvider configProvider;
 
         public ConfigForm() {
             InitializeComponent();

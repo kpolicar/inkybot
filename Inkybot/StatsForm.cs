@@ -30,6 +30,7 @@ namespace Inkybot
         private DofusMagingJob magingJob;
         private ConfigManager configManager;
         private AuthManager auth;
+        private static bool hasDisplayedWarningAboutMultipleMinimums = false;
 
         public StatsForm() {
             InitializeComponent();
@@ -285,6 +286,18 @@ namespace Inkybot
                     : newValue;
                 cell.Value = Numbers.ToString(newValue);
                 configManager.ChangeStatConfigTargetMinimum(stat, newValue);
+            }
+            
+            if (!hasDisplayedWarningAboutMultipleMinimums
+                && configManager.UserSettings.ShowUserWarnings
+                && configManager.Config!.StatsConfig.Values.Count(statConfig => statConfig.TargetMinimum != null) >= 2)
+            {
+                MessageBox.Show(
+                    resources.GetString("popup.multiple_minimums_info"),
+                    resources.GetString("popup.multiple_minimums_info_title"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                hasDisplayedWarningAboutMultipleMinimums = true;
             }
         }
 
