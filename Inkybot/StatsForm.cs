@@ -162,6 +162,9 @@ namespace Inkybot
                         stat.Mageable);
                     row.Tag = new ItemStatRow(stat, true);
                 }
+                if (row == null)
+                    return false;
+                
                 var rowItemStat = (ItemStatRow) row!.Tag;
 
                 if (statConfig.Value.Exo != rowItemStat.Exo)
@@ -183,8 +186,11 @@ namespace Inkybot
         }
 
         private void RebuildDataGridView(MageConfig config) {
-            if (TryRebuildDataGridViewWithExistingRows(config))
-                return;
+            try {
+                if (TryRebuildDataGridViewWithExistingRows(config))
+                    return;
+            } catch (Exception) {
+            }
 
             statsDataGridView.Rows.Clear();
             foreach (var statConfig in config.StatsConfig) {
