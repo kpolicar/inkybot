@@ -2199,7 +2199,7 @@
     <value>Left</value>
   </data>
   <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
-    <value>Calculate average kamas spent</value>
+    <value>Monitor average kamas spent</value>
   </data>
   <data name="enableKamasCalculationCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
