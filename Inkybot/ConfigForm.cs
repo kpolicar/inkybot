@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
+using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
@@ -55,7 +56,7 @@ namespace Inkybot
                     row.Cells[2].Style = readonlyCellStyle;
                 }
 
-                SetConfigRowTooltips(row);
+                SetConfigRowTooltipsAndChangeStyles(row);
             }
 
             restoreHighSinkStatsCheckbox.Checked = userSettingsConfigManager.RestoreHighSinkStats;
@@ -65,7 +66,7 @@ namespace Inkybot
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
         }
 
-        private void SetConfigRowTooltips(DataGridViewRow row) {
+        private void SetConfigRowTooltipsAndChangeStyles(DataGridViewRow row) {
             var stat = (Stat) row.Tag;
             var smRune = new Rune(stat, Rune.RuneType.Sm);
             var paRune = new Rune(stat, Rune.RuneType.Pa);
@@ -178,7 +179,7 @@ namespace Inkybot
             } catch (FormatException) {
                 
             }
-            SetConfigRowTooltips(row);
+            SetConfigRowTooltipsAndChangeStyles(row);
         }
 
         private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) =>
@@ -243,6 +244,16 @@ namespace Inkybot
             scriptValidPictureBox.Hide();
             customScriptPathLabel.Text = "";
             magingAiManager.UseBuiltInAIScript();
+        }
+
+        private void ConfigForm_OnCellEnter(object sender, DataGridViewCellEventArgs e) {
+            if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
+            var row = statsDataGridView.Rows[e.RowIndex];
+            var cell = row.Cells[e.ColumnIndex];
+            
+            tooltipLabelExtra.Text = cell.ToolTipText
+                .Replace("\n", "; ")
+                .FirstCharToUpper();
         }
     }
 }

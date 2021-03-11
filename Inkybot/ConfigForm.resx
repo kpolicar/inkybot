@@ -236,6 +236,9 @@
     <data name="customScriptLabel.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
+    <data name="tooltipLabelExtra.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt</value>
+    </data>
     <data name="customScriptPathLabel.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt, style=Bold</value>
     </data>

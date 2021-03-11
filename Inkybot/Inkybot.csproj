@@ -249,6 +249,7 @@
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
         <Compile Include="Extensions\DataGridViewRowCollection.cs" />
         <Compile Include="Extensions\IEnumerable.cs" />
+        <Compile Include="Extensions\StringExtensions.cs" />
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Numbers.cs" />

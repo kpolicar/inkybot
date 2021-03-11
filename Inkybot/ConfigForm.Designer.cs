@@ -66,6 +66,7 @@ namespace Inkybot
             this.MaxSmRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.customScriptLabel = new System.Windows.Forms.Label();
             this.customScriptPathLabel = new System.Windows.Forms.Label();
+            this.tooltipLabelExtra = new System.Windows.Forms.Label();
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
@@ -124,6 +125,7 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersVisible = false;
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigForm_OnChangeValue);
+            this.statsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigForm_OnCellEnter);
             this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(Inkybot.Helpers.DataGridView.OnValidatingDataGridViewCellNumeric);
             // 
             // StatColumn
@@ -220,6 +222,16 @@ namespace Inkybot
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.AutoSize = true;
             // 
+            // tooltipLabelExtra
+            // 
+            resources.ApplyResources(this.tooltipLabelExtra, "tooltipLabelExtra");
+            this.tooltipLabelExtra.Name = "tooltipLabelExtra";
+            this.tooltipLabelExtra.AutoSize = true;
+            this.tooltipLabelExtra.ForeColor = System.Drawing.SystemColors.Control;
+            this.tooltipLabelExtra.AutoSize = true;
+            this.tooltipLabelExtra.Dock = DockStyle.Top;
+            this.tooltipLabelExtra.Height = 20;
+            // 
             // customScriptLabel
             // 
             resources.ApplyResources(this.customScriptLabel, "customScriptLabel");
@@ -277,6 +289,7 @@ namespace Inkybot
             this.MinimumSize = new System.Drawing.Size(600, 600);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.tooltipLabelExtra);
             this.Controls.Add(this.bottomPanel);
             this.Name = "ConfigForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
@@ -305,6 +318,7 @@ namespace Inkybot
         private System.Windows.Forms.DataGridViewTextBoxColumn RaRuneThresholdColumn;
         private System.Windows.Forms.Label customScriptLabel;
         private System.Windows.Forms.Label customScriptPathLabel;
+        private System.Windows.Forms.Label tooltipLabelExtra;
 
         private System.Windows.Forms.DataGridView statsDataGridView;
         private System.Windows.Forms.PictureBox scriptValidPictureBox;
