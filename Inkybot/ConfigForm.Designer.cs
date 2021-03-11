@@ -33,6 +33,16 @@ namespace Inkybot
             readonlyCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (60)))), ((int) (((byte) (60)))), ((int) (((byte) (60)))));
             readonlyCellStyle.SelectionForeColor = System.Drawing.SystemColors.ControlDark;
             readonlyCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            
+            
+            modifiedStyle = new DataGridViewCellStyle();
+            modifiedStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            modifiedStyle.BackColor = System.Drawing.Color.FromArgb(20, 20, 20);
+            modifiedStyle.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            modifiedStyle.ForeColor = System.Drawing.SystemColors.Control;
+            modifiedStyle.SelectionBackColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            modifiedStyle.SelectionForeColor = System.Drawing.Color.FromArgb(20, 20, 20);
+            modifiedStyle.WrapMode = DataGridViewTriState.True;
         }
 
         #region Windows Form Designer generated code
@@ -301,6 +311,7 @@ namespace Inkybot
 
         private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
         private System.Windows.Forms.OpenFileDialog scriptFileDialog;
+        private DataGridViewCellStyle modifiedStyle;
 
         #endregion
     }

@@ -10,14 +10,17 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
+using StatConfigProvider = Inkybot.Services.StatConfigProvider;
+using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Inkybot
 {
     public partial class ConfigForm : Form
     {
-        private FileSystemUserSettingsConfigManager userSettingsConfigManager;
-        private MagingAIServiceManager magingAiManager;
-        
+        private FileSystemUserSettingsConfigManager userSettingsConfigManager = null!;
+        private MagingAIServiceManager magingAiManager = null!;
+        private StatConfigProvider configProvider = null!;
+
         public ConfigForm() {
             InitializeComponent();
             InitializeCustomComponents();
@@ -25,6 +28,8 @@ namespace Inkybot
                 Program.Services.GetService<UserSettingsConfigManager>();
             magingAiManager =
                 Program.Services.GetService<MagingAIServiceManager>();
+            configProvider =
+                (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -66,6 +71,7 @@ namespace Inkybot
             var paRune = new Rune(stat, Rune.RuneType.Pa);
             var raRune = new Rune(stat, Rune.RuneType.Ra);
             var config = userSettingsConfigManager.Config(stat);
+            var defaultConfig = configProvider.Default.Config(stat).Deconstruct();
             
             if (stat.CanUsePaRunes) {
                 row.Cells[1].ToolTipText = config.ChangeToPaRuneThreshold switch {
@@ -81,6 +87,10 @@ namespace Inkybot
                         .Replace(":stat", stat.ToString())
                         .Replace(":threshold", config.ChangeToPaRuneThreshold.ToString())
                 };
+                row.Cells[1].Style = config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold
+                    ? modifiedStyle
+                    : row.DefaultCellStyle;
+                
                 row.Cells[4].ToolTipText = (config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, null) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
@@ -96,6 +106,10 @@ namespace Inkybot
                         .Replace(":rune", paRune.ToString())
                         .Replace(":maxvalue", config.MaxValueAtWhichPaRuneCanHit.ToString())
                 };
+
+                row.Cells[4].Style = config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit
+                    ? modifiedStyle
+                    : row.DefaultCellStyle;
             }
             if (stat.CanUseRaRunes) {
                 row.Cells[2].ToolTipText = config.ChangeToRaRuneThreshold switch {
@@ -111,6 +125,10 @@ namespace Inkybot
                         .Replace(":stat", stat.ToString())
                         .Replace(":threshold", config.ChangeToRaRuneThreshold.ToString()),
                 };
+                
+                row.Cells[2].Style = config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold
+                    ? modifiedStyle
+                    : row.DefaultCellStyle;
             }
             row.Cells[3].ToolTipText = config.MaxValueAtWhichSmRuneCanHit switch {
                 null => resources.GetString("config.alwaysland")!
@@ -124,6 +142,13 @@ namespace Inkybot
                     .Replace(":rune", smRune.ToString())
                     .Replace(":maxvalue", config.MaxValueAtWhichSmRuneCanHit.ToString()),
             };
+            
+            row.Cells[3].Style = config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit
+                ? modifiedStyle
+                : row.DefaultCellStyle;
+            if (config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit)
+                row.Cells[3].ToolTipText += "\n" + resources.GetString("config.default")!
+                    .Replace(":value", defaultConfig.maxValueSmRuneCanHit.ToString());
         }
 
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {

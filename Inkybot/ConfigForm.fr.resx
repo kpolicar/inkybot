@@ -86,4 +86,7 @@
     <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
     <value>Calculer la moyenne des kamas dépensés</value>
   </data>
+    <data name="config.default" xml:space="preserve">
+    <value>La valeur par défaut est :value</value>
+  </data>
 </root>

@@ -2261,4 +2261,7 @@
   <data name="config.canland_maxvalue" xml:space="preserve">
     <value>:rune can land while value is lower or equal to :maxvalue</value>
   </data>
+  <data name="config.default" xml:space="preserve">
+    <value>Default value is :value</value>
+  </data>
 </root>
