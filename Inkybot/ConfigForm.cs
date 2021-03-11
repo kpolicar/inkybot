@@ -64,6 +64,7 @@ namespace Inkybot
             showWarningsCheckbox.Checked = userSettingsConfigManager.ShowUserWarnings;
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
+            enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
         }
 
         private void SetConfigRowTooltipsAndChangeStyles(DataGridViewRow row) {
@@ -92,6 +93,10 @@ namespace Inkybot
                     ? modifiedStyle
                     : row.DefaultCellStyle;
                 
+                if (config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold)
+                    row.Cells[1].ToolTipText += "\n" + resources.GetString("config.default")!
+                        .Replace(":value", defaultConfig.changeToPaRuneThreshold.ToString());
+                
                 row.Cells[4].ToolTipText = ((config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, null) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
@@ -111,6 +116,10 @@ namespace Inkybot
                 row.Cells[4].Style = config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit
                     ? modifiedStyle
                     : row.DefaultCellStyle;
+                
+                if (config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit)
+                    row.Cells[4].ToolTipText += "\n" + resources.GetString("config.default")!
+                        .Replace(":value", defaultConfig.maxValuePaRuneCanHit.ToString());
             }
             if (stat.CanUseRaRunes) {
                 row.Cells[2].ToolTipText = (config.ChangeToRaRuneThreshold switch {
@@ -130,6 +139,10 @@ namespace Inkybot
                 row.Cells[2].Style = config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold
                     ? modifiedStyle
                     : row.DefaultCellStyle;
+                    
+                if (config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold)
+                    row.Cells[2].ToolTipText += "\n" + resources.GetString("config.default")!
+                        .Replace(":value", defaultConfig.changeToRaRuneThreshold.ToString());
             }
             row.Cells[3].ToolTipText = (config.MaxValueAtWhichSmRuneCanHit switch {
                 null => resources.GetString("config.alwaysland")!
