@@ -290,7 +290,7 @@ namespace Inkybot
             
             if (!hasDisplayedWarningAboutMultipleMinimums
                 && configManager.UserSettings.ShowUserWarnings
-                && configManager.Config!.StatsConfig.Values.Count(statConfig => statConfig.TargetMinimum != null) >= 2)
+                && configManager.Config!.StatsConfig.Values.Count(statConfig => !statConfig.Exo && statConfig.TargetMinimum != null) >= 2)
             {
                 MessageBox.Show(
                     resources.GetString("popup.multiple_minimums_info"),
