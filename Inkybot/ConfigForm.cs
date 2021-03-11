@@ -75,7 +75,7 @@ namespace Inkybot
             var defaultConfig = configProvider.Default.Config(stat).Deconstruct();
             
             if (stat.CanUsePaRunes) {
-                row.Cells[1].ToolTipText = config.ChangeToPaRuneThreshold switch {
+                row.Cells[1].ToolTipText = (config.ChangeToPaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", paRune.ToString()),
                     
@@ -87,12 +87,12 @@ namespace Inkybot
                         .Replace(":rune", paRune.ToString())
                         .Replace(":stat", stat.ToString())
                         .Replace(":threshold", config.ChangeToPaRuneThreshold.ToString())
-                };
+                }).FirstCharToUpper();
                 row.Cells[1].Style = config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold
                     ? modifiedStyle
                     : row.DefaultCellStyle;
                 
-                row.Cells[4].ToolTipText = (config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
+                row.Cells[4].ToolTipText = ((config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, null) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":threshold", resources.GetString("PaRuneThresholdColumn.HeaderText")),
@@ -106,14 +106,14 @@ namespace Inkybot
                     _ => resources.GetString("config.canland_maxvalue")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":maxvalue", config.MaxValueAtWhichPaRuneCanHit.ToString())
-                };
+                }).FirstCharToUpper();
 
                 row.Cells[4].Style = config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit
                     ? modifiedStyle
                     : row.DefaultCellStyle;
             }
             if (stat.CanUseRaRunes) {
-                row.Cells[2].ToolTipText = config.ChangeToRaRuneThreshold switch {
+                row.Cells[2].ToolTipText = (config.ChangeToRaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),
                     
@@ -125,13 +125,13 @@ namespace Inkybot
                         .Replace(":rune", raRune.ToString())
                         .Replace(":stat", stat.ToString())
                         .Replace(":threshold", config.ChangeToRaRuneThreshold.ToString()),
-                };
+                }).FirstCharToUpper();
                 
                 row.Cells[2].Style = config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold
                     ? modifiedStyle
                     : row.DefaultCellStyle;
             }
-            row.Cells[3].ToolTipText = config.MaxValueAtWhichSmRuneCanHit switch {
+            row.Cells[3].ToolTipText = (config.MaxValueAtWhichSmRuneCanHit switch {
                 null => resources.GetString("config.alwaysland")!
                     .Replace(":rune", smRune.ToString()),
                 
@@ -142,7 +142,7 @@ namespace Inkybot
                 _ => resources.GetString("config.canland_maxvalue")!
                     .Replace(":rune", smRune.ToString())
                     .Replace(":maxvalue", config.MaxValueAtWhichSmRuneCanHit.ToString()),
-            };
+            }).FirstCharToUpper();
             
             row.Cells[3].Style = config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit
                 ? modifiedStyle
@@ -250,10 +250,9 @@ namespace Inkybot
             if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
-            
+
             tooltipLabelExtra.Text = cell.ToolTipText
-                .Replace("\n", "; ")
-                .FirstCharToUpper();
+                .Replace("\n", "; ");
         }
     }
 }
