@@ -2182,6 +2182,6 @@
     <value>Did you know:
 Inkybot works best if you configure 1 or at most 2 minimums.
 
-Minimums are used to enforce that an exo (or other finishing mages) will not be attempted if the value is below that which is specified. It should only really be specified for your most important stats. For the rest, the target configuration will suffice.</value>
+Minimums are used to enforce that an exo (or other finishing mages) will not be attempted if the value is below that which is specified. It should only really be specified for your most important stats. For the rest, configuring just the target will suffice.</value>
   </data>
 </root>

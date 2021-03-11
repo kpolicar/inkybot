@@ -48,9 +48,9 @@
     <value>Informations</value>
   </data>
     <data name="popup.multiple_minimums_info" xml:space="preserve">
-    <value>Le saviez-vous:
-Inkybot fonctionne mieux si vous configurez 1 ou au plus 2 minimum.
+    <value>Le saviez vous:
+Inky bot est plus performant si vous configurez 1 à 2 valeur minimale.
 
-Les minimums sont utilisés pour garantir qu'un exo (ou d'autres mages de finition) ne sera pas tenté si la valeur est inférieure à celle spécifiée. Cela ne devrait vraiment être spécifié que pour vos statistiques les plus importantes. Pour le reste, la configuration cible suffira.</value>
+Les minimums sont utilisés pour être sûr que les tentatives exos ne soient pas tenter sur des jets en dessous de ces valeurs. Configurez seulement les valeurs ou voulez qu’elle soit sûr à ces valeurs minimum le reste vous pouvez ne configurer que la valeur cible.</value>
     </data>
 </root>
