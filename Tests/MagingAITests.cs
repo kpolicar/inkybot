@@ -115,7 +115,7 @@ namespace Tests
                 new ItemStat("pushback_resistance", 20, 11, 20),
             }));
             Config.ResetConfig(item);
-            
+
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Mp, 
                 1, 

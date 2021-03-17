@@ -42,6 +42,7 @@ namespace Inkybot
                 toggleMageButton.Text = resources.GetString("toggleMageButton.Text");
                 toggleMageButton.Enabled = false;
             }));
+            FileEventLogger.MagingLogger.Debug("Maging has been stopped!");
         }
 
         private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
@@ -50,6 +51,7 @@ namespace Inkybot
                 debugScreenshotButton.Enabled = true;
             }));
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
+            FileEventLogger.MagingLogger.Debug("Maging has finished");
         }
 
         private void OnMagingStarted(object sender, MagingJobEventArgs e) {

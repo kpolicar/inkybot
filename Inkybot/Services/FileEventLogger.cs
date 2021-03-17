@@ -11,7 +11,7 @@ namespace Inkybot.Services
     public class FileEventLogger
     {
         private static NLog.Logger OcrLogger = NLog.LogManager.GetLogger("ocr");
-        private static NLog.Logger MagingLogger = NLog.LogManager.GetLogger("mage");
+        public static NLog.Logger MagingLogger = NLog.LogManager.GetLogger("mage");
         
         
         public void BindToServices() {

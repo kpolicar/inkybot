@@ -139,11 +139,14 @@ namespace Inkybot.Services
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (ItemHasChangedException) {
+            } catch (ItemHasChangedException exception) {
                 dataProvider.Scan?.Save();
-                Debug.WriteLine("item has changed!");
-            } catch (OperationCanceledException) {
-                Debug.WriteLine("operation cancelled!");
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (ItemHasNotChangedException exception) {
+                dataProvider.Scan?.Save();
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (OperationCanceledException exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (Exception exception) {
 
                 Debug.WriteLine(exception.Message);

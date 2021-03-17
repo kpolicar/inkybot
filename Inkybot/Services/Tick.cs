@@ -26,6 +26,8 @@ namespace Inkybot.Services
             private static int HistoryChangedChecksCount = 0;
             private const int MaxStatsChangedChecks = 3;
             private static int StatsChangedChecksCount = 0;
+            private const int MaxStatsShouldHaveChangedChecks = 3;
+            private static int shouldveBeenDifferentCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;
@@ -35,19 +37,27 @@ namespace Inkybot.Services
             public void Execute() {
                 switch (job.state.Step) {
                     case State.JobStep.STANDARD:
+                        FileEventLogger.MagingLogger.Debug("Main mage action!");
                         DoMainMageAction();
+                        FileEventLogger.MagingLogger.Debug("Main mage action done!");
                         break;
                     case State.JobStep.EXECUTING_COMBINE:
+                        FileEventLogger.MagingLogger.Debug("Combine mage action!");
                         if (job.state.PreviousCombineWasExoAttempt)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
+                        FileEventLogger.MagingLogger.Debug("Combine mage done!");
                         break;
                     case State.JobStep.CALCULATING_SINK_CHANGE:
+                        FileEventLogger.MagingLogger.Debug("Calculate sink mage action!");
                         CalculateSinkChange();
+                        FileEventLogger.MagingLogger.Debug("Calculate sink mage action done!");
                         break;
                     case State.JobStep.CALCULATING_PRICE_CHANGE:
+                        FileEventLogger.MagingLogger.Debug("Calculate price action!");
                         CalculatePriceChange();
+                        FileEventLogger.MagingLogger.Debug("Calculate price action done!");
                         break;
                 }
             }
@@ -305,13 +315,38 @@ namespace Inkybot.Services
 
             private void EnforceStatsChanged(Item item) {
                 if (job.state.PreviousItem != null) {
-                    var areDifferent =
-                        job.state.PreviousHistory?.history.First().Landed == null ||
-                        item.HasDifferentStatValues(job.state.PreviousItem);
-                
-                    if (!areDifferent)
-                        throw new UnexpectedMageResultException("Expected Stats to change but didn't");
+                    var lastHistoryRecord = job.state.PreviousHistory?.history.First();
+                    
+                    var shouldBeDifferent = lastHistoryRecord?.Changed.Any() ?? true;
+                    if (!shouldBeDifferent) {
+                        MarkTickAsShouldNotHaveBeenDifferent(item, lastHistoryRecord!);
+                    } else {
+                        MarkTickAsShouldHaveBeenDifferent(item);
+                    }
                 }
+            }
+
+            private void MarkTickAsShouldNotHaveBeenDifferent(Item item, MageHistoryRecord lastHistoryRecord) {
+                var isStrangeThatItWasntDifferent =
+                    (job.Sink == 0f && lastHistoryRecord.SinkChanged) ||
+                    lastHistoryRecord == MageHistoryRecord.Failure;
+
+                if (!isStrangeThatItWasntDifferent) {
+                    shouldveBeenDifferentCount = 0;
+                    return;
+                }
+                            
+                shouldveBeenDifferentCount++;
+                if (shouldveBeenDifferentCount >= MaxStatsShouldHaveChangedChecks)
+                    throw new ItemHasNotChangedException(item);
+            }
+
+            private void MarkTickAsShouldHaveBeenDifferent(Item item) {
+                var areDifferent = item.HasDifferentStatValues(job.state.PreviousItem!);
+                if (!areDifferent)
+                    shouldveBeenDifferentCount++;
+                else
+                    shouldveBeenDifferentCount = 0;
             }
 
             private void EnforceChangeTimeoutRunningAndNotFinished() {

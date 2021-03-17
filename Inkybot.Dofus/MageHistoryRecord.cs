@@ -61,7 +61,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>Whether or not the item's sink has been modified by the history record.</summary>
          */
-        private readonly bool sinkChanged;
+        public readonly bool SinkChanged;
 
         /**
          * <param name="changed">An enumerable of all the stat changes that have occured in history record.</param>
@@ -69,7 +69,7 @@ namespace Inkybot.Dofus
          */
         public MageHistoryRecord(IEnumerable<StatChanged> changed, bool sinkChanged) {
             this.Changed = changed;
-            this.sinkChanged = sinkChanged;
+            this.SinkChanged = sinkChanged;
         }
 
         /**
@@ -77,7 +77,7 @@ namespace Inkybot.Dofus
          */
         public float ChangeInSink {
             get {
-                if (!sinkChanged)
+                if (!SinkChanged)
                     return 0f;
                 if (Landed == null)
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
@@ -125,7 +125,7 @@ namespace Inkybot.Dofus
 
             return comparison.All(comparison =>
                 comparison.Record1.stat == comparison.Record2.stat &&
-                comparison.Record1.value == comparison.Record2.value) && operand1.sinkChanged == operand2.sinkChanged;
+                comparison.Record1.value == comparison.Record2.value) && operand1.SinkChanged == operand2.SinkChanged;
         }
 
         public static bool operator !=(MageHistoryRecord? operand1, MageHistoryRecord? operand2) {
@@ -138,7 +138,7 @@ namespace Inkybot.Dofus
             var comparison = operand1.Changed.Zip(operand2.Changed,
                 (record1, record2) => new {Record1 = record1, Record2 = record2});
 
-            return operand1.sinkChanged != operand2.sinkChanged ||
+            return operand1.SinkChanged != operand2.SinkChanged ||
                    comparison.Any(comparison =>
                        comparison.Record1.stat != comparison.Record2.stat ||
                        comparison.Record1.value != comparison.Record2.value);
@@ -147,7 +147,7 @@ namespace Inkybot.Dofus
         public override string ToString() {
             if (this == Failure)
                 return "Failure";
-            return string.Join(", ", Changed.Select(change => change.ToString()).Append(sinkChanged ? "sink" : ""));
+            return string.Join(", ", Changed.Select(change => change.ToString()).Append(SinkChanged ? "sink" : ""));
         }
     }
 }

@@ -236,7 +236,9 @@ namespace Inkybot.Services
             }
 
             public void Dispose() {
-                screenshot.Dispose();
+                lock (screenshot) {
+                    screenshot.Dispose();
+                }
                 latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;
             }
         }

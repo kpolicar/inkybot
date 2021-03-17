@@ -69,6 +69,7 @@
         <Compile Include="..\Inkybot\Resources\StatDictionary.Designer.cs">
           <Link>Resources\StatDictionary.Designer.cs</Link>
         </Compile>
+        <Compile Include="DofusHistoryOcrResultTests.cs" />
         <Compile Include="ItemStatMageConfigTests.cs" />
         <Compile Include="MagingAIOverMageTest.cs" />
         <Compile Include="MagingAIOversinkTests.cs" />
