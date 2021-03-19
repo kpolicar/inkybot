@@ -19,6 +19,7 @@ using Inkybot.Domain;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Newtonsoft.Json;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot.Api
 {
@@ -45,10 +46,10 @@ namespace Inkybot.Api
 
             var client = Connection!.Request();
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
-            
             response.EnsureSuccessStatusCode();
+            var result = await GetResultFromEncryptedResponse(response);
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
@@ -57,10 +58,12 @@ namespace Inkybot.Api
         
         public async Task<FreeTrial> BeginFreeTrial() {
             await WaitForStableConnection();
+            
             var response = await Connection!.Request()
                 .PostAsync($"{Server.ApiUrl}/trial/begin", new StringContent(""));
+            response.EnsureSuccessStatusCode();
+            var result = await GetResultFromEncryptedResponse(response);
             
-            var result = response.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<FreeTrial>(result);
         }
 
@@ -68,8 +71,9 @@ namespace Inkybot.Api
             var client = new HttpClient();
             var response = await client.GetAsync(Server.ApiUrl);
             response.EnsureSuccessStatusCode();
+            var result = await GetResultFromEncryptedResponse(response);
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine("Http response: "+result);
             return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
 
@@ -129,6 +133,9 @@ namespace Inkybot.Api
                 .PostAsync($"{Server.ApiUrl}/notify/runes", new FormUrlEncodedContent(data));
         }
 
+        private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
+            Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
+        
         public void BindDependencies(ServiceContainer serviceContainer) {
             var authManager = serviceContainer.GetService<AuthManager>();
             authManager.ConnectionChanged += OnConnectionChanged;

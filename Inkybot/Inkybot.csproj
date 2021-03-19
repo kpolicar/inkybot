@@ -162,6 +162,7 @@
         <Compile Include="Adapters\DofusStatUserRunesOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
         <Compile Include="Adapters\StatConfigAdapter.cs" />
+        <Compile Include="Aes256CbcEncrypter.cs" />
         <Compile Include="Api\ApiConnection.cs">
           <Link>Api\ApiConnection.cs</Link>
         </Compile>

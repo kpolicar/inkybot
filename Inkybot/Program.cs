@@ -37,11 +37,15 @@ namespace Inkybot
             public const string Url = "http://inkybot-server.test";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
+            public const string _appKey = "***REMOVED***";
         #else
             public const string Url = "https://inkybot.me";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
+            public const string _appKey = "***REMOVED***";
         #endif
+        
+        public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
         public const string VersionNumber = "16";
         public const string Version = "v1.3";
         public const string VersionEndpoint = "v1.3";
