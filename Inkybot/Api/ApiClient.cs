@@ -71,7 +71,7 @@ namespace Inkybot.Api
             var client = new HttpClient();
             var response = await client.GetAsync(Server.ApiUrl);
             response.EnsureSuccessStatusCode();
-            var result = await GetResultFromEncryptedResponse(response);
+            var result = await response.Content.ReadAsStringAsync();
 
             Debug.WriteLine("Http response: "+result);
             return JsonConvert.DeserializeObject<VersionDetails>(result);
