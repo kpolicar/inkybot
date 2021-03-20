@@ -78,9 +78,12 @@ namespace Inkybot.Api
         }
 
         public async Task SendStatistics(IEnumerable<KeyValuePair<string, string>> data) {
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            var content = new StringContent(encrypted);
+            
             await WaitForStableConnection();
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/statistics", new FormUrlEncodedContent(data));
+                .PostAsync($"{Server.ApiUrl}/statistics", content);
         }
 
         public async Task Publish(Image image) {
@@ -103,13 +106,16 @@ namespace Inkybot.Api
             var fileStreamContent = new StreamContent(ms);
             fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             var name = $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.jpg";
-            
+
             using var formData = new MultipartFormDataContent();
             formData.Add(fileStreamContent, "image", name);
-
+            
             await WaitForStableConnection();
-            await Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/publish", formData)!;
+            
+            var client = Connection?.Request();
+            client?.DefaultRequestHeaders.Add("Authorization-Signature", Program.Signature);
+            
+            await client?.PostAsync($"{Server.ApiUrl}/publish", formData)!;
         }
 
         public async Task NotifyFinished() {

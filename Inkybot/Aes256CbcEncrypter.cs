@@ -38,9 +38,14 @@ namespace Inkybot
                 throw new Exception("Error decrypting: " + e.Message);
             }
         }
-        
-        public static string Encrypt(string plainText, string key)
+
+        public static string Encrypt(IEnumerable<KeyValuePair<string, string>> data, byte[]? key = null) =>
+            Encrypt(JsonConvert.SerializeObject(data), key);
+
+        public static string Encrypt(string plainText, byte[]? key=null)
         {
+            key ??= Program.AppKey;
+            
             try
             {
                 RijndaelManaged aes = new RijndaelManaged();
@@ -49,7 +54,7 @@ namespace Inkybot
                 aes.Padding = PaddingMode.PKCS7;
                 aes.Mode = CipherMode.CBC;
 
-                aes.Key = encoding.GetBytes(key);
+                aes.Key = key;
                 aes.GenerateIV();
 
                 ICryptoTransform AESEncrypt = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -76,9 +81,9 @@ namespace Inkybot
             }
         }
         
-        static byte[] HmacSHA256(String data, String key)
+        static byte[] HmacSHA256(String data, byte[] key)
         {
-            using (HMACSHA256 hmac = new HMACSHA256(encoding.GetBytes(key)))
+            using (HMACSHA256 hmac = new HMACSHA256(key))
             {
                 return hmac.ComputeHash(encoding.GetBytes(data));
             }

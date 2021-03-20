@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -52,15 +53,21 @@ namespace Inkybot.Api
                 {"client_secret", Program.GrantSecret},
                 {"scope", ""}
             };
-            var content = new FormUrlEncodedContent(form_params);
+            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
+            
+            var content = new StringContent(encrypted);
             var response = await client.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
                 return false;
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            var result = await GetResultFromEncryptedResponse(response);
+            Debug.WriteLine("Http response: "+result);
             authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             return true;
         }
+        
+        private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
+            Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
     }
 }
