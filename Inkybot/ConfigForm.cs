@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
+using Inkybot.Domain;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Services;
@@ -267,6 +269,9 @@ namespace Inkybot
             tooltipLabelExtra.Text = cell.ToolTipText
                 .Replace("\n", "; ");
         }
+
+        private void exampleScriptsLinkLabel_OnClick(object sender, EventArgs e) =>
+            Process.Start(Server.CustomScriptsUrl);
     }
 }
 

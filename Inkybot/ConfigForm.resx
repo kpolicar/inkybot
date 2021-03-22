@@ -2198,6 +2198,9 @@
   <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
+  <data name="exampleScriptsLinkLabel.Text" xml:space="preserve">
+    <value>See examples</value>
+  </data>
   <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
     <value>Monitor average kamas spent</value>
   </data>

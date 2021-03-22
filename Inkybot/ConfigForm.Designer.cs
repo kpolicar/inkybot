@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Inkybot
@@ -23,6 +24,7 @@ namespace Inkybot
             base.Dispose(disposing);
         }
         
+        private Pen borderPen = new Pen(Color.Black);
         private DataGridViewCellStyle readonlyCellStyle;
         private void InitializeCustomComponents() {
             readonlyCellStyle = new DataGridViewCellStyle();
@@ -67,6 +69,7 @@ namespace Inkybot
             this.customScriptLabel = new System.Windows.Forms.Label();
             this.customScriptPathLabel = new System.Windows.Forms.Label();
             this.tooltipLabelExtra = new System.Windows.Forms.Label();
+            this.exampleScriptsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
@@ -75,11 +78,13 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.customMagingAIPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
             this.scriptResetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).BeginInit();
             this.bottomPanel.SuspendLayout();
+            this.customMagingAIPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // statsDataGridView
@@ -202,6 +207,17 @@ namespace Inkybot
             this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
             this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
             // 
+            // exampleScriptsLinkLabel
+            // 
+            this.exampleScriptsLinkLabel.ActiveLinkColor = System.Drawing.SystemColors.ControlLight;
+            resources.ApplyResources(this.exampleScriptsLinkLabel, "exampleScriptsLinkLabel");
+            this.exampleScriptsLinkLabel.LinkColor = System.Drawing.SystemColors.Control;
+            this.exampleScriptsLinkLabel.Name = "exampleScriptsLinkLabel";
+            this.exampleScriptsLinkLabel.TabStop = true;
+            this.exampleScriptsLinkLabel.Click += new System.EventHandler(this.exampleScriptsLinkLabel_OnClick);
+            this.exampleScriptsLinkLabel.AutoSize = true;
+            this.exampleScriptsLinkLabel.Margin = new Padding(0, 5, 0, 2);
+            // 
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
@@ -212,15 +228,22 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.publishExosCheckbox);
             this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
             
-            this.bottomPanel.SetFlowBreak(enableKamasCalculationCheckbox, true);
+            this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
+            this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
             
-            this.bottomPanel.Controls.Add(this.customScriptLabel);
-            this.bottomPanel.Controls.Add(this.scriptChangeButton);
-            this.bottomPanel.Controls.Add(this.scriptResetButton);
-            this.bottomPanel.Controls.Add(this.customScriptPathLabel);
-            this.bottomPanel.Controls.Add(this.scriptValidPictureBox);
+            this.customMagingAIPanel.Controls.Add(this.customScriptLabel);
+            this.customMagingAIPanel.Controls.Add(this.scriptChangeButton);
+            this.customMagingAIPanel.Controls.Add(this.scriptResetButton);
+            this.customMagingAIPanel.Controls.Add(this.customScriptPathLabel);
+            this.customMagingAIPanel.Controls.Add(this.scriptValidPictureBox);
+            this.customMagingAIPanel.Paint += (sender, e) => {
+                e.Graphics.DrawLine(borderPen, 0, 0, this.customMagingAIPanel.ClientRectangle.Width, 1);
+            };
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.AutoSize = true;
+            this.customMagingAIPanel.Name = "customMagingAIPanel";
+            this.customMagingAIPanel.AutoSize = true;
+            this.customMagingAIPanel.Dock = DockStyle.Bottom;
             // 
             // tooltipLabelExtra
             // 
@@ -238,7 +261,7 @@ namespace Inkybot
             this.customScriptLabel.Name = "customScriptLabel";
             this.customScriptLabel.AutoSize = true;
             this.customScriptLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.customScriptLabel.Padding = new Padding(0, 7, 0, 0);
+            this.customScriptLabel.Margin = new Padding(0, 7, 0, 0);
             // 
             // scriptChangeButton
             // 
@@ -264,7 +287,6 @@ namespace Inkybot
             resources.ApplyResources(this.customScriptPathLabel, "customScriptPathLabel");
             this.customScriptPathLabel.Name = "customScriptLabel";
             this.customScriptPathLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.customScriptPathLabel.Padding = new Padding(0, 7, 0, 0);
             this.customScriptPathLabel.AutoSize = true;
             // 
             // toastIconPictureBox
@@ -291,16 +313,20 @@ namespace Inkybot
             this.Controls.Add(this.statsDataGridView);
             this.Controls.Add(this.tooltipLabelExtra);
             this.Controls.Add(this.bottomPanel);
+            this.Controls.Add(this.customMagingAIPanel);
             this.Name = "ConfigForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             this.Load += new System.EventHandler(this.ConfigForm_OnLoad);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).EndInit();
+            this.customMagingAIPanel.ResumeLayout(false);
+            this.customMagingAIPanel.PerformLayout();
             this.bottomPanel.ResumeLayout(false);
             this.bottomPanel.PerformLayout();
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
         private System.Windows.Forms.FlowLayoutPanel bottomPanel;
         private System.Windows.Forms.Button scriptChangeButton;
         private System.Windows.Forms.Button scriptResetButton;
@@ -319,6 +345,7 @@ namespace Inkybot
         private System.Windows.Forms.Label customScriptLabel;
         private System.Windows.Forms.Label customScriptPathLabel;
         private System.Windows.Forms.Label tooltipLabelExtra;
+        private System.Windows.Forms.LinkLabel exampleScriptsLinkLabel;
 
         private System.Windows.Forms.DataGridView statsDataGridView;
         private System.Windows.Forms.PictureBox scriptValidPictureBox;

@@ -90,8 +90,9 @@ namespace Inkybot.Services
         
         private string FormatMagingAI(Dofus.Contracts.DofusMagingAI magingAI) {
             return magingAI switch {
-                DofusMagingAI _ => "Maging AI",
-                DofusStandardStatsMagingAI _ => "Free Trial Maging AI",
+                DofusMagingAI => "Maging AI",
+                DofusStandardStatsMagingAI => "Free Trial Maging AI",
+                CustomDofusMagingAI => "Custom Maging AI",
                 _ => "Unknown Maging AI"
             };
         }

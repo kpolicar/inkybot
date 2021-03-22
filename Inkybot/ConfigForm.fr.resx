@@ -89,4 +89,7 @@
     <data name="config.default" xml:space="preserve">
     <value>La valeur par défaut est :value</value>
   </data>
+  <data name="exampleScriptsLinkLabel.Text" xml:space="preserve">
+    <value>Voir des exemples</value>
+  </data>
 </root>
