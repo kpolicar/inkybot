@@ -47,9 +47,9 @@ namespace Inkybot
         
         public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
         public static string Signature => Aes256CbcEncrypter.Encrypt(_appKey);
-        public const string VersionNumber = "16";
-        public const string Version = "v1.3";
-        public const string VersionEndpoint = "v1.3";
+        public const string VersionNumber = "17";
+        public const string Version = "v1.4";
+        public const string VersionEndpoint = "v1.4";
         
 
         public static ServiceContainer Services = new ServiceContainer();

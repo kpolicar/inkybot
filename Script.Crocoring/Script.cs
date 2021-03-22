@@ -19,7 +19,7 @@ namespace Script.Crocoring
         }
 
         protected bool SatisfiesCustomFinishCondition =>
-            Item.Stats[Stat.Vitality]?.Value >= 370;
+            Item.Stats[Stat.Vitality]?.Value >= 370 && Sink < 3;
 
         protected override ItemMage? BeforeExoRune(ItemMage proposedMage) =>
             (Item.IsOvermaged, Item.HasExo, Sink) switch {
