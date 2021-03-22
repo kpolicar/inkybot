@@ -37,27 +37,19 @@ namespace Inkybot.Services
             public void Execute() {
                 switch (job.state.Step) {
                     case State.JobStep.STANDARD:
-                        FileEventLogger.MagingLogger.Debug("Main mage action!");
                         DoMainMageAction();
-                        FileEventLogger.MagingLogger.Debug("Main mage action done!");
                         break;
                     case State.JobStep.EXECUTING_COMBINE:
-                        FileEventLogger.MagingLogger.Debug("Combine mage action!");
                         if (job.state.PreviousCombineWasExoAttempt)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
-                        FileEventLogger.MagingLogger.Debug("Combine mage done!");
                         break;
                     case State.JobStep.CALCULATING_SINK_CHANGE:
-                        FileEventLogger.MagingLogger.Debug("Calculate sink mage action!");
                         CalculateSinkChange();
-                        FileEventLogger.MagingLogger.Debug("Calculate sink mage action done!");
                         break;
                     case State.JobStep.CALCULATING_PRICE_CHANGE:
-                        FileEventLogger.MagingLogger.Debug("Calculate price action!");
                         CalculatePriceChange();
-                        FileEventLogger.MagingLogger.Debug("Calculate price action done!");
                         break;
                 }
             }

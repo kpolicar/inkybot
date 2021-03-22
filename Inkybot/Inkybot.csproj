@@ -214,6 +214,7 @@
         <Compile Include="Domain\DetectUserGame.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
+        <Compile Include="Events\ConfigResetEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MagingAIChangedEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />

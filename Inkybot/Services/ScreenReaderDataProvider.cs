@@ -34,7 +34,7 @@ namespace Inkybot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             this.serviceContainer = serviceContainer;
-            magingJob.Stopped += (sender, args) => Reset();
+            magingJob.Finished += (sender, args) => Reset();
         }
 
         public void Reset() {

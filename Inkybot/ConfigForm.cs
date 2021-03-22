@@ -95,7 +95,7 @@ namespace Inkybot
                 
                 if (config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold)
                     row.Cells[1].ToolTipText += "\n" + resources.GetString("config.default")!
-                        .Replace(":value", defaultConfig.changeToPaRuneThreshold.ToString());
+                        .Replace(":value", defaultConfig.changeToPaRuneThreshold?.ToString() ?? "\"-\"");
                 
                 row.Cells[4].ToolTipText = ((config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, null) => resources.GetString("config.neverchange_threshold")!
@@ -119,7 +119,7 @@ namespace Inkybot
                 
                 if (config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit)
                     row.Cells[4].ToolTipText += "\n" + resources.GetString("config.default")!
-                        .Replace(":value", defaultConfig.maxValuePaRuneCanHit.ToString());
+                        .Replace(":value", defaultConfig.maxValuePaRuneCanHit?.ToString() ?? "\"-\"");
             }
             if (stat.CanUseRaRunes) {
                 row.Cells[2].ToolTipText = (config.ChangeToRaRuneThreshold switch {
@@ -142,7 +142,7 @@ namespace Inkybot
                     
                 if (config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold)
                     row.Cells[2].ToolTipText += "\n" + resources.GetString("config.default")!
-                        .Replace(":value", defaultConfig.changeToRaRuneThreshold.ToString());
+                        .Replace(":value", defaultConfig.changeToRaRuneThreshold?.ToString() ?? "\"-\"");
             }
             row.Cells[3].ToolTipText = (config.MaxValueAtWhichSmRuneCanHit switch {
                 null => resources.GetString("config.alwaysland")!
@@ -162,7 +162,7 @@ namespace Inkybot
                 : row.DefaultCellStyle;
             if (config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit)
                 row.Cells[3].ToolTipText += "\n" + resources.GetString("config.default")!
-                    .Replace(":value", defaultConfig.maxValueSmRuneCanHit.ToString());
+                    .Replace(":value", defaultConfig.maxValueSmRuneCanHit?.ToString() ?? "\"-\"");
         }
 
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {

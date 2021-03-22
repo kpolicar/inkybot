@@ -243,6 +243,9 @@ namespace Inkybot.Dofus
                     return hashCode;
                 }
             }
+
+            public override string ToString() =>
+                $"{Stat.Identifier}: Min {Minimum}, Max {Maximum}, Target {Target}, TargetMinimum {TargetMinimum?.ToString() ?? "-"}";
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Inkybot.Services
     public class FileEventLogger
     {
         private static NLog.Logger OcrLogger = NLog.LogManager.GetLogger("ocr");
-        public static NLog.Logger MagingLogger = NLog.LogManager.GetLogger("mage");
+        private static NLog.Logger MagingLogger = NLog.LogManager.GetLogger("mage");
         
         
         public void BindToServices() {
@@ -59,6 +59,12 @@ namespace Inkybot.Services
                 MagingLogger.Info($"Rune quantity changed: {args.Rune}, new: {args.Quantity}, old: {args.OldQuantity}");
             config.ConfigModified += (sender, args) =>
                 MagingLogger.Info("Mage config has changed.");
+            config.ConfigReset += (sender, args) => {
+                MagingLogger.Info("Mage config has been reset.");
+                MagingLogger.Debug("New config:\n"+args.Config);
+                MagingLogger.Debug("Previous config:\n"+(args.PreviousConfig?.ToString() ?? "-"));
+                MagingLogger.Debug("Item:\n"+args.Item);
+            };
             actionHandler.ActionExecuted += (sender, args) => 
                 MagingLogger.Info("Action executed: " + FormatAction(args.action));
         }

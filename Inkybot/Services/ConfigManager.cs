@@ -18,6 +18,7 @@ namespace Inkybot.Services
     public class ConfigManager : HasDependencies
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
+        public event EventHandler<ConfigResetEventArgs>? ConfigReset;
         public StatConfigProviderContract StatConfig = null!;
         public MageConfigProviderContract MageConfig = null!;
         public UserSettingsConfigManager UserSettings = null!;
@@ -63,9 +64,12 @@ namespace Inkybot.Services
         }
 
         public void ResetConfig(Item item) {
+            var previousConfig = Config;
             Config = new MageConfig(item);
             ConfigModified?.Invoke(this, 
                 new ConfigModifiedEventArgs(Config, true, true));
+            ConfigReset?.Invoke(this, 
+                new ConfigResetEventArgs(item, Config, previousConfig));
         }
 
         public void EnforceConfigSetForItem(Item item) {

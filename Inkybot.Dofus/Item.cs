@@ -115,5 +115,8 @@ namespace Inkybot.Dofus
         public override int GetHashCode() {
             return Stats.GetHashCode();
         }
+
+        public override string ToString() =>
+            string.Join("\n", Stats.Stats.Select(stat => stat.ToString()));
     }
 }
