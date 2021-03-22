@@ -21,9 +21,9 @@ namespace Inkybot
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        public static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         [DllImport("user32.dll", CharSet=CharSet.Ansi, SetLastError=true)]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public static extern bool SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
         
         public static int MakeLParam(int LoWord, int HiWord)
         {

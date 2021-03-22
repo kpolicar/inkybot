@@ -46,9 +46,6 @@ namespace Inkybot.Actions
             Thread.Sleep(500);
             
             Cancel?.ThrowIfCancellationRequested();
-            Input.SelectAll();
-            Thread.Sleep(50);
-
             Input.TypeMessage(Rune.DisplayName, Cancel);
             Thread.Sleep(2000);
             
