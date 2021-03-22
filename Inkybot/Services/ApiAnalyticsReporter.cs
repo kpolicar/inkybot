@@ -92,10 +92,10 @@ namespace Inkybot.Services
         }
         
         private void Publish() {
-            if (previousImage == null || !config.UserSettings.PublishExos)
+            if (previousImage == null)
                 return;
             lock (previousImage) {
-                _ = api.Publish(previousImage);
+                _ = api.Publish(previousImage, config.UserSettings.PublishExos);
             }
         }
 

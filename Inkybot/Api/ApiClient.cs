@@ -91,7 +91,7 @@ namespace Inkybot.Api
             Debug.WriteLine("Http response: "+result);
         }
 
-        public async Task Publish(Image image) {
+        public async Task Publish(Image image, bool toForum) {
             using var ms = new MemoryStream();
             image.Save(ms, ImageFormat.Bmp);
             ms.Position = 0;
@@ -108,12 +108,15 @@ namespace Inkybot.Api
             optimizer.LosslessCompress(ms);
             ms.Position = 0;
 
-            var fileStreamContent = new StreamContent(ms);
+            using var formData = new MultipartFormDataContent();
+            
+            using var fileStreamContent = new StreamContent(ms);
             fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             var name = $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.jpg";
 
-            using var formData = new MultipartFormDataContent();
+            using var publishToForum = new StringContent(toForum.ToString());
             formData.Add(fileStreamContent, "image", name);
+            formData.Add(publishToForum, "publish_to_forum");
             
             await WaitForStableConnection();
             
