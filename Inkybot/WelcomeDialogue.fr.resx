@@ -1994,7 +1994,7 @@
     <value>Vous avez déjà utilisé votre essai gratuit!</value>
   </data>
   <data name="popup.ask_trial" xml:space="preserve">
-    <value>Vous n'êtes pas abonné à Inkybot. Souhaitez-vous activer votre essai gratuit de 30 minutes?</value>
+    <value>Vous n'êtes pas abonné à Inkybot. Souhaitez-vous activer votre essai gratuit de 1 heure?</value>
   </data>
   <data name="popup.title_trial" xml:space="preserve">
     <value>Essai gratuit</value>

@@ -2659,7 +2659,7 @@
     <value>You have already used your free trial!</value>
   </data>
   <data name="popup.ask_trial" xml:space="preserve">
-    <value>You are not subscribed to Inkybot. Would you like to activate your 30 minute free trial?</value>
+    <value>You are not subscribed to Inkybot. Would you like to activate your 1 hour free trial?</value>
   </data>
   <data name="popup.title_trial" xml:space="preserve">
     <value>Free Trial</value>
