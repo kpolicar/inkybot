@@ -18,6 +18,7 @@ using Inkybot.Domain;
 using Inkybot.Properties;
 using Inkybot.Services;
 using Microsoft.CSharp;
+using Newtonsoft.Json;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;
@@ -85,7 +86,7 @@ namespace Inkybot
                 
             BindServices();
             BindLogger();
-            
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

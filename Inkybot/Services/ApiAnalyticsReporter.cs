@@ -27,6 +27,7 @@ namespace Inkybot.Services
         private int balanceDifference = 0;
         private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
         private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
+        private readonly object imageChangeMutex = new object();
         private Image? previousImage;
         private IAction? previousAction;
 
@@ -45,13 +46,13 @@ namespace Inkybot.Services
         }
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
-            if (previousImage != null)
-                lock (previousImage) lock (e.Image) {
-                    previousImage?.Dispose();
-                    var ms = new MemoryStream();
-                    e.Image.Save(ms, ImageFormat.Bmp);
-                    previousImage = Image.FromStream(ms);
-                }
+            lock (imageChangeMutex)
+            lock (e.Image) {
+                previousImage?.Dispose();
+                var ms = new MemoryStream();
+                e.Image.Save(ms, ImageFormat.Bmp);
+                previousImage = Image.FromStream(ms);
+            }
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
@@ -94,8 +95,8 @@ namespace Inkybot.Services
         private void Publish() {
             if (previousImage == null)
                 return;
-            lock (previousImage) {
-                _ = api.Publish(previousImage, config.UserSettings.PublishExos);
+            lock (imageChangeMutex) {
+                api.Publish(previousImage, config.UserSettings.PublishExos).Wait();
             }
         }
 

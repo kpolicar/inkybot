@@ -114,7 +114,7 @@ namespace Inkybot.Api
             fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             var name = $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.jpg";
 
-            using var publishToForum = new StringContent(toForum.ToString());
+            using var publishToForum = new StringContent(toForum ? "1" : "0");
             formData.Add(fileStreamContent, "image", name);
             formData.Add(publishToForum, "publish_to_forum");
             
