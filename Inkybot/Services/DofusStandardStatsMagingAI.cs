@@ -15,7 +15,7 @@ namespace Inkybot.Services
 
         
         public override void BindDependencies(ServiceContainer serviceContainer) {
-            var configManager = serviceContainer.GetService<ConfigManager>();
+            var configManager = serviceContainer.GetService<MageConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;
             base.BindDependencies(serviceContainer);
         }
@@ -28,8 +28,8 @@ namespace Inkybot.Services
             return proposedMage;
         }
         
-        protected override IAction Resolve(Item item) {
-            var proposedItemMage = ResolveItemMage(item);
+        protected override IAction Resolve() {
+            var proposedItemMage = ResolveItemMage(Item);
 
             if (proposedItemMage == null)
                 return Finish();

@@ -7,29 +7,16 @@ namespace Inkybot.Dofus.Contracts
     public abstract class CustomDofusMagingAI : DofusMagingAI
     {
         private DofusMagingAI Default = null!;
-        private Item resolving = null!;
-        
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
         protected virtual bool ShouldOvermageToUseRemainingSink => true;
 
         protected IAction ResolveDefault() =>
-            Default.ResolveAction(resolving);
+            Default.ResolveAction(Item);
 
         public void SetDefaultMagingAI(DofusMagingAI defaultAI) =>
             Default = defaultAI;
 
-
-        protected override IAction Resolve(Item item) {
-            var proposed = ResolveDefault();
-
-            if (Sink > 30) {
-                
-            }
-
-            return proposed;
-        }
-        
         public ItemMage? OverrideMageToPerfectStatsWithSink(ItemMage proposedMage) =>
             ShouldPerfectStats
                 ? proposedMage
@@ -44,8 +31,12 @@ namespace Inkybot.Dofus.Contracts
             ShouldOvermageToUseRemainingSink
                 ? proposedMage
                 : (ItemMage?) null;
+
+        public ItemMage? OverrideExoMage(ItemMage proposedMage) {
+            var overridenCombine = BeforeExoRune(proposedMage);
+            return overridenCombine ?? proposedMage;
+        }
         
-        public virtual ItemMage? OverrideExoMage(ItemMage proposedMage) =>
-            proposedMage;
+        protected virtual ItemMage? BeforeExoRune(ItemMage proposedMage) => null;
     }
 }

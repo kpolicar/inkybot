@@ -170,11 +170,11 @@ namespace Script.Gelano
             new ConfigForm(this).ShowDialog();
         }
         
-        protected override IAction Resolve(Item item) {
-            if (!item.HasStat(Stat.Mp))
-                return CombineExo(item);
+        protected override IAction Resolve() {
+            if (!Item.HasStat(Stat.Mp))
+                return CombineExo(Item);
 
-            if (!item.HasStat(Stat.Ap))
+            if (!Item.HasStat(Stat.Ap))
                 return CombineApBack();
 
             return Finish();

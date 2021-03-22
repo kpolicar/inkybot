@@ -26,7 +26,7 @@ namespace Inkybot.Services
                     return new ItemMage(
                         itemStat.Stat,
                         rune,
-                        config[itemStat],
+                        config[itemStat]!.Value,
                         itemStat.Value
                     );
                 });

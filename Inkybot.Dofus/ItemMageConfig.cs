@@ -27,13 +27,19 @@ namespace Inkybot.Dofus
             applicable &= 
                 standardStats.Length == StandardStatsConfigs.Count &&
                 standardStats.All(itemStat =>
+                    StandardStatsConfigs.ContainsKey(itemStat.Stat) &&
                     StandardStatsConfigs[itemStat.Stat].IsApplicableTo(itemStat));
             applicable &= 
                 exoStats.Length <= ExoStatsConfigs.Count &&
                 exoStats.All(itemStat =>
+                    ExoStatsConfigs.ContainsKey(itemStat.Stat) &&
                     ExoStatsConfigs[itemStat.Stat].IsApplicableTo(itemStat));
 
             return applicable;
+        }
+        
+        public ItemStat[] UnconfiguredItemStats(Item item) {
+            return item.Stats.Where(itemStat => !ContainsKey(itemStat.Stat)).ToArray();
         }
     }
 }

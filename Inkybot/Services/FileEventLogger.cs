@@ -1,6 +1,7 @@
 using System;
 using Inkybot.Actions;
 using Inkybot.Contracts;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
@@ -43,7 +44,7 @@ namespace Inkybot.Services
         private void BindToMagingJob() {
             var magingJob =  (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
             var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
-            var config =  (ConfigManager) Program.Services.GetService(typeof(ConfigManager));
+            var config =  (ConfigManager) Program.Services.GetService(typeof(MageConfigManager));
             
             magingJob.Started += (sender, args) => 
                 MagingLogger.Info("Maging started.");

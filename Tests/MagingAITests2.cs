@@ -57,7 +57,7 @@ namespace Tests
 
         [Test]
         public void TestVitalityOvermage() {
-            Config.ChangeStatConfig(Stat.Vitality, Config.Config[Stat.Vitality].Clone(450, 400));
+            Config.ChangeStatConfig(Stat.Vitality, Config.Config![Stat.Vitality]!.Value.Clone(450, 400));
             
             var action = AI.ResolveAction(item) as CombineRune;
             Assert.AreEqual(Stat.Vitality, action.Rune.Stat);

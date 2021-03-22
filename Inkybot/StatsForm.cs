@@ -10,6 +10,7 @@ using Inkybot.Adapters;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
 using Inkybot.Events;
@@ -37,7 +38,7 @@ namespace Inkybot
             InitializeCustomComponents();
             magingJob = Program.Services.GetService<DofusMagingJob>();
             dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
-            configManager = Program.Services.GetService<ConfigManager>();
+            configManager = (ConfigManager) Program.Services.GetService<MageConfigManager>();
             auth = Program.Services.GetService<AuthManager>();
             actionsPanel.Hide();
             helpPanel.Hide();
@@ -113,7 +114,7 @@ namespace Inkybot
                 
                 var config = configManager.Config![stat];
                 // Remove it if it's not configured
-                if (config.Target == null || config.Target == 0) {
+                if (config!.Value.Target == null || config!.Value.Target == 0) {
                     statsDataGridView.Rows.Remove(untouchedRow);
                 } else {
                     untouchedRow.Cells[1].Value = 0;
@@ -278,9 +279,9 @@ namespace Inkybot
             var newValue = Numbers.Parse(cell.Value.ToString());
             
             if (e.ColumnIndex == 2)
-                configManager.ChangeStatConfigTarget(stat, newValue!.Value);
+                configManager.ChangeStatConfigTarget(stat, newValue ?? 0);
             else if (e.ColumnIndex == 3) {
-                var target = configManager.Config![stat].Target;
+                var target = configManager.Config![stat]!.Value.Target;
                 newValue = newValue > target
                     ? target
                     : newValue;

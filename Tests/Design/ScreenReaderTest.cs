@@ -7,6 +7,7 @@ using Inkybot;
 using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Services;
 using NUnit.Framework;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
@@ -27,7 +28,7 @@ namespace Tests.Design
             return new Dictionary<Type, object> {
                 { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
                 { typeof(ScreenCapture), new Win32ScreenCapture() },
-                { typeof(ConfigManager), new ConfigManager() },
+                { typeof(MageConfigManager), new ConfigManager() },
                 { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
                 { typeof(DofusMagingAIContract), new DofusMagingAI() },
             };

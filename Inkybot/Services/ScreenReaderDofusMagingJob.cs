@@ -44,7 +44,7 @@ namespace Inkybot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
-            configManager = serviceContainer.GetService<ConfigManager>();
+            configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
             var magingAiManager = serviceContainer.GetService<MagingAIServiceManager>();
             dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
             configManager.ConfigModified += OnConfigModified;

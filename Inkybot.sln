@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Script.Gelano", "Script.Gel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inkybot.Design", "Inkybot.Design\Inkybot.Design.csproj", "{0A7966C1-0372-4263-94FD-1770544A0312}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Script.Crocoring", "Script.Crocoring\Script.Crocoring.csproj", "{EB5560FB-0F21-47AD-874D-1E0C54262B2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{0A7966C1-0372-4263-94FD-1770544A0312}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A7966C1-0372-4263-94FD-1770544A0312}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A7966C1-0372-4263-94FD-1770544A0312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB5560FB-0F21-47AD-874D-1E0C54262B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB5560FB-0F21-47AD-874D-1E0C54262B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB5560FB-0F21-47AD-874D-1E0C54262B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB5560FB-0F21-47AD-874D-1E0C54262B2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

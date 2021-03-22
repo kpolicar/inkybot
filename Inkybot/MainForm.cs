@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
@@ -25,7 +26,7 @@ namespace Inkybot
             
             magingJob = Program.Services.GetService<DofusMagingJob>();
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
-            config = Program.Services.GetService<ConfigManager>();
+            config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
             
             InitOcrIndicators();
             toastPanel.Hide();

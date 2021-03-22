@@ -26,8 +26,10 @@ namespace Inkybot.Dofus.Contracts
         private StatConfigProvider ConfigProvider = null!;
         
         private DofusSinkProvider SinkProvider = null!;
+        
+        private MageConfigManager MageConfigManager = null!;
 
-        protected float Sink => SinkProvider.Sink;
+        protected int Sink => (int) SinkProvider.Sink;
         
         /**
          * <summary>
@@ -35,13 +37,14 @@ namespace Inkybot.Dofus.Contracts
          * to pass arguments.
          * </summary>
          */
-        protected Item resolving = null!;
+        protected Item Item = null!;
 
         public virtual void BindDependencies(ServiceContainer serviceContainer) =>
-            (Action, ConfigProvider, SinkProvider) = 
+            (Action, ConfigProvider, SinkProvider, MageConfigManager) = 
             (serviceContainer.GetService<ActionFactory>(),
                 serviceContainer.GetService<StatConfigProvider>(),
-                serviceContainer.GetService<DofusSinkProvider>());
+                serviceContainer.GetService<DofusSinkProvider>(),
+                serviceContainer.GetService<MageConfigManager>());
 
         /**
          * <summary>
@@ -57,7 +60,7 @@ namespace Inkybot.Dofus.Contracts
          * <summary>A helper method used to provide a combine action for the specified stat.</summary>
          */
         public IAction Combine(Stat stat) {
-            if (!resolving!.HasStat(stat))
+            if (!Item!.HasStat(stat))
                 return Combine(stat.StrongestRune);
             
             var runeType = ResolveRuneType(stat);
@@ -68,37 +71,45 @@ namespace Inkybot.Dofus.Contracts
          * <summary>A helper method used to provide a combine action for the specified rune.</summary>
          */
         public IAction Combine(Rune rune) =>
-            Action.CombineRune(rune, !resolving.HasStat(rune.Stat));
+            Action.CombineRune(rune, !Item.HasStat(rune.Stat));
 
         
         /**
          * <summary>A helper method used to provide a finish action.</summary>
          */
         public IAction Finish() =>
-            Action.Finish(resolving);
+            Action.Finish(Item);
 
         
         /**
          * <summary>Return the next action that should be taken for the specified item.</summary>
          */
-        protected abstract IAction Resolve(Item item);
+        protected abstract IAction Resolve();
 
         
         /**
          * <summary>Return the next action that should be taken for the specified item.</summary>
          */
         public IAction ResolveAction(Item item) {
-            resolving = item;
-            var result = Resolve(item);
-            resolving = null!;
+            Item = item;
+            var result = Resolve();
+            Item = null!;
             return result;
         }
+
+        protected ItemMage? ItemMage(Stat stat) =>
+            ItemMage(new Rune(stat, ResolveRuneType(stat)));
+        
+        protected ItemMage? ItemMage(Rune rune) =>
+            new ItemMage(Item,
+                rune,
+                MageConfigManager.Config?[rune.Stat] ?? MageConfig.ItemStatMageConfig.Default(rune.Stat));
         
         /**
          * <returns>Resolve the rune type that should be used for the specified stat.</returns>
          */
         private Rune.RuneType ResolveRuneType(Stat stat) {
-            var itemStat = resolving.Stats[stat]!;
+            var itemStat = Item.Stats[stat]!;
             var itemConfig = ConfigProvider.Config(stat);
             
             if (itemConfig.ShouldUseRaRunes && itemStat.Value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;

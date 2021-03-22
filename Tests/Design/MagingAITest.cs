@@ -19,7 +19,7 @@ namespace Tests.Design
     public abstract class MagingAITest : Test
     {
         protected ConfigManager Config =>
-            ServiceContainer.GetService<ConfigManager>();
+            (ConfigManager) ServiceContainer.GetService<MageConfigManager>();
         protected DofusMagingAI AI =>
             (DofusMagingAI) ServiceContainer.GetService<DofusMagingAIContract>();
         protected MagingJobMock Job =>
@@ -35,7 +35,7 @@ namespace Tests.Design
                 { typeof(ActionFactory), new MouseActionFactory() },
                 { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
                 { typeof(ScreenCapture), new Win32ScreenCapture() },
-                { typeof(ConfigManager), new ConfigManager() },
+                { typeof(MageConfigManager), new ConfigManager() },
                 { typeof(DofusMagingJobContract), new MagingJobMock() },
                 { typeof(DofusMagingAIContract), new DofusMagingAI() },
             };

@@ -27,7 +27,7 @@ namespace Inkybot.Services
 
         protected virtual ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
             return prioritized.FirstOrDefault(itemMage =>
-                itemMage.CanHit && MatchesCriteria(itemMage));
+                itemMage.CanHitAccordingToConfiguration && MatchesCriteria(itemMage));
         }
 
         protected abstract bool MatchesCriteria(ItemMage itemMage);
@@ -44,8 +44,8 @@ namespace Inkybot.Services
         protected virtual Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var itemConfig = config[itemStat];
 
-            if (itemConfig.ShouldUseRaRunes && itemStat.Value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
-            if (itemConfig.ShouldUsePaRunes && itemStat.Value >= itemConfig.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
+            if (itemConfig!.Value.ShouldUseRaRunes && itemStat.Value >= itemConfig!.Value.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
+            if (itemConfig!.Value.ShouldUsePaRunes && itemStat.Value >= itemConfig!.Value.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
 
             return Rune.RuneType.Sm;
         }

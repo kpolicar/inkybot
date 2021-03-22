@@ -22,7 +22,7 @@ namespace Inkybot.Services
 
         protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
             return prioritized
-                .FirstOrDefault(itemMage => itemMage.CanHit && !itemMage.WillOvermage);
+                .FirstOrDefault(itemMage => itemMage.CanHitAccordingToConfiguration && !itemMage.WillOvermage);
         }
     }
 }

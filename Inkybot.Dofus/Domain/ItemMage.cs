@@ -33,7 +33,7 @@ namespace Inkybot.Dofus.Domain
                 ? new ItemMage(Stat, Rune.Weaker, MageConfig, Value)
                 : (ItemMage?) null;
         
-        public bool CanHit
+        public bool CanHitAccordingToConfiguration
         {
             get {
                 if ((Value + Rune.IncreaseInValue) * Stat.SinkValue > 101 && WillOvermage)
@@ -52,6 +52,14 @@ namespace Inkybot.Dofus.Domain
         public bool WillOvermage => Value + Rune.IncreaseInValue > Max;
         public bool WillOvertarget => Value + Rune.IncreaseInValue > Target;
 
+
+        public ItemMage(Item item, Rune rune, ItemStatMageConfig mageConfig) : this(
+            rune.Stat,
+            rune,
+            mageConfig,
+            item.Stats[rune.Stat]?.Value ?? 0
+        ) {
+        }
             
         public ItemMage(Stat stat, Rune rune, ItemStatMageConfig mageConfig, int value) {
             Stat = stat;

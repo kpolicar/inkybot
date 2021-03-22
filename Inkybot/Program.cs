@@ -68,7 +68,7 @@ namespace Inkybot
             { typeof(MageConfigProviderContract), new MageConfigProvider() },
             { typeof(UserSettingsConfigManager), new FileSystemUserSettingsConfigManager() },
             { typeof(AnalyticsReporter), new ApiAnalyticsReporter() },
-            { typeof(ConfigManager), new ConfigManager() },
+            { typeof(MageConfigManager), new ConfigManager() },
             { typeof(ActionHandler), new ActionHandler() },
             { typeof(ApiClient), new ApiClient() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },

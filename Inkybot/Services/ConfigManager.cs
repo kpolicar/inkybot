@@ -15,7 +15,7 @@ using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager : HasDependencies
+    public class ConfigManager : MageConfigManager, HasDependencies
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
         public event EventHandler<ConfigResetEventArgs>? ConfigReset;
@@ -73,8 +73,23 @@ namespace Inkybot.Services
         }
 
         public void EnforceConfigSetForItem(Item item) {
-            if (!ConfigIsSetForItem(item))
-                ResetConfig(item);
+            if (!ConfigIsSetForItem(item)) {
+
+                var success = TryToAddMissingItemStats(item);
+                if (!success || !ConfigIsSetForItem(item))
+                    ResetConfig(item);
+            }
+        }
+
+        private bool TryToAddMissingItemStats(Item item) {
+            var unconfigured = Config?.UnconfiguredItemStats(item);
+            if (Config == null || unconfigured == null || unconfigured.Any(itemStat => !itemStat.Exo))
+                return false;
+
+            foreach (var itemStat in unconfigured) {
+                ChangeStatConfig(itemStat.Stat, Dofus.MageConfig.ItemStatMageConfig.Default(itemStat.Stat));
+            }
+            return true;
         }
 
         private bool ConfigIsSetForItem(Item item)

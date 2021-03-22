@@ -2,6 +2,7 @@
 using System.Linq;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using Inkybot.Events;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
@@ -20,16 +21,12 @@ namespace Inkybot.Services
         internal OverrideResolve? OverrideFinishSinkOverride;
         internal OverrideResolve? Exo;
         private MageConfig config = null!;
-        private float sink;
 
         public override void BindDependencies(ServiceContainer serviceContainer) {
-            var configManager = serviceContainer.GetService<ConfigManager>();
+            var configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
             configManager.ConfigModified += (sender, args) => config = args.Config;;
             if (configManager.Config != null)
                 config = configManager.Config;
-            
-            var magingJob = serviceContainer.GetService<DofusMagingJob>();
-            magingJob.SinkChanged += (sender, args) => sink = args.Sink;
             base.BindDependencies(serviceContainer);
         }
 
@@ -52,17 +49,17 @@ namespace Inkybot.Services
 
             if (!item.IsOvermaged && !item.HasExo)
                 proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() => 
-                    new PerfectionItemMageResolve(config, item, sink).Resolve() ??
-                    new PerfectionItemMageResolve(config, item, sink, 1).Resolve(),
+                    new PerfectionItemMageResolve(config, item, Sink).Resolve() ??
+                    new PerfectionItemMageResolve(config, item, Sink, 1).Resolve(),
                     OverridePerfectionResolve);
 
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve() ??
-                new OverMageToReachTargetWithSinkItemMageResolve(config, item, sink).Resolve(),
+                new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).Resolve(),
                 OverrideReachMinimumResolve);
 
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new FinishOffRemainingSinkItemMageResolve(config, item, sink).Resolve(),
+                new FinishOffRemainingSinkItemMageResolve(config, item, Sink).Resolve(),
                 OverrideFinishSinkOverride);
 
             return proposedMage;
@@ -73,16 +70,16 @@ namespace Inkybot.Services
         
         private ItemMage? ResolveItemMageForExo(Item item) {
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new ExoItemMageResolve(config, item, sink).Resolve(),
+                new ExoItemMageResolve(config, item, Sink).Resolve(),
                 Exo);
             return proposedMage;
         }
 
-        protected override IAction Resolve(Item item) {
-            var proposedItemMage = ResolveItemMage(item) ?? ResolveItemMageForExo(item);
+        protected override IAction Resolve() {
+            var proposedItemMage = ResolveItemMage(Item) ?? ResolveItemMageForExo(Item);
             
-            if (proposedItemMage != null && !SatisfiesOversinkConstraint(item, proposedItemMage.Value))
-                proposedItemMage = new ReduceOversinkItemMageResolve(config, item).Resolve();
+            if (proposedItemMage != null && !SatisfiesOversinkConstraint(Item, proposedItemMage.Value))
+                proposedItemMage = new ReduceOversinkItemMageResolve(config, Item).Resolve();
             
             if (proposedItemMage == null)
                 return Finish();

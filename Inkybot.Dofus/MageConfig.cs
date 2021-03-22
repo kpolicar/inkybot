@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Inkybot.Dofus.Contracts;
 
@@ -42,14 +43,18 @@ namespace Inkybot.Dofus
         /**
          * <returns>Stat configuration that is configured for the provided stat</returns>
          */
-        public ItemStatMageConfig this[Stat index] =>
-            StatsConfig[index];
+        public ItemStatMageConfig? this[Stat index] =>
+            StatsConfig.ContainsKey(index)
+                ? StatsConfig[index]
+                : (ItemStatMageConfig?) null;
 
         /**
          * <returns>Stat configuration that is configured for the provided item stat</returns>
          */
-        public ItemStatMageConfig this[ItemStat index] =>
-            StatsConfig[index.Stat];
+        public ItemStatMageConfig? this[ItemStat index] =>
+            StatsConfig.ContainsKey(index.Stat)
+                ? StatsConfig[index.Stat]
+                : (ItemStatMageConfig?) null;
 
         /**
          * <summary>A dictionary of configured exo stats on the item.</summary>
@@ -79,6 +84,12 @@ namespace Inkybot.Dofus
          */
         public bool IsConfiguredFor(Item item)
             => StatsConfig.IsApplicableTo(item);
+
+        /**
+         * <returns>Determines whether or not the configuration is applicable to another item.</returns>
+         */
+        public ItemStat[] UnconfiguredItemStats(Item item)
+            => StatsConfig.UnconfiguredItemStats(item);
 
         public override string ToString() {
             return string.Join("\r\n", StatsConfig.Values);
@@ -191,6 +202,9 @@ namespace Inkybot.Dofus
              * <summary>The stat that is configured</summary>
              */
             private readonly Stat Stat;
+
+            public static ItemStatMageConfig Default(Stat stat) =>
+                new ItemStatMageConfig(stat, default, default, default, default);
 
             public ItemStatMageConfig(Stat stat, int minimum, int maximum, int? target, int? targetMinimum) =>
                 (Stat, Minimum, Maximum, Target, TargetMinimum) =

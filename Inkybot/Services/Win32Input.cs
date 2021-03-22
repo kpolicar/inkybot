@@ -32,16 +32,19 @@ namespace Inkybot.Services
             foreach (var character in message) {
                 cancel?.ThrowIfCancellationRequested();
                 Win32.SendMessage(relativeToControl, 
+                    Win32.WM_KEYDOWN, 
+                    (IntPtr) character, 
+                    IntPtr.Zero);
+                Win32.SendMessage(relativeToControl, 
                     Win32.WM_CHAR, 
+                    (IntPtr) character, 
+                    IntPtr.Zero);
+                Win32.SendMessage(relativeToControl, 
+                    Win32.WM_KEYUP,
                     (IntPtr) character, 
                     IntPtr.Zero);
                 Thread.Sleep(100);
             }
-            
-            Win32.SendMessage(relativeToControl, 
-                Win32.WM_KEYUP, 
-                (IntPtr) Keys.Right, 
-                IntPtr.Zero);
         }
         
         public void CtrlDoubleClick(int x, int y) {

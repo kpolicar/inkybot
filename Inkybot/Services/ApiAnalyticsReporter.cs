@@ -9,6 +9,7 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using Inkybot.Events;
 using Newtonsoft.Json;
@@ -40,7 +41,7 @@ namespace Inkybot.Services
             ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
             actionHandler.ActionExecuted += OnMagingAction;
             
-            config = Program.Services.GetService<ConfigManager>();
+            config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
         }
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
