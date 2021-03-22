@@ -118,7 +118,7 @@ namespace Inkybot.Api
             await WaitForStableConnection();
             
             var client = Connection?.Request();
-            client?.DefaultRequestHeaders.Add("Authorization-Signature", Program.Signature);
+            client?.DefaultRequestHeaders.Add("Authorization-Signature", Server.Signature);
             
             await client?.PostAsync($"{Server.ApiUrl}/publish", formData)!;
         }

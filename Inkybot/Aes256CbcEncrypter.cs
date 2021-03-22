@@ -12,7 +12,7 @@ namespace Inkybot
         private static readonly Encoding encoding = Encoding.UTF8;
 
         public static string Decrypt(string plainText, byte[]? key=null) {
-            key ??= Program.AppKey;
+            key ??= Server.Key;
             
             try
             {
@@ -45,7 +45,7 @@ namespace Inkybot
 
         public static string Encrypt(string plainText, byte[]? key=null)
         {
-            key ??= Program.AppKey;
+            key ??= Server.Key;
             
             try
             {
