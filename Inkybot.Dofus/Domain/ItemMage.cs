@@ -1,11 +1,10 @@
 using System;
 using Inkybot.Dofus;
-using Inkybot.Domain;
 using ItemStatMageConfig = Inkybot.Dofus.MageConfig.ItemStatMageConfig;
 
-namespace Inkybot.Services
+namespace Inkybot.Dofus.Domain
 {
-    internal struct ItemMage
+    public struct ItemMage
     {
         public readonly Stat Stat;
         public readonly Rune Rune;

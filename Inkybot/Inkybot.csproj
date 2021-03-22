@@ -216,6 +216,7 @@
         <Compile Include="Events\ConfigModifiedEventArgs.cs" />
         <Compile Include="Events\ConfigResetEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
+        <Compile Include="Events\MageResolveEventArgs.cs" />
         <Compile Include="Events\MagingAIChangedEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
@@ -322,9 +323,6 @@
         <Compile Include="Services\DofusStandardStatsMagingAI.cs" />
         <Compile Include="Services\ImagePreprocessor.cs">
           <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
-        </Compile>
-        <Compile Include="Services\ItemMage.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\MagingAIServiceManager.cs" />
         <Compile Include="Services\Measurements.cs">

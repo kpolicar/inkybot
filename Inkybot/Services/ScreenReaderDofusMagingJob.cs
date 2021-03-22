@@ -61,9 +61,9 @@ namespace Inkybot.Services
                 state.Balance = value;
             }
         }
-        private float Sink {
+        public float Sink {
             get => state.Sink;
-            set {
+            private set {
                 SinkChanged?.Invoke(this, 
                     new SinkChangedEventArgs(state.PreviousItem!, configManager.Config!, state.Sink, value));
                 state.Sink = value;

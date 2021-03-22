@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Inkybot.Dofus;
+using Inkybot.Dofus.Domain;
 
 namespace Inkybot.Services
 {

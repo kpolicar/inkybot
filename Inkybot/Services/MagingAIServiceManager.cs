@@ -6,6 +6,7 @@ using Inkybot.Api;
 using Inkybot.Api.Resources;
 using Inkybot.Contracts;
 using Inkybot.Design;
+using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using Inkybot.Events;
@@ -62,6 +63,12 @@ namespace Inkybot.Services
                 }
                 if (magus is HasDependencies dependant)
                     dependant.BindDependencies(serviceContainer);
+                if (magus is CustomDofusMagingAI customDofusMagingAI) {
+                    var defaultAI = new DofusMagingAI();
+                    defaultAI.BindDependencies(serviceContainer);
+                    defaultAI.Init();
+                    BindCustomMagingAIWithDefaultAI(defaultAI, customDofusMagingAI);
+                }
                 magus.Init();
             
                 serviceContainer.ReplaceService<DofusMagingAIContract>(magus);
@@ -73,6 +80,14 @@ namespace Inkybot.Services
                 throw;
             }
 
+        }
+
+        private void BindCustomMagingAIWithDefaultAI(DofusMagingAI defaultAI, CustomDofusMagingAI customDofusMagingAI) {
+            defaultAI.OverridePerfectionResolve = resolve => customDofusMagingAI.OverrideMageToPerfectStatsWithSink(resolve.Mage);
+            defaultAI.OverrideReachMinimumResolve = resolve => customDofusMagingAI.OverrideOvermageToReachMinimum(resolve.Mage);
+            defaultAI.OverrideFinishSinkOverride = resolve => customDofusMagingAI.OverrideOvermageWithRemainingSink(resolve.Mage);
+            defaultAI.Exo = resolve => customDofusMagingAI.OverrideExoMage(resolve.Mage);
+            customDofusMagingAI.SetDefaultMagingAI(defaultAI);
         }
 
         public void UseBuiltInAIScript(User? user=null) {

@@ -1,9 +1,10 @@
 using System;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 
 namespace Inkybot.Contracts
 {
-    public interface DofusMagingJob
+    public interface DofusMagingJob : DofusSinkProvider
     {
         public event EventHandler<MagingJobEventArgs>? Started;
         public event EventHandler? Preparing;

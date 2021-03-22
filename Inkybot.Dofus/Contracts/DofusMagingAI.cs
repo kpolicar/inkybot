@@ -25,17 +25,23 @@ namespace Inkybot.Dofus.Contracts
          */
         private StatConfigProvider ConfigProvider = null!;
         
+        private DofusSinkProvider SinkProvider = null!;
+
+        protected float Sink => SinkProvider.Sink;
+        
         /**
          * <summary>
          * The current item being resolved. Used internally to provide helper methods without the need
          * to pass arguments.
          * </summary>
          */
-        private Item resolving = null!;
+        protected Item resolving = null!;
 
         public virtual void BindDependencies(ServiceContainer serviceContainer) =>
-            (Action, ConfigProvider) = 
-            (serviceContainer.GetService<ActionFactory>(), serviceContainer.GetService<StatConfigProvider>());
+            (Action, ConfigProvider, SinkProvider) = 
+            (serviceContainer.GetService<ActionFactory>(),
+                serviceContainer.GetService<StatConfigProvider>(),
+                serviceContainer.GetService<DofusSinkProvider>());
 
         /**
          * <summary>

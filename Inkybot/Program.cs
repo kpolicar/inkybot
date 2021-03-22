@@ -116,6 +116,7 @@ namespace Inkybot
         }
 
         private static void BindServices() {
+            _services[typeof(DofusSinkProvider)] = _services[typeof(DofusMagingJobContract)];
             foreach (var serviceBinding in _services) {
                 var @abstract = serviceBinding.Key;
                 var concrete = serviceBinding.Value;

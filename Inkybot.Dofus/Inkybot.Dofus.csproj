@@ -41,12 +41,17 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Contracts\ActionFactory.cs" />
+        <Compile Include="Contracts\CustomDofusMagingAI.cs" />
         <Compile Include="Contracts\DofusMagingAI.cs" />
+        <Compile Include="Contracts\DofusSinkProvider.cs" />
         <Compile Include="Contracts\MageConfigProvider.cs" />
         <Compile Include="DefaultMageConfigProvider.cs" />
         <Compile Include="DefaultStatConfigProvider.cs" />
         <Compile Include="Contracts\StatConfigProvider.cs" />
         <Compile Include="Domain\IAction.cs" />
+        <Compile Include="Domain\ItemMage.cs">
+          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+        </Compile>
         <Compile Include="Events\ItemStatMageConfigEventArgs.cs" />
         <Compile Include="Exceptions\CouldNotResolveSinkException.cs" />
         <Compile Include="ItemMageConfig.cs" />
