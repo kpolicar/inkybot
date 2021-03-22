@@ -46,7 +46,11 @@ namespace Inkybot.Services
                 Thread.Sleep(100);
             }
         }
-        
+
+        public void Move(int x, int y) {
+            Win32.SendMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
+        }
+
         public void CtrlDoubleClick(int x, int y) {
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);

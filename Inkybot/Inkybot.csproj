@@ -491,6 +491,9 @@
         <Name>Inkybot.Dofus</Name>
       </ProjectReference>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Api\Serialization" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="'$(OutDir)' != '$(OutputPath)'">
         <MakeDir Directories="$(OutputPath)\bin\roslyn" />

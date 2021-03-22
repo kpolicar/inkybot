@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -77,13 +78,17 @@ namespace Inkybot.Api
             return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
 
-        public async Task SendStatistics(IEnumerable<KeyValuePair<string, string>> data) {
+        public async Task SendStatistics(Dictionary<string,string> data) {
+            Debug.WriteLine("Sending statistics to server:"+string.Join("; ", data));
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             var content = new StringContent(encrypted);
             
             await WaitForStableConnection();
-            Connection?.Request()
+            
+            var response = await Connection!.Request()
                 .PostAsync($"{Server.ApiUrl}/statistics", content);
+            var result = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine("Http response: "+result);
         }
 
         public async Task Publish(Image image) {

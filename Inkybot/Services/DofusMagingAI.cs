@@ -34,8 +34,8 @@ namespace Inkybot.Services
             Func<ItemMage?> resolveFunction,
             OverrideResolve? eventHandler) {
             var proposed = resolveFunction();
-            if (proposed != null)
-                proposed = eventHandler?.Invoke(new MageResolveEventArgs(proposed.Value)) ?? proposed;
+            if (proposed != null && eventHandler != null)
+                proposed = eventHandler.Invoke(new MageResolveEventArgs(proposed.Value));
             return proposed;
         }
 

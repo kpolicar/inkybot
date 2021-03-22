@@ -45,10 +45,13 @@ namespace Inkybot.Services
         }
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
-            previousImage?.Dispose();
-            var ms = new MemoryStream();
-            e.Image.Save(ms, ImageFormat.Bmp);
-            previousImage = Image.FromStream(ms);
+            if (previousImage != null)
+                lock (previousImage) lock (e.Image) {
+                    previousImage?.Dispose();
+                    var ms = new MemoryStream();
+                    e.Image.Save(ms, ImageFormat.Bmp);
+                    previousImage = Image.FromStream(ms);
+                }
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
@@ -89,8 +92,11 @@ namespace Inkybot.Services
         }
         
         private void Publish() {
-            if (previousImage != null && config.UserSettings.PublishExos)
+            if (previousImage == null || !config.UserSettings.PublishExos)
+                return;
+            lock (previousImage) {
                 _ = api.Publish(previousImage);
+            }
         }
 
         private void Send() {
@@ -101,11 +107,11 @@ namespace Inkybot.Services
                 exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
                     .ToDictionary(x => x.Key, x => x.Value);
             
-            var data = new[] {
-                new KeyValuePair<string, string>("expend", balanceDifference.ToString()), 
-                new KeyValuePair<string, string>("expended_enabled", config.UserSettings.EnableKamasCalculation.ToString()),
-                new KeyValuePair<string, string>("attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier)), 
-                new KeyValuePair<string, string>("successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier)), 
+            var data = new Dictionary<string, string> {
+                {"expend", balanceDifference.ToString() },
+                {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
+                {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
+                {"successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier) },
             };
             changesCount = 0;
             balanceDifference = 0;

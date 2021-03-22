@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using Inkybot.Domain;
 using Newtonsoft.Json;
 
 namespace Inkybot
@@ -39,7 +40,7 @@ namespace Inkybot
             }
         }
 
-        public static string Encrypt(IEnumerable<KeyValuePair<string, string>> data, byte[]? key = null) =>
+        public static string Encrypt(Dictionary<string,string> data, byte[]? key = null) =>
             Encrypt(JsonConvert.SerializeObject(data), key);
 
         public static string Encrypt(string plainText, byte[]? key=null)

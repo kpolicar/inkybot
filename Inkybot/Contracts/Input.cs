@@ -10,5 +10,6 @@ namespace Inkybot.Contracts
         void CtrlDoubleClick(int x, int y);
         void SelectAll();
         void TypeMessage(string message, CancellationToken? cancel=null);
+        void Move(int x, int y);
     }
 }
