@@ -83,7 +83,7 @@ namespace Inkybot.Services
             if (state.IsMaging) return;
             magus = serviceContainer.GetService<DofusMagingAIContract>();
 
-            job = new Thread(DoMage);
+            job = new Thread(() => DoMage());
             job.Start();
             Preparing?.Invoke(this, EventArgs.Empty);
         }
@@ -129,7 +129,7 @@ namespace Inkybot.Services
             state.IsPreparing = false;
         }
 
-        private void DoMage() {
+        private void DoMage(bool restarting=false) {
             try {
                 PrepareMage();
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
@@ -159,9 +159,14 @@ namespace Inkybot.Services
                 if (Properties.Settings.Default.autoRestartBot) {
                     Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     Thread.Sleep(1000);
+                    
                     if (IsMaging) {
-                        DoMage();
+                        DoMage(true);
                         return;
+                    }
+
+                    if (restarting) {
+                        Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     }
                 } else {
                     Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));

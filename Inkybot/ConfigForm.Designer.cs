@@ -288,6 +288,7 @@ namespace Inkybot
             this.customScriptPathLabel.Name = "customScriptLabel";
             this.customScriptPathLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.customScriptPathLabel.AutoSize = true;
+            this.customScriptPathLabel.Margin = new Padding(0, 7, 0, 0);
             // 
             // toastIconPictureBox
             // 

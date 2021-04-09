@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Inkybot.Actions;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Domain;
@@ -26,7 +27,7 @@ namespace Inkybot.Services
             public ItemHistoryAnalysis? PreviousHistory;
             public Item? PreviousItem;
             public bool PreviousCombineWasExoAttempt;
-            public bool PreviousCheckHadRunOutOfRunes;
+            public Rune? PreviousCheckHadRunOutOfRunes;
 
             public void Reset() {
                 Step = JobStep.STANDARD;
@@ -36,7 +37,7 @@ namespace Inkybot.Services
                 PreviousAction = null;
                 PreviousHistory = null;
                 PreviousItem = null;
-                PreviousCheckHadRunOutOfRunes = false;
+                PreviousCheckHadRunOutOfRunes = null;
             }
         }
     }

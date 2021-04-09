@@ -300,9 +300,10 @@ namespace Inkybot.Services
                 
                 var userRune = userRunes.First(userRune => userRune.Rune == combine.Rune);
                 
-                if (userRune.Quantity == 0 && job.state.PreviousCheckHadRunOutOfRunes && job.configManager.UserSettings.EnableRuneChecking)
+                if (userRune.Quantity == 0 && job.state.PreviousCheckHadRunOutOfRunes == userRune.Rune && job.configManager.UserSettings.EnableRuneChecking)
                     throw new OutOfRunesException(userRune.Rune);
-                job.state.PreviousCheckHadRunOutOfRunes = userRune.Quantity == 0;
+                job.state.PreviousCheckHadRunOutOfRunes =
+                    userRune.Quantity == 0 ? userRune.Rune : null;
             }
 
             private void EnforceStatsChanged(Item item) {
