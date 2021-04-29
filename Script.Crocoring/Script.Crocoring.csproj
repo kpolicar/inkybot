@@ -40,6 +40,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Corruptionres.cs" />
+        <Compile Include="ImproveDamagesFirstMagingAI.cs" />
         <Compile Include="Script.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
