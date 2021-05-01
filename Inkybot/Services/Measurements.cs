@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Helpers;
 using Tesseract;
 
@@ -7,6 +9,12 @@ namespace Inkybot.Services
     public static class Measurements
     {
         const int StatLineCount = 13;
+
+        private static UserSettingsConfigManager config = null!;
+
+        public static void BindDependencies(ServiceContainer serviceContainer) {
+            config = serviceContainer.GetService<UserSettingsConfigManager>();
+        }
 
         public static IEnumerable<Responsive.Measurement> SplitBoundsToStatNumber(Responsive.Measurement measurement) {
             for (var i = 0; i < StatLineCount; i++) {
@@ -109,11 +117,18 @@ namespace Inkybot.Services
             Height = 1110
         };
         
-        public static readonly Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
-            Width = 1920,
-            Height = 1017
-        };
+        public static Responsive.Measurement InventorySelectResourcesCategory =>
+            !config.Temporis
+                ? new Responsive.Measurement {
+                    Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
+                    Width = 1920,
+                    Height = 1017
+                }
+                : new Responsive.Measurement {
+                    Rectangle = Rect.FromCoords(1500, 103, 1500, 103),
+                    Width = 1920,
+                    Height = 1017
+                };
         
         public static readonly Responsive.Measurement InventoryFirstItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),

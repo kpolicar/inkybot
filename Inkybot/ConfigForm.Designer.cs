@@ -72,6 +72,7 @@ namespace Inkybot
             this.exampleScriptsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MaxPaRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.restoreHighSinkStatsCheckbox = new System.Windows.Forms.CheckBox();
+            this.temporisCheckbox = new System.Windows.Forms.CheckBox();
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
@@ -206,6 +207,15 @@ namespace Inkybot
             this.enableKamasCalculationCheckbox.Name = "enableKamasCalculationCheckbox";
             this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
             this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
+ 
+            // 
+            // temporisCheckbox
+            // 
+            resources.ApplyResources(this.temporisCheckbox, "temporisCheckbox");
+            this.temporisCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.temporisCheckbox.Name = "temporisCheckbox";
+            this.temporisCheckbox.UseVisualStyleBackColor = true;
+            this.temporisCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnTemporisCheckboxCheckboxCheckedChanged);
             // 
             // exampleScriptsLinkLabel
             // 
@@ -227,6 +237,7 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.bottomPanel.Controls.Add(this.publishExosCheckbox);
             this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
+            this.bottomPanel.Controls.Add(this.temporisCheckbox);
             
             this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
             this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
@@ -338,6 +349,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
+        private System.Windows.Forms.CheckBox temporisCheckbox;
 
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxSmRuneCanHitColumn;

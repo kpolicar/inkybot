@@ -46,9 +46,9 @@ namespace Inkybot
             public const string Key = "***REMOVED***";
         #endif
         
-        public const string VersionNumber = "17";
-        public const string Version = "v1.4";
-        public const string VersionEndpoint = "v1.4";
+        public const string VersionNumber = "18";
+        public const string Version = "v1.5";
+        public const string VersionEndpoint = "v1.5";
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -86,6 +86,8 @@ namespace Inkybot
                 
             BindServices();
             BindLogger();
+            
+            Measurements.BindDependencies(Services);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

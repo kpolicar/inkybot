@@ -67,6 +67,7 @@ namespace Inkybot
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
+            temporisCheckbox.Checked = userSettingsConfigManager.Temporis;
         }
 
         private void SetConfigRowTooltipsAndChangeStyles(DataGridViewRow row) {
@@ -214,6 +215,9 @@ namespace Inkybot
         
         private void ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
             userSettingsConfigManager.EnableKamasCalculation = enableKamasCalculationCheckbox.Checked;
+        
+        private void ConfigForm_OnTemporisCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+            userSettingsConfigManager.Temporis = temporisCheckbox.Checked;
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;

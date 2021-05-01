@@ -2204,7 +2204,13 @@
   <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
     <value>Monitor average kamas spent</value>
   </data>
+  <data name="temporisCheckbox.Text" xml:space="preserve">
+    <value>Temporis server</value>
+  </data>
   <data name="enableKamasCalculationCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+  <data name="temporisCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
   <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
@@ -2220,6 +2226,9 @@
         <value>true</value>
     </data>
     <data name="enableKamasCalculationCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
+    <data name="temporisCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>
     </data>
     <data name="showWarningsCheckbox.AutoSize" type="System.Boolean, mscorlib">

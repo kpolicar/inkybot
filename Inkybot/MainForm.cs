@@ -53,13 +53,11 @@ namespace Inkybot
 
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
             Hide();
-            #if !DEBUG
             var openedDofusSuccessfully = InitializeDofusClient();
             if (!openedDofusSuccessfully) {
                 Close();
                 return;
             }
-            #endif
             DoLoginDialog();
         }
 

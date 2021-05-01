@@ -42,6 +42,14 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.kamasCalculation;
         }
 
+        public bool Temporis {
+            set {
+                Properties.Settings.Default.temporis = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.temporis;
+        }
+
         public bool PublishExos {
             set {
                 Properties.Settings.Default.publishExos = value;
