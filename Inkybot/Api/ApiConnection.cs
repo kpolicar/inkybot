@@ -13,11 +13,13 @@ namespace Inkybot.Api
 {
     public class ApiConnection
     {
-        private AuthDetails authDetails;
+        public AuthDetails AuthDetails {
+            get; private set;
+        }
         private readonly Timer refreshTokenTimer;
 
         public ApiConnection(AuthDetails authDetails) {
-            this.authDetails = authDetails;
+            this.AuthDetails = authDetails;
             refreshTokenTimer = new Timer();
             refreshTokenTimer.Interval = 53000;
             refreshTokenTimer.Tick += OnRefreshTokenTimer;
@@ -33,7 +35,7 @@ namespace Inkybot.Api
         public HttpClient Request() {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", authDetails.access_token);
+                new AuthenticationHeaderValue("Bearer", AuthDetails.access_token);
             client.BaseAddress = new Uri(Server.BaseUrl);
             return client;
         }
@@ -48,7 +50,7 @@ namespace Inkybot.Api
 
             var form_params = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},
-                {"refresh_token", authDetails.refresh_token},
+                {"refresh_token", AuthDetails.refresh_token},
                 {"client_id", Program.GrantId},
                 {"client_secret", Program.GrantSecret},
                 {"scope", ""}
@@ -63,7 +65,7 @@ namespace Inkybot.Api
 
             var result = await GetResultFromEncryptedResponse(response);
             Debug.WriteLine("Http response: "+result);
-            authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
+            AuthDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             return true;
         }
         

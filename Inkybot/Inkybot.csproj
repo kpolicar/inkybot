@@ -361,6 +361,12 @@
         <Compile Include="Services\UserRunes.cs">
           <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
+        <Compile Include="StatisticsForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="StatisticsForm.Designer.cs">
+          <DependentUpon>StatisticsForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="WelcomeDialogue.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -435,6 +441,12 @@
         <EmbeddedResource Include="Resources\StatDictionary.resx">
           <Generator>ResXFileCodeGenerator</Generator>
           <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Include="StatisticsForm.fr.resx">
+          <DependentUpon>StatisticsForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="StatisticsForm.resx">
+          <DependentUpon>StatisticsForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="StatsForm.fr.resx" />
         <EmbeddedResource Include="StatsForm.resx" />
