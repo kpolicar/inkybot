@@ -12,13 +12,14 @@ namespace Inkybot
 {
     public partial class MainForm : Form
     {
-        private StatsForm statsForm;
+        private StatsForm setupForm;
         private ApiClient api = null!;
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
         private AuthManager auth = null!;
         private ConfigManager config;
+        private StatisticsForm statisticsForm;
 
         public MainForm() {
             InitializeComponent();
@@ -40,10 +41,11 @@ namespace Inkybot
 
             Shown += MainForm_OnLoad;
 
-            statsForm = new StatsForm();
-            statsForm.Error += OnError;
+            setupForm = new StatsForm();
+            setupForm.Error += OnError;
             configForm = new ConfigForm();
             magingJob.Error += OnError;
+            statisticsForm = new StatisticsForm();
             
             MainFormDomainEvents();
             MainFormEvents();
@@ -51,11 +53,13 @@ namespace Inkybot
 
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
             Hide();
+            #if !DEBUG
             var openedDofusSuccessfully = InitializeDofusClient();
             if (!openedDofusSuccessfully) {
                 Close();
                 return;
             }
+            #endif
             DoLoginDialog();
         }
 

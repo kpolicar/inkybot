@@ -42,7 +42,8 @@ namespace Inkybot
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
-            this.statsButton = new System.Windows.Forms.Button();
+            this.setupButton = new System.Windows.Forms.Button();
+            this.statisticsButton = new System.Windows.Forms.Button();
             this.exoAttemptsLabel = new System.Windows.Forms.Label();
             this.exoAttemptsValueLabel = new System.Windows.Forms.Label();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -126,7 +127,8 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.primaryButtonsPanel, "primaryButtonsPanel");
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
-            this.primaryButtonsPanel.Controls.Add(this.statsButton);
+            this.primaryButtonsPanel.Controls.Add(this.setupButton);
+            this.primaryButtonsPanel.Controls.Add(this.statisticsButton);
             this.primaryButtonsPanel.Controls.Add(this.exoAttemptsLabel);
             this.primaryButtonsPanel.Controls.Add(this.exoAttemptsValueLabel);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
@@ -141,15 +143,25 @@ namespace Inkybot
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
             // 
-            // statsButton
+            // setupButton
             // 
-            resources.ApplyResources(this.statsButton, "statsButton");
-            this.statsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.statsButton.FlatAppearance.BorderSize = 0;
-            this.statsButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.statsButton.Name = "statsButton";
-            this.statsButton.UseVisualStyleBackColor = false;
-            this.statsButton.Click += new System.EventHandler(this.statsButton_Click);
+            resources.ApplyResources(this.setupButton, "setupButton");
+            this.setupButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.setupButton.FlatAppearance.BorderSize = 0;
+            this.setupButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.setupButton.Name = "setupButton";
+            this.setupButton.UseVisualStyleBackColor = false;
+            this.setupButton.Click += new System.EventHandler(this.statsButton_Click);
+            // 
+            // statisticsButton
+            // 
+            resources.ApplyResources(this.statisticsButton, "statisticsButton");
+            this.statisticsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.statisticsButton.FlatAppearance.BorderSize = 0;
+            this.statisticsButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.statisticsButton.Name = "statisticsButton";
+            this.statisticsButton.UseVisualStyleBackColor = false;
+            this.statisticsButton.Click += new System.EventHandler(this.statisticsButton_Click);
             // 
             // exoAttemptsLabel
             // 
@@ -326,7 +338,8 @@ namespace Inkybot
         private System.Windows.Forms.Label toastLabel;
         private System.Windows.Forms.Button toastPanelCloseButton;
 
-        private System.Windows.Forms.Button statsButton;
+        private System.Windows.Forms.Button setupButton;
+        private System.Windows.Forms.Button statisticsButton;
 
         private System.Windows.Forms.Label loggedInAsLabel;
 

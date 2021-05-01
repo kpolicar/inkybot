@@ -32,9 +32,12 @@
     <data name="sinkLabel.Text" xml:space="preserve">
         <value>Reliquat</value>
     </data>
-    <data name="statsButton.Text" xml:space="preserve">
-        <value>STATISTIQUE</value>
+    <data name="setupButton.Text" xml:space="preserve">
+        <value>PRÉPARER</value>
     </data>
+    <data name="statisticsButton.Text" xml:space="preserve">
+    <value>STATISTIQUES</value>
+  </data>
     <data name="subscribedInfoLabel.Text" xml:space="preserve">
         <value>ABONNÉ JUSQU'À:</value>
     </data>

@@ -421,8 +421,11 @@
   <data name="&gt;&gt;toastIconPictureBox.Name" xml:space="preserve">
     <value>toastIconPictureBox</value>
   </data>
-  <data name="&gt;&gt;statsButton.Name" xml:space="preserve">
-    <value>statsButton</value>
+  <data name="&gt;&gt;setupButton.Name" xml:space="preserve">
+    <value>setupButton</value>
+  </data>
+  <data name="&gt;&gt;statisticsButton.Name" xml:space="preserve">
+    <value>statisticsButton</value>
   </data>
   <data name="&gt;&gt;configButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -481,7 +484,7 @@
   <data name="exoAttemptsValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
-  <data name="&gt;&gt;statsButton.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;setupButton.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="toastLabel.Font" type="System.Drawing.Font, System.Drawing">
@@ -499,7 +502,10 @@
   <data name="toastPanelCloseButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>347, 11</value>
   </data>
-  <data name="&gt;&gt;statsButton.Parent" xml:space="preserve">
+  <data name="&gt;&gt;setupButton.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;statisticsButton.Parent" xml:space="preserve">
     <value>primaryButtonsPanel</value>
   </data>
   <data name="debugScreenshotButton.Size" type="System.Drawing.Size, System.Drawing">
@@ -662,8 +668,11 @@
   <data name="mousePositionLabel.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
   </data>
-  <data name="statsButton.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="setupButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 64</value>
+  </data>
+  <data name="statisticsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 128</value>
   </data>
   <data name="dofusClientPanel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -671,7 +680,10 @@
   <data name="&gt;&gt;exoAttemptsValueLabel.Name" xml:space="preserve">
     <value>exoAttemptsValueLabel</value>
   </data>
-  <data name="statsButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="setupButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
+  <data name="statisticsButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 3</value>
   </data>
   <data name="subscribedInfoLabel.Font" type="System.Drawing.Font, System.Drawing">
@@ -724,7 +736,10 @@
   <data name="toastPanelCloseButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>Stretch</value>
   </data>
-  <data name="statsButton.AutoSize" type="System.Boolean, mscorlib">
+  <data name="setupButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="statisticsButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="toastIconPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
@@ -751,7 +766,10 @@
   <data name="configButton.Text" xml:space="preserve">
     <value>CONFIG</value>
   </data>
-  <data name="statsButton.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="setupButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 61</value>
+  </data>
+  <data name="statisticsButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
   </data>
   <data name="exoAttemptsValueLabel.Size" type="System.Drawing.Size, System.Drawing">
@@ -787,10 +805,16 @@
   <data name="toastIconPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
-  <data name="statsButton.TabIndex" type="System.Int32, mscorlib">
+  <data name="setupButton.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="statsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+  <data name="statisticsButton.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="setupButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="statisticsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
   <data name="&gt;&gt;sinkLabel.Type" xml:space="preserve">
@@ -2702,8 +2726,11 @@
   <data name="mousePositionLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 740</value>
   </data>
-  <data name="statsButton.Text" xml:space="preserve">
-    <value>STATS</value>
+  <data name="setupButton.Text" xml:space="preserve">
+    <value>SETUP</value>
+  </data>
+  <data name="statisticsButton.Text" xml:space="preserve">
+    <value>STATISTICS</value>
   </data>
   <data name="mousePositionLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 44</value>
@@ -2844,7 +2871,7 @@
     <value>0, 15</value>
   </data>
   <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 184</value>
+    <value>113, 250</value>
   </data>
   <data name="historyOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -2864,7 +2891,10 @@
   <data name="configButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 101</value>
   </data>
-  <data name="statsButton.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="setupButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="statisticsButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
   </data>
   <data name="&gt;&gt;buttonsPanel.Type" xml:space="preserve">
@@ -2903,7 +2933,10 @@
   <data name="toastPanel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;statsButton.Type" xml:space="preserve">
+  <data name="&gt;&gt;setupButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;statisticsButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

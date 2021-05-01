@@ -41,6 +41,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatisticsForm_Closing);
             this.Controls.Add(this.webBrowser);
             this.Name = "StatisticsForm";
             this.ResumeLayout(false);

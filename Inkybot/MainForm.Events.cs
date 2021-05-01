@@ -39,8 +39,8 @@ namespace Inkybot
         }
         
         private void statsButton_Click(object sender, EventArgs e) {
-            if (!statsForm.Visible) statsForm.Show();
-            else statsForm.Hide();
+            if (!setupForm.Visible) setupForm.Show();
+            else setupForm.Hide();
         }
         
         private void configButton_Click(object sender, EventArgs e) {
@@ -77,6 +77,11 @@ namespace Inkybot
 
         private void hallOfFameButton_Click(object sender, EventArgs e) {
             Process.Start(Server.HallOfFameUrl);
+        }
+
+        private void statisticsButton_Click(object sender, EventArgs e) {
+            if (!statisticsForm.Visible) statisticsForm.Show();
+            else statisticsForm.Hide();
         }
     }
 }

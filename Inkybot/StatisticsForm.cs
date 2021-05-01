@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Domain;
@@ -13,7 +14,6 @@ namespace Inkybot
         public StatisticsForm() {
             InitializeComponent();
             VisibleChanged += OnVisibleChanged;
-            webBrowser.Url = new Uri(Server.StatisticsViewUrl, UriKind.Absolute);
             apiClient = Program.Services.GetService<ApiClient>();
         }
 
@@ -25,7 +25,12 @@ namespace Inkybot
                 Server.StatisticsViewUrl, 
                 "",
                 new byte[]{},
-                "Authorization : Bearer "+apiClient.Connection.AuthDetails);
+                "Authorization: Bearer "+apiClient.Connection.AuthDetails.access_token);
+        }
+
+        private void StatisticsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
+            cancelEventArgs.Cancel = true;
+            Hide();
         }
     }
 }
