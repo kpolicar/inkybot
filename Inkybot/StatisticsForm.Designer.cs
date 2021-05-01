@@ -30,6 +30,7 @@ namespace Inkybot
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatisticsForm));
             this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.openInBrowserLabelLink = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // webBrowser
@@ -37,15 +38,29 @@ namespace Inkybot
             resources.ApplyResources(this.webBrowser, "webBrowser");
             this.webBrowser.Name = "webBrowser";
             // 
+            // openInBrowserLabelLink
+            // 
+            this.openInBrowserLabelLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (150)))), ((int) (((byte) (150)))), ((int) (((byte) (150)))));
+            this.openInBrowserLabelLink.BackColor = System.Drawing.Color.Black;
+            resources.ApplyResources(this.openInBrowserLabelLink, "openInBrowserLabelLink");
+            this.openInBrowserLabelLink.LinkColor = System.Drawing.Color.White;
+            this.openInBrowserLabelLink.Name = "openInBrowserLabelLink";
+            this.openInBrowserLabelLink.TabStop = true;
+            this.openInBrowserLabelLink.VisitedLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (150)))), ((int) (((byte) (150)))), ((int) (((byte) (150)))));
+            this.openInBrowserLabelLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.openInBrowserLabelLink_LinkClicked);
+            // 
             // StatisticsForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatisticsForm_Closing);
             this.Controls.Add(this.webBrowser);
+            this.Controls.Add(this.openInBrowserLabelLink);
             this.Name = "StatisticsForm";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatisticsForm_Closing);
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.LinkLabel openInBrowserLabelLink;
 
         private System.Windows.Forms.WebBrowser webBrowser;
 

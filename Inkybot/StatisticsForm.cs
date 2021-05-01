@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Domain;
@@ -31,6 +32,10 @@ namespace Inkybot
         private void StatisticsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
+        }
+
+        private void openInBrowserLabelLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Process.Start($"{Server.BaseUrl}/profile#statistics");
         }
     }
 }
