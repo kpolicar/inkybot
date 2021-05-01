@@ -31,8 +31,21 @@ namespace Tests
             Config.ChangeStatConfigTargetMinimum(Stat.PerEarthResistance, 11);
             
             var action = AI.ResolveAction(item) as CombineRune;
-            TestContext.WriteLine(action.Rune.DisplayName);
             Assert.AreEqual(Stat.PerEarthResistance, action?.Rune.Stat);
+        }
+
+        [Test]
+        public void TestExoTargetWithSink() {
+            Job.Sink = 32;
+            
+            var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.PerAirResistance, 
+                4, 
+                2);
+            Config.ChangeStatConfig(Stat.PerAirResistance, exoAirPerResConfig);
+            
+            var action2 = AI.ResolveAction(item) as CombineRune;
+            Assert.AreEqual(Stat.PerAirResistance, action2?.Rune.Stat);
         }
 
     }

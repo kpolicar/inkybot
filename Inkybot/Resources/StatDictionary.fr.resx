@@ -163,7 +163,7 @@
         <value>Résistance Distance</value>
     </data>
     <data name="melee_resistance" xml:space="preserve">
-        <value>Résistance Mélée</value>
+        <value>Résistance mêlée</value>
     </data>
 
     <data name="hunting_weapon" xml:space="preserve">

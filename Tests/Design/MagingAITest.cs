@@ -30,13 +30,15 @@ namespace Tests.Design
                 .GetResourceSet(new CultureInfo("en"), true, true);
             Rune.Dictionary = new ResourceManager("Tests.Resources.RuneDictionary", Assembly.GetExecutingAssembly())
                 .GetResourceSet(new CultureInfo("en"), true, true);
-            
+
+            var magingJob = new MagingJobMock();
             return new Dictionary<Type, object> {
                 { typeof(ActionFactory), new MouseActionFactory() },
                 { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
                 { typeof(ScreenCapture), new Win32ScreenCapture() },
                 { typeof(MageConfigManager), new ConfigManager() },
-                { typeof(DofusMagingJobContract), new MagingJobMock() },
+                { typeof(DofusMagingJobContract), magingJob },
+                { typeof(DofusSinkProvider), magingJob },
                 { typeof(DofusMagingAIContract), new DofusMagingAI() },
             };
         }

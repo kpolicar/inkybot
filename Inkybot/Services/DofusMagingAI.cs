@@ -45,10 +45,10 @@ namespace Inkybot.Services
                 new TargetItemMageResolve(config, item, 1).Resolve() ??
                 new OverTargetItemMageResolve(config, item).Resolve(),
                 OverrideTargetResolve);
-            
+
 
             if (!item.IsOvermaged && !item.HasExo)
-                proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() => 
+                proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                     new PerfectionItemMageResolve(config, item, Sink).Resolve() ??
                     new PerfectionItemMageResolve(config, item, Sink, 1).Resolve(),
                     OverridePerfectionResolve);

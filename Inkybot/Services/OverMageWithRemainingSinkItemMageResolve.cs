@@ -18,7 +18,7 @@ namespace Inkybot.Services
             ShouldEvenConsider() && itemMage.Rune.Sink <= Sink;
 
         private bool ShouldEvenConsider() {
-            if (item.HasExo || IsConfiguredForOvermage() || config.Exos.Count > 1)
+            if (item.HasExo || IsConfiguredForOvermageWithLowSinkStat() || config.Exos.Count > 1)
                 return false;
 
             if (config.Exos.Count == 1) {
@@ -34,8 +34,8 @@ namespace Inkybot.Services
             return true;
         }
 
-        private bool IsConfiguredForOvermage() => 
-            config.StatsConfig.Any(statConfig => statConfig.Value.Overmage && !statConfig.Value.Exo);
+        private bool IsConfiguredForOvermageWithLowSinkStat() => 
+            config.StatsConfig.Any(statConfig => statConfig.Value.Overmage && !statConfig.Value.HighSinkStat);
 
         protected override int Priority(ItemMage itemMage) => 1;
     }
