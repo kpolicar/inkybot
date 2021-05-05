@@ -35,7 +35,7 @@ namespace Inkybot
     {
         
         #if DEBUG
-            public const string Url = "http://inkybot-server.test";
+            public const string Url = "http://inkybot.test";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
             public const string Key = "***REMOVED***";

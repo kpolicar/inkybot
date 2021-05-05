@@ -48,7 +48,7 @@
         <value>DÉBUT</value>
     </data>
     <data name="toggleMageButton.TextStop" xml:space="preserve">
-        <value>ARRÊTEZ</value>
+        <value>ARRÊTER</value>
     </data>
     <data name="subscribedInfoLabel.FreeTrial" xml:space="preserve">
     <value>Essai gratuit</value>
