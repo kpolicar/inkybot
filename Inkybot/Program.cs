@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -49,6 +50,11 @@ namespace Inkybot
         public const string VersionNumber = "18";
         public const string Version = "v1.5";
         public const string VersionEndpoint = "v1.5";
+
+        public static string InstanceIdentifier {
+            private set;
+            get;
+        } = null!;
         
 
         public static ServiceContainer Services = new ServiceContainer();
@@ -79,6 +85,11 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         public static void Main() {
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            
             UpgradeApp();
             ApplyAdditionalUserSettings();
             SetAppLocale();

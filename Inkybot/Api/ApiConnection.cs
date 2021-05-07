@@ -53,7 +53,8 @@ namespace Inkybot.Api
                 {"refresh_token", AuthDetails.refresh_token},
                 {"client_id", Program.GrantId},
                 {"client_secret", Program.GrantSecret},
-                {"scope", ""}
+                {"scope", ""},
+                {"_passport_token_name", Program.InstanceIdentifier},
             };
             var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
             
