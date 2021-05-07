@@ -38,9 +38,13 @@ namespace Inkybot.Services
         private void OnUserFetched(object sender, FetchedUserEventArgs e) {
             if (!e.user.is_free_trial && !e.user.is_subscribed)
                 return;
-            if (previousUserFetchedIsFreeTrial != null && previousUserFetchedIsFreeTrial == e.user.is_free_trial)
-                return;
-            if (!UsingCustomScript)
+            
+            if (previousUserFetchedIsFreeTrial == null || previousUserFetchedIsFreeTrial != e.user.is_free_trial) {
+                if (!UsingCustomScript)
+                    UseBuiltInAIScript(e.user);
+            }
+            
+            if (UsingCustomScript && !e.user.canUseCustomMagingAI)
                 UseBuiltInAIScript(e.user);
         }
 

@@ -2814,7 +2814,16 @@
     <value>1178, 784</value>
   </data>
   <data name="subscribedInfoLabel.Text" xml:space="preserve">
-    <value>Subscribed to:</value>
+    <value>SUBSCRIPTION:</value>
+  </data>
+  <data name="subscribedInfoLabel.TextStarter" xml:space="preserve">
+    <value>Starter Plan</value>
+  </data>
+  <data name="subscribedInfoLabel.TextStandard" xml:space="preserve">
+    <value>Standard Plan</value>
+  </data>
+  <data name="subscribedInfoLabel.TextUnlimited" xml:space="preserve">
+    <value>Unlimited Plan</value>
   </data>
   <data name="debugScreenshotButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>

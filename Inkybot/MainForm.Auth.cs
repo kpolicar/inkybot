@@ -88,9 +88,14 @@ namespace Inkybot
             if (user.is_subscribed) {
                 subscribedInfoLabel.Text =
                     resources.GetString("subscribedInfoLabel.Text") + "\n" +
-                    user.subscribed_to!.Value.ToString("dd/MM/yyyy");
+                    (user.onUnlimitedPlan ? resources.GetString("subscribedInfoLabel.TextUnlimited")
+                        : user.onStandardPlan ? resources.GetString("subscribedInfoLabel.TextStandard")
+                        : user.onStarterPlan ? resources.GetString("subscribedInfoLabel.TextStarter")
+                        : "-");
             } else if (user.is_free_trial) {
                 subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.FreeTrial");
+            } else {
+                subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.Text") + "-";
             }
         }
     }

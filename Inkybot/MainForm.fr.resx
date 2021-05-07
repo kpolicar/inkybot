@@ -39,8 +39,17 @@
     <value>STATISTIQUES</value>
   </data>
     <data name="subscribedInfoLabel.Text" xml:space="preserve">
-        <value>ABONNÉ JUSQU'À:</value>
-    </data>
+    <value>L' ABONNEMENT:</value>
+  </data>
+    <data name="subscribedInfoLabel.TextStarter" xml:space="preserve">
+    <value>Plan Starter</value>
+  </data>
+    <data name="subscribedInfoLabel.TextStandard" xml:space="preserve">
+    <value>Plan Standard</value>
+  </data>
+    <data name="subscribedInfoLabel.TextUnlimited" xml:space="preserve">
+    <value>Plan Illimité</value>
+  </data>
     <data name="debugButton.TextStop" xml:space="preserve">
         <value>ARRÊTER LE DÉBOGAGE</value>
     </data>

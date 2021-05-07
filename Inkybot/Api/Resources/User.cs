@@ -37,6 +37,8 @@ namespace Inkybot.Api.Resources
         public bool onUnlimitedPlan => SniDbUjb49VghoM;
         [Obfuscation(Exclude = true)]
         public bool SniDbUjb49VghoM;
+
+        public bool canUseCustomMagingAI => onUnlimitedPlan || onStandardPlan;
     }
     #pragma warning restore 8618
 }
