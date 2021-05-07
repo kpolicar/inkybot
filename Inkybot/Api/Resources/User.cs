@@ -25,10 +25,18 @@ namespace Inkybot.Api.Resources
         public string name => i30jfVx9krmacQH;
         [Obfuscation(Exclude = true)]
         public string i30jfVx9krmacQH;
-
-        public DateTime? subscribed_to => rbvQL1e41MOgDLA;
+        
+        public bool onStarterPlan => bP6Aa9RdmDlggKY;
         [Obfuscation(Exclude = true)]
-        public DateTime? rbvQL1e41MOgDLA;
+        public bool bP6Aa9RdmDlggKY;
+        
+        public bool onStandardPlan => ls6uIocgdyUtp4c;
+        [Obfuscation(Exclude = true)]
+        public bool ls6uIocgdyUtp4c;
+        
+        public bool onUnlimitedPlan => SniDbUjb49VghoM;
+        [Obfuscation(Exclude = true)]
+        public bool SniDbUjb49VghoM;
     }
     #pragma warning restore 8618
 }
