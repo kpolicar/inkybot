@@ -2987,4 +2987,13 @@
   <data name="subscriptiontimer.nolongersubscribed_pleaseextend" xml:space="preserve">
     <value>Please extend your subscription to resume.</value>
   </data>
+  <data name="popup.error_notavailable_unlimitedstandard_plan" xml:space="preserve">
+    <value>This feature is restricted to users subscribed to the Standard or Unlimited plan. Visit the official Inkybot website to upgrade plans.</value>
+  </data>
+  <data name="popup.error_notavailable_current_plan" xml:space="preserve">
+    <value>This feature is not available on your current pricing plan. Visit the official Inkybot website to upgrade plans.</value>
+  </data>
+  <data name="popup.error_restricted" xml:space="preserve">
+    <value>Feature Restricted</value>
+  </data>
 </root>

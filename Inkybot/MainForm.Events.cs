@@ -80,6 +80,19 @@ namespace Inkybot
         }
 
         private void statisticsButton_Click(object sender, EventArgs e) {
+            if (auth.User != null && !auth.User.canViewStatistics) {
+                var text = !auth.User.onUnlimitedPlan && !auth.User.onStandardPlan
+                    ? resources.GetString("popup.error_notavailable_unlimitedstandard_plan")
+                    : resources.GetString("popup.error_notavailable_current_plan");
+                
+                MessageBox.Show(
+                    text,
+                    resources.GetString("popup.error_restricted"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            
             if (!statisticsForm.Visible) statisticsForm.Show();
             else statisticsForm.Hide();
         }

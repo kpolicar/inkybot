@@ -311,7 +311,7 @@ namespace Inkybot
             if (auth.User != null && auth.User.is_free_trial) {
                 MessageBox.Show(
                     resources.GetString("popup.error_notavailable_freetrial"),
-                    resources.GetString("popup.error"),
+                    resources.GetString("popup.error_restricted"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;

@@ -23,6 +23,13 @@ namespace Inkybot
             VisibleChanged += OnVisibleChanged;
             apiClient = Program.Services.GetService<ApiClient>();
             webBrowser.Navigating += OnWebBrowserNavigating;
+            var api = Program.Services.GetService<ApiClient>();
+            api.UserFetched += OnUserFetched;
+        }
+
+        private void OnUserFetched(object sender, FetchedUserEventArgs e) {
+            if (!e.user.canViewStatistics && Visible)
+                Hide();
         }
 
         private void OnWebBrowserNavigating(object sender, WebBrowserNavigatingEventArgs e) {
