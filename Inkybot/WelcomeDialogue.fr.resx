@@ -201,6 +201,9 @@
   <data name="errorMessage.Text" xml:space="preserve">
     <value>Une erreur est survenue</value>
   </data>
+    <data name="errorMessage.TextUnknown" xml:space="preserve">
+    <value>Un problème est survenu!</value>
+  </data>
   <data name="dofusPathLink.Text" xml:space="preserve">
     <value>Changer le répertoire Dofus</value>
   </data>

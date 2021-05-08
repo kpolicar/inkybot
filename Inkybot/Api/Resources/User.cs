@@ -18,6 +18,10 @@ namespace Inkybot.Api.Resources
         [Obfuscation(Exclude = true)]
         public bool Sw6mNjvR0HZofKj;
         
+        public string? free_trial_ends_at => xXTPOXHgAlFoCHx;
+        [Obfuscation(Exclude = true)]
+        public string? xXTPOXHgAlFoCHx;
+        
         public bool free_trial_available => EbP8tMjESR6IGvi;
         [Obfuscation(Exclude = true)]
         public bool EbP8tMjESR6IGvi;
@@ -45,6 +49,10 @@ namespace Inkybot.Api.Resources
         public bool canViewStatistics => aloThuYtoJVqZYK;
         [Obfuscation(Exclude = true)]
         public bool aloThuYtoJVqZYK;
+        
+        public bool canMageExos => jINhXckEVJaciuq;
+        [Obfuscation(Exclude = true)]
+        public bool jINhXckEVJaciuq;
     }
     #pragma warning restore 8618
 }

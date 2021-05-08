@@ -63,6 +63,10 @@ namespace Inkybot
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
                 return;
+            } catch (Exception) {
+                button1.Enabled = true;
+                errorMessage.Text = resources.GetString("errorMessage.TextUnknown");
+                return;
             }
 
             Properties.Settings.Default.email = usernameTextBox.Text;

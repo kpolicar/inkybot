@@ -48,6 +48,7 @@ namespace Inkybot.Api
             var result = await GetResultFromEncryptedResponse(response);
             var authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             var connection = new ApiConnection(authDetails);
+            System.Diagnostics.Debug.WriteLine("Http response: "+result);
 
             ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(connection));
             return connection;

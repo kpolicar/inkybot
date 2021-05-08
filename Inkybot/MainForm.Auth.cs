@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -94,6 +95,8 @@ namespace Inkybot
                         : "-");
             } else if (user.is_free_trial) {
                 subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.FreeTrial");
+                if (user.free_trial_ends_at != null)
+                    subscribedInfoLabel.Text += "\n"+user.free_trial_ends_at;
             } else {
                 subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.Text") + "-";
             }

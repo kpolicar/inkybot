@@ -2655,6 +2655,9 @@
   <data name="errorMessage.TextConnectionError" xml:space="preserve">
     <value>Could not connect to Inkybot!</value>
   </data>
+    <data name="errorMessage.TextUnknown" xml:space="preserve">
+    <value>Something went wrong!</value>
+  </data>
   <data name="errorMessage.TextTrialExpired" xml:space="preserve">
     <value>You have already used your free trial!</value>
   </data>
