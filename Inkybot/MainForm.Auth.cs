@@ -94,9 +94,11 @@ namespace Inkybot
                         : user.onStarterPlan ? resources.GetString("subscribedInfoLabel.TextStarter")
                         : "-");
             } else if (user.is_free_trial) {
-                subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.FreeTrial");
+                var text = resources.GetString("subscribedInfoLabel.FreeTrial");
                 if (user.free_trial_ends_at != null)
-                    subscribedInfoLabel.Text += "\n"+user.free_trial_ends_at;
+                    text += "\n"+user.free_trial_ends_at;
+                
+                subscribedInfoLabel.Text = text;
             } else {
                 subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.Text") + "-";
             }

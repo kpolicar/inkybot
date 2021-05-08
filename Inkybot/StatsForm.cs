@@ -308,9 +308,12 @@ namespace Inkybot
         }
 
         private void addExoButton_Click(object sender, EventArgs e) {
-            if (auth.User != null && auth.User.is_free_trial) {
+            if (auth.User != null && !auth.User.canMageExos) {
+                var text = auth.User.is_free_trial
+                    ? resources.GetString("popup.error_notavailable_freetrial")
+                    : resources.GetString("popup.error_notavailable_current_plan");
                 MessageBox.Show(
-                    resources.GetString("popup.error_notavailable_freetrial"),
+                    text,
                     resources.GetString("popup.error_restricted"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
