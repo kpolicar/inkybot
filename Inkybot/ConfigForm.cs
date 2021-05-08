@@ -9,6 +9,7 @@ using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
+using Inkybot.Events;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Services;
@@ -35,6 +36,7 @@ namespace Inkybot
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
+            magingAiManager.MagingAIChanged += OnMagingAIChanged;
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -265,16 +267,9 @@ namespace Inkybot
                     resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
                 }));
             }
-            
-            Invoke(new MethodInvoker(() => {
-                scriptResetButton.Show();
-            }));
         }
 
         private void scriptResetButton_Click(object sender, EventArgs e) {
-            scriptResetButton.Hide();
-            scriptValidPictureBox.Hide();
-            customScriptPathLabel.Text = "";
             magingAiManager.UseBuiltInAIScript();
         }
 
@@ -285,6 +280,18 @@ namespace Inkybot
 
             tooltipLabelExtra.Text = cell.ToolTipText
                 .Replace("\n", "; ");
+        }
+        
+        private void OnMagingAIChanged(object sender, MagingAIChangedEventArgs e) {
+            Invoke(new MethodInvoker(() => {
+                if (!(e.AI is CustomDofusMagingAI)) {
+                    scriptResetButton.Hide();
+                    scriptValidPictureBox.Hide();
+                    customScriptPathLabel.Text = "";
+                } else if (e.AI is CustomDofusMagingAI) {
+                    scriptResetButton.Show();
+                }
+            }));
         }
 
         private void exampleScriptsLinkLabel_OnClick(object sender, EventArgs e) =>
