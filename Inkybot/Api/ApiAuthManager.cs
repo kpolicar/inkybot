@@ -47,9 +47,11 @@ namespace Inkybot.Api
 
         public void EnforceUserHasPermissionToMageExo(string? text = null, string? caption = null) {
             if (User != null && (!User.canMageExos || User.numberOfExoMagesLeftInPlan < 1)) {
-                text ??= (User!.numberOfExoMagesLeftInPlan < 1
-                    ? "You have reached the limit for the number of exos you can mage with your pricing plan. Visit the official Inkybot website to upgrade plans."
-                    : "You are not permitted to mage exos.");
+                text ??= (User.canMageExos, User.is_free_trial, User.numberOfExoMagesLeftInPlan) switch {
+                    (_, true, _) => "This feature is restricted to subscribed users! Visit the official Inkybot website to subscribe your account.",
+                    (_, false, < 1) => "You have reached the limit for the number of exos you can mage with your pricing plan. Visit the official Inkybot website to upgrade plans.",
+                    _ => "This feature is not available on your current pricing plan. Visit the official Inkybot website to upgrade plans.",
+                };
                 caption ??= "Feature Restricted";
                 
                 MessageBox.Show(

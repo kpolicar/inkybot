@@ -59,4 +59,7 @@ Les minimums sont utilisés pour être sûr que les tentatives exos ne soient pa
     <data name="popup.error_notavailable_current_plan" xml:space="preserve">
     <value>Cette fonctionnalité n'est pas disponible dans votre plan tarifaire actuel. Visitez le site Web officiel d'Inkybot pour mettre à niveau les plans.</value>
   </data>
+    <data name="popup.error_notavailable_current_plan_run_out" xml:space="preserve">
+    <value>Vous avez atteint la limite du nombre d'exos que vous pouvez mager avec votre plan tarifaire. Visitez le site Web officiel d'Inkybot pour mettre à niveau les plans.</value>
+  </data>
 </root>

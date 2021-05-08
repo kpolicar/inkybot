@@ -309,9 +309,14 @@ namespace Inkybot
         }
 
         private void EnforceUserHasPermissionToMageExo() {
-            var text = auth.User?.is_free_trial ?? false
-                ? resources.GetString("popup.error_notavailable_freetrial")
-                : resources.GetString("popup.error_notavailable_current_plan");
+            if (auth.User == null)
+                return;
+            
+            var text = (auth.User.canMageExos, auth.User.is_free_trial, auth.User.numberOfExoMagesLeftInPlan) switch {
+                (_, true, _) => resources.GetString("popup.error_notavailable_freetrial"),
+                (_, false, < 1) => resources.GetString("popup.error_notavailable_current_plan_run_out"),
+                _ => resources.GetString("popup.error_notavailable_current_plan"),
+            };
 
             (auth as ApiAuthManager)?.EnforceUserHasPermissionToMageExo(
                 text,
