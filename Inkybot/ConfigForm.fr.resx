@@ -92,4 +92,13 @@
   <data name="exampleScriptsLinkLabel.Text" xml:space="preserve">
     <value>Voir des exemples</value>
   </data>
+    <data name="popup.error_notavailable_unlimitedstandard_plan" xml:space="preserve">
+    <value>Cette fonctionnalité est réservée aux utilisateurs abonnés au forfait Standard ou Illimité. Visitez le site Web officiel d'Inkybot pour mettre à niveau les plans.</value>
+  </data>
+    <data name="popup.error_notavailable_current_plan" xml:space="preserve">
+    <value>Cette fonctionnalité n'est pas disponible dans votre plan tarifaire actuel. Visitez le site Web officiel d'Inkybot pour mettre à niveau les plans.</value>
+  </data>
+    <data name="popup.error_restricted" xml:space="preserve">
+    <value>Fonctionnalité restreinte</value>
+  </data>
 </root>

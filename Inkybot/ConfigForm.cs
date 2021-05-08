@@ -23,6 +23,7 @@ namespace Inkybot
         private FileSystemUserSettingsConfigManager userSettingsConfigManager;
         private MagingAIServiceManager magingAiManager;
         private StatConfigProvider configProvider;
+        private AuthManager auth;
 
         public ConfigForm() {
             InitializeComponent();
@@ -33,6 +34,7 @@ namespace Inkybot
                 Program.Services.GetService<MagingAIServiceManager>();
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
+            auth = Program.Services.GetService<AuthManager>();
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -225,6 +227,17 @@ namespace Inkybot
         }
 
         private void scriptChangeButton_Click(object sender, EventArgs e) {
+            if (auth.User != null && !auth.User.canUseCustomMagingAI) {
+                var text = !auth.User.onUnlimitedPlan && !auth.User.onStandardPlan
+                    ? resources.GetString("popup.error_notavailable_unlimitedstandard_plan")
+                    : resources.GetString("popup.error_notavailable_current_plan");
+                MessageBox.Show(
+                    text,
+                    resources.GetString("popup.error_restricted"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
         
             var result = scriptFileDialog.ShowDialog();
             if (result == DialogResult.OK) {
