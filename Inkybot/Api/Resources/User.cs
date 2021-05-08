@@ -53,6 +53,10 @@ namespace Inkybot.Api.Resources
         public bool canMageExos => jINhXckEVJaciuq;
         [Obfuscation(Exclude = true)]
         public bool jINhXckEVJaciuq;
+        
+        public int numberOfExoMagesLeftInPlan => rGEFoEUizObjmwg;
+        [Obfuscation(Exclude = true)]
+        public int rGEFoEUizObjmwg;
     }
     #pragma warning restore 8618
 }

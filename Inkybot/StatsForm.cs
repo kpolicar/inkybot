@@ -308,7 +308,7 @@ namespace Inkybot
         }
 
         private void addExoButton_Click(object sender, EventArgs e) {
-            if (auth.User != null && !auth.User.canMageExos) {
+            if (auth.User != null && (!auth.User.canMageExos || auth.User.numberOfExoMagesLeftInPlan < 1)) {
                 var text = auth.User.is_free_trial
                     ? resources.GetString("popup.error_notavailable_freetrial")
                     : resources.GetString("popup.error_notavailable_current_plan");
@@ -394,6 +394,7 @@ namespace Inkybot
 
                 return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
             }).ToArray();
+            
             var item = new Item(new ItemStatRepository(itemStats));
             configManager.ResetConfig(item);
             

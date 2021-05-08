@@ -248,6 +248,7 @@
         <Compile Include="Exceptions\ItemHasChangedException.cs" />
         <Compile Include="Exceptions\UnexpectedMageResultException.cs" />
         <Compile Include="Exceptions\UserAuthException.cs" />
+        <Compile Include="Exceptions\UserForbiddenException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
         <Compile Include="Extensions\DataGridViewRowCollection.cs" />
         <Compile Include="Extensions\IEnumerable.cs" />

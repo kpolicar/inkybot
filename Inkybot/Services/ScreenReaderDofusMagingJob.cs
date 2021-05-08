@@ -17,6 +17,7 @@ namespace Inkybot.Services
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
         public event EventHandler<MagingJobEventArgs>? Started;
+        public event EventHandler? Starting;
         public event EventHandler? Stopped;
         public event EventHandler? Preparing;
         public event EventHandler<MagingJobFinishedEventArgs>? Finished;
@@ -81,11 +82,19 @@ namespace Inkybot.Services
 
         public void BeginMage() {
             if (state.IsMaging) return;
-            magus = serviceContainer.GetService<DofusMagingAIContract>();
 
-            job = new Thread(() => DoMage());
-            job.Start();
-            Preparing?.Invoke(this, EventArgs.Empty);
+            try {
+                
+                magus = serviceContainer.GetService<DofusMagingAIContract>();
+                Starting?.Invoke(this, EventArgs.Empty);
+
+                job = new Thread(() => DoMage());
+                job.Start();
+                Preparing?.Invoke(this, EventArgs.Empty);
+                
+            } catch (Exception exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            }
         }
 
         public void StopMage() {
@@ -138,6 +147,8 @@ namespace Inkybot.Services
 
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (UserForbiddenException exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException exception) {
                 dataProvider.Scan?.Save();

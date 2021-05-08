@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Api.Resources;
 using Inkybot.Contracts;
 using Inkybot.Design;
+using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
+using Inkybot.Exceptions;
 using Newtonsoft.Json;
 
 namespace Inkybot.Api
@@ -15,6 +18,9 @@ namespace Inkybot.Api
     {
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
 
+        private DofusMagingJob magingJob = null!;
+        private MageConfigManager configManager;
+
         public User? User {
             private set; get;
         }
@@ -22,6 +28,23 @@ namespace Inkybot.Api
         public void BindDependencies(ServiceContainer serviceContainer) {
             var apiClient = serviceContainer.GetService<ApiClient>();
             apiClient.UserFetched += (sender, args) => User = args.user;
+            magingJob = serviceContainer.GetService<DofusMagingJob>();
+            configManager = serviceContainer.GetService<MageConfigManager>();
+            magingJob.Starting += OnMagingJobStart;
+            magingJob.Started += OnMagingJobStart;
+        }
+
+        private void OnMagingJobStart(object sender, EventArgs e) {
+            if ((User?.canMageExos ?? true) || User?.numberOfExoMagesLeftInPlan >= 1) {
+                return;
+            }
+            
+            if (configManager.Config?.Exos.Any() ?? false) {
+                var message = User!.numberOfExoMagesLeftInPlan < 1
+                    ? "You have reached the limit for the number of exos you can mage with your pricing plan. Visit the official Inkybot website to upgrade plans."
+                    : "You are not permitted to mage exos.";
+                throw new UserForbiddenException(message);
+            }
         }
 
         public async Task<ApiConnection?> Login(string username, string password) {

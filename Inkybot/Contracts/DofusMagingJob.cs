@@ -6,6 +6,7 @@ namespace Inkybot.Contracts
 {
     public interface DofusMagingJob : DofusSinkProvider
     {
+        public event EventHandler Starting;
         public event EventHandler<MagingJobEventArgs>? Started;
         public event EventHandler? Preparing;
         public event EventHandler? Stopped;
