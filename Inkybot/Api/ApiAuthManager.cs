@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Inkybot.Events;
 using Inkybot.Api.Resources;
 using Inkybot.Contracts;
@@ -40,10 +41,24 @@ namespace Inkybot.Api
             }
             
             if (configManager.Config?.Exos.Any() ?? false) {
-                var message = User!.numberOfExoMagesLeftInPlan < 1
+                EnforceUserHasPermissionToMageExo();
+            }
+        }
+
+        public void EnforceUserHasPermissionToMageExo(string? text = null, string? caption = null) {
+            if (User != null && (!User.canMageExos || User.numberOfExoMagesLeftInPlan < 1)) {
+                text ??= (User!.numberOfExoMagesLeftInPlan < 1
                     ? "You have reached the limit for the number of exos you can mage with your pricing plan. Visit the official Inkybot website to upgrade plans."
-                    : "You are not permitted to mage exos.";
-                throw new UserForbiddenException(message);
+                    : "You are not permitted to mage exos.");
+                caption ??= "Feature Restricted";
+                
+                MessageBox.Show(
+                    text,
+                    caption,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                
+                throw new UserForbiddenException(text);
             }
         }
 

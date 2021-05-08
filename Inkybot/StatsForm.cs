@@ -14,6 +14,7 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Repositories;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Resources;
@@ -307,18 +308,24 @@ namespace Inkybot
                 addExoButton.Enabled = true;
         }
 
+        private void EnforceUserHasPermissionToMageExo() {
+            var text = auth.User?.is_free_trial ?? false
+                ? resources.GetString("popup.error_notavailable_freetrial")
+                : resources.GetString("popup.error_notavailable_current_plan");
+
+            (auth as ApiAuthManager)?.EnforceUserHasPermissionToMageExo(
+                text,
+                resources.GetString("popup.error_restricted")
+            );
+        }
+
         private void addExoButton_Click(object sender, EventArgs e) {
-            if (auth.User != null && (!auth.User.canMageExos || auth.User.numberOfExoMagesLeftInPlan < 1)) {
-                var text = auth.User.is_free_trial
-                    ? resources.GetString("popup.error_notavailable_freetrial")
-                    : resources.GetString("popup.error_notavailable_current_plan");
-                MessageBox.Show(
-                    text,
-                    resources.GetString("popup.error_restricted"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+            try {
+                EnforceUserHasPermissionToMageExo();
+            } catch (UserForbiddenException) {
                 return;
             }
+            
             var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
             var exoConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 stat, 
@@ -396,6 +403,14 @@ namespace Inkybot
             }).ToArray();
             
             var item = new Item(new ItemStatRepository(itemStats));
+            if (item.HasExo) {
+                try {
+                    EnforceUserHasPermissionToMageExo();
+                } catch (UserForbiddenException) {
+                    presetsComboBox.SelectedIndex = 0;
+                    return;
+                }
+            }
             configManager.ResetConfig(item);
             
             foreach (var statPreset in preset.Stats) {
