@@ -6,7 +6,8 @@ namespace Tests.Services
 {
     public class MagingJobMock : DofusMagingJob
     {
-        public event EventHandler<MagingJobEventArgs>? Started;
+        public event EventHandler<MagingJobStartedEventArgs>? Started;
+        public event EventHandler? Starting;
         public event EventHandler? Preparing;
         public event EventHandler? Stopped;
         public event EventHandler<MagingJobFinishedEventArgs>? Finished;
