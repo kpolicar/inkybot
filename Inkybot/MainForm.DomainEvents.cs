@@ -10,6 +10,8 @@ namespace Inkybot
     {
         private void MainFormDomainEvents() {
             magingJob.Started += OnMagingStarted;
+            if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
+                screenReaderDofusMagingJob.SensitiveMage += OnSensitiveMage;
             magingJob.Preparing += OnMagingPreparing;
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
@@ -17,6 +19,10 @@ namespace Inkybot
             
             var actionHandler = Program.Services.GetService<ActionHandler>();
             actionHandler.ActionExecuted += OnMagingAction;
+        }
+
+        private void OnSensitiveMage(object sender, MagingJobStartedEventArgs e) {
+            StartMageExoOverConfirmDialog();
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
@@ -62,11 +68,6 @@ namespace Inkybot
                 | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
 
             Invoke(new MethodInvoker(DisableDebugging));
-
-            if (config.UserSettings.ShowUserWarnings &&
-                (e.Item.HasExo || e.Item.IsOvermaged)) {
-                StartMageExoOverConfirmDialog();
-            }
 
             if (config.UserSettings.ShowUserWarnings &&
                 (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config))) {

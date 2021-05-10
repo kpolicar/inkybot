@@ -262,7 +262,7 @@ namespace Inkybot.Services
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
                 
-                EnforceItemHasNotChanged(item);
+                EnforceSameItemAsPreviousTick(item);
                 EnforceStatsChanged(item);
                 job.state.PreviousItem = item;
                 job.configManager.EnforceConfigSetForItem(item);
@@ -278,7 +278,9 @@ namespace Inkybot.Services
                     if (combine.Exo) {
                         job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                     }
+                    RaiseEventIfMagingItemWithHighSinkExo(item);
                 }
+
                 
                 job.actions.Execute(action);
                 Debug.WriteLine("executed action "+action);
@@ -286,7 +288,17 @@ namespace Inkybot.Services
                 return action;
             }
 
-            private void EnforceItemHasNotChanged(Item item) {
+            private void RaiseEventIfMagingItemWithHighSinkExo(Item item) {
+                if (item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat)) {
+                    job.SensitiveMage?.Invoke(
+                        this, 
+                        new MagingJobStartedEventArgs(false, item, job.configManager.Config!));
+                    if (!job.IsMaging)
+                        throw new OperationCanceledException();
+                }
+            }
+
+            private void EnforceSameItemAsPreviousTick(Item item) {
                 if (job.state.PreviousItem != null && !item.MatchesStandardStatsStructure(job.state.PreviousItem))
                     throw new ItemHasChangedException(item);
             }

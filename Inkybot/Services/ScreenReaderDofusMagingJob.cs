@@ -17,6 +17,7 @@ namespace Inkybot.Services
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
         public event EventHandler<MagingJobStartedEventArgs>? Started;
+        public event EventHandler<MagingJobStartedEventArgs>? SensitiveMage;
         public event EventHandler? Starting;
         public event EventHandler? Stopped;
         public event EventHandler? Preparing;
