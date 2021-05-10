@@ -219,6 +219,7 @@
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
         <Compile Include="Events\MagingJobEventArgs.cs" />
+        <Compile Include="Events\MagingJobStartedEventArgs.cs" />
         <Compile Include="Events\PathChangedEventArgs.cs" />
         <Compile Include="Events\RuneQuantityChangedEventArgs.cs" />
         <Compile Include="Events\ScanBoundsChanged.cs" />

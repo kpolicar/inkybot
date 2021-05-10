@@ -53,14 +53,16 @@ namespace Inkybot
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
 
-        private void OnMagingStarted(object sender, MagingJobEventArgs e) {
+        private void OnMagingStarted(object sender, MagingJobStartedEventArgs e) {
+            if (e.Restarting) return;
+            
             Win32.SetThreadExecutionState(
                 Win32.EXECUTION_STATE.ES_CONTINUOUS
                 | Win32.EXECUTION_STATE.ES_DISPLAY_REQUIRED
                 | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
 
             Invoke(new MethodInvoker(DisableDebugging));
-            
+
             if (config.UserSettings.ShowUserWarnings &&
                 (e.Item.HasExo || e.Item.IsOvermaged)) {
                 StartMageExoOverConfirmDialog();
@@ -70,7 +72,7 @@ namespace Inkybot
                 (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config))) {
                 StartMageUnsupportedDialog();
             }
-            
+                
             Invoke(new MethodInvoker(delegate {
                 debugScreenshotButton.Enabled = false;
             }));

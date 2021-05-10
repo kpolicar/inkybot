@@ -16,7 +16,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
-        public event EventHandler<MagingJobEventArgs>? Started;
+        public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler? Starting;
         public event EventHandler? Stopped;
         public event EventHandler? Preparing;
@@ -105,7 +105,7 @@ namespace Inkybot.Services
             changeTimeout.Reset();
         }
 
-        private void PrepareMage() {
+        private void PrepareMage(bool restarting) {
             var (previousItem, previousSink, previousCheckHadRunOutOfRunes) =
                 (state.PreviousItem, state.Sink, state.PreviousCheckHadRunOutOfRunes);
             state.Reset();
@@ -130,7 +130,7 @@ namespace Inkybot.Services
                 }
             
                 if (IsMaging)
-                    Started?.Invoke(this, new MagingJobEventArgs(item, configManager.Config!));
+                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!));
             } catch (Exception) {
                 state.IsMaging = false;
                 throw;
@@ -140,7 +140,7 @@ namespace Inkybot.Services
 
         private void DoMage(bool restarting=false) {
             try {
-                PrepareMage();
+                PrepareMage(restarting);
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 Thread.Sleep(30);
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
