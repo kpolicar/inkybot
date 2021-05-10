@@ -36,10 +36,6 @@ namespace Inkybot.Api
         }
 
         private void OnMagingJobStart(object sender, EventArgs e) {
-            if ((User?.canMageExos ?? true) || User?.numberOfExoMagesLeftInPlan >= 1) {
-                return;
-            }
-            
             if (configManager.Config?.Exos.Any() ?? false) {
                 EnforceUserHasPermissionToMageExo();
             }

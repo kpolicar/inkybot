@@ -12,7 +12,7 @@ namespace Inkybot.Services
     public class StatConfigProvider : StatConfigProviderContract, HasDependencies
     {
         public StatConfigProviderContract Default => DefaultStatConfigProvider.Instance;
-        private UserSettingsConfigManager UserDefault;
+        private UserSettingsConfigManager UserDefault = null!;
         
         public StatConfig Config(Stat stat) {
             return UserDefault.Config(stat);
