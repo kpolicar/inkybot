@@ -13,10 +13,6 @@ namespace Inkybot
     public partial class MainForm
     {
         private void MainFormEvents() {
-            var screenshot = (ScreenCapture) Program.Services.GetService(typeof(ScreenCapture));
-            screenshot.BeginScreenshot += OnScreenshotStart;
-            screenshot.EndScreenshot += OnScreenshotEnd;
-            
             Closing += (sender, args) => {
                 magingJob.StopMage();
                 StopDebugging();

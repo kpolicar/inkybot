@@ -23,7 +23,6 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatMinBounds);
             RegisterOcrIndicator(Measurements.StatMaxBounds);
             RegisterOcrIndicator(Measurements.StatValuesBounds);
-            //RegisterOcrIndicator(DofusScreenScan.ShortHistoryBoundsMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
@@ -57,23 +56,6 @@ namespace Inkybot
                 StopDebugging();
                 debugButton.Text = resources.GetString("debugButton.Text");
             }
-        }
-
-        private void OnScreenshotStart(object sender, EventArgs eventArgs) {
-            if (!debugging) return;
-            
-            Invoke(new MethodInvoker(() => {
-                HideOcrIndicators();
-            }));
-            Thread.Sleep(50);
-        }
-
-        private void OnScreenshotEnd(object sender, EventArgs eventArgs) {
-            if (!debugging) return;
-            
-            Invoke(new MethodInvoker(() => {
-                ShowOcrIndicators();
-            }));
         }
 
         private void ShowOcrIndicators() {
@@ -126,6 +108,15 @@ namespace Inkybot
                 }
             }));
         }
+
+        private void DisableDebugging() {
+            if (debugging)
+                StopDebugging();
+            debugButton.Enabled = false;
+        }
+
+        private void EnableDebugging() =>
+            debugButton.Enabled = true;
         
         private void StopDebugging() {
             

@@ -48,6 +48,7 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
                 debugScreenshotButton.Enabled = true;
+                EnableDebugging();
             }));
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
@@ -57,6 +58,8 @@ namespace Inkybot
                 Win32.EXECUTION_STATE.ES_CONTINUOUS
                 | Win32.EXECUTION_STATE.ES_DISPLAY_REQUIRED
                 | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
+
+            Invoke(new MethodInvoker(DisableDebugging));
             
             if (config.UserSettings.ShowUserWarnings &&
                 (e.Item.HasExo || e.Item.IsOvermaged)) {
