@@ -101,6 +101,7 @@ namespace Inkybot
                 var row = statsDataGridView.Rows
                     .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat)!;
                 
+                row.Cells[0].ToolTipText = $"Minimum: {itemStat.Min}\nMaximum: {itemStat.Max}";
                 row.Cells[1].Value = itemStat.Value;
                 updatedStats.Add(itemStat.Stat);
             }
@@ -164,6 +165,7 @@ namespace Inkybot
                         true,
                         stat.Mageable);
                     row.Tag = new ItemStatRow(stat, true);
+                    row.Cells[0].ToolTipText = "Minimum -\nMaximum -";
                 }
                 if (row == null)
                     return false;
@@ -203,6 +205,7 @@ namespace Inkybot
                 
                 var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
+                row.Cells[0].ToolTipText = "Minimum: -\nMaximum: -";
             }
         }
 
@@ -212,6 +215,7 @@ namespace Inkybot
             foreach (var itemStat in item.Stats) {
                 var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  null, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
+                row.Cells[0].ToolTipText = $"Minimum: {itemStat.Min}\nMaximum: {itemStat.Max}";
             }
         }
 
