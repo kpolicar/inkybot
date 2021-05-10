@@ -323,32 +323,28 @@ namespace Inkybot.Services
                     var lastHistoryRecord = job.state.PreviousHistory?.history.First();
                     
                     var shouldBeDifferent = lastHistoryRecord?.Changed.Any() ?? true;
-                    if (!shouldBeDifferent) {
-                        MarkTickAsShouldNotHaveBeenDifferent(item, lastHistoryRecord!);
+                    if (shouldBeDifferent) {
+                        MarkTickAsShouldBeDifferent(item);
                     } else {
-                        MarkTickAsShouldHaveBeenDifferent(item);
+                        MarkTickAsShouldNotBeDifferent(item, lastHistoryRecord!);
                     }
+                    
+                    if (shouldveBeenDifferentCount >= MaxStatsShouldHaveChangedChecks)
+                        throw new ItemHasNotChangedException(item);
                 }
             }
 
-            private void MarkTickAsShouldNotHaveBeenDifferent(Item item, MageHistoryRecord lastHistoryRecord) {
-                var isStrangeThatItWasntDifferent =
-                    (job.Sink == 0f && lastHistoryRecord.SinkChanged) ||
-                    lastHistoryRecord == MageHistoryRecord.Failure;
-
-                if (!isStrangeThatItWasntDifferent) {
-                    shouldveBeenDifferentCount = 0;
-                    return;
-                }
-                            
-                shouldveBeenDifferentCount++;
-                if (shouldveBeenDifferentCount >= MaxStatsShouldHaveChangedChecks)
-                    throw new ItemHasNotChangedException(item);
-            }
-
-            private void MarkTickAsShouldHaveBeenDifferent(Item item) {
+            private void MarkTickAsShouldBeDifferent(Item item) {
                 var areDifferent = item.HasDifferentStatValues(job.state.PreviousItem!);
                 if (!areDifferent)
+                    shouldveBeenDifferentCount++;
+                else
+                    shouldveBeenDifferentCount = 0;
+            }
+
+            private void MarkTickAsShouldNotBeDifferent(Item item, MageHistoryRecord lastHistoryRecord) {
+                var areDifferent = item.HasDifferentStatValues(job.state.PreviousItem!);
+                if (areDifferent)
                     shouldveBeenDifferentCount++;
                 else
                     shouldveBeenDifferentCount = 0;
