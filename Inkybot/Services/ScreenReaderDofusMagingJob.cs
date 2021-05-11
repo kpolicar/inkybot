@@ -19,6 +19,7 @@ namespace Inkybot.Services
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler<MagingJobStartedEventArgs>? SensitiveMage;
         public event EventHandler? Starting;
+        public event EventHandler? SuccessfulCombineTick;
         public event EventHandler? Stopped;
         public event EventHandler? Preparing;
         public event EventHandler<MagingJobFinishedEventArgs>? Finished;

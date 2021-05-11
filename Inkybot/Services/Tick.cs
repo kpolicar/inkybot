@@ -35,6 +35,7 @@ namespace Inkybot.Services
             }
 
             public void Execute() {
+                var currentStep = job.state.Step;
                 switch (job.state.Step) {
                     case State.JobStep.STANDARD:
                         DoMainMageAction();
@@ -52,6 +53,10 @@ namespace Inkybot.Services
                         CalculatePriceChange();
                         break;
                 }
+
+                var nextStep = job.state.Step;
+                if (currentStep == State.JobStep.EXECUTING_COMBINE && nextStep != State.JobStep.EXECUTING_COMBINE)
+                    job.SuccessfulCombineTick?.Invoke(this, EventArgs.Empty);
             }
 
             private void DoMainMageAction() {

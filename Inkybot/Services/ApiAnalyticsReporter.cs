@@ -30,13 +30,19 @@ namespace Inkybot.Services
         private readonly object imageChangeMutex = new object();
         private Image? previousImage;
         private IAction? previousAction;
+        private Action? onMagingJobConfirmedDelegate;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
             
             var actionHandler = serviceContainer.GetService<ActionHandler>();
-            var magus = serviceContainer.GetService<DofusMagingJob>();
+            var magus = (ScreenReaderDofusMagingJob) serviceContainer.GetService<DofusMagingJob>();
             magus.BalanceChanged += OnBalanceChanged;
+            magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;
+            magus.SuccessfulCombineTick += (_, _) => {
+                onMagingJobConfirmedDelegate?.Invoke();
+                onMagingJobConfirmedDelegate = null;
+            };
             magus.Stopped += (sender, args) => Send();
 
             ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
@@ -56,6 +62,14 @@ namespace Inkybot.Services
         }
 
         private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
+            if (e.action is CombineRune) {
+                onMagingJobConfirmedDelegate = () => OnConfirmedMagingAction(sender, e);
+            } else {
+                OnConfirmedMagingAction(sender, e);
+            }
+        }
+
+        private void OnConfirmedMagingAction(object sender, ActionExecutedEventArgs e) {
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
