@@ -61,6 +61,7 @@ namespace Inkybot
             this.TargetColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PriorityColumn = new Inkybot.Controls.DataGridViewNumericUpDownColumn();
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.actionsPanel = new System.Windows.Forms.Panel();
             this.helpPanel = new System.Windows.Forms.Panel();
@@ -99,6 +100,12 @@ namespace Inkybot
             this.ValueColumn.ReadOnly = true;
             this.ValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // PriorityColumn
+            // 
+            resources.ApplyResources(this.PriorityColumn, "PriorityColumn");
+            this.PriorityColumn.Name = "PriorityColumn";
+            this.PriorityColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // StatColumn
             // 
             resources.ApplyResources(this.StatColumn, "StatColumn");
@@ -124,7 +131,7 @@ namespace Inkybot
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.statsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.statsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.statsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {this.StatColumn, this.ValueColumn, this.TargetColumn, this.MinColumn});
+            this.statsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {this.StatColumn, this.ValueColumn, this.TargetColumn, this.MinColumn, this.PriorityColumn});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
@@ -328,5 +335,6 @@ namespace Inkybot
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ValueColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn StatColumn;
+        private Inkybot.Controls.DataGridViewNumericUpDownColumn PriorityColumn;
     }
 }

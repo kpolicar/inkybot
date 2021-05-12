@@ -221,9 +221,9 @@ namespace Inkybot
 
         private DataGridViewRow AddNewStatRow(string displayName, int value, int? target, int? targetMinimum, bool exo, bool mageable) {
             if (mageable) {
-                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-");
+                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", 0);
             } else {
-                statsDataGridView.Rows.Add(displayName, "-", "-", "-");
+                statsDataGridView.Rows.Add(displayName, "-", "-", "-", 0);
             }
             var index = statsDataGridView.Rows.Count-1;
             var row = statsDataGridView.Rows[index];

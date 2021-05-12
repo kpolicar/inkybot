@@ -188,6 +188,7 @@
         <Compile Include="Contracts\AnalyticsReporter.cs" />
         <Compile Include="Contracts\UserSettingsConfigManager.cs" />
         <Compile Include="Controls\ComboBox.cs" />
+        <Compile Include="Controls\DataGridViewNumericUpDownColumn.cs" />
         <Compile Include="Controls\MenuButton.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>

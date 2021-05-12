@@ -228,6 +228,9 @@
   <data name="&gt;&gt;statsDataGridView.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="PriorityColumn.HeaderText" xml:space="preserve">
+    <value>Priority</value>
+  </data>
   <data name="ValueColumn.HeaderText" xml:space="preserve">
     <value>Value</value>
   </data>
