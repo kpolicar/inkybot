@@ -75,6 +75,8 @@ namespace Inkybot
             this.presetsComboBox = new Inkybot.Controls.ComboBox();
             this.clearExosButton = new System.Windows.Forms.Button();
             this.deletePresetButton = new System.Windows.Forms.Button();
+            this.tooltip = new System.Windows.Forms.ToolTip();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.showAdvancedOptionsButton = new System.Windows.Forms.Button();
             this.addPresetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
@@ -83,6 +85,13 @@ namespace Inkybot
             this.presetPanel.SuspendLayout();
             this.selectPresetPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // refreshButtonTooltip
+            // 
+            tooltip.AutomaticDelay = 50;
+            tooltip.AutoPopDelay = int.MaxValue;
+            tooltip.SetToolTip(this.showAdvancedOptionsButton, resources.GetString("showAdvancedOptionsButton.ToolTipText"));
+            tooltip.SetToolTip(this.refreshButton, resources.GetString("refreshButton.ToolTipText"));
             // 
             // TargetColumn
             // 
@@ -192,6 +201,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.dataGridViewSidebarPanel, "dataGridViewSidebarPanel");
             this.dataGridViewSidebarPanel.Controls.Add(this.showAdvancedOptionsButton);
+            this.dataGridViewSidebarPanel.Controls.Add(this.refreshButton);
             this.dataGridViewSidebarPanel.Name = "dataGridViewSidebarPanel";
             this.dataGridViewSidebarPanel.Dock = DockStyle.Right;
             this.dataGridViewSidebarPanel.AutoSize = true;
@@ -297,6 +307,19 @@ namespace Inkybot
             this.showAdvancedOptionsButton.Margin = System.Windows.Forms.Padding.Empty;
             this.showAdvancedOptionsButton.Click += new System.EventHandler(this.showAdvancedOptionsButton_Click);
             // 
+            // refreshButton
+            // 
+            resources.ApplyResources(this.refreshButton, "refreshButton");
+            this.refreshButton.BackColor = System.Drawing.Color.Black;
+            this.refreshButton.FlatAppearance.BorderSize = 0;
+            this.refreshButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.UseVisualStyleBackColor = false;
+            this.refreshButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.refreshButton.Margin = System.Windows.Forms.Padding.Empty;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            this.refreshButton.Paint += new System.Windows.Forms.PaintEventHandler(this.OnRefreshButtonPaint);
+            // 
             // addPresetButton
             // 
             resources.ApplyResources(this.addPresetButton, "addPresetButton");
@@ -328,6 +351,7 @@ namespace Inkybot
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.helpPanel);
             this.Controls.Add(this.actionsPanel);
+            this.MinimumSize = new Size(460, 340);
             this.Name = "StatsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
             this.Load += new System.EventHandler(this.StatsForm_Loaded);
@@ -348,12 +372,14 @@ namespace Inkybot
 
         private System.Windows.Forms.Button addPresetButton;
         private System.Windows.Forms.Button showAdvancedOptionsButton;
+        private System.Windows.Forms.Button refreshButton;
         private System.Windows.Forms.Button deletePresetButton;
         private System.Windows.Forms.Button clearExosButton;
 
         private Inkybot.Controls.ComboBox presetsComboBox;
         private Inkybot.Controls.ComboBox exoStatComboBox;
 
+        private System.Windows.Forms.ToolTip tooltip;
         private System.Windows.Forms.Button addExoButton;
 
         private System.Windows.Forms.Panel mainPanel;

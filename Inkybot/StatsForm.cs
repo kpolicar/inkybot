@@ -86,6 +86,7 @@ namespace Inkybot
         private void UpdateDataGridView(Item item) {
             if (!DataGridViewMatchesItem(item)) {
                 RebuildDataGridView(item);
+                presetsComboBox.SelectedIndex = 0;
             } else {
                 UpdateDataGridRowValues(item);
             }
@@ -101,7 +102,7 @@ namespace Inkybot
                 var row = statsDataGridView.Rows
                     .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat)!;
                 
-                row.Cells[0].ToolTipText = $"Minimum: {itemStat.Min}\nMaximum: {itemStat.Max}";
+                row.Cells[0].ToolTipText = $"Min: {itemStat.Min}\nMax: {itemStat.Max}";
                 row.Cells[1].Value = itemStat.Value;
                 updatedStats.Add(itemStat.Stat);
             }
@@ -150,8 +151,6 @@ namespace Inkybot
             foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;
                 var itemStatConfig = statConfig.Value;
-                if (!stat.Mageable)
-                    continue;
                 
                 var row = statsDataGridView.Rows
                     .FindWithTag<ItemStatRow>(tag => tag.Stat == stat);
@@ -165,7 +164,7 @@ namespace Inkybot
                         true,
                         stat.Mageable);
                     row.Tag = new ItemStatRow(stat, true);
-                    row.Cells[0].ToolTipText = "Minimum -\nMaximum -";
+                    row.Cells[0].ToolTipText = "Min: -\nMax: -";
                 }
                 if (row == null)
                     return false;
@@ -205,7 +204,7 @@ namespace Inkybot
                 
                 var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
-                row.Cells[0].ToolTipText = "Minimum: -\nMaximum: -";
+                row.Cells[0].ToolTipText = "Min: -\nMax: -";
             }
         }
 
@@ -213,9 +212,13 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
+                System.Diagnostics.Debug.WriteLine(itemStat.Stat.DisplayName);
                 var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  null, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
-                row.Cells[0].ToolTipText = $"Minimum: {itemStat.Min}\nMaximum: {itemStat.Max}";
+                var (min, max) = itemStat.Exo
+                    ? ("-", "-")
+                    : (itemStat.Min.ToString(), itemStat.Max.ToString());
+                row.Cells[0].ToolTipText = $"Min: {min}\nMax: {max}";
             }
         }
 
@@ -237,12 +240,13 @@ namespace Inkybot
         }
 
         private void StatsForm_VisibleChanged(object sender, EventArgs e) {
-            if (!Visible || magingJob.IsMaging) return;
-
+            if (!Visible) return;
             RefreshStats();
         }
         
         private void RefreshStats() {
+            if (magingJob.IsMaging)
+                return;
             var fetchStats = new ThreadStart(delegate {
                 try {
                     Invoke(new MethodInvoker(() => {
@@ -449,11 +453,38 @@ namespace Inkybot
         }
 
         private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
-            showAdvancedOptionsButton.Text = showAdvancedOptionsButton.Text == "+"
-                ? "-"
-                : "+";
+            if (showAdvancedOptionsButton.Text == "+") {
+                showAdvancedOptionsButton.Text = "-";
+                tooltip.SetToolTip(
+                    showAdvancedOptionsButton, 
+                    resources.GetString("showAdvancedOptionsButton.ToolTipTextHide"));
+            } else {
+                showAdvancedOptionsButton.Text = "+";
+                tooltip.SetToolTip(
+                    showAdvancedOptionsButton, 
+                    resources.GetString("showAdvancedOptionsButton.ToolTipText"));
+            }
+            
             statsDataGridView.Columns[3].Visible =
                 statsDataGridView.Columns[4].Visible = !statsDataGridView.Columns[4].Visible;
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e) {
+            RefreshStats();
+        }
+
+        private void OnRefreshButtonPaint(object sender, PaintEventArgs e) {
+            base.OnPaint(e);
+            var format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+
+            e.Graphics.DrawString(
+                "⟲",
+                refreshButton.Font,
+                new SolidBrush(refreshButton.ForeColor),
+                refreshButton.ClientRectangle,
+                format);
         }
     }
 }

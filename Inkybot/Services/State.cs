@@ -38,6 +38,7 @@ namespace Inkybot.Services
                 PreviousHistory = null;
                 PreviousItem = null;
                 PreviousCheckHadRunOutOfRunes = null;
+                Tick.shouldveBeenDifferentCount = 0;
             }
         }
     }

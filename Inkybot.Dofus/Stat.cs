@@ -88,7 +88,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>The representable display name of the stat.</summary>
          */
-        public string DisplayName => Dictionary.GetString(Identifier)!;
+        public string DisplayName => Mageable ? Dictionary.GetString(Identifier)! : Identifier;
         
         /**
          * <summary>The representable display name of the stat's rune.</summary>

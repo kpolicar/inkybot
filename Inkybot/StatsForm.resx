@@ -159,8 +159,23 @@
   <data name="showAdvancedOptionsButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>19, 19</value>
   </data>
+  <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>19, 19</value>
+  </data>
+    <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
+        <value>0, 20</value>
+    </data>
   <data name="addPresetButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipText" xml:space="preserve">
+    <value>Show advanced options</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipTextHide" xml:space="preserve">
+    <value>Hide advanced options</value>
+  </data>
+    <data name="refreshButton.ToolTipText" xml:space="preserve">
+    <value>Refresh stats</value>
   </data>
   <data name="clearExosButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
@@ -237,6 +252,18 @@
   <data name="ValueColumn.HeaderText" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="ValueColumn.ToolTipText" xml:space="preserve">
+    <value>The current value of the stat</value>
+  </data>
+  <data name="TargetColumn.ToolTipText" xml:space="preserve">
+    <value>The value of the stat you would like</value>
+  </data>
+  <data name="MinColumn.ToolTipText" xml:space="preserve">
+    <value>The minimum value of the stat you cannot do without</value>
+  </data>
+  <data name="PriorityColumn.ToolTipText" xml:space="preserve">
+    <value>The order in which stats should be improved (higher = more important)</value>
+  </data>
   <data name="&gt;&gt;exoStatComboBox.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
@@ -276,6 +303,9 @@
   <data name="showAdvancedOptionsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
+  <data name="refreshButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="addPresetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
@@ -290,6 +320,9 @@
   </data>
   <data name="showAdvancedOptionsButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 11pt</value>
   </data>
   <data name="addPresetButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>

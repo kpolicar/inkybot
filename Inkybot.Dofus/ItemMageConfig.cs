@@ -21,11 +21,11 @@ namespace Inkybot.Dofus
          */
         public bool IsApplicableTo(Item item) {
             var applicable = true;
-            var (standardStats, exoStats) =
-                (item.Stats.StandardStats, item.Stats.ExoStats);
+            var (standardStats, exoStats, unmageableStats) =
+                (item.Stats.StandardStats, item.Stats.ExoStats, item.Stats.UnmageableStats);
 
             applicable &= 
-                standardStats.Length == StandardStatsConfigs.Count &&
+                standardStats.Length + unmageableStats.Length == StandardStatsConfigs.Count &&
                 standardStats.All(itemStat =>
                     StandardStatsConfigs.ContainsKey(itemStat.Stat) &&
                     StandardStatsConfigs[itemStat.Stat].IsApplicableTo(itemStat));

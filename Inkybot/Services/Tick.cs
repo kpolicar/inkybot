@@ -27,7 +27,7 @@ namespace Inkybot.Services
             private const int MaxStatsChangedChecks = 3;
             private static int StatsChangedChecksCount = 0;
             private const int MaxStatsShouldHaveChangedChecks = 3;
-            private static int shouldveBeenDifferentCount = 0;
+            internal static int shouldveBeenDifferentCount = 0;
 
             public Tick(ScreenReaderDofusMagingJob job) {
                 this.job = job;

@@ -74,7 +74,7 @@ namespace Inkybot.Dofus
                     itemStat.Stat,
                     itemStat.Min,
                     itemStat.Max,
-                    itemStat.Max,
+                    itemStat.Stat.Mageable ? itemStat.Max : (int?) null,
                     null);
             }
         }
