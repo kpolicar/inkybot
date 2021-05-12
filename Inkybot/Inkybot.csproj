@@ -28,6 +28,7 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <Obfuscate>True</Obfuscate>
+        <ConfuserReplaceOutput>True</ConfuserReplaceOutput>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
@@ -521,9 +522,13 @@
       </COMReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="'$(OutDir)' != '$(OutputPath)'">
-        <MakeDir Directories="$(OutputPath)\bin\roslyn" />
-        <Move SourceFiles="$(OutputPath)\roslyn" DestinationFolder="$(OutputPath)\bin\roslyn" />
+    <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild">
+        <ItemGroup>
+            <RoslynFiles Include="$(OutputPath)roslyn\*" />
+        </ItemGroup>
+        <MakeDir Directories="$(OutputPath)bin\roslyn" />
+        <Move SourceFiles="@(RoslynFiles)" DestinationFolder="$(OutputPath)bin\roslyn" />
+        <RemoveDir Directories="$(OutputPath)roslyn"/>
     </Target>
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
       <PropertyGroup>
