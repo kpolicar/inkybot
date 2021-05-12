@@ -62,4 +62,28 @@ Les minimums sont utilisés pour être sûr que les tentatives exos ne soient pa
     <data name="popup.error_notavailable_current_plan_run_out" xml:space="preserve">
     <value>Vous avez atteint la limite du nombre d'exos que vous pouvez mager avec votre plan tarifaire. Visitez le site Web officiel d'Inkybot pour mettre à niveau les plans.</value>
   </data>
+    <data name="PriorityColumn.HeaderText" xml:space="preserve">
+    <value>Priorité</value>
+  </data>
+    <data name="ValueColumn.ToolTipText" xml:space="preserve">
+    <value>La valeur actuelle de cette statistique</value>
+  </data>
+    <data name="TargetColumn.ToolTipText" xml:space="preserve">
+    <value>La valeur de stats que tu souhaiterais atteindre</value>
+  </data>
+    <data name="MinColumn.ToolTipText" xml:space="preserve">
+    <value>Valeur minimale de la stat afin que l’objet soit considérer comme terminé</value>
+  </data>
+    <data name="PriorityColumn.ToolTipText" xml:space="preserve">
+    <value>L’ordre des stats que tu veux améliorer (rang élevé = plus important)</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipText" xml:space="preserve">
+    <value>Montrer les options avancées</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipTextHide" xml:space="preserve">
+    <value>Masquer les options avancées</value>
+  </data>
+    <data name="refreshButton.ToolTipText" xml:space="preserve">
+    <value>Recharger statistique</value>
+  </data>
 </root>

@@ -259,7 +259,7 @@
     <value>The value of the stat you would like</value>
   </data>
   <data name="MinColumn.ToolTipText" xml:space="preserve">
-    <value>The minimum value of the stat you cannot do without</value>
+    <value>The minimum value of the stat for the item to be considered complete</value>
   </data>
   <data name="PriorityColumn.ToolTipText" xml:space="preserve">
     <value>The order in which stats should be improved (higher = more important)</value>
