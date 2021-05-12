@@ -447,5 +447,13 @@ namespace Inkybot
         private void linkLabel1_LinkClicked_1(object sender, EventArgs e) {
             Process.Start(Server.ConfigsUrl);
         }
+
+        private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
+            showAdvancedOptionsButton.Text = showAdvancedOptionsButton.Text == "+"
+                ? "-"
+                : "+";
+            statsDataGridView.Columns[3].Visible =
+                statsDataGridView.Columns[4].Visible = !statsDataGridView.Columns[4].Visible;
+        }
     }
 }

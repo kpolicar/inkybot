@@ -65,6 +65,8 @@ namespace Inkybot
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             this.actionsPanel = new System.Windows.Forms.Panel();
             this.helpPanel = new System.Windows.Forms.Panel();
+            this.mainPanel = new System.Windows.Forms.Panel();
+            this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.addExoPanel = new System.Windows.Forms.Panel();
             this.presetPanel = new System.Windows.Forms.Panel();
             this.selectPresetPanel = new System.Windows.Forms.Panel();
@@ -73,6 +75,7 @@ namespace Inkybot
             this.presetsComboBox = new Inkybot.Controls.ComboBox();
             this.clearExosButton = new System.Windows.Forms.Button();
             this.deletePresetButton = new System.Windows.Forms.Button();
+            this.showAdvancedOptionsButton = new System.Windows.Forms.Button();
             this.addPresetButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             this.actionsPanel.SuspendLayout();
@@ -92,6 +95,7 @@ namespace Inkybot
             resources.ApplyResources(this.MinColumn, "MinColumn");
             this.MinColumn.Name = "MinColumn";
             this.MinColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.MinColumn.Visible = false;
             // 
             // ValueColumn
             // 
@@ -105,6 +109,7 @@ namespace Inkybot
             resources.ApplyResources(this.PriorityColumn, "PriorityColumn");
             this.PriorityColumn.Name = "PriorityColumn";
             this.PriorityColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.PriorityColumn.Visible = false;
             // 
             // StatColumn
             // 
@@ -173,6 +178,23 @@ namespace Inkybot
             this.helpPanel.Name = "helpPanel";
             this.helpPanel.Dock = DockStyle.Bottom;
             this.helpPanel.AutoSize = true;
+            //
+            // mainPanel
+            // 
+            resources.ApplyResources(this.mainPanel, "mainPanel");
+            this.mainPanel.Controls.Add(this.statsDataGridView);
+            this.mainPanel.Controls.Add(this.dataGridViewSidebarPanel);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Dock = DockStyle.Fill;
+            this.mainPanel.AutoSize = true;
+            //
+            // dataGridViewSidebarPanel
+            // 
+            resources.ApplyResources(this.dataGridViewSidebarPanel, "dataGridViewSidebarPanel");
+            this.dataGridViewSidebarPanel.Controls.Add(this.showAdvancedOptionsButton);
+            this.dataGridViewSidebarPanel.Name = "dataGridViewSidebarPanel";
+            this.dataGridViewSidebarPanel.Dock = DockStyle.Right;
+            this.dataGridViewSidebarPanel.AutoSize = true;
             // 
             // addExoPanel
             // 
@@ -261,6 +283,20 @@ namespace Inkybot
             this.clearExosButton.Location = new Point(133, 25);
             this.clearExosButton.Click += new System.EventHandler(this.clearExosButton_Click);
             // 
+            // showAdvancedOptionsButton
+            // 
+            resources.ApplyResources(this.showAdvancedOptionsButton, "showAdvancedOptionsButton");
+            this.showAdvancedOptionsButton.BackColor = System.Drawing.Color.Black;
+            this.showAdvancedOptionsButton.FlatAppearance.BorderSize = 0;
+            this.showAdvancedOptionsButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.showAdvancedOptionsButton.Name = "showAdvancedOptionsButton";
+            this.showAdvancedOptionsButton.UseVisualStyleBackColor = false;
+            this.showAdvancedOptionsButton.Location = new Point(0, 0);
+            this.showAdvancedOptionsButton.Text = "+";
+            this.showAdvancedOptionsButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.showAdvancedOptionsButton.Margin = System.Windows.Forms.Padding.Empty;
+            this.showAdvancedOptionsButton.Click += new System.EventHandler(this.showAdvancedOptionsButton_Click);
+            // 
             // addPresetButton
             // 
             resources.ApplyResources(this.addPresetButton, "addPresetButton");
@@ -289,7 +325,7 @@ namespace Inkybot
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.helpPanel);
             this.Controls.Add(this.actionsPanel);
             this.Name = "StatsForm";
@@ -311,6 +347,7 @@ namespace Inkybot
         }
 
         private System.Windows.Forms.Button addPresetButton;
+        private System.Windows.Forms.Button showAdvancedOptionsButton;
         private System.Windows.Forms.Button deletePresetButton;
         private System.Windows.Forms.Button clearExosButton;
 
@@ -319,6 +356,8 @@ namespace Inkybot
 
         private System.Windows.Forms.Button addExoButton;
 
+        private System.Windows.Forms.Panel mainPanel;
+        private System.Windows.Forms.Panel dataGridViewSidebarPanel;
         private System.Windows.Forms.Panel helpPanel;
         private System.Windows.Forms.Panel actionsPanel;
         private System.Windows.Forms.Panel addExoPanel;

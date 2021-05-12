@@ -156,6 +156,9 @@
   <data name="presetsComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>240, 3</value>
   </data>
+  <data name="showAdvancedOptionsButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>19, 19</value>
+  </data>
   <data name="addPresetButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
   </data>
@@ -270,6 +273,9 @@
   <data name="clearExosButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
+  <data name="showAdvancedOptionsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="addPresetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
@@ -280,6 +286,9 @@
     <value>presetsComboBox</value>
   </data>
   <data name="clearExosButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="showAdvancedOptionsButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
   </data>
   <data name="addPresetButton.Font" type="System.Drawing.Font, System.Drawing">
