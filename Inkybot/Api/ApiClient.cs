@@ -30,6 +30,11 @@ namespace Inkybot.Api
 
         public event EventHandler<FetchedUserEventArgs>? UserFetched;
 
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var authManager = serviceContainer.GetService<AuthManager>();
+            authManager.ConnectionChanged += OnConnectionChanged;
+        }
+        
         private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e) {
             Connection?.Terminate();
             Connection = e.connection;
@@ -85,10 +90,8 @@ namespace Inkybot.Api
             
             await WaitForStableConnection();
             
-            var response = await Connection!.Request()
+            await Connection!.Request()
                 .PostAsync($"{Server.ApiUrl}/statistics", content);
-            var result = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine("Http response: "+result);
         }
 
         public async Task Publish(Image image, bool toForum) {
@@ -149,10 +152,5 @@ namespace Inkybot.Api
 
         private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
             Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
-        
-        public void BindDependencies(ServiceContainer serviceContainer) {
-            var authManager = serviceContainer.GetService<AuthManager>();
-            authManager.ConnectionChanged += OnConnectionChanged;
-        }
     }
 }

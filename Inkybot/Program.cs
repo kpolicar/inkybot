@@ -49,7 +49,7 @@ namespace Inkybot
         
         public const string VersionNumber = "19";
         public const string Version = "v2.0";
-        public const string VersionEndpoint = "v2.0";
+        public const string VersionEndpoint = "v2";
 
         public static string InstanceIdentifier {
             private set;

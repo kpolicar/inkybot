@@ -116,19 +116,12 @@ namespace Inkybot.Services
             Width = 1940,
             Height = 1110
         };
-        
-        public static Responsive.Measurement InventorySelectResourcesCategory =>
-            !config.Temporis
-                ? new Responsive.Measurement {
-                    Rectangle = Rect.FromCoords(1530, 103, 1530, 103),
-                    Width = 1920,
-                    Height = 1017
-                }
-                : new Responsive.Measurement {
-                    Rectangle = Rect.FromCoords(1500, 103, 1500, 103),
-                    Width = 1920,
-                    Height = 1017
-                };
+
+        public static Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1512, 103, 1512, 103),
+            Width = 1920,
+            Height = 1017
+        };
         
         public static readonly Responsive.Measurement InventoryFirstItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),

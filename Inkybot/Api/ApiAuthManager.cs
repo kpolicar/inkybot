@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Inkybot.Api
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
 
         private DofusMagingJob magingJob = null!;
-        private MageConfigManager configManager;
+        private MageConfigManager configManager = null!;
 
         public User? User {
             private set; get;
