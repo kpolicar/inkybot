@@ -300,6 +300,8 @@ namespace Inkybot
                     : newValue;
                 cell.Value = Numbers.ToString(newValue);
                 configManager.ChangeStatConfigTargetMinimum(stat, newValue);
+            } else if (e.ColumnIndex == 4) {
+                configManager.ChangeStatConfigPriority(stat, newValue ?? 0);
             }
             
             if (!hasDisplayedWarningAboutMultipleMinimums
@@ -347,7 +349,8 @@ namespace Inkybot
             var exoConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 stat, 
                 stat.StrongestRune.IncreaseInValue, 
-                stat.StrongestRune.IncreaseInValue);
+                stat.StrongestRune.IncreaseInValue,
+                0);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }
@@ -436,6 +439,7 @@ namespace Inkybot
                     continue;
                 configManager.ChangeStatConfigTarget(stat, statPreset.Target);
                 configManager.ChangeStatConfigTargetMinimum(stat, statPreset.TargetMinimum);
+                configManager.ChangeStatConfigPriority(stat, statPreset.Priority);
             }
         }
 

@@ -75,6 +75,7 @@ namespace Inkybot.Dofus
                     itemStat.Min,
                     itemStat.Max,
                     itemStat.Stat.Mageable ? itemStat.Max : (int?) null,
+                    null,
                     null);
             }
         }
@@ -122,6 +123,8 @@ namespace Inkybot.Dofus
              * <summary>The target value minimum that is configured for the item stat.</summary>
              */
             public readonly int? TargetMinimum;
+            
+            public readonly int Priority;
             
             /**
              * <summary>Whether or not the instance represents an exotic stat mage.</summary>
@@ -204,39 +207,40 @@ namespace Inkybot.Dofus
             private readonly Stat Stat;
 
             public static ItemStatMageConfig Default(Stat stat) =>
-                new ItemStatMageConfig(stat, default, default, default, default);
+                new ItemStatMageConfig(stat, default, default, default, default, default);
 
-            public ItemStatMageConfig(Stat stat, int minimum, int maximum, int? target, int? targetMinimum) =>
-                (Stat, Minimum, Maximum, Target, TargetMinimum) =
-                (stat, minimum, maximum, target, targetMinimum);
+            public ItemStatMageConfig(Stat stat, int minimum, int maximum, int? target, int? targetMinimum, int priority) =>
+                (Stat, Minimum, Maximum, Target, TargetMinimum, Priority) =
+                (stat, minimum, maximum, target, targetMinimum, priority);
 
             /**
              * <summary>Create a new configuration for an exotic stat</summary>
              */
-            public static ItemStatMageConfig MakeExo(Stat stat, int? target, int? targetMinimum) =>
-                new ItemStatMageConfig(stat, 0, 0, target, targetMinimum);
+            public static ItemStatMageConfig MakeExo(Stat stat, int? target, int? targetMinimum, int priority) =>
+                new ItemStatMageConfig(stat, 0, 0, target, targetMinimum, priority);
 
             /**
              * <returns>Determines whether or not the configuration is applicable to another item stat.</returns>
              */
             public bool IsApplicableTo(ItemStat itemStat) {
-                return (itemStat.Min, itemStat.Max)
-                       == (Minimum, Maximum);
+                return (itemStat.Min, itemStat.Max, itemStat.Stat)
+                       == (Minimum, Maximum, Stat);
             }
 
             public ItemStatMageConfig Clone
-                (int? target, int? targetMinimum, Stat? stat = null, int? minimum=null, int? maximum=null)
+                (int? target, int? targetMinimum, int priority, Stat? stat = null, int? minimum=null, int? maximum=null)
                 => new ItemStatMageConfig(
                     stat ?? Stat,
                     minimum ?? Minimum,
                     maximum ?? Maximum,
                     target,
-                    targetMinimum);
+                    targetMinimum,
+                    priority);
             
             
             public static bool operator ==(ItemStatMageConfig? x, ItemStatMageConfig? y) => 
                 ReferenceEquals(x, null) == ReferenceEquals(y, null) &&
-                Equals(x, y);
+                ReferenceEquals(x, null) || Equals(x, y);
             public static bool operator !=(ItemStatMageConfig? x, ItemStatMageConfig? y) =>
                 !(x == y);
 
@@ -244,8 +248,8 @@ namespace Inkybot.Dofus
                 obj is ItemStatMageConfig other && Equals(other);
 
             public bool Equals(ItemStatMageConfig other) =>
-                (Stat, Minimum, Maximum, Target, TargetMinimum).Equals(
-                    (other.Stat, other.Minimum, other.Maximum, other.Target, other.TargetMinimum));
+                (Stat, Minimum, Maximum, Target, TargetMinimum, Priority).Equals(
+                    (other.Stat, other.Minimum, other.Maximum, other.Target, other.TargetMinimum, other.Priority));
 
             public override int GetHashCode() {
                 unchecked {
@@ -253,13 +257,14 @@ namespace Inkybot.Dofus
                     hashCode = (hashCode * 397) ^ Maximum;
                     hashCode = (hashCode * 397) ^ Target ?? 1;
                     hashCode = (hashCode * 397) ^ TargetMinimum ?? 1;
+                    hashCode = (hashCode * 397) ^ Priority;
                     hashCode = (hashCode * 397) ^ Stat.GetHashCode();
                     return hashCode;
                 }
             }
 
             public override string ToString() =>
-                $"{Stat.Identifier}: Min {Minimum}, Max {Maximum}, Target {Target}, TargetMinimum {TargetMinimum?.ToString() ?? "-"}";
+                $"{Stat.Identifier}: Min {Minimum}, Max {Maximum}, Target {Target}, TargetMinimum {TargetMinimum?.ToString() ?? "-"}, Priority {Priority}";
         }
     }
 }

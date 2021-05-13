@@ -93,23 +93,29 @@ namespace Inkybot.Services
         }
 
         private bool ConfigIsSetForItem(Item item)
-            => Config != null && Config.IsConfiguredFor(item);
+            => Config?.IsConfiguredFor(item) ?? false;
 
         public void ChangeStatConfigTarget(Stat stat, int? target) {
             var statConfig = Config!.StatsConfig[stat];
-            var newStatConfig = statConfig.Clone(target, statConfig.TargetMinimum);
+            var newStatConfig = statConfig.Clone(target, statConfig.TargetMinimum, statConfig.Priority);
             ChangeStatConfig(stat, newStatConfig);
         }
         
         public void ChangeStatConfigTargetMinimum(Stat stat, int? targetMinimum) {
             var statConfig = Config!.StatsConfig[stat];
-            var newStatConfig = statConfig.Clone(statConfig.Target, targetMinimum);
+            var newStatConfig = statConfig.Clone(statConfig.Target, targetMinimum, statConfig.Priority);
+            ChangeStatConfig(stat, newStatConfig);
+        }
+        
+        public void ChangeStatConfigPriority(Stat stat, int priority) {
+            var statConfig = Config!.StatsConfig[stat];
+            var newStatConfig = statConfig.Clone(statConfig.Target, statConfig.TargetMinimum, priority);
             ChangeStatConfig(stat, newStatConfig);
         }
 
         public void ChangeStatConfig(Stat stat, MageConfig.ItemStatMageConfig statConfig) {
             var isNewStatConfiguration = !Config!.StatsConfig.ContainsKey(stat);
-            if (!isNewStatConfiguration && statConfig == Config.StatsConfig[stat])
+            if (!isNewStatConfiguration && statConfig.Equals(Config.StatsConfig[stat]))
                 return;
             
             Config.StatsConfig[stat] = statConfig;
