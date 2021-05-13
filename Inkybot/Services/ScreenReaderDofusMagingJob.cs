@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.Threading;
 using Inkybot.Contracts;
 using Inkybot.Design;
@@ -140,6 +142,7 @@ namespace Inkybot.Services
             state.IsPreparing = false;
         }
 
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void DoMage(bool restarting=false) {
             try {
                 PrepareMage(restarting);

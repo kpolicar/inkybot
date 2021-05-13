@@ -488,7 +488,9 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <ItemGroup>
+      <Content Include="afterbuild.sh" />
       <Content Include="app.manifest" />
+      <Content Include="inkybot.certificate.pfx" />
       <Content Include="Inkybot.crproj" />
       <Content Include="Resources\Tesseract\eng.traineddata">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -508,9 +510,6 @@
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Api\Serialization" />
-    </ItemGroup>
-    <ItemGroup>
       <COMReference Include="SHDocVw">
         <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
         <VersionMajor>1</VersionMajor>
@@ -528,7 +527,7 @@
         </ItemGroup>
         <MakeDir Directories="$(OutputPath)bin\roslyn" />
         <Move SourceFiles="@(RoslynFiles)" DestinationFolder="$(OutputPath)bin\roslyn" />
-        <RemoveDir Directories="$(OutputPath)roslyn"/>
+        <RemoveDir Directories="$(OutputPath)roslyn" />
     </Target>
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
       <PropertyGroup>

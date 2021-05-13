@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Adapters;
@@ -247,29 +249,31 @@ namespace Inkybot
         private void RefreshStats() {
             if (magingJob.IsMaging)
                 return;
-            var fetchStats = new ThreadStart(delegate {
-                try {
-                    Invoke(new MethodInvoker(() => {
-                        selectPresetPanel.Enabled = false;
-                    }));
-                    
-                    dataProvider.Reset();
-                    dataProvider.FetchData();
-                    var item = dataProvider.Item();
-                    configManager.EnforceConfigSetForItem(item);
-                    
-                } catch (Exception exception) {
-                    Error?.Invoke(this, new ExceptionEventArgs(exception));
-                    Debug.WriteLine(exception.Message);
-                    Debug.WriteLine(exception.StackTrace);
-                }
-                
+            new Thread(RefreshStatsTask).Start();
+        }
+
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
+        private void RefreshStatsTask() {
+            try {
                 Invoke(new MethodInvoker(() => {
-                    selectPresetPanel.Enabled = true;
+                    selectPresetPanel.Enabled = false;
                 }));
-            });
-            
-            new Thread(fetchStats).Start();
+                    
+                dataProvider.Reset();
+                dataProvider.FetchData();
+                var item = dataProvider.Item();
+                configManager.EnforceConfigSetForItem(item);
+                    
+            } catch (Exception exception) {
+                Error?.Invoke(this, new ExceptionEventArgs(exception));
+                dataProvider.Reset();
+                Debug.WriteLine(exception.Message);
+                Debug.WriteLine(exception.StackTrace);
+            }
+                
+            Invoke(new MethodInvoker(() => {
+                selectPresetPanel.Enabled = true;
+            }));
         }
 
         private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
