@@ -15,6 +15,8 @@ namespace Inkybot.Dofus
         public Dictionary<Stat, MageConfig.ItemStatMageConfig> StandardStatsConfigs =>
             this.Where(pair => !pair.Value.Exo)
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+        public bool HasPriorities => this.Any(config => config.Value.Priority != 0);
         
         /**
          * <returns>Determine whether or not the configuration is applicable to an item</returns>

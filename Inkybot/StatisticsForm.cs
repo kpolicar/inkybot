@@ -54,7 +54,10 @@ namespace Inkybot
         private void OnVisibleChanged(object sender, EventArgs e) {
             if (apiClient.Connection == null || !Visible)
                 return;
-            webBrowser.Navigate(Server.StatisticsViewUrl, "", new byte[] {}, Header);
+            try {
+                webBrowser.Navigate(Server.StatisticsViewUrl, "", new byte[] { }, Header);
+            } catch (Exception) {
+            }
         }
 
         private void StatisticsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {

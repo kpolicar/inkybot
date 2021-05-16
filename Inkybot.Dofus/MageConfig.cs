@@ -30,6 +30,8 @@ namespace Inkybot.Dofus
          * <summary>The active stat configuration</summary>
          */
         public readonly ItemMageConfig StatsConfig;
+
+        public bool HasPriorities => StatsConfig.HasPriorities;
         
         /**
          * <summary>
