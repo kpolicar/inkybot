@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -8,26 +9,39 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider
     {
-        public class RuneImagePreprocessor : ImagePreprocessor
+        public class RuneImagePreprocessor : ResizeImagePreprocessor
         {
+            public RuneImagePreprocessor() : base(300) {
+            }
+            
             protected override void PreprocessingSteps(MagickImage image) {
                 image.Alpha(AlphaOption.Remove);
                 image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
                 image.Negate();
-                image.Resize(new Percentage(300));
+                PreprocessResizeImage(image);
             }
         }
 
         public class ResizeImagePreprocessor : ImagePreprocessor
         {
+            private int originalResizePercentage;
             private int resizePercentage;
 
             public ResizeImagePreprocessor(int resizePercentage) {
-                this.resizePercentage = resizePercentage;
+                this.resizePercentage = originalResizePercentage = resizePercentage;
             }
             
+            public Image PreprocessImage(Image image, Rectangle bounds, double resizeRatio) {
+                resizePercentage = (int) (resizeRatio * originalResizePercentage);
+                return base.PreprocessImage(image, bounds);
+            }
+
             protected override void PreprocessingSteps(MagickImage image) {
                 base.PreprocessingSteps(image);
+                PreprocessResizeImage(image);
+            }
+
+            protected void PreprocessResizeImage(MagickImage image) {
                 image.Resize(new Percentage(resizePercentage));
             }
         }

@@ -26,6 +26,7 @@ namespace Inkybot.Services
             private ImagePreprocessor preprocessor;
             private PageSegMode segMode;
 
+            
             public ScreenScanner(Responsive.Measurement regionOfInterest,
                 Func<string, string[]>? split = null,
                 ImagePreprocessor? preprocessor = null,
@@ -59,11 +60,17 @@ namespace Inkybot.Services
             public Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
                 return Task.Run(() => ScanRegion(screenshot, saveToDisk));
             }
+            
+            public double ratioFromOptimalScreenshotHeight(Image screenshot) =>
+                (1d*optimalScreenshotHeight)/(1d*screenshot.Height);
+            private readonly int optimalScreenshotHeight = 1080; //1920x1080
 
             public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
                 var bounds = CalculateBounds(screenshot);
 
-                var image = (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
+                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshot))
+                    : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
                 if (saveToDisk) {
                     var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
