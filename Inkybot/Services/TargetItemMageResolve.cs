@@ -19,13 +19,13 @@ namespace Inkybot.Services
 
         protected override int Priority(ItemMage itemMage) {
             if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately) {
-                return (int) itemMage.Rune.Sink * 1000;
+                return (int) itemMage.Rune.Sink * 10000;
             }
-            return itemMage.NumberOfRunesNeededForFullMage;
+            return base.Priority(itemMage);
         }
 
         private bool IsHighSinkItemMage(ItemMage itemMage) =>
-            itemMage.Rune.Sink >= 30;
+            itemMage.Stat.Config.HighSinkStat;
 
         protected override Rune.RuneType ResolveRuneType(ItemStat itemStat) {
             var runeType = base.ResolveRuneType(itemStat);

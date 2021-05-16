@@ -15,8 +15,5 @@ namespace Inkybot.Services
             !itemMage.WillOvermage &&
             itemMage.WithLowerRuneStrength != null &&
             itemMage.WithLowerRuneStrength.Value.NumberOfRunesNeededToReachTarget >= 2;
-
-        protected override int Priority(ItemMage itemMage) =>
-            itemMage.NumberOfRunesNeededForFullMage;
     }
 }

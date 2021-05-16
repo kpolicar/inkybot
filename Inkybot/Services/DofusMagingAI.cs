@@ -19,7 +19,7 @@ namespace Inkybot.Services
         internal OverrideResolve? OverridePerfectionResolve;
         internal OverrideResolve? OverrideReachMinimumResolve;
         internal OverrideResolve? OverrideFinishSinkOverride;
-        internal OverrideResolve? Exo;
+        internal OverrideResolve? OverrideExoResolve;
         private MageConfig config = null!;
 
         public override void BindDependencies(ServiceContainer serviceContainer) {
@@ -65,13 +65,10 @@ namespace Inkybot.Services
             return proposedMage;
         }
         
-        private bool IsConfiguredForOvermage() => 
-            config.StatsConfig.Any(statConfig => statConfig.Value.Overmage);
-        
         private ItemMage? ResolveItemMageForExo(Item item) {
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new ExoItemMageResolve(config, item, Sink).Resolve(),
-                Exo);
+                OverrideExoResolve);
             return proposedMage;
         }
 

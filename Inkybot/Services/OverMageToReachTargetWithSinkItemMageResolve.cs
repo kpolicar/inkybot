@@ -16,6 +16,11 @@ namespace Inkybot.Services
             ShouldSaveSink = config.StatsConfig.Any(config => config.Value.Exo || config.Value.Overmage);
         }
 
+        protected override int Priority(ItemMage itemMage) {
+            var basePriority = base.Priority(itemMage);
+            return basePriority + itemMage.MageConfig.Priority*30;
+        }
+        
         protected override bool MatchesCriteria(ItemMage itemMage) =>
             itemMage.Rune.Sink <= Sink &&
             !itemMage.HasReachedTarget &&

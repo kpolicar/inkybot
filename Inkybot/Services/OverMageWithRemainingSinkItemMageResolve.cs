@@ -37,6 +37,6 @@ namespace Inkybot.Services
         private bool IsConfiguredForOvermageWithLowSinkStat() => 
             config.StatsConfig.Any(statConfig => statConfig.Value.Overmage && !statConfig.Value.HighSinkStat);
 
-        protected override int Priority(ItemMage itemMage) => 1;
+        protected override int Priority(ItemMage itemMage) => itemMage.MageConfig.Priority;
     }
 }

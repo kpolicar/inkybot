@@ -90,7 +90,7 @@ namespace Inkybot.Services
             defaultAI.OverridePerfectionResolve = resolve => customDofusMagingAI.OverrideMageToPerfectStatsWithSink(resolve.Mage);
             defaultAI.OverrideReachMinimumResolve = resolve => customDofusMagingAI.OverrideOvermageToReachMinimum(resolve.Mage);
             defaultAI.OverrideFinishSinkOverride = resolve => customDofusMagingAI.OverrideOvermageWithRemainingSink(resolve.Mage);
-            defaultAI.Exo = resolve => customDofusMagingAI.OverrideExoMage(resolve.Mage);
+            defaultAI.OverrideExoResolve = resolve => customDofusMagingAI.OverrideExoMage(resolve.Mage);
             customDofusMagingAI.SetDefaultMagingAI(defaultAI);
         }
 
