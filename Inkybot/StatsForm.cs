@@ -21,6 +21,7 @@ using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Resources;
 using Inkybot.Services;
+using DataGridView = Inkybot.Helpers.DataGridView;
 using Debug = System.Diagnostics.Debug;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 using MageConfig = Inkybot.Dofus.MageConfig;
@@ -461,6 +462,15 @@ namespace Inkybot
         }
 
         private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
+            if (auth.User?.is_free_trial ?? false) {
+                MessageBox.Show(
+                    resources.GetString("popup.error_notavailable_freetrial"),
+                    resources.GetString("popup.error_restricted"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            
             if (showAdvancedOptionsButton.Text == "+") {
                 showAdvancedOptionsButton.Text = "-";
                 tooltip.SetToolTip(
@@ -493,6 +503,11 @@ namespace Inkybot
                 new SolidBrush(refreshButton.ForeColor),
                 refreshButton.ClientRectangle,
                 format);
+        }
+
+        private void StatsForm_OnStatsDataGridViewValidating(object sender, DataGridViewCellValidatingEventArgs e) {
+            if (e.ColumnIndex == 0) return;
+            DataGridView.OnValidatingDataGridViewCellNumeric(sender, e);
         }
     }
 }

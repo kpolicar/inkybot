@@ -6,8 +6,6 @@ namespace Inkybot.Helpers
     public static class DataGridView
     {
         public static void OnValidatingDataGridViewCellNumeric(object sender, DataGridViewCellValidatingEventArgs e) {
-            if (e.ColumnIndex == 0) return;
-            
             var isNumber = int.TryParse(e.FormattedValue.ToString(), out _)
                            || e.FormattedValue.ToString() == "-";
             e.Cancel = !isNumber;

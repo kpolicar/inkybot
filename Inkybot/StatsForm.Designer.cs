@@ -170,7 +170,7 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersVisible = false;
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.StatsForm_OnChangeValue);
-            this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(Inkybot.Helpers.DataGridView.OnValidatingDataGridViewCellNumeric);
+            this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.StatsForm_OnStatsDataGridViewValidating);
             // 
             // actionsPanel
             // 
