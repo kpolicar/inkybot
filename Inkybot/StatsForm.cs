@@ -179,6 +179,7 @@ namespace Inkybot
 
                 row.Cells[2].Value = Numbers.ToString(itemStatConfig.Target);
                 row.Cells[3].Value = Numbers.ToString(itemStatConfig.TargetMinimum);
+                row.Cells[4].Value = Numbers.ToString(itemStatConfig.Priority);
                 updatedStats.Add(rowItemStat.Stat);
             }
             

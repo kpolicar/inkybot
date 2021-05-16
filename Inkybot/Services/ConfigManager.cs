@@ -9,6 +9,7 @@ using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 using Inkybot.Helpers;
+using Tesseract;
 using MageConfig = Inkybot.Dofus.MageConfig;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
@@ -109,8 +110,19 @@ namespace Inkybot.Services
         
         public void ChangeStatConfigPriority(Stat stat, int priority) {
             var statConfig = Config!.StatsConfig[stat];
+            priority = Math.Min(Config!.StatsConfig.Count-1, priority);
+            priority = Math.Max(0, priority);
             var newStatConfig = statConfig.Clone(statConfig.Target, statConfig.TargetMinimum, priority);
             ChangeStatConfig(stat, newStatConfig);
+
+            if (priority == 0)
+                return;
+            
+            var samePriority =
+                Config!.StatsConfig.FirstOrDefault(statConfig => statConfig.Value.Priority == priority);
+            if (!samePriority.Equals(default(KeyValuePair<Stat,MageConfig.ItemStatMageConfig>))) {
+                ChangeStatConfigPriority(samePriority.Key, priority-1);
+            }
         }
 
         public void ChangeStatConfig(Stat stat, MageConfig.ItemStatMageConfig statConfig) {
