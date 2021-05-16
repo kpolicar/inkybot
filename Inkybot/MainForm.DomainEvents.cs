@@ -8,6 +8,8 @@ namespace Inkybot
 {
     public partial class MainForm
     {
+        protected bool hasShownUnsupportedWarning = false;
+            
         private void MainFormDomainEvents() {
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
@@ -69,9 +71,11 @@ namespace Inkybot
 
             Invoke(new MethodInvoker(DisableDebugging));
 
-            if (config.UserSettings.ShowUserWarnings &&
-                (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config))) {
+            if (!hasShownUnsupportedWarning && config.UserSettings.ShowUserWarnings &&
+                (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)))
+            {
                 StartMageUnsupportedDialog();
+                hasShownUnsupportedWarning = true;
             }
                 
             Invoke(new MethodInvoker(delegate {
