@@ -180,6 +180,14 @@ namespace Inkybot.Dofus
              * This value is taken from the statConfig.
              * </summary>
              */
+            public bool ShouldUseSmRunes => statConfig.ShouldUseSmRunes;
+            
+            /**
+             * <summary>
+             * Whether or not runes of PA strength should be used.
+             * This value is taken from the statConfig.
+             * </summary>
+             */
             public bool ShouldUsePaRunes => statConfig.ShouldUsePaRunes;
             
             /**

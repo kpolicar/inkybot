@@ -10,6 +10,9 @@ namespace Inkybot.Resources
         public string ChangeToRaRuneThreshold { get; set; }
         public string MaxValueAtWhichSmRuneCanLand { get; set; }
         public string MaxValueAtWhichPaRuneCanLand { get; set; }
+        public bool UseSmRunes { get; set; }
+        public bool UsePaRunes { get; set; }
+        public bool UseRaRunes { get; set; }
         
     }
     #pragma warning restore 8618

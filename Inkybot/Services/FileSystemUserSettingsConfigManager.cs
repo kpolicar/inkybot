@@ -65,6 +65,9 @@ namespace Inkybot.Services
                 Numbers.Parse(config.ChangeToPaRuneThreshold),
                 Numbers.Parse(config.MaxValueAtWhichPaRuneCanLand),
                 Numbers.Parse(config.ChangeToRaRuneThreshold), 
+                config.UseSmRunes, 
+                config.UsePaRunes, 
+                config.UseRaRunes, 
                 DefaultStatConfigProvider.Instance.Config(stat).HighSinkStat
             );
         }
@@ -82,6 +85,9 @@ namespace Inkybot.Services
                 ChangeToRaRuneThreshold = Numbers.ToString(config.ChangeToRaRuneThreshold),
                 MaxValueAtWhichPaRuneCanLand = Numbers.ToString(config.MaxValueAtWhichPaRuneCanHit),
                 MaxValueAtWhichSmRuneCanLand = Numbers.ToString(config.MaxValueAtWhichSmRuneCanHit),
+                UseSmRunes = config.UseSmRunes,
+                UsePaRunes = config.UsePaRunes,
+                UseRaRunes = config.UseRaRunes,
             };
             Properties.Settings.Default.Save();
         }

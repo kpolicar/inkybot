@@ -27,8 +27,10 @@ namespace Inkybot.Services
         private bool IsHighSinkItemMage(ItemMage itemMage) =>
             itemMage.Stat.Config.HighSinkStat;
 
-        protected override Rune.RuneType ResolveRuneType(ItemStat itemStat) {
+        protected override Rune.RuneType? ResolveRuneType(ItemStat itemStat) {
             var runeType = base.ResolveRuneType(itemStat);
+            if (runeType == null)
+                return runeType;
             return (Rune.RuneType) Math.Max(0, (int) runeType - runeTypeOffset);
         }
     }

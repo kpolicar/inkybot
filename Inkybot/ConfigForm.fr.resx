@@ -14,6 +14,24 @@
     <data name="$this.Text" xml:space="preserve">
         <value>Inkybot - Config</value>
     </data>
+    <data name="UseSmRunesColumn.HeaderText" xml:space="preserve">
+    <value>Utiliser des runes SM</value>
+  </data>
+    <data name="UseSmRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Indiquez si vous souhaitez ou non utiliser des runes SM</value>
+  </data>
+    <data name="UsePaRunesColumn.HeaderText" xml:space="preserve">
+    <value>Utiliser des runes PA</value>
+  </data>
+    <data name="UsePaRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Indiquez si vous souhaitez ou non utiliser des runes PA</value>
+  </data>
+    <data name="UseRaRunesColumn.HeaderText" xml:space="preserve">
+    <value>Utiliser des runes RA</value>
+  </data>
+    <data name="UseRaRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Indiquez si vous souhaitez ou non utiliser des runes RA</value>
+  </data>
     <data name="MaxPaRuneCanHitColumn.HeaderText" xml:space="preserve">
         <value>Max (PA Rune)</value>
     </data>
@@ -23,6 +41,18 @@
     <data name="PaRuneThresholdColumn.HeaderText" xml:space="preserve">
         <value>PA Rune Seuil</value>
     </data>
+  <data name="config.useRune" xml:space="preserve">
+    <value>L'utilisation de :type runes est activée</value>
+  </data>
+  <data name="config.dontUseRune" xml:space="preserve">
+    <value>L'utilisation de :type runes est désactivée</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipText" xml:space="preserve">
+    <value>Montrer les options avancées</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipTextHide" xml:space="preserve">
+    <value>Masquer les options avancées</value>
+  </data>
     <data name="RaRuneThresholdColumn.HeaderText" xml:space="preserve">
         <value>RA Rune Seuil</value>
     </data>

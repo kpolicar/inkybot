@@ -46,6 +46,9 @@ namespace Inkybot
                 
                 var rowIndex = statsDataGridView.Rows.Add(
                     stat.DisplayName,
+                    statConfig.UseSmRunes,
+                    statConfig.UsePaRunes,
+                    statConfig.UseRaRunes,
                     Numbers.ToString(statConfig.ChangeToPaRuneThreshold),
                     Numbers.ToString(statConfig.ChangeToRaRuneThreshold),
                     Numbers.ToString(statConfig.MaxValueAtWhichSmRuneCanHit),
@@ -54,12 +57,12 @@ namespace Inkybot
                 var row = statsDataGridView.Rows[rowIndex];
                 row.Tag = stat;
                 if (!stat.CanUsePaRunes) {
-                    row.Cells[1].ReadOnly = row.Cells[4].ReadOnly = true;
-                    row.Cells[1].Style = row.Cells[4].Style = readonlyCellStyle;
+                    row.Cells[2].ReadOnly = row.Cells[4].ReadOnly = row.Cells[7].ReadOnly = true;
+                    row.Cells[2].Style = row.Cells[4].Style = row.Cells[7].Style = readonlyCellStyle;
                 }
                 if (!stat.CanUseRaRunes) {
-                    row.Cells[2].ReadOnly = true;
-                    row.Cells[2].Style = readonlyCellStyle;
+                    row.Cells[3].ReadOnly = row.Cells[5].ReadOnly = true;
+                    row.Cells[3].Style = row.Cells[5].Style = readonlyCellStyle;
                 }
 
                 SetConfigRowTooltipsAndChangeStyles(row);
@@ -81,9 +84,21 @@ namespace Inkybot
             var raRune = new Rune(stat, Rune.RuneType.Ra);
             var config = userSettingsConfigManager.Config(stat);
             var defaultConfig = configProvider.Default.Config(stat).Deconstruct();
+
+            row.Cells[1].ToolTipText = config.UseSmRunes
+                ? resources.GetString("config.useRune")!.Replace(":type", "SM")
+                : resources.GetString("config.dontUseRune")!.Replace(":type", "SM");
+
+            row.Cells[2].ToolTipText = config.UsePaRunes
+                ? resources.GetString("config.useRune")!.Replace(":type", "PA")
+                : resources.GetString("config.dontUseRune")!.Replace(":type", "PA");
+
+            row.Cells[3].ToolTipText = config.UseRaRunes
+                ? resources.GetString("config.useRune")!.Replace(":type", "RA")
+                : resources.GetString("config.dontUseRune")!.Replace(":type", "RA");
             
             if (stat.CanUsePaRunes) {
-                row.Cells[1].ToolTipText = (config.ChangeToPaRuneThreshold switch {
+                row.Cells[4].ToolTipText = (config.ChangeToPaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", paRune.ToString()),
                     
@@ -96,15 +111,15 @@ namespace Inkybot
                         .Replace(":stat", stat.ToString())
                         .Replace(":threshold", config.ChangeToPaRuneThreshold.ToString())
                 }).FirstCharToUpper();
-                row.Cells[1].Style = config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold
+                row.Cells[4].Style = config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold
                     ? modifiedStyle
                     : row.DefaultCellStyle;
                 
                 if (config.ChangeToPaRuneThreshold != defaultConfig.changeToPaRuneThreshold)
-                    row.Cells[1].ToolTipText += "\n" + resources.GetString("config.default")!
+                    row.Cells[4].ToolTipText += "\n" + resources.GetString("config.default")!
                         .Replace(":value", defaultConfig.changeToPaRuneThreshold?.ToString() ?? "\"-\"");
                 
-                row.Cells[4].ToolTipText = ((config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
+                row.Cells[7].ToolTipText = ((config.MaxValueAtWhichPaRuneCanHit, config.ChangeToPaRuneThreshold) switch {
                     (_, null) => resources.GetString("config.neverchange_threshold")!
                         .Replace(":rune", paRune.ToString())
                         .Replace(":threshold", resources.GetString("PaRuneThresholdColumn.HeaderText")),
@@ -120,16 +135,16 @@ namespace Inkybot
                         .Replace(":maxvalue", config.MaxValueAtWhichPaRuneCanHit.ToString())
                 }).FirstCharToUpper();
 
-                row.Cells[4].Style = config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit
+                row.Cells[7].Style = config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit
                     ? modifiedStyle
                     : row.DefaultCellStyle;
                 
                 if (config.MaxValueAtWhichPaRuneCanHit != defaultConfig.maxValuePaRuneCanHit)
-                    row.Cells[4].ToolTipText += "\n" + resources.GetString("config.default")!
+                    row.Cells[7].ToolTipText += "\n" + resources.GetString("config.default")!
                         .Replace(":value", defaultConfig.maxValuePaRuneCanHit?.ToString() ?? "\"-\"");
             }
             if (stat.CanUseRaRunes) {
-                row.Cells[2].ToolTipText = (config.ChangeToRaRuneThreshold switch {
+                row.Cells[5].ToolTipText = (config.ChangeToRaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),
                     
@@ -143,15 +158,15 @@ namespace Inkybot
                         .Replace(":threshold", config.ChangeToRaRuneThreshold.ToString()),
                 }).FirstCharToUpper();
                 
-                row.Cells[2].Style = config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold
+                row.Cells[5].Style = config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold
                     ? modifiedStyle
                     : row.DefaultCellStyle;
                     
                 if (config.ChangeToRaRuneThreshold != defaultConfig.changeToRaRuneThreshold)
-                    row.Cells[2].ToolTipText += "\n" + resources.GetString("config.default")!
+                    row.Cells[5].ToolTipText += "\n" + resources.GetString("config.default")!
                         .Replace(":value", defaultConfig.changeToRaRuneThreshold?.ToString() ?? "\"-\"");
             }
-            row.Cells[3].ToolTipText = (config.MaxValueAtWhichSmRuneCanHit switch {
+            row.Cells[6].ToolTipText = (config.MaxValueAtWhichSmRuneCanHit switch {
                 null => resources.GetString("config.alwaysland")!
                     .Replace(":rune", smRune.ToString()),
                 
@@ -164,16 +179,16 @@ namespace Inkybot
                     .Replace(":maxvalue", config.MaxValueAtWhichSmRuneCanHit.ToString()),
             }).FirstCharToUpper();
             
-            row.Cells[3].Style = config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit
+            row.Cells[6].Style = config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit
                 ? modifiedStyle
                 : row.DefaultCellStyle;
             if (config.MaxValueAtWhichSmRuneCanHit != defaultConfig.maxValueSmRuneCanHit)
-                row.Cells[3].ToolTipText += "\n" + resources.GetString("config.default")!
+                row.Cells[6].ToolTipText += "\n" + resources.GetString("config.default")!
                     .Replace(":value", defaultConfig.maxValueSmRuneCanHit?.ToString() ?? "\"-\"");
         }
 
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
-            if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
+            if (e.ColumnIndex < 1 || e.ColumnIndex > 7 || e.RowIndex < 0) return;
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
 
@@ -182,18 +197,25 @@ namespace Inkybot
                 userSettingsConfigManager.Config(stat).Deconstruct();
             
             try {
-                var value = Numbers.Parse(cell.Value.ToString());
+                var intValue = new Func<int?>(() => Numbers.Parse(cell.Value.ToString()));
+                var boolValue = new Func<bool>(() => (bool)cell.Value);
+                
                 var newConfig = new StatConfig(
                     changeToPaRuneThreshold:
-                        e.ColumnIndex == 1 ? value : currentConfig.changeToPaRuneThreshold,
+                        e.ColumnIndex == 4 ? intValue() : currentConfig.changeToPaRuneThreshold,
                     changeToRaRuneThreshold:
-                        e.ColumnIndex == 2 ? value : currentConfig.changeToRaRuneThreshold,
+                        e.ColumnIndex == 5 ? intValue() : currentConfig.changeToRaRuneThreshold,
                     maxValueSmRuneCanHit:
-                        e.ColumnIndex == 3 ? value : currentConfig.maxValueSmRuneCanHit,
+                        e.ColumnIndex == 6 ? intValue() : currentConfig.maxValueSmRuneCanHit,
                     maxValuePaRuneCanHit:
-                        e.ColumnIndex == 4 ? value : currentConfig.maxValuePaRuneCanHit
+                        e.ColumnIndex == 7 ? intValue() : currentConfig.maxValuePaRuneCanHit,
+                    useSmRunes:
+                        e.ColumnIndex == 1 ? boolValue() : currentConfig.useSmRunes,
+                    usePaRunes:
+                        e.ColumnIndex == 2 ? boolValue() : currentConfig.usePaRunes,
+                    useRaRunes:
+                        e.ColumnIndex == 3 ? boolValue() : currentConfig.useRaRunes
                 );
-                Debug.WriteLine(newConfig);
                 
                 userSettingsConfigManager.SetConfig(stat, newConfig);
             } catch (FormatException) {
@@ -271,7 +293,7 @@ namespace Inkybot
         }
 
         private void ConfigForm_OnCellEnter(object sender, DataGridViewCellEventArgs e) {
-            if (e.ColumnIndex < 1 || e.ColumnIndex > 4 || e.RowIndex < 0) return;
+            if (e.ColumnIndex < 1 || e.ColumnIndex > 7 || e.RowIndex < 0) return;
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
 
@@ -296,8 +318,27 @@ namespace Inkybot
         
 
         private void ConfigForm_OnStatsDataGridViewValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-            if (e.ColumnIndex == 0) return;
+            if (e.ColumnIndex < 4 || e.ColumnIndex > 7) return;
             DataGridView.OnValidatingDataGridViewCellNumeric(sender, e);
+        }
+
+        private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
+            if (showAdvancedOptionsButton.Text == "+") {
+                showAdvancedOptionsButton.Text = "-";
+                tooltip.SetToolTip(
+                    showAdvancedOptionsButton, 
+                    resources.GetString("showAdvancedOptionsButton.ToolTipTextHide"));
+            } else {
+                showAdvancedOptionsButton.Text = "+";
+                tooltip.SetToolTip(
+                    showAdvancedOptionsButton, 
+                    resources.GetString("showAdvancedOptionsButton.ToolTipText"));
+            }
+            
+            statsDataGridView.Columns[4].Visible =
+                statsDataGridView.Columns[5].Visible = 
+                statsDataGridView.Columns[6].Visible = 
+                statsDataGridView.Columns[7].Visible = !statsDataGridView.Columns[7].Visible;
         }
     }
 }

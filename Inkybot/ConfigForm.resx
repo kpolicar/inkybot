@@ -142,6 +142,21 @@
     <data name="scriptResetButton.Text" xml:space="preserve">
     <value>Reset AI</value>
   </data>
+    <data name="showAdvancedOptionsButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>19, 19</value>
+    </data>
+    <data name="showAdvancedOptionsButton.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 9.75pt</value>
+    </data>
+    <data name="showAdvancedOptionsButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+        <value>Flat</value>
+    </data>
+    <data name="showAdvancedOptionsButton.ToolTipText" xml:space="preserve">
+    <value>Show advanced options</value>
+  </data>
+    <data name="showAdvancedOptionsButton.ToolTipTextHide" xml:space="preserve">
+    <value>Hide advanced options</value>
+  </data>
     <data name="scriptResetButton.Size" type="System.Drawing.Size, System.Drawing">
         <value>110, 20</value>
     </data>
@@ -325,6 +340,24 @@
   </data>
   <data name="&gt;&gt;restoreHighSinkStatsCheckbox.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="UseSmRunesColumn.HeaderText" xml:space="preserve">
+    <value>Use SM Runes</value>
+  </data>
+    <data name="UseSmRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Toggle whether or not you would like to use SM runes</value>
+  </data>
+  <data name="UsePaRunesColumn.HeaderText" xml:space="preserve">
+    <value>Use PA Runes</value>
+  </data>
+    <data name="UsePaRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Toggle whether or not you would like to use PA runes</value>
+  </data>
+  <data name="UseRaRunesColumn.HeaderText" xml:space="preserve">
+    <value>Use RA Runes</value>
+  </data>
+    <data name="UseRaRunesColumn.ToolTipText" xml:space="preserve">
+    <value>Toggle whether or not you would like to use RA runes</value>
   </data>
   <data name="PaRuneThresholdColumn.HeaderText" xml:space="preserve">
     <value>PA Rune Threshold</value>
@@ -2161,7 +2194,7 @@
     <value>statsDataGridView</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>775, 592</value>
+    <value>600, 600</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ConfigForm</value>
@@ -2256,6 +2289,12 @@
   <metadata name="MaxSmRuneCanHitColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="config.useRune" xml:space="preserve">
+    <value>Usage of :type runes is enabled</value>
+  </data>
+  <data name="config.dontUseRune" xml:space="preserve">
+    <value>Usage of :type runes is disabled</value>
+  </data>
   <data name="config.neverchange" xml:space="preserve">
     <value>Never change to :rune</value>
   </data>

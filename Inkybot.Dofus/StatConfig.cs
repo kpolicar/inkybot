@@ -33,6 +33,10 @@ namespace Inkybot.Dofus
          */
         public readonly int? ChangeToPaRuneThreshold;
         
+        public readonly bool UseSmRunes;
+        public readonly bool UsePaRunes;
+        public readonly bool UseRaRunes;
+        
         /**
          * <summary>
          * The maximum value at which a rune of PA strength can still land on the stat.
@@ -51,17 +55,24 @@ namespace Inkybot.Dofus
         
         /**
          * <summary>
+         * Whether or not runes of SM strength should be used.
+         * </summary>
+         */
+        public readonly bool ShouldUseSmRunes => UseSmRunes;
+        
+        /**
+         * <summary>
          * Whether or not runes of PA strength should be used.
          * </summary>
          */
-        public readonly bool ShouldUsePaRunes => ChangeToPaRuneThreshold != null;
+        public readonly bool ShouldUsePaRunes => UsePaRunes && ChangeToPaRuneThreshold != null;
         
         /**
          * <summary>
          * Whether or not runes of RA strength should be used.
          * </summary>
          */
-        public readonly bool ShouldUseRaRunes => ChangeToRaRuneThreshold != null;
+        public readonly bool ShouldUseRaRunes => UseRaRunes && ChangeToRaRuneThreshold != null;
         
         /**
          * <summary>
@@ -100,9 +111,12 @@ namespace Inkybot.Dofus
             int? changeToPaRuneThreshold=null,
             int? maxValuePaRuneCanHit=null,
             int? changeToRaRuneThreshold=null,
+            bool useSmRunes=true,
+            bool usePaRunes=true,
+            bool useRaRunes=true,
             bool highSinkStat=false) =>
-            (MaxValueAtWhichSmRuneCanHit, ChangeToPaRuneThreshold, MaxValueAtWhichPaRuneCanHit, ChangeToRaRuneThreshold, HighSinkStat) =
-            (maxValueSmRuneCanHit, changeToPaRuneThreshold, maxValuePaRuneCanHit, changeToRaRuneThreshold, highSinkStat);
+            (UseSmRunes, UsePaRunes, UseRaRunes, MaxValueAtWhichSmRuneCanHit, ChangeToPaRuneThreshold, MaxValueAtWhichPaRuneCanHit, ChangeToRaRuneThreshold, HighSinkStat) =
+            (useSmRunes, usePaRunes, useRaRunes, maxValueSmRuneCanHit, changeToPaRuneThreshold, maxValuePaRuneCanHit, changeToRaRuneThreshold, highSinkStat);
 
         /**
          * <param name="a">Tuple of configuration options</param>
@@ -112,13 +126,20 @@ namespace Inkybot.Dofus
             int? changeToPaRuneThreshold,
             int? maxValuePaRuneCanHit,
             int? changeToRaRuneThreshold,
+            bool useSmRunes,
+            bool usePaRunes,
+            bool useRaRunes,
             bool highSinkStat) a) :
             this(
                 a.maxValueSmRuneCanHit,
                 a.changeToPaRuneThreshold,
                 a.maxValuePaRuneCanHit,
                 a.changeToRaRuneThreshold,
-                a.highSinkStat) { }
+                a.useSmRunes,
+                a.usePaRunes,
+                a.useRaRunes,
+                a.highSinkStat
+                ) { }
 
         /**
          * <returns>A tuple of configuration options</returns>
@@ -127,12 +148,18 @@ namespace Inkybot.Dofus
             int? changeToPaRuneThreshold,
             int? maxValuePaRuneCanHit,
             int? changeToRaRuneThreshold,
+            bool useSmRunes,
+            bool usePaRunes,
+            bool useRaRunes,
             bool highSinkStat)
             Deconstruct() => (
             MaxValueAtWhichSmRuneCanHit,
             ChangeToPaRuneThreshold,
             MaxValueAtWhichPaRuneCanHit,
             ChangeToRaRuneThreshold,
+            UseSmRunes,
+            UsePaRunes,
+            UseRaRunes,
             HighSinkStat
         );
     }

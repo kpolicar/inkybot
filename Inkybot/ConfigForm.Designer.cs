@@ -28,7 +28,6 @@ namespace Inkybot
         private DataGridViewCellStyle readonlyCellStyle;
         private void InitializeCustomComponents() {
             readonlyCellStyle = new DataGridViewCellStyle();
-            readonlyCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             readonlyCellStyle.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             readonlyCellStyle.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             readonlyCellStyle.ForeColor = System.Drawing.SystemColors.ControlDark;
@@ -38,7 +37,6 @@ namespace Inkybot
             
             
             modifiedStyle = new DataGridViewCellStyle();
-            modifiedStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             modifiedStyle.BackColor = System.Drawing.Color.FromArgb(20, 20, 20);
             modifiedStyle.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             modifiedStyle.ForeColor = System.Drawing.SystemColors.Control;
@@ -63,6 +61,9 @@ namespace Inkybot
             this.statsDataGridView = new System.Windows.Forms.DataGridView();
             statsDataGridView.ShowCellToolTips = true;
             this.StatColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.UseSmRunesColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UsePaRunesColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UseRaRunesColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.PaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MaxSmRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -75,17 +76,27 @@ namespace Inkybot
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
+            this.mainPanel = new System.Windows.Forms.Panel();
+            this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
             this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.customMagingAIPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
             this.scriptResetButton = new System.Windows.Forms.Button();
+            this.showAdvancedOptionsButton = new System.Windows.Forms.Button();
+            this.tooltip = new System.Windows.Forms.ToolTip();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).BeginInit();
             this.bottomPanel.SuspendLayout();
             this.customMagingAIPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // refreshButtonTooltip
+            // 
+            tooltip.AutomaticDelay = 50;
+            tooltip.AutoPopDelay = int.MaxValue;
+            tooltip.SetToolTip(this.showAdvancedOptionsButton, resources.GetString("showAdvancedOptionsButton.ToolTipText"));
             // 
             // statsDataGridView
             // 
@@ -105,7 +116,7 @@ namespace Inkybot
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.statsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.statsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.statsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {this.StatColumn, this.PaRuneThresholdColumn, this.RaRuneThresholdColumn, this.MaxSmRuneCanHitColumn, this.MaxPaRuneCanHitColumn});
+            this.statsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {this.StatColumn, this.UseSmRunesColumn, this.UsePaRunesColumn, this.UseRaRunesColumn, this.PaRuneThresholdColumn, this.RaRuneThresholdColumn, this.MaxSmRuneCanHitColumn, this.MaxPaRuneCanHitColumn});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
@@ -139,25 +150,44 @@ namespace Inkybot
             this.StatColumn.Name = "StatColumn";
             this.StatColumn.ReadOnly = true;
             // 
+            // UseSmRunesColumn
+            // 
+            resources.ApplyResources(this.UseSmRunesColumn, "UseSmRunesColumn");
+            this.UseSmRunesColumn.Name = "UseSmRunesColumn";
+            // 
+            // UsePaRunesColumn
+            // 
+            resources.ApplyResources(this.UsePaRunesColumn, "UsePaRunesColumn");
+            this.UsePaRunesColumn.Name = "UsePaRunesColumn";
+            // 
+            // UseRaRunesColumn
+            // 
+            resources.ApplyResources(this.UseRaRunesColumn, "UseRaRunesColumn");
+            this.UseRaRunesColumn.Name = "UseRaRunesColumn";
+            // 
             // PaRuneThresholdColumn
             // 
             resources.ApplyResources(this.PaRuneThresholdColumn, "PaRuneThresholdColumn");
             this.PaRuneThresholdColumn.Name = "PaRuneThresholdColumn";
+            this.PaRuneThresholdColumn.Visible = false;
             // 
             // RaRuneThresholdColumn
             // 
             resources.ApplyResources(this.RaRuneThresholdColumn, "RaRuneThresholdColumn");
             this.RaRuneThresholdColumn.Name = "RaRuneThresholdColumn";
+            this.RaRuneThresholdColumn.Visible = false;
             // 
             // MaxSmRuneCanHitColumn
             // 
             resources.ApplyResources(this.MaxSmRuneCanHitColumn, "MaxSmRuneCanHitColumn");
             this.MaxSmRuneCanHitColumn.Name = "MaxSmRuneCanHitColumn";
+            this.MaxSmRuneCanHitColumn.Visible = false;
             // 
             // MaxPaRuneCanHitColumn
             // 
             resources.ApplyResources(this.MaxPaRuneCanHitColumn, "MaxPaRuneCanHitColumn");
             this.MaxPaRuneCanHitColumn.Name = "MaxPaRuneCanHitColumn";
+            this.MaxPaRuneCanHitColumn.Visible = false;
             // 
             // restoreHighSinkStatsCheckbox
             // 
@@ -217,6 +247,37 @@ namespace Inkybot
             this.exampleScriptsLinkLabel.Click += new System.EventHandler(this.exampleScriptsLinkLabel_OnClick);
             this.exampleScriptsLinkLabel.AutoSize = true;
             this.exampleScriptsLinkLabel.Margin = new Padding(0, 5, 0, 2);
+            //
+            // mainPanel
+            // 
+            resources.ApplyResources(this.mainPanel, "mainPanel");
+            this.mainPanel.Controls.Add(this.statsDataGridView);
+            this.mainPanel.Controls.Add(this.dataGridViewSidebarPanel);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Dock = DockStyle.Fill;
+            this.mainPanel.AutoSize = true;
+            //
+            // dataGridViewSidebarPanel
+            // 
+            resources.ApplyResources(this.dataGridViewSidebarPanel, "dataGridViewSidebarPanel");
+            this.dataGridViewSidebarPanel.Controls.Add(this.showAdvancedOptionsButton);
+            this.dataGridViewSidebarPanel.Name = "dataGridViewSidebarPanel";
+            this.dataGridViewSidebarPanel.Dock = DockStyle.Right;
+            this.dataGridViewSidebarPanel.AutoSize = true;
+            // 
+            // showAdvancedOptionsButton
+            // 
+            resources.ApplyResources(this.showAdvancedOptionsButton, "showAdvancedOptionsButton");
+            this.showAdvancedOptionsButton.BackColor = System.Drawing.Color.Black;
+            this.showAdvancedOptionsButton.FlatAppearance.BorderSize = 0;
+            this.showAdvancedOptionsButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.showAdvancedOptionsButton.Name = "showAdvancedOptionsButton";
+            this.showAdvancedOptionsButton.UseVisualStyleBackColor = false;
+            this.showAdvancedOptionsButton.Location = new Point(0, 0);
+            this.showAdvancedOptionsButton.Text = "+";
+            this.showAdvancedOptionsButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.showAdvancedOptionsButton.Margin = System.Windows.Forms.Padding.Empty;
+            this.showAdvancedOptionsButton.Click += new System.EventHandler(this.showAdvancedOptionsButton_Click);
             // 
             // bottomPanel
             // 
@@ -311,7 +372,7 @@ namespace Inkybot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.MinimumSize = new System.Drawing.Size(600, 600);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.Controls.Add(this.statsDataGridView);
+            this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.tooltipLabelExtra);
             this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.customMagingAIPanel);
@@ -327,6 +388,9 @@ namespace Inkybot
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.Button showAdvancedOptionsButton;
+        private System.Windows.Forms.Panel mainPanel;
+        private System.Windows.Forms.Panel dataGridViewSidebarPanel;
         private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
         private System.Windows.Forms.FlowLayoutPanel bottomPanel;
         private System.Windows.Forms.Button scriptChangeButton;
@@ -338,7 +402,11 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
+        private System.Windows.Forms.ToolTip tooltip;
 
+        private System.Windows.Forms.DataGridViewCheckBoxColumn UseSmRunesColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn UsePaRunesColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn UseRaRunesColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxPaRuneCanHitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn MaxSmRuneCanHitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn PaRuneThresholdColumn;
