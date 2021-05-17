@@ -36,7 +36,6 @@ namespace Inkybot
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
-            magingAiManager.MagingAIChanged += OnMagingAIChanged;
         }
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -71,6 +70,7 @@ namespace Inkybot
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
+            magingAiManager.MagingAIChanged += OnMagingAIChanged;
         }
 
         private void SetConfigRowTooltipsAndChangeStyles(DataGridViewRow row) {
@@ -279,8 +279,6 @@ namespace Inkybot
         }
         
         private void OnMagingAIChanged(object sender, MagingAIChangedEventArgs e) {
-            if (Handle == IntPtr.Zero)
-                return;
             Invoke(new MethodInvoker(() => {
                 if (!(e.AI is CustomDofusMagingAI)) {
                     scriptResetButton.Hide();

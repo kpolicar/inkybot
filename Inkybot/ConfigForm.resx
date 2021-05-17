@@ -120,7 +120,6 @@
   <data name="&gt;&gt;restoreHighSinkStatsCheckbox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="statsDataGridView.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
@@ -130,11 +129,9 @@
   <data name="&gt;&gt;MaxPaRuneCanHitColumn.Name" xml:space="preserve">
     <value>MaxPaRuneCanHitColumn</value>
   </data>
-    <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <data name="scriptChangeButton.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
-    <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <data name="scriptResetButton.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
@@ -251,14 +248,12 @@
     <data name="&gt;&gt;scriptChangeButton.Name" xml:space="preserve">
     <value>scriptChangeButton</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="bottomPanel.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="&gt;&gt;StatColumn.Name" xml:space="preserve">
     <value>StatColumn</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="bottomPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>775, 41</value>
   </data>
