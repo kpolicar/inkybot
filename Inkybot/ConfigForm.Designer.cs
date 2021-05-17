@@ -131,7 +131,7 @@ namespace Inkybot
             this.statsDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.statsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigForm_OnChangeValue);
             this.statsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigForm_OnCellEnter);
-            this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(Inkybot.Helpers.DataGridView.OnValidatingDataGridViewCellNumeric);
+            this.statsDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.ConfigForm_OnStatsDataGridViewValidating);
             // 
             // StatColumn
             // 

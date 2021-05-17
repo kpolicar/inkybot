@@ -13,6 +13,7 @@ using Inkybot.Events;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Services;
+using DataGridView = Inkybot.Helpers.DataGridView;
 using Debug = System.Diagnostics.Debug;
 using StatConfigProvider = Inkybot.Services.StatConfigProvider;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
@@ -292,6 +293,12 @@ namespace Inkybot
 
         private void exampleScriptsLinkLabel_OnClick(object sender, EventArgs e) =>
             Process.Start(Server.CustomScriptsUrl);
+        
+
+        private void ConfigForm_OnStatsDataGridViewValidating(object sender, DataGridViewCellValidatingEventArgs e) {
+            if (e.ColumnIndex == 0) return;
+            DataGridView.OnValidatingDataGridViewCellNumeric(sender, e);
+        }
     }
 }
 
