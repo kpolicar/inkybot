@@ -31,7 +31,8 @@ namespace Tests
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoMpConfig);
             
             var action = AI.ResolveAction(item) as CombineRune;

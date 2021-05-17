@@ -61,7 +61,8 @@ namespace Tests
             var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.PerAirResistance, 
                 4, 
-                2);
+                2,
+                0);
             Config.ChangeStatConfig(Stat.PerAirResistance, exoAirPerResConfig);
             
             var action2 = AI.ResolveAction(item) as CombineRune;

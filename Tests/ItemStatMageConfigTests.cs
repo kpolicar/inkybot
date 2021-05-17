@@ -11,26 +11,26 @@ namespace Tests
     {
         [Test]
         public void TestEquality() {
-            var a = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 8);
-            var b = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 8);
+            var a = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 8, 0);
+            var b = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 8, 0);
             
             Assert.AreEqual(a, b);
             Assert.True(a == b);
             
             // Different Minimum
-            var c = new ItemStatMageConfig(Stat.Agility, 4, 10, 9, 8);
+            var c = new ItemStatMageConfig(Stat.Agility, 4, 10, 9, 8, 0);
             Assert.AreNotEqual(a, c);
             // Different Maximum
-            var d = new ItemStatMageConfig(Stat.Agility, 5, 11, 9, 8);
+            var d = new ItemStatMageConfig(Stat.Agility, 5, 11, 9, 8, 0);
             Assert.AreNotEqual(a, d);
             // Different Target
-            var e = new ItemStatMageConfig(Stat.Agility, 5, 10, 8, 8);
+            var e = new ItemStatMageConfig(Stat.Agility, 5, 10, 8, 8, 0);
             Assert.AreNotEqual(a, e);
             // Different Target Minimum
-            var f = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 7);
+            var f = new ItemStatMageConfig(Stat.Agility, 5, 10, 9, 7, 0);
             Assert.AreNotEqual(a, f);
             // Different Stat
-            var g = new ItemStatMageConfig(Stat.Chance, 5, 10, 9, 8);
+            var g = new ItemStatMageConfig(Stat.Chance, 5, 10, 9, 8, 0);
             Assert.AreNotEqual(a, g);
             
             // Nullable
@@ -42,6 +42,17 @@ namespace Tests
             // Equality and ==
             Assert.AreEqual(a == b, a.Equals(b));
             Assert.AreEqual(a != b, !a.Equals(b));
+            
+            // Different Priority
+            var h = new ItemStatMageConfig(Stat.Chance, 5, 10, 9, 8, 0);
+            var i = new ItemStatMageConfig(Stat.Chance, 5, 10, 9, 8, 1);
+            Assert.AreNotEqual(h, i);
+            Assert.False(h == i);
+            var j = i.Clone(i.Target, i.TargetMinimum, i.Priority);
+            Assert.AreEqual(i, j);
+            Assert.True(i == j);
+            var k = i.Clone(i.Target, i.TargetMinimum, 2);
+            Assert.AreNotEqual(k, i);
         }
     }
 }

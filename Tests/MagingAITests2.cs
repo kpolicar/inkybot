@@ -31,12 +31,14 @@ namespace Tests
             var exoPerFireConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.PerFireResistance, 
                 1, 
+                0,
                 0);
             Config.ChangeStatConfig(Stat.PerFireResistance, exoPerFireConfig);
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Mp, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Mp, exoMpConfig);
             Config.ChangeStatConfigTargetMinimum(Stat.Vitality, 370);
             
@@ -57,7 +59,7 @@ namespace Tests
 
         [Test]
         public void TestVitalityOvermage() {
-            Config.ChangeStatConfig(Stat.Vitality, Config.Config![Stat.Vitality]!.Value.Clone(450, 400));
+            Config.ChangeStatConfig(Stat.Vitality, Config.Config![Stat.Vitality]!.Value.Clone(450, 400, 0));
             
             var action = AI.ResolveAction(item) as CombineRune;
             Assert.AreEqual(Stat.Vitality, action.Rune.Stat);
@@ -66,7 +68,7 @@ namespace Tests
         [Test]
         public void TestPerResistanceExo() {
             var overPerNeutralRes = new MageConfig.ItemStatMageConfig(
-                Stat.PerNeutralResistance, 7, 10, 12, 10);
+                Stat.PerNeutralResistance, 7, 10, 12, 10, 0);
             Config.ChangeStatConfig(Stat.PerNeutralResistance, overPerNeutralRes);
             
             Job.Sink = 5;
@@ -78,7 +80,7 @@ namespace Tests
             Assert.AreEqual(Stat.PerNeutralResistance, action.Rune.Stat);
             
             overPerNeutralRes = new MageConfig.ItemStatMageConfig(
-                Stat.PerNeutralResistance, 7, 10, 12, 11);
+                Stat.PerNeutralResistance, 7, 10, 12, 11, 0);
             Config.ChangeStatConfig(Stat.PerNeutralResistance, overPerNeutralRes);
             
             Job.Sink = 5;

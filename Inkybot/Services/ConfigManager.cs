@@ -28,7 +28,11 @@ namespace Inkybot.Services
             get;
             private set;
         }
-        
+
+        public ConfigManager() {
+            ConfigModified += EnforceStatConfigPrioritiesInCorrectRange;
+        }
+
         public void BindDependencies(ServiceContainer serviceContainer) {
             StatConfig = serviceContainer.GetService<StatConfigProviderContract>();
             MageConfig = serviceContainer.GetService<MageConfigProviderContract>();
@@ -109,19 +113,36 @@ namespace Inkybot.Services
         }
         
         public void ChangeStatConfigPriority(Stat stat, int priority) {
-            var statConfig = Config!.StatsConfig[stat];
+            var currentStatConfig = Config!.StatsConfig[stat];
             priority = Math.Min(Config!.StatsConfig.Count-1, priority);
             priority = Math.Max(0, priority);
-            var newStatConfig = statConfig.Clone(statConfig.Target, statConfig.TargetMinimum, priority);
+            var newStatConfig = currentStatConfig.Clone(currentStatConfig.Target, currentStatConfig.TargetMinimum, priority);
             ChangeStatConfig(stat, newStatConfig);
 
             if (priority == 0)
                 return;
             
             var samePriority =
-                Config!.StatsConfig.FirstOrDefault(statConfig => statConfig.Value.Priority == priority);
+                Config!.StatsConfig
+                    .FirstOrDefault(statConfig => statConfig.Value.Priority == priority && statConfig.Key != stat);
             if (!samePriority.Equals(default(KeyValuePair<Stat,MageConfig.ItemStatMageConfig>))) {
                 ChangeStatConfigPriority(samePriority.Key, priority-1);
+            }
+        }
+        
+        private void EnforceStatConfigPrioritiesInCorrectRange(object sender, ConfigModifiedEventArgs e) {
+            if (Config == null || !e.StructureChanged)
+                return;
+            foreach (var stat in Config!.StatsConfig
+                .OrderBy(statConfig => statConfig.Value.Priority)
+                .Select(statConfig => statConfig.Key).ToArray()) {
+                
+                var statConfig = Config.StatsConfig[stat];
+                var priority = Math.Min(Config!.StatsConfig.Count-1, statConfig.Priority);
+                priority = Math.Max(0, priority);
+                
+                if (priority != statConfig.Priority)
+                    ChangeStatConfigPriority(stat, priority);
             }
         }
 

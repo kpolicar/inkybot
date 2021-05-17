@@ -131,7 +131,7 @@ namespace Inkybot
         private bool DataGridViewMatchesItem(Item item) {
             var configuredCount = statsDataGridView.Rows.Count;
             // All the current stats must always be configured
-            if (item.Stats.Length > configuredCount)
+            if (item.Stats.Length > configuredCount || !item.IsValid)
                 return false;
 
             foreach (var itemStat in item.Stats) {
@@ -151,8 +151,8 @@ namespace Inkybot
             
             var updatedStats = new List<Stat>();
             
-            foreach (var statConfig in config.StatsConfig) {
-                var stat = statConfig.Key;
+            foreach (var stat in config.StatsConfig.Keys.ToArray()) {
+                var statConfig = config[stat]!;
                 var itemStatConfig = statConfig.Value;
                 
                 var row = statsDataGridView.Rows
@@ -163,6 +163,7 @@ namespace Inkybot
                         stat.DisplayName,
                         0,
                         itemStatConfig.Target,
+                        itemStatConfig.Priority,
                         itemStatConfig.TargetMinimum,
                         true,
                         stat.Mageable);
@@ -179,7 +180,8 @@ namespace Inkybot
 
                 row.Cells[2].Value = Numbers.ToString(itemStatConfig.Target);
                 row.Cells[3].Value = Numbers.ToString(itemStatConfig.TargetMinimum);
-                row.Cells[4].Value = Numbers.ToString(itemStatConfig.Priority);
+                row.Cells[4].Value = itemStatConfig.Priority;
+
                 updatedStats.Add(rowItemStat.Stat);
             }
             
@@ -206,7 +208,7 @@ namespace Inkybot
                 var cfg = statConfig.Value;
                 var mageStatConfig = config.StatsConfig[stat];
                 
-                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
+                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.Priority, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
                 row.Cells[0].ToolTipText = "Min: -\nMax: -";
             }
@@ -216,8 +218,7 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             foreach (var itemStat in item.Stats) {
-                System.Diagnostics.Debug.WriteLine(itemStat.Stat.DisplayName);
-                var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  null, itemStat.Exo, itemStat.Stat.Mageable);
+                var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  0, 0, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
                 var (min, max) = itemStat.Exo
                     ? ("-", "-")
@@ -226,11 +227,11 @@ namespace Inkybot
             }
         }
 
-        private DataGridViewRow AddNewStatRow(string displayName, int value, int? target, int? targetMinimum, bool exo, bool mageable) {
+        private DataGridViewRow AddNewStatRow(string displayName, int value, int? target, int priority, int? targetMinimum, bool exo, bool mageable) {
             if (mageable) {
-                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", 0);
+                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", priority);
             } else {
-                statsDataGridView.Rows.Add(displayName, "-", "-", "-", 0);
+                statsDataGridView.Rows.Add(displayName, "-", "-", "-", priority);
             }
             var index = statsDataGridView.Rows.Count-1;
             var row = statsDataGridView.Rows[index];

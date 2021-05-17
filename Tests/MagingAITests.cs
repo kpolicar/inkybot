@@ -48,12 +48,14 @@ namespace Tests
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Initiative, 
                 10, 
-                10);
+                10,
+                0);
             Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
             var action = AI.ResolveAction(item) as CombineRune;
@@ -66,12 +68,14 @@ namespace Tests
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Initiative, 
                 10, 
+                0,
                 0);
             Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
             var action1 = AI.ResolveAction(item) as CombineRune;
@@ -119,7 +123,8 @@ namespace Tests
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Mp, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Mp, exoMpConfig);
             Job.Sink = 10;
             var action = AI.ResolveAction(item) as CombineRune;
@@ -132,12 +137,14 @@ namespace Tests
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Intelligence, 
                 10, 
-                null);
+                null,
+                0);
             Config.ChangeStatConfig(Stat.Intelligence, exoIniConfig);
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
             var action = AI.ResolveAction(item) as CombineRune;
@@ -176,7 +183,8 @@ namespace Tests
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
             var action = AI.ResolveAction(item) as CombineRune;

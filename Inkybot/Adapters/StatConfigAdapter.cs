@@ -20,7 +20,8 @@ namespace Inkybot.Adapters
                 Maximum = ItemConfig.Maximum,
                 Stat = Stat.Identifier,
                 Target = ItemConfig.Target,
-                TargetMinimum = ItemConfig.TargetMinimum
+                TargetMinimum = ItemConfig.TargetMinimum,
+                Priority = ItemConfig.Priority
             };
         }
     }

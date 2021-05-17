@@ -36,7 +36,8 @@ namespace Tests
             var exoIniConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Initiative, 
                 0, 
-                null);
+                null,
+                0);
             Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
             action = AI.ResolveAction(item) as CombineRune;
             Assert.Null(action);
@@ -71,7 +72,8 @@ namespace Tests
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 
-                1);
+                1,
+                0);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             
             Job.Sink = 7;
