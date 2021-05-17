@@ -55,8 +55,10 @@ namespace Inkybot.Services
                 }
 
                 var nextStep = job.state.Step;
-                if (currentStep == State.JobStep.EXECUTING_COMBINE && nextStep != State.JobStep.EXECUTING_COMBINE)
+                if (currentStep == State.JobStep.EXECUTING_COMBINE && nextStep != State.JobStep.EXECUTING_COMBINE) {
                     job.SuccessfulCombineTick?.Invoke(this, EventArgs.Empty);
+                    job.unsuccessfulCombineTicks = 0;
+                }
             }
 
             private void DoMainMageAction() {
@@ -277,6 +279,9 @@ namespace Inkybot.Services
                 var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine) {
+                    if (job.unsuccessfulCombineTicks >= 3) {
+                        throw new OutOfRunesException(combine.Rune);
+                    }
                     
                     EnforceHasRunesForCombine(combine);
 

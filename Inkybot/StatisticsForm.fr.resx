@@ -120,4 +120,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot - Statistiques</value>
   </data>
+  <data name="refreshButton.ToolTipText" xml:space="preserve">
+    <value>Recharger</value>
+  </data>
 </root>

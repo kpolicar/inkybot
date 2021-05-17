@@ -9,7 +9,8 @@ namespace Inkybot
     public partial class MainForm
     {
         protected bool hasShownUnsupportedWarning = false;
-            
+        private Action? onMagingJobConfirmedDelegate;
+
         private void MainFormDomainEvents() {
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
@@ -18,6 +19,10 @@ namespace Inkybot
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
+            (magingJob as ScreenReaderDofusMagingJob)!.SuccessfulCombineTick += (_, _) => {
+                onMagingJobConfirmedDelegate?.Invoke();
+                onMagingJobConfirmedDelegate = null;
+            };
             
             var actionHandler = Program.Services.GetService<ActionHandler>();
             actionHandler.ActionExecuted += OnMagingAction;
@@ -31,7 +36,7 @@ namespace Inkybot
             if (!(e.action is CombineRune combine) || !combine.Exo || !combine.Rune.Stat.Config.HighSinkStat)
                 return;
             
-            BeginInvoke(new MethodInvoker(delegate {
+            onMagingJobConfirmedDelegate = () => BeginInvoke(new MethodInvoker(delegate {
                 int count; 
                 var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
                 count = parsed ? ++count : 0;

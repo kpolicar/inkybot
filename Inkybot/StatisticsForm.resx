@@ -148,7 +148,7 @@
     <value>0</value>
   </data>
   <data name="openInBrowserLabelLink.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Top</value>
+    <value>Fill</value>
   </data>
   <data name="openInBrowserLabelLink.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -1957,6 +1957,21 @@
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>460, 440</value>
   </data>
+    <data name="refreshButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+        <value>Flat</value>
+    </data>
+    <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 11pt</value>
+    </data>
+    <data name="refreshButton.ToolTipText" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+    <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>19, 25</value>
+    </data>
+    <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
+        <value>0, 0</value>
+    </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot - Statistics</value>
   </data>

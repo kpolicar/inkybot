@@ -31,12 +31,52 @@ namespace Inkybot
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatisticsForm));
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.openInBrowserLabelLink = new System.Windows.Forms.LinkLabel();
+            this.tooltip = new System.Windows.Forms.ToolTip();
+            this.refreshButton = new System.Windows.Forms.Button();
+            this.topPanel = new System.Windows.Forms.Panel();
+            this.sidebarPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // webBrowser
             // 
             resources.ApplyResources(this.webBrowser, "webBrowser");
             this.webBrowser.Name = "webBrowser";
+            // 
+            // refreshButton
+            // 
+            resources.ApplyResources(this.refreshButton, "refreshButton");
+            this.refreshButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.refreshButton.FlatAppearance.BorderSize = 0;
+            this.refreshButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.UseVisualStyleBackColor = false;
+            this.refreshButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.refreshButton.Margin = System.Windows.Forms.Padding.Empty;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            this.refreshButton.Paint += new System.Windows.Forms.PaintEventHandler(this.OnRefreshButtonPaint);
+            //
+            // sidebarPanel
+            // 
+            resources.ApplyResources(this.sidebarPanel, "sidebarPanel");
+            this.sidebarPanel.Controls.Add(this.refreshButton);
+            this.sidebarPanel.Name = "sidebarPanel";
+            this.sidebarPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.sidebarPanel.AutoSize = true;
+            //
+            // mainPanel
+            // 
+            resources.ApplyResources(this.topPanel, "topPanel");
+            this.topPanel.Height = 20;
+            this.topPanel.Controls.Add(this.openInBrowserLabelLink);
+            this.topPanel.Controls.Add(this.sidebarPanel);
+            this.topPanel.Name = "topPanel";
+            this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            // 
+            // refreshButtonTooltip
+            // 
+            tooltip.AutomaticDelay = 50;
+            tooltip.AutoPopDelay = int.MaxValue;
+            tooltip.SetToolTip(this.refreshButton, resources.GetString("refreshButton.ToolTipText"));
             // 
             // openInBrowserLabelLink
             // 
@@ -54,12 +94,16 @@ namespace Inkybot
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.webBrowser);
-            this.Controls.Add(this.openInBrowserLabelLink);
+            this.Controls.Add(this.topPanel);
             this.Name = "StatisticsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatisticsForm_Closing);
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.ToolTip tooltip;
+        private System.Windows.Forms.Panel topPanel;
+        private System.Windows.Forms.Panel sidebarPanel;
         private System.Windows.Forms.LinkLabel openInBrowserLabelLink;
 
         private System.Windows.Forms.WebBrowser webBrowser;

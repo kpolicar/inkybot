@@ -44,6 +44,7 @@ namespace Inkybot.Services
         private State state;
         private ItemInfo itemInfo;
         private Stopwatch changeTimeout = new Stopwatch();
+        private int unsuccessfulCombineTicks;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -92,6 +93,7 @@ namespace Inkybot.Services
                 magus = serviceContainer.GetService<DofusMagingAIContract>();
                 Starting?.Invoke(this, EventArgs.Empty);
 
+                unsuccessfulCombineTicks = 0;
                 job = new Thread(() => DoMage());
                 job.Start();
                 Preparing?.Invoke(this, EventArgs.Empty);
@@ -164,6 +166,8 @@ namespace Inkybot.Services
             } catch (OperationCanceledException exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (Exception exception) {
+                if (state.Step == State.JobStep.EXECUTING_COMBINE)
+                    unsuccessfulCombineTicks++;
 
                 Debug.WriteLine(exception.Message);
                 Debug.WriteLine(exception.StackTrace);

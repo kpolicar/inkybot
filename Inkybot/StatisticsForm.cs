@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -67,6 +68,29 @@ namespace Inkybot
 
         private void openInBrowserLabelLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start($"{Server.BaseUrl}/profile#statistics");
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e) {
+            try {
+                webBrowser.Navigate(Server.StatisticsViewUrl, "", new byte[] { }, Header);
+            } catch (Exception) {
+            }
+        }
+
+        private void OnRefreshButtonPaint(object sender, PaintEventArgs e) {
+            base.OnPaint(e);
+            var format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+
+            var rect = refreshButton.ClientRectangle;
+            rect.Height -= 4;
+            e.Graphics.DrawString(
+                "⟲",
+                refreshButton.Font,
+                new SolidBrush(refreshButton.ForeColor),
+                rect,
+                format);
         }
     }
 }
