@@ -89,15 +89,11 @@ namespace Inkybot
                 ? resources.GetString("config.useRune")!.Replace(":type", "SM")
                 : resources.GetString("config.dontUseRune")!.Replace(":type", "SM");
 
-            row.Cells[2].ToolTipText = config.UsePaRunes
-                ? resources.GetString("config.useRune")!.Replace(":type", "PA")
-                : resources.GetString("config.dontUseRune")!.Replace(":type", "PA");
-
-            row.Cells[3].ToolTipText = config.UseRaRunes
-                ? resources.GetString("config.useRune")!.Replace(":type", "RA")
-                : resources.GetString("config.dontUseRune")!.Replace(":type", "RA");
-            
             if (stat.CanUsePaRunes) {
+                row.Cells[2].ToolTipText = config.UsePaRunes
+                    ? resources.GetString("config.useRune")!.Replace(":type", "PA")
+                    : resources.GetString("config.dontUseRune")!.Replace(":type", "PA");
+                
                 row.Cells[4].ToolTipText = (config.ChangeToPaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", paRune.ToString()),
@@ -144,6 +140,9 @@ namespace Inkybot
                         .Replace(":value", defaultConfig.maxValuePaRuneCanHit?.ToString() ?? "\"-\"");
             }
             if (stat.CanUseRaRunes) {
+                row.Cells[3].ToolTipText = config.UseRaRunes
+                    ? resources.GetString("config.useRune")!.Replace(":type", "RA")
+                    : resources.GetString("config.dontUseRune")!.Replace(":type", "RA");
                 row.Cells[5].ToolTipText = (config.ChangeToRaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),
