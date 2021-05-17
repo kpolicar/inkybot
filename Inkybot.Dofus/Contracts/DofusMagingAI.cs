@@ -63,7 +63,7 @@ namespace Inkybot.Dofus.Contracts
             if (!Item!.HasStat(stat))
                 return Combine(stat.StrongestRune);
             
-            var runeType = ResolveRuneType(stat);
+            var runeType = ResolveRuneType(stat) ?? Rune.RuneType.Sm;
             return Combine(new Rune(stat, runeType));
         }
 
@@ -98,7 +98,9 @@ namespace Inkybot.Dofus.Contracts
         }
 
         protected ItemMage? ItemMage(Stat stat) =>
-            ItemMage(new Rune(stat, ResolveRuneType(stat)));
+            ResolveRuneType(stat) != null
+                ? ItemMage(new Rune(stat, ResolveRuneType(stat)!.Value))
+                : null;
         
         protected ItemMage? ItemMage(Rune rune) =>
             new ItemMage(Item,
@@ -108,14 +110,18 @@ namespace Inkybot.Dofus.Contracts
         /**
          * <returns>Resolve the rune type that should be used for the specified stat.</returns>
          */
-        private Rune.RuneType ResolveRuneType(Stat stat) {
+        private Rune.RuneType? ResolveRuneType(Stat stat) {
             var itemStat = Item.Stats[stat]!;
             var itemConfig = ConfigProvider.Config(stat);
             
-            if (itemConfig.ShouldUseRaRunes && itemStat.Value >= itemConfig.ChangeToRaRuneThreshold) return Rune.RuneType.Ra;
-            if (itemConfig.ShouldUsePaRunes && itemStat.Value >= itemConfig.ChangeToPaRuneThreshold) return Rune.RuneType.Pa;
+            if (itemConfig.ShouldUseRaRunes && (itemStat.Value >= itemConfig.ChangeToRaRuneThreshold || (!itemConfig.ShouldUsePaRunes && !itemConfig.ShouldUseSmRunes)))
+                return Rune.RuneType.Ra;
+            if (itemConfig.ShouldUsePaRunes && (itemStat.Value >= itemConfig.ChangeToPaRuneThreshold || !itemConfig.ShouldUseSmRunes))
+                return Rune.RuneType.Pa;
 
-            return Rune.RuneType.Sm;
+            return itemConfig.ShouldUseSmRunes
+                ? Rune.RuneType.Sm
+                : (Rune.RuneType?) null;
         }
     }
 }
