@@ -25,7 +25,11 @@ namespace Inkybot.Services
         public class ResizeImagePreprocessor : ImagePreprocessor
         {
             private int originalResizePercentage;
-            private int resizePercentage;
+
+            public int resizePercentage {
+                private set;
+                get;
+            }
 
             public ResizeImagePreprocessor(int resizePercentage) {
                 this.resizePercentage = originalResizePercentage = resizePercentage;

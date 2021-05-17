@@ -118,7 +118,6 @@ namespace Inkybot
             debugButton.Enabled = true;
         
         private void StopDebugging() {
-            
             debugButton.Text = resources.GetString("debugButton.TextStop");
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();

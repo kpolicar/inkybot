@@ -758,7 +758,7 @@
     <value>$this</value>
   </data>
   <data name="helpButton.Text" xml:space="preserve">
-    <value>HELP</value>
+    <value>INSTRUCTIONS</value>
   </data>
   <data name="hallOfFameButton.Text" xml:space="preserve">
     <value>HALL OF FAME</value>

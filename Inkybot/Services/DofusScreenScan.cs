@@ -19,6 +19,7 @@ namespace Inkybot.Services
         public class DofusScreenScan : IDisposable
         {
             private Rectangle latestHistoryLastTextLineBounds;
+            private float latestHistoryLastTextLineBoundsRatio;
             public Responsive.Measurement LatestHistoryBounds;
             
             private ScreenCapture screen;
@@ -108,6 +109,7 @@ namespace Inkybot.Services
                 if (e.Page.GetText() == string.Empty)
                     return;
                 latestHistoryLastTextLineBounds = e.Page.GetSegmentedRegions(PageIteratorLevel.TextLine).LastOrDefault();
+                latestHistoryLastTextLineBoundsRatio = (latestHistoryScanner!.preprocessor as ResizeImagePreprocessor)!.resizePercentage / 100f;
             }
 
             private string[] SplitHistoryTextLines(string text) {
@@ -216,7 +218,7 @@ namespace Inkybot.Services
                     Responsive.ResponsiveRectangle(LatestHistoryBounds, screenshot.Width, screenshot.Height);
                 
                 var maxY = (historyBounds.Y+historyBounds.Height) - bounds.Height;
-                var lastY = latestHistoryBounds.Y + (region.Bottom / 2);
+                var lastY = latestHistoryBounds.Y + (int)(region.Bottom / latestHistoryLastTextLineBoundsRatio);
 
                 var y1 = lastY < maxY ? lastY : maxY;
                 

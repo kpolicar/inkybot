@@ -195,7 +195,7 @@ namespace Inkybot
             this.helpButton.UseVisualStyleBackColor = false;
             this.helpButton.Click += new System.EventHandler(this.helpButton_Click);
             System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
-            ToolTip1.SetToolTip(this.helpButton, $"{Inkybot.Domain.Server.BaseUrl}/release/{Program.VersionEndpoint}");
+            ToolTip1.SetToolTip(this.helpButton, $"{Inkybot.Domain.Server.BaseUrl}/release/{Program.VersionEndpoint}#usage");
             // 
             // hallOfFameButton
             // 

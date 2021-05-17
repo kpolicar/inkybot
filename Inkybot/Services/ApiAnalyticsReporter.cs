@@ -25,7 +25,7 @@ namespace Inkybot.Services
         private const int MaxReasonableBalanceDifference = 300000;
         
         private int balanceDifference = 0;
-        private Dictionary<Stat, int> attempts = new Dictionary<Stat, int>();
+        private Dictionary<(Stat stat, Rune.RuneType runeType), int> attempts = new Dictionary<(Stat, Rune.RuneType), int>();
         private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
         private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
         private readonly object imageChangeMutex = new object();
@@ -88,12 +88,13 @@ namespace Inkybot.Services
 
             if (e.action is CombineRune combine) {
                 var stat = combine.Rune.Stat;
+                var statRuneType = (stat, combine.Rune.Type);
                 
                 if (!combine.Exo) {
-                    if (attempts.ContainsKey(stat))
-                        attempts[stat] += 1;
+                    if (attempts.ContainsKey(statRuneType))
+                        attempts[statRuneType] += 1;
                     else
-                        attempts[stat] = 1;
+                        attempts[statRuneType] = 1;
                 } else {
                     if (exoAttempts.ContainsKey(stat))
                         exoAttempts[stat] += 1;
@@ -126,8 +127,12 @@ namespace Inkybot.Services
 
         private void Send() {
             var attemptsByIdentifier =
-                attempts.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
-                    .ToDictionary(x => x.Key, x => x.Value);
+                attempts
+                    .GroupBy(pair => pair.Key.stat.Identifier)
+                    .ToDictionary(
+                        pairs => pairs.Key, 
+                        pairs => pairs.ToDictionary(
+                            pair => pair.Key.runeType.ToString().ToLower(), pair => pair.Value));
             var exoAttemptsByIdentifier =
                 exoAttempts.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
                     .ToDictionary(x => x.Key, x => x.Value);
@@ -146,7 +151,7 @@ namespace Inkybot.Services
             balanceDifference = 0;
             exoSuccesses = new Dictionary<Stat, int>();
             exoAttempts = new Dictionary<Stat, int>();
-            attempts = new Dictionary<Stat, int>();
+            attempts = new Dictionary<(Stat,Rune.RuneType), int>();
             _ = api.SendStatistics(data);
         }
     }

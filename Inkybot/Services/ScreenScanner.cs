@@ -23,7 +23,11 @@ namespace Inkybot.Services
             private TesseractEngine engine;
             private Responsive.Measurement regionOfInterest;
             private Func<string, string[]>? split;
-            private ImagePreprocessor preprocessor;
+
+            public ImagePreprocessor preprocessor {
+                private set;
+                get;
+            }
             private PageSegMode segMode;
 
             

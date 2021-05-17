@@ -94,6 +94,7 @@ namespace Inkybot.Services
                 Starting?.Invoke(this, EventArgs.Empty);
 
                 unsuccessfulCombineTicks = 0;
+                state.PreviousCheckHadRunOutOfRunes = null;
                 job = new Thread(() => DoMage());
                 job.Start();
                 Preparing?.Invoke(this, EventArgs.Empty);
