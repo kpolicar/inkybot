@@ -73,6 +73,9 @@ namespace Inkybot
         }
 
         private void OnStatsFetched(object sender, ItemEventArgs e) {
+            if (!magingJob.IsMaging && Visible) {
+                configManager.EnforceConfigSetForItem(e.Item);
+            }
             Invoke(new MethodInvoker(() => {
                 UpdateDataGridView(e.Item);
                 
@@ -131,7 +134,7 @@ namespace Inkybot
         private bool DataGridViewMatchesItem(Item item) {
             var configuredCount = statsDataGridView.Rows.Count;
             // All the current stats must always be configured
-            if (item.Stats.Length > configuredCount || !item.IsValid)
+            if (item.Stats.Length != configuredCount || !item.IsValid)
                 return false;
 
             foreach (var itemStat in item.Stats) {

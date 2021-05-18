@@ -63,9 +63,10 @@ namespace Inkybot
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
                 return;
-            } catch (Exception) {
+            } catch (Exception ex) {
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextUnknown");
+                Debug.WriteLine(ex);
                 return;
             }
 

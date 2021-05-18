@@ -76,7 +76,7 @@ namespace Inkybot
             #endif
             debugScreenshotButton.Show();
             Resize += onWindowResize;
-            debugButton.Text = resources.GetString("debugButton.Text");
+            debugButton.Text = resources.GetString("debugButton.TextStop");
             
             ShowOcrIndicators();
             
@@ -118,7 +118,7 @@ namespace Inkybot
             debugButton.Enabled = true;
         
         private void StopDebugging() {
-            debugButton.Text = resources.GetString("debugButton.TextStop");
+            debugButton.Text = resources.GetString("debugButton.Text");
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
             #if DEBUG

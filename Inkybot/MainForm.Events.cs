@@ -54,6 +54,7 @@ namespace Inkybot
 
                 for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
                     try {
+                        await scan.MinMaxStats();
                         await scan.History();
                         await scan.Stats();
                         break;

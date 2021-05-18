@@ -58,8 +58,8 @@ namespace Inkybot.Services
             protected override void PreprocessingSteps(MagickImage image) {
                 base.PreprocessingSteps(image);
                 image.Sharpen();
-                image.BlackThreshold(new Percentage(60));
-                image.WhiteThreshold(new Percentage(60));
+                image.BlackThreshold(new Percentage(53));
+                image.WhiteThreshold(new Percentage(53));
             }
         }
 
@@ -71,7 +71,7 @@ namespace Inkybot.Services
 
             protected virtual void PreprocessingSteps(MagickImage image) {
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(27));
+                image.BlackThreshold(new Percentage(29));
                 image.Negate();
             }
 
