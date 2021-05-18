@@ -57,6 +57,7 @@ namespace Inkybot
             this.sinkLabel = new System.Windows.Forms.Label();
             this.userInfoPanel = new System.Windows.Forms.Panel();
             this.subscribedInfoLabel = new System.Windows.Forms.Label();
+            this.subscribePlanUpgradeLinkLabel = new System.Windows.Forms.LinkLabel();
             this.usernameLabel = new System.Windows.Forms.Label();
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.mousePositionLabel = new System.Windows.Forms.Label();
@@ -263,6 +264,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.userInfoPanel, "userInfoPanel");
             this.userInfoPanel.BackColor = System.Drawing.Color.Transparent;
+            this.userInfoPanel.Controls.Add(this.subscribePlanUpgradeLinkLabel);
             this.userInfoPanel.Controls.Add(this.subscribedInfoLabel);
             this.userInfoPanel.Controls.Add(this.usernameLabel);
             this.userInfoPanel.Controls.Add(this.loggedInAsLabel);
@@ -273,6 +275,14 @@ namespace Inkybot
             resources.ApplyResources(this.subscribedInfoLabel, "subscribedInfoLabel");
             this.subscribedInfoLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.subscribedInfoLabel.Name = "subscribedInfoLabel";
+            // 
+            // subscribePlanUpgradeLinkLabel
+            // 
+            resources.ApplyResources(this.subscribePlanUpgradeLinkLabel, "subscribePlanUpgradeLinkLabel");
+            this.subscribePlanUpgradeLinkLabel.Name = "subscribePlanUpgradeLinkLabel";
+            this.subscribePlanUpgradeLinkLabel.ActiveLinkColor = System.Drawing.SystemColors.Control;
+            this.subscribePlanUpgradeLinkLabel.LinkColor = System.Drawing.SystemColors.ControlLight;
+            this.subscribePlanUpgradeLinkLabel.Click += new System.EventHandler(this.subscribePlanUpgradeLinkLabel_OnClick);
             // 
             // usernameLabel
             // 
@@ -307,6 +317,7 @@ namespace Inkybot
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
             this.HelpButton = true;
+            this.MinimumSize = new System.Drawing.Size(720, 480);
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
@@ -353,6 +364,7 @@ namespace Inkybot
         private System.Windows.Forms.Button hallOfFameButton;
         private System.Windows.Forms.Button helpButton;
         private System.Windows.Forms.Label subscribedInfoLabel;
+        private System.Windows.Forms.LinkLabel subscribePlanUpgradeLinkLabel;
         private System.Windows.Forms.Button toggleMageButton;
 
         private System.Windows.Forms.Panel buttonsPanel;

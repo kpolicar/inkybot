@@ -92,5 +92,9 @@ namespace Inkybot
             if (!statisticsForm.Visible) statisticsForm.Show();
             else statisticsForm.Hide();
         }
+
+        private void subscribePlanUpgradeLinkLabel_OnClick(object sender, EventArgs e) {
+            Process.Start(Server.SubscribeUrl);
+        }
     }
 }

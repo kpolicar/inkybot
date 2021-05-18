@@ -89,4 +89,7 @@
     <data name="popup.error_restricted" xml:space="preserve">
     <value>Fonctionnalité restreinte</value>
   </data>
+    <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
+    <value>Mettre à niveau mon plan tarifaire</value>
+  </data>
 </root>

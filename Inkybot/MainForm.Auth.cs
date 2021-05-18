@@ -81,7 +81,9 @@ namespace Inkybot
         
         private void OnUserFetched(object sender, FetchedUserEventArgs e) {
             var user = e.user;
-            UpdateUserDetails(user);
+            Invoke(new MethodInvoker(() => {
+                UpdateUserDetails(user);
+            }));
         }
 
         private void UpdateUserDetails(User user) {
@@ -102,6 +104,7 @@ namespace Inkybot
             } else {
                 subscribedInfoLabel.Text = resources.GetString("subscribedInfoLabel.Text") + "-";
             }
+            subscribePlanUpgradeLinkLabel.Visible = !user.onUnlimitedPlan;
         }
     }
 }

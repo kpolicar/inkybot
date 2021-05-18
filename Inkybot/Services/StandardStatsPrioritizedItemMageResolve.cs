@@ -29,6 +29,7 @@ namespace Inkybot.Services
         }
         
         protected override int Priority(ItemMage itemMage) =>
-            itemMage.NumberOfRunesNeededForFullMage * item.Stats.Length + itemMage.MageConfig.Priority;
+            itemMage.NumberOfRunesNeededForFullMage * item.Stats.Length + itemMage.MageConfig.Priority
+            - (itemMage.MageConfig.Target == 0 && itemMage.Min > 0 ? 1000 : 0);
     }
 }
