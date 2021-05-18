@@ -117,6 +117,7 @@ namespace Inkybot.Services
                 (state.PreviousItem, state.Sink, state.PreviousCheckHadRunOutOfRunes);
             state.Reset();
             state.IsPreparing = true;
+            state.IsRestarting = restarting;
             state.PreviousCheckHadRunOutOfRunes = previousCheckHadRunOutOfRunes;
             supervisor = new Supervisor(this);
 
@@ -143,6 +144,7 @@ namespace Inkybot.Services
                 throw;
             }
             state.IsPreparing = false;
+            state.IsRestarting = false;
         }
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
@@ -202,11 +204,14 @@ namespace Inkybot.Services
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             var magingAI = serviceContainer.GetService<DofusMagingAIContract>();
-            if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI))
+            if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI) && !state.IsRestarting)
                 return;
-            
-            if (e.Changed && !state.IsPreparing)
+
+            if (e.Changed && (!state.IsPreparing || state.IsRestarting)) {
+                if (state.IsRestarting && state.PreviousItem != null)
+                    throw new ItemHasChangedException(state.PreviousItem);
                 StopMage();
+            }
         }
         
         private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) =>

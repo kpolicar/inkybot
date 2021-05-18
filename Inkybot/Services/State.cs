@@ -19,6 +19,7 @@ namespace Inkybot.Services
             }
 
             public bool IsPreparing { get; set; }
+            public bool IsRestarting { get; set; }
             public bool IsMaging { get; set; }
             public JobStep Step;
             public float Sink;

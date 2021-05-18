@@ -120,6 +120,9 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot - Statistiques</value>
   </data>
+  <data name="openInBrowserLabelLink.Text" xml:space="preserve">
+    <value>Ouvrir les stats complètes sur internet</value>
+  </data>
   <data name="refreshButton.ToolTipText" xml:space="preserve">
     <value>Recharger</value>
   </data>
