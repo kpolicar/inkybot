@@ -16,9 +16,10 @@ namespace Inkybot.Actions
         };
 
         public readonly Item Item;
+        public readonly MageHistoryRecord? LastHistoryRecord;
 
-        public Finish(Control targetControl, Item item) : base(targetControl) =>
-            Item = item;
+        public Finish(Control targetControl, Item item, MageHistoryRecord? lastHistoryRecord) : base(targetControl) =>
+            (Item, LastHistoryRecord) = (item, lastHistoryRecord);
         
         public override void Execute() {
             var target = GetCursorTarget(FinishItemMeasurement);

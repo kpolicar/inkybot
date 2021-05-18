@@ -75,6 +75,9 @@
     <value>L'utilisateur n'est plus abonné!</value>
   </data>
     <data name="subscriptiontimer.httpexception" xml:space="preserve">
+    <value>La connexion à Inkybot a été perdue!</value>
+  </data>
+    <data name="subscriptiontimer.generalexception" xml:space="preserve">
     <value>Un problème est survenu!</value>
   </data>
     <data name="subscriptiontimer.nolongersubscribed_pleaseextend" xml:space="preserve">
@@ -90,6 +93,6 @@
     <value>Fonctionnalité restreinte</value>
   </data>
     <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
-    <value>Mettre à niveau mon plan tarifaire</value>
+    <value>Modifier mon abonnement</value>
   </data>
 </root>

@@ -2994,6 +2994,9 @@
     <value>Confirmation</value>
   </data>
   <data name="subscriptiontimer.httpexception" xml:space="preserve">
+    <value>Connection to Inkybot has been lost!</value>
+  </data>
+  <data name="subscriptiontimer.generalexception" xml:space="preserve">
     <value>Something went wrong!</value>
   </data>
   <data name="subscriptiontimer.nolongersubscribed" xml:space="preserve">

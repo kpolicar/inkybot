@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Api.Resources;
@@ -52,24 +53,28 @@ namespace Inkybot
         }
 
 
-        private async void OnSubscriptionCheckTimer(object sender, EventArgs eventArgs) {
+        private async void OnSubscriptionCheckTimer(object sender, EventArgs eventArgs) =>
+            await FetchUserAndUpdateForm();
+
+        private async Task FetchUserAndUpdateForm() {
             SubscriptionCheckRequestAttempts++;
             try {
                 var user = await api.User();
                 if (!user.is_subscribed && !user.is_free_trial)
                     throw new UserNotSubscribedException();
             } catch (Exception exception) {
-                if (exception is HttpRequestException && SubscriptionCheckRequestAttempts < SubscriptionCheckRequestMaxAttempts) {
-                    OnSubscriptionCheckTimer(sender, eventArgs);
+                if (SubscriptionCheckRequestAttempts < SubscriptionCheckRequestMaxAttempts) {
+                    await Task.Delay(2741);
+                    await FetchUserAndUpdateForm();
                     return;
                 }
                 
                 var message = exception switch {
-                    HttpRequestException _ => resources.GetString("subscriptiontimer.httpexception"),
-                    UserNotSubscribedException _ =>
-                        resources.GetString("subscriptiontimer.nolongersubscribed")+"\n"+
-                        resources.GetString("subscriptiontimer.nolongersubscribed_pleaseextend"),
-                    _ => ""
+                    HttpRequestException e => resources.GetString("subscriptiontimer.httpexception")+"\nMessage: "+e.Message,
+                    UserNotSubscribedException =>
+                        resources.GetString("subscriptiontimer.nolongersubscribed")!+"\n"+
+                        resources.GetString("subscriptiontimer.nolongersubscribed_pleaseextend")!,
+                    _ => resources.GetString("subscriptiontimer.generalexception")!
                 };
                 Debug.WriteLine(exception.Message);
                 magingJob.StopMage();

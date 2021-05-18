@@ -209,7 +209,7 @@ namespace Inkybot.Services
                 var previousCombine = (CombineRune) job.state.PreviousAction!;
                 var expectedStat = previousCombine.Rune.Stat;
 
-                if (statLanded != null && statLanded != expectedStat)
+                if (!ReferenceEquals(statLanded, null) && statLanded != expectedStat)
                     throw new UnexpectedMageResultException(
                         $"Expected \"{expectedStat.DisplayName}\" to land, not \"{statLanded.DisplayName}\"! " +
                         $"Have you run out of \"{expectedStat.DisplayName}\" runes?");
@@ -279,16 +279,23 @@ namespace Inkybot.Services
                 var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine) {
-                    if (job.unsuccessfulCombineTicks >= 3) {
-                        throw new OutOfRunesException(combine.Rune);
-                    }
+                    if (job.state.PreviousAction is CombineRune previousCombine && 
+                        PreviousCombineWasExoThatLandedButIsNotVisibleOnItem(item, combine, previousCombine))
+                    {
+                        action = actions.Finish(item);
+                    } else {
+                        
+                        if (job.unsuccessfulCombineTicks >= 3) {
+                            throw new OutOfRunesException(combine.Rune);
+                        }
                     
-                    EnforceHasRunesForCombine(combine);
+                        EnforceHasRunesForCombine(combine);
 
-                    if (combine.Exo) {
-                        job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
+                        if (combine.Exo) {
+                            job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
+                        }
+                        RaiseEventIfMagingItemWithHighSinkExo(item);
                     }
-                    RaiseEventIfMagingItemWithHighSinkExo(item);
                 }
 
                 
@@ -296,6 +303,14 @@ namespace Inkybot.Services
                 Debug.WriteLine("executed action "+action);
 
                 return action;
+            }
+
+            private bool PreviousCombineWasExoThatLandedButIsNotVisibleOnItem(Item item, CombineRune currentAction, CombineRune previousAction) {
+                return previousAction.Exo
+                       && currentAction.Exo
+                       && currentAction.Rune == previousAction.Rune
+                       && job.LastHistoryRecord?.Landed?.stat == previousAction.Rune.Stat
+                       && ReferenceEquals(item.Stats[previousAction.Rune.Stat], null);
             }
 
             private void RaiseEventIfMagingItemWithHighSinkExo(Item item) {

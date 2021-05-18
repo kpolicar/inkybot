@@ -79,7 +79,6 @@ namespace Inkybot.Services
 
         public void EnforceConfigSetForItem(Item item) {
             if (!ConfigIsSetForItem(item)) {
-
                 var success = TryToAddMissingItemStats(item);
                 if (!success || !ConfigIsSetForItem(item))
                     ResetConfig(item);

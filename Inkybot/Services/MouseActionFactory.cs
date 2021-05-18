@@ -11,8 +11,10 @@ namespace Inkybot.Services
     public class MouseActionFactory : ActionFactory, HasDependencies
     {
         private Control targetControl = null!;
+        private DofusMagingJob magingJob = null!;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
+            magingJob = serviceContainer.GetService<DofusMagingJob>();
         }
         
         public void SetRelativeToControl(Control targetControl) {
@@ -20,7 +22,7 @@ namespace Inkybot.Services
         }
         
         public IAction Finish(Item item) {
-            return new Finish(targetControl, item);
+            return new Finish(targetControl, item, magingJob.LastHistoryRecord);
         }
 
         public IAction CombineRune(Rune rune, bool exo) {

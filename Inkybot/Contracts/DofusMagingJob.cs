@@ -1,4 +1,5 @@
 using System;
+using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 
@@ -22,5 +23,6 @@ namespace Inkybot.Contracts
         public void StopMage();
         
         public bool IsMaging { get; }
+        MageHistoryRecord? LastHistoryRecord { get; }
     }
 }

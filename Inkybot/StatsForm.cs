@@ -132,18 +132,26 @@ namespace Inkybot
         }
 
         private bool DataGridViewMatchesItem(Item item) {
-            var configuredCount = statsDataGridView.Rows.Count;
-            // All the current stats must always be configured
-            if (item.Stats.Length != configuredCount || !item.IsValid)
-                return false;
-
+            var foundStats = new List<Stat>();
+            
             foreach (var itemStat in item.Stats) {
                 var row = statsDataGridView.Rows
                     .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat);
                 if (row == null)
                     return false;
+                
+                var rowItemStat = (ItemStatRow) row!.Tag;
+                foundStats.Add(rowItemStat.Stat);
             }
             
+            var untouchedRows = statsDataGridView.Rows.Cast<DataGridViewRow>()
+                .Where(row => !foundStats.Contains(((ItemStatRow) row.Tag).Stat));
+
+            foreach (var untouchedRow in untouchedRows) {
+                var stat = ((ItemStatRow) untouchedRow.Tag).Stat;
+                if (!configManager.Config?[stat]?.Exo ?? true)
+                    return false;
+            }
 
             return true;
         }
@@ -213,7 +221,7 @@ namespace Inkybot
                 
                 var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.Priority, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
-                row.Cells[0].ToolTipText = "Min: -\nMax: -";
+                row.Cells[0].ToolTipText = "Min: "+Numbers.ToString(statConfig.Value.Minimum)+"\nMax: "+Numbers.ToString(statConfig.Value.Maximum);
             }
         }
 

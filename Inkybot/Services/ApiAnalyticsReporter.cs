@@ -74,7 +74,10 @@ namespace Inkybot.Services
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
-                finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat)) {
+                (finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat)
+                 || finish.LastHistoryRecord?.Landed?.stat == previousCombine.Rune.Stat)
+                )
+            {
                 
                 var stat = previousCombine.Rune.Stat;
                 if (exoSuccesses.ContainsKey(stat))
@@ -139,6 +142,12 @@ namespace Inkybot.Services
             var exoSuccessesByIdentifier =
                 exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
                     .ToDictionary(x => x.Key, x => x.Value);
+
+            if (balanceDifference == 0
+                && attemptsByIdentifier.Count == 0
+                && exoAttemptsByIdentifier.Count == 0
+                && exoSuccessesByIdentifier.Count == 0)
+                return;
             
             var data = new Dictionary<string, string> {
                 {"expend", balanceDifference.ToString() },

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
@@ -45,6 +46,7 @@ namespace Inkybot.Services
         private ItemInfo itemInfo;
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
+        public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.First();
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
