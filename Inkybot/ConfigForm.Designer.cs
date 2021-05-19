@@ -80,7 +80,7 @@ namespace Inkybot
             this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
-            this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.bottomPanel = new System.Windows.Forms.TableLayoutPanel();
             this.customMagingAIPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.scriptChangeButton = new System.Windows.Forms.Button();
             this.scriptResetButton = new System.Windows.Forms.Button();
@@ -196,6 +196,7 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.Name = "restoreHighSinkStatsCheckbox";
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
+            this.restoreHighSinkStatsCheckbox.Dock = DockStyle.Fill;
             // 
             // autoRestartBotCheckbox
             // 
@@ -204,6 +205,7 @@ namespace Inkybot
             this.autoRestartBotCheckbox.Name = "restoreHighSinkStatsCheckbox";
             this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
             this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
+            this.autoRestartBotCheckbox.Dock = DockStyle.Fill;
             // 
             // showWarningsCheckbox
             // 
@@ -212,6 +214,7 @@ namespace Inkybot
             this.showWarningsCheckbox.Name = "showWarningsCheckbox";
             this.showWarningsCheckbox.UseVisualStyleBackColor = true;
             this.showWarningsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged);
+            this.showWarningsCheckbox.Dock = DockStyle.Fill;
             // 
             // publishExosCheckbox
             // 
@@ -220,6 +223,8 @@ namespace Inkybot
             this.publishExosCheckbox.Name = "publishExosCheckbox";
             this.publishExosCheckbox.UseVisualStyleBackColor = true;
             this.publishExosCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnPublishExosCheckboxCheckedChanged);
+            this.publishExosCheckbox.Dock = DockStyle.Fill;
+
             // 
             // enableRuneCheckingCheckbox
             // 
@@ -228,6 +233,8 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox.Name = "enableRuneCheckingCheckbox";
             this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
             this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
+            this.enableRuneCheckingCheckbox.Dock = DockStyle.Fill;
+
             // 
             // enableKamasCalculationCheckbox
             // 
@@ -236,6 +243,8 @@ namespace Inkybot
             this.enableKamasCalculationCheckbox.Name = "enableKamasCalculationCheckbox";
             this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
             this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
+            this.enableKamasCalculationCheckbox.Dock = DockStyle.Fill;
+
             // 
             // exampleScriptsLinkLabel
             // 
@@ -282,13 +291,18 @@ namespace Inkybot
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
-            this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
+            this.bottomPanel.ColumnCount = 2;
+            this.bottomPanel.RowCount = 3;
+            this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.bottomPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
-            this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
-            this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.bottomPanel.Controls.Add(this.publishExosCheckbox);
+            this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
             this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
-            
+            this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
+            this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+
             this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
             this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
             
@@ -370,7 +384,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MinimumSize = new System.Drawing.Size(600, 600);
+            this.MinimumSize = new System.Drawing.Size(660, 650);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.tooltipLabelExtra);
@@ -392,7 +406,7 @@ namespace Inkybot
         private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Panel dataGridViewSidebarPanel;
         private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
-        private System.Windows.Forms.FlowLayoutPanel bottomPanel;
+        private System.Windows.Forms.TableLayoutPanel bottomPanel;
         private System.Windows.Forms.Button scriptChangeButton;
         private System.Windows.Forms.Button scriptResetButton;
 

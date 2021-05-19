@@ -95,9 +95,9 @@ namespace Inkybot.Services
         }
 
         public void UseBuiltInAIScript(User? user=null) {
-            user ??= authManager.User!;
+            user ??= authManager.User;
             
-            var magus = !user.is_free_trial
+            var magus = !user?.is_free_trial ?? true
                 ? (DofusMagingAIContract) new DofusMagingAI()
                 : (DofusMagingAIContract) new DofusStandardStatsMagingAI();
 
@@ -106,7 +106,7 @@ namespace Inkybot.Services
             magus.Init();
 
             serviceContainer.ReplaceService<DofusMagingAIContract>(magus);
-            previousUserFetchedIsFreeTrial = user.is_free_trial;
+            previousUserFetchedIsFreeTrial = user?.is_free_trial ?? false;
             MagingAIChanged?.Invoke(this, new MagingAIChangedEventArgs(magus));
             
             UsingCustomScript = false;

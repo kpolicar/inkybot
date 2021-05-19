@@ -86,13 +86,13 @@ namespace Inkybot
             var defaultConfig = configProvider.Default.Config(stat).Deconstruct();
 
             row.Cells[1].ToolTipText = config.UseSmRunes
-                ? resources.GetString("config.useRune")!.Replace(":type", "SM")
-                : resources.GetString("config.dontUseRune")!.Replace(":type", "SM");
+                ? resources.GetString("config.useRune")!.Replace(":rune", smRune.DisplayName)
+                : resources.GetString("config.dontUseRune")!.Replace(":rune", smRune.DisplayName);
 
             if (stat.CanUsePaRunes) {
                 row.Cells[2].ToolTipText = config.UsePaRunes
-                    ? resources.GetString("config.useRune")!.Replace(":type", "PA")
-                    : resources.GetString("config.dontUseRune")!.Replace(":type", "PA");
+                    ? resources.GetString("config.useRune")!.Replace(":rune", paRune.DisplayName)
+                    : resources.GetString("config.dontUseRune")!.Replace(":rune", paRune.DisplayName);
                 
                 row.Cells[4].ToolTipText = (config.ChangeToPaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
@@ -141,8 +141,8 @@ namespace Inkybot
             }
             if (stat.CanUseRaRunes) {
                 row.Cells[3].ToolTipText = config.UseRaRunes
-                    ? resources.GetString("config.useRune")!.Replace(":type", "RA")
-                    : resources.GetString("config.dontUseRune")!.Replace(":type", "RA");
+                    ? resources.GetString("config.useRune")!.Replace(":rune", raRune.DisplayName)
+                    : resources.GetString("config.dontUseRune")!.Replace(":rune", raRune.DisplayName);
                 row.Cells[5].ToolTipText = (config.ChangeToRaRuneThreshold switch {
                     null => resources.GetString("config.neverchange")!
                         .Replace(":rune", raRune.ToString()),

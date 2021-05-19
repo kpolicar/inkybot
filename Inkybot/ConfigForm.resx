@@ -374,9 +374,6 @@
   <data name="MaxPaRuneCanHitColumn.ToolTipText" xml:space="preserve">
     <value>The maximum value at which PA runes should still be used</value>
   </data>
-  <data name="restoreHighSinkStatsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
-  </data>
   <data name="&gt;&gt;PaRuneThresholdColumn.Name" xml:space="preserve">
     <value>PaRuneThresholdColumn</value>
   </data>
@@ -2194,7 +2191,7 @@
     <value>statsDataGridView</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>600, 600</value>
+    <value>650, 650</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ConfigForm</value>
@@ -2209,16 +2206,13 @@
     <value>1</value>
   </data>
   <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
-    <value>Restore high sink stats immediately</value>
+    <value>Restore high sink stats immediately (AP, MP, Range, Summons)</value>
   </data>
   <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
-    <value>Automatically restart bot</value>
+    <value>Automatically restart bot (abnormalities can interrupt the bot)</value>
   </data>
   <data name="autoRestartBotCheckbox.AutoSize" xml:space="preserve">
     <value>true</value>
-  </data>
-  <data name="autoRestartBotCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
   </data>
     <data name="autoRestartBotCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 21</value>
@@ -2235,23 +2229,11 @@
   <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
     <value>Stop maging if rune quantity is detected at 0 (high-resolution only)</value>
   </data>
-  <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
-  </data>
   <data name="exampleScriptsLinkLabel.Text" xml:space="preserve">
     <value>See examples</value>
   </data>
   <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
-    <value>Monitor average kamas spent</value>
-  </data>
-  <data name="enableKamasCalculationCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
-  </data>
-  <data name="showWarningsCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
-  </data>
-  <data name="publishExosCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Left</value>
+    <value>Track average Kamas spent</value>
   </data>
     <data name="showWarningsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 21</value>
@@ -2290,10 +2272,10 @@
     <value>True</value>
   </metadata>
   <data name="config.useRune" xml:space="preserve">
-    <value>Usage of :type runes is enabled</value>
+    <value>Usage of :rune is enabled</value>
   </data>
   <data name="config.dontUseRune" xml:space="preserve">
-    <value>Usage of :type runes is disabled</value>
+    <value>Usage of :rune is disabled</value>
   </data>
   <data name="config.neverchange" xml:space="preserve">
     <value>Never change to :rune</value>
