@@ -37,11 +37,12 @@ namespace Inkybot.Services
             magingJob.Finished += (sender, args) => Reset();
         }
 
-        public void Reset() {
+        public void Reset(bool resetMinMaxScan=true) {
             LatestHistoryBounds = Measurements.HistoryBounds;
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
             previousScannedItem = null;
-            previousMinMaxScan = new string[] {};
+            if (resetMinMaxScan)
+                previousMinMaxScan = new string[] {};
             Scan?.Dispose();
             Scan = null;
         }

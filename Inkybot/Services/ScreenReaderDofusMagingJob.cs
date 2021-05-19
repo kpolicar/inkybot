@@ -125,7 +125,8 @@ namespace Inkybot.Services
 
             try {
                 state.IsMaging = true;
-                dataProvider.Reset();
+                var resetMinMaxScan = !restarting;
+                dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
                 configManager.EnforceConfigSetForItem(item);
