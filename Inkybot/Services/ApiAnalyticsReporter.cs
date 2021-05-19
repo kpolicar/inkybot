@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -32,6 +33,7 @@ namespace Inkybot.Services
         private Image? previousImage;
         private IAction? previousAction;
         private Action? onMagingJobConfirmedDelegate;
+        private Stopwatch timeMagingStopwatch = new Stopwatch();
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
@@ -39,12 +41,16 @@ namespace Inkybot.Services
             var actionHandler = serviceContainer.GetService<ActionHandler>();
             var magus = (ScreenReaderDofusMagingJob) serviceContainer.GetService<DofusMagingJob>();
             magus.BalanceChanged += OnBalanceChanged;
-            magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;
+            magus.Starting += (_, _) => timeMagingStopwatch.Start();
+            magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;;
             magus.SuccessfulCombineTick += (_, _) => {
                 onMagingJobConfirmedDelegate?.Invoke();
                 onMagingJobConfirmedDelegate = null;
             };
-            magus.Stopped += (sender, args) => Send();
+            magus.Stopped += (_, _) => {
+                Send();
+                timeMagingStopwatch.Stop();
+            };
 
             ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
             actionHandler.ActionExecuted += OnMagingAction;
@@ -151,11 +157,13 @@ namespace Inkybot.Services
             
             var data = new Dictionary<string, string> {
                 {"expend", balanceDifference.ToString() },
+                {"time_maging", timeMagingStopwatch.Elapsed.Seconds.ToString() },
                 {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
                 {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
                 {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
                 {"successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier) },
             };
+            timeMagingStopwatch.Restart();
             changesCount = 0;
             balanceDifference = 0;
             exoSuccesses = new Dictionary<Stat, int>();
