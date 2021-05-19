@@ -96,10 +96,10 @@
     <value>:rune peut être utilisée uniquement quand la valeur est inférieure ou égale à :maxvalue</value>
   </data>
     <data name="showWarningsCheckbox.Text" xml:space="preserve">
-    <value>Afficher les avertissements</value>
+    <value>Afficher des conseils et des avertissements utiles</value>
   </data>
     <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
-    <value>Surveiller la quantité de runes</value>
+    <value>Arrêtez de maging si la quantité de runes détectée à 0 (uniquement à haute résolution)</value>
   </data>
     <data name="customScriptLabel.Text" xml:space="preserve">
     <value>Script de forgemagie personnalisé</value>

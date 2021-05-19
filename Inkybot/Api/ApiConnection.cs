@@ -13,6 +13,9 @@ namespace Inkybot.Api
 {
     public class ApiConnection
     {
+        private const int AuthCheckRequestMaxAttempts = 3;
+        private int AuthCheckRequestAttempts = 0;
+        
         public AuthDetails AuthDetails {
             get; private set;
         }
@@ -46,7 +49,7 @@ namespace Inkybot.Api
 
         public async Task<bool> RefreshToken() {
             var client = new HttpClient();
-            var url =  $"{Server.AuthUrl}/token";
+            var url = $"{Server.AuthUrl}/token";
 
             var form_params = new Dictionary<string, string> {
                 {"grant_type", "refresh_token"},
@@ -56,17 +59,29 @@ namespace Inkybot.Api
                 {"scope", ""},
                 {"_passport_token_name", Program.InstanceIdentifier},
             };
-            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
+            AuthCheckRequestAttempts++;
             
-            var content = new StringContent(encrypted);
-            var response = await client.PostAsync(url, content);
+            try {
+                var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
 
-            if (!response.IsSuccessStatusCode)
+                var content = new StringContent(encrypted);
+                var response = await client.PostAsync(url, content);
+                
+                response.EnsureSuccessStatusCode();
+
+                var result = await GetResultFromEncryptedResponse(response);
+                Debug.WriteLine("Http response: " + result);
+                AuthDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
+            } catch (Exception) {
+                if (AuthCheckRequestAttempts < AuthCheckRequestMaxAttempts) {
+                    Debug.WriteLine("RefreshToken reattempt "+AuthCheckRequestAttempts);
+                    await Task.Delay(1741);
+                    return await RefreshToken();
+                }
                 return false;
-
-            var result = await GetResultFromEncryptedResponse(response);
-            Debug.WriteLine("Http response: "+result);
-            AuthDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
+            }
+            
+            AuthCheckRequestAttempts = 0;
             return true;
         }
         

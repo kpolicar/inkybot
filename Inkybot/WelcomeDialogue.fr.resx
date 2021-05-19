@@ -2002,6 +2002,9 @@
   <data name="popup.title_trial" xml:space="preserve">
     <value>Essai gratuit</value>
   </data>
+    <data name="openSettingsInFileExplorer.Text" xml:space="preserve">
+    <value>Ouvrir les paramètres utilisateur dans l'Explorateur Windows</value>
+  </data>
   <data name="resetSetttingsLabel.Text" xml:space="preserve">
     <value>Réinitialiser les paramètres utilisateur</value>
   </data>

@@ -22,6 +22,11 @@ namespace Inkybot
         private void MainForm_VisibleChanged(object sender, EventArgs e) {
             if (!Visible && magingJob.IsMaging)
                 magingJob.StopMage();
+            if (!Visible) {
+                setupForm.Hide();
+                configForm.Hide();
+                statisticsForm.Hide();
+            }
         }
         
         private void toggleMageButton_Click(object sender, EventArgs e) {

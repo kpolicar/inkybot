@@ -24,7 +24,7 @@
         <value>EXO TENTATIVES</value>
     </data>
     <data name="helpButton.Text" xml:space="preserve">
-        <value>INSTRUCTIONS</value>
+        <value>COMMENT UTILISER</value>
     </data>
     <data name="loggedInAsLabel.Text" xml:space="preserve">
         <value>CONNECTÉ EN TANT QUE</value>

@@ -222,9 +222,13 @@ namespace Inkybot
             disableOpenCLLabel = new ToolStripButton();
             disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
             resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
+
+            var openSettingsInFileExplorer = new ToolStripMenuItem();
+            openSettingsInFileExplorer.Click += new System.EventHandler(openSettingsInFileExplorer_Clicked);
+            resources.ApplyResources(openSettingsInFileExplorer, "openSettingsInFileExplorer");
             
             this.settingsContextMenuStrip.Items.AddRange(new [] {
-                dofusPathLink, switchLanguageLabel, resetSetttingsLabel
+                dofusPathLink, switchLanguageLabel, resetSetttingsLabel, openSettingsInFileExplorer
             });
             this.settingsContextMenuStrip.Items.Add(disableOpenCLLabel);
             this.settingsContextMenuStrip.AutoSize = true;

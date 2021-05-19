@@ -2419,6 +2419,9 @@
   <data name="resetSetttingsLabel.Text" xml:space="preserve">
     <value>Reset User Settings</value>
   </data>
+  <data name="openSettingsInFileExplorer.Text" xml:space="preserve">
+    <value>Open User Settings in File Explorer</value>
+  </data>
   <data name="disableOpenCLLabel.Text" xml:space="preserve">
     <value>Disable OpenCL</value>
   </data>
@@ -2474,6 +2477,9 @@
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="resetSetttingsLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="openSettingsInFileExplorer.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="disableOpenCLLabel.Font" type="System.Drawing.Font, System.Drawing">

@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -178,6 +179,14 @@ namespace Inkybot
             disableOpenCLLabel.Text = Settings.Default.DisableOpenCL
                 ? resources.GetString("disableOpenCLLabel.Text_enable")
                 : resources.GetString("disableOpenCLLabel.Text");
+        }
+
+        private void openSettingsInFileExplorer_Clicked(object sender, EventArgs e) {
+            var path = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            if (path != null) {
+                var lastIndexOfSlash = path.LastIndexOf('\\');
+                Process.Start(path.Substring(0, lastIndexOfSlash));
+            }
         }
     }
 }

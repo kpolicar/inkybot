@@ -2227,13 +2227,13 @@
         <value>true</value>
     </data>
   <data name="showWarningsCheckbox.Text" xml:space="preserve">
-    <value>Show warnings</value>
+    <value>Show helpful tips and warnings</value>
   </data>
   <data name="publishExosCheckbox.Text" xml:space="preserve">
     <value>Publish exo mages to Hall of fame</value>
   </data>
   <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
-    <value>Monitor rune quantity</value>
+    <value>Stop maging if rune quantity is detected at 0 (high-resolution only)</value>
   </data>
   <data name="enableRuneCheckingCheckbox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
