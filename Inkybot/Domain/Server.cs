@@ -9,7 +9,7 @@ namespace Inkybot.Domain
         public static readonly string StatisticsViewUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics";
         public static readonly string StatisticsNewSessionUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics/newsession";
         public static readonly string ApiUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}";
-        public static readonly string AuthUrl = $"{BaseUrl}/oauth-v2";
+        public static readonly string AuthUrl = $"{BaseUrl}/oauth";
         public static readonly string SubscribeUrl = $"{BaseUrl}/subscribe";
         public static string Signature => Aes256CbcEncrypter.Encrypt(Program.Key);
         public static byte[] Key => System.Convert.FromBase64String(Program.Key);

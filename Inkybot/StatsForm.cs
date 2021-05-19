@@ -445,7 +445,7 @@ namespace Inkybot
                     return;
                 }
             }
-            configManager.ResetConfig(item);
+            configManager.EnforceConfigSetForItem(item);
             
             foreach (var statPreset in preset.Stats) {
                 var stat = Stat.FirstOrNew(statPreset.Stat);
