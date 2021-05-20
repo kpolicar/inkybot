@@ -18,12 +18,13 @@ namespace Inkybot
         private bool init = false;
 
         private string Header => "Authorization: Bearer " + apiClient.Connection?.AuthDetails.access_token ?? "";
+        private string LocalizedUrl => Server.StatisticsViewUrl + "?locale=" + Program.Lang.TwoLetterISOLanguageName;
         
         public StatisticsForm() {
             InitializeComponent();
+            webBrowser.Navigating += OnWebBrowserNavigating;
             VisibleChanged += OnVisibleChanged;
             apiClient = Program.Services.GetService<ApiClient>();
-            webBrowser.Navigating += OnWebBrowserNavigating;
             var api = Program.Services.GetService<ApiClient>();
             api.UserFetched += OnUserFetched;
         }
@@ -34,15 +35,19 @@ namespace Inkybot
         }
 
         private void OnWebBrowserNavigating(object sender, WebBrowserNavigatingEventArgs e) {
-            var end = "?headers=1";
-            if (e.Url.ToString().EndsWith(end))
+            var headers = "headers=1";
+            if (e.Url.ToString().Contains(headers))
                 return;
                 
             var url = e.Url;
-            var newUrl = url + end;
-            if (url.ToString() == Server.StatisticsNewSessionUrl) {
+            var newUrl = url + (url.ToString().Contains("?") ? "&" : "?") + headers;
+            if (!newUrl.Contains("locale"))
+                newUrl += "&locale=" + Program.Lang.TwoLetterISOLanguageName;
+            
+            if (url.ToString().StartsWith(Server.StatisticsNewSessionUrl)) {
                 System.Text.Encoding encoding = System.Text.Encoding.UTF8;
                 var bytes = encoding.GetBytes("_method=POST");
+                
             
                 webBrowser.Navigate(newUrl, null, bytes, Header);
             } else {
@@ -56,7 +61,7 @@ namespace Inkybot
             if (apiClient.Connection == null || !Visible)
                 return;
             try {
-                webBrowser.Navigate(Server.StatisticsViewUrl, "", new byte[] { }, Header);
+                webBrowser.Navigate(LocalizedUrl, "", new byte[] { }, Header);
             } catch (Exception) {
             }
         }
@@ -72,7 +77,7 @@ namespace Inkybot
 
         private void refreshButton_Click(object sender, EventArgs e) {
             try {
-                webBrowser.Navigate(Server.StatisticsViewUrl, "", new byte[] { }, Header);
+                webBrowser.Navigate(LocalizedUrl, "", new byte[] { }, Header);
             } catch (Exception) {
             }
         }
