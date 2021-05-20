@@ -23,6 +23,9 @@
     <data name="exoAttemptsLabel.Text" xml:space="preserve">
         <value>EXO TENTATIVES</value>
     </data>
+    <data name="kamasSpentLabel.Text" xml:space="preserve">
+        <value>KAMAS PASSÉ</value>
+    </data>
     <data name="helpButton.Text" xml:space="preserve">
         <value>COMMENT UTILISER</value>
     </data>
@@ -93,6 +96,7 @@
     <value>Fonctionnalité restreinte</value>
   </data>
     <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
-    <value>Modifier mon abonnement</value>
+    <value>Modifier mon
+abonnement</value>
   </data>
 </root>

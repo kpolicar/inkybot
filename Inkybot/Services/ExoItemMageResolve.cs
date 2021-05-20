@@ -35,7 +35,7 @@ namespace Inkybot.Services
 
         protected Rune.RuneType? ResolveRuneType(Stat stat) {
             var strongestRuneType = stat.StrongestRuneType;
-                    
+
             if (strongestRuneType == Rune.RuneType.Ra && !stat.Config.ShouldUseRaRunes)
                 strongestRuneType = Rune.RuneType.Pa;
             if (strongestRuneType == Rune.RuneType.Pa && !stat.Config.ShouldUsePaRunes)

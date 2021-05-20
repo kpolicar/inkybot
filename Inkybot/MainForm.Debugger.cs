@@ -6,23 +6,26 @@ using Inkybot.Controls;
 using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot
 {
     public partial class MainForm
     {
-        private ConcurrentDictionary<Rectangle, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Rectangle, Responsive.Measurement>();
+        private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
         
         private bool debugging;
         #if DEBUG
         private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         #endif
-        private Rectangle latestHistoryOcrIndicatorControl = null!;
+        private Control latestHistoryOcrIndicatorControl = null!;
 
         private void InitOcrIndicators() {
             RegisterOcrIndicator(Measurements.StatMinBounds);
             RegisterOcrIndicator(Measurements.StatMaxBounds);
             RegisterOcrIndicator(Measurements.StatValuesBounds);
+            RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
+            RegisterOcrIndicator(Measurements.InventorySearchTextBox);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
@@ -39,10 +42,16 @@ namespace Inkybot
             }));
         }
 
-        private Rectangle RegisterOcrIndicator(Responsive.Measurement measurement) {
-            var control = new Rectangle();
+        private Control RegisterOcrIndicator(Responsive.Measurement measurement, bool crosshair=false) {
+            Control control;
+            if (crosshair) {
+                control = new Crosshair();
+            } else {
+                control = new Rectangle();
+            }
             Controls.Add(control);
             control.BackColor = System.Drawing.SystemColors.Control;
+            control.ForeColor = System.Drawing.SystemColors.Control;
             
             ocrIndicators[control] = measurement;
             return control;
@@ -88,7 +97,7 @@ namespace Inkybot
             #endif
         }
 
-        private void FitOcrIndicatorRectangle(Rectangle indicatorControl, Responsive.Measurement measurements) {
+        private void FitOcrIndicatorRectangle(Control indicatorControl, Responsive.Measurement measurements) {
             var width = dofusClientPanel.Width;
             var height = dofusClientPanel.Height;
             
@@ -97,6 +106,11 @@ namespace Inkybot
             rect.Y -= 2;
             rect.Width += 4;
             rect.Height += 4;
+            if (indicatorControl is Crosshair) {
+                rect.X += rect.Width / 2;
+                rect.Y += rect.Height / 2;
+                rect.Width = rect.Height;
+            }
             indicatorControl.Bounds = rect;
         }
 

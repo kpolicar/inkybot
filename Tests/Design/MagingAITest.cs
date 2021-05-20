@@ -13,6 +13,7 @@ using Tests.Services;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
+using StatConfigProvider = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Tests.Design
 {

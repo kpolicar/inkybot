@@ -23,9 +23,8 @@ namespace Inkybot.Services
         private ApiClient api = null!;
         private int changesCount = 0;
         const int MinChangesToSendCount = 10;
-        private const int MaxReasonableBalanceDifference = 300000;
         
-        private int balanceDifference = 0;
+        private int newlySpent = 0;
         private Dictionary<(Stat stat, Rune.RuneType runeType), int> attempts = new Dictionary<(Stat, Rune.RuneType), int>();
         private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
         private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
@@ -40,7 +39,7 @@ namespace Inkybot.Services
             
             var actionHandler = serviceContainer.GetService<ActionHandler>();
             var magus = (ScreenReaderDofusMagingJob) serviceContainer.GetService<DofusMagingJob>();
-            magus.BalanceChanged += OnBalanceChanged;
+            magus.BalanceSpent += OnBalanceSpent;
             magus.Starting += (_, _) => timeMagingStopwatch.Start();
             magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;;
             magus.SuccessfulCombineTick += (_, _) => {
@@ -115,12 +114,9 @@ namespace Inkybot.Services
             previousAction = e.action;
         }
 
-        private void OnBalanceChanged(object sender, BalanceChangedEventArgs e) {
+        private void OnBalanceSpent(object sender, BalanceChangedEventArgs e) {
             changesCount++;
-            balanceDifference += e.OldBalance - e.Balance;
-            balanceDifference = Math.Max(balanceDifference, 0);
-            if (balanceDifference > MaxReasonableBalanceDifference)
-                balanceDifference = 0;
+            newlySpent += e.Balance - e.OldBalance;
 
             if (changesCount >= MinChangesToSendCount)
                 Send();
@@ -149,14 +145,14 @@ namespace Inkybot.Services
                 exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
                     .ToDictionary(x => x.Key, x => x.Value);
 
-            if (balanceDifference == 0
+            if (newlySpent == 0
                 && attemptsByIdentifier.Count == 0
                 && exoAttemptsByIdentifier.Count == 0
                 && exoSuccessesByIdentifier.Count == 0)
                 return;
             
             var data = new Dictionary<string, string> {
-                {"expend", balanceDifference.ToString() },
+                {"expend", newlySpent.ToString() },
                 {"time_maging", timeMagingStopwatch.Elapsed.Seconds.ToString() },
                 {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
                 {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
@@ -165,7 +161,7 @@ namespace Inkybot.Services
             };
             timeMagingStopwatch.Restart();
             changesCount = 0;
-            balanceDifference = 0;
+            newlySpent = 0;
             exoSuccesses = new Dictionary<Stat, int>();
             exoAttempts = new Dictionary<Stat, int>();
             attempts = new Dictionary<(Stat,Rune.RuneType), int>();

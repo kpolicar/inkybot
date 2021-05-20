@@ -14,6 +14,7 @@ namespace Inkybot.Contracts
         public event EventHandler<MagingJobFinishedEventArgs>? Finished;
         public event EventHandler<SinkChangedEventArgs>? SinkChanged;
         public event EventHandler<BalanceChangedEventArgs>? BalanceChanged;
+        public event EventHandler<BalanceChangedEventArgs>? BalanceSpent;
         public event EventHandler<RuneQuantityChangedEventArgs>? RuneQuantityChanged;
         public event EventHandler<MagingJobErrorEventArgs>? Error;
         public event EventHandler<MagingJobErrorEventArgs>? Warning;

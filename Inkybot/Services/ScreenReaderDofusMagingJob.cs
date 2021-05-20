@@ -28,6 +28,7 @@ namespace Inkybot.Services
         public event EventHandler<MagingJobFinishedEventArgs>? Finished;
         public event EventHandler<SinkChangedEventArgs>? SinkChanged;
         public event EventHandler<BalanceChangedEventArgs>? BalanceChanged;
+        public event EventHandler<BalanceChangedEventArgs>? BalanceSpent;
         public event EventHandler<RuneQuantityChangedEventArgs>? RuneQuantityChanged;
         public event EventHandler<MagingJobErrorEventArgs>? Error;
         public event EventHandler<MagingJobErrorEventArgs>? Warning;
@@ -47,6 +48,7 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.First();
+        private const int MaxReasonableBalanceDifference = 300000;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -61,12 +63,22 @@ namespace Inkybot.Services
                 magingAiManager.MagingAIChanged += OnMagingAiChanged;
         }
 
+        private int BalanceSpending;
         private int Balance {
             get => state.Balance;
             set {
-                if (state.Balance != 0)
-                    BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(state.Balance, value));
-                state.Balance = value;
+                var newBalance = Math.Max(value, 0);
+                var previousBalance = state.Balance;
+                var newBalanceSpent = Math.Max(0, previousBalance - newBalance);
+                    
+                state.Balance = newBalance;
+                BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(previousBalance, newBalance));
+
+                if (newBalanceSpent <= MaxReasonableBalanceDifference) {
+                    var previousBalanceSpent = BalanceSpending;
+                    BalanceSpending += newBalanceSpent;
+                    BalanceSpent?.Invoke(this, new BalanceChangedEventArgs(previousBalanceSpent, BalanceSpending));
+                }
             }
         }
         public float Sink {

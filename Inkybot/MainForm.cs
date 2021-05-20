@@ -35,6 +35,8 @@ namespace Inkybot
             debugScreenshotButton.Hide();
             exoAttemptsLabel.Hide();
             exoAttemptsValueLabel.Hide();
+            kamasSpentLabel.Hide();
+            kamasSpentValueLabel.Hide();
             Hide();
             
             InitAuth();

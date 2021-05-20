@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Inkybot.Dofus;
@@ -14,7 +15,17 @@ namespace Inkybot.Services
             Sink = sink;
         
         protected override bool MatchesCriteria(ItemMage itemMage) =>
-            !itemMage.WillOvermage;
+            !itemMage.WillOvermage && ShouldEvenConsider(itemMage);
+
+        private bool ShouldEvenConsider(ItemMage itemMage) =>
+            Sink - itemMage.Rune.Sink >= SinkNeededForAllOvermagesToReachTargetMinimum() * 2f;
+
+        protected float SinkNeededForAllOvermagesToReachTargetMinimum() =>
+            config.StatsConfig
+                .Sum(statConfig => SinkNeededToReachTargetMinimum(statConfig.Key, statConfig.Value));
+        
+        protected int SinkNeededToReachTargetMinimum(Stat stat, MageConfig.ItemStatMageConfig mageConfig) =>
+            (int) Math.Floor(stat.SinkValue * Math.Max(0, mageConfig.TargetMinimum - item.Stats[stat]?.Value ?? 0));
 
         protected override IEnumerable<ItemMage> PotentialMages() {
             return base.PotentialMages().Where(itemMage => itemMage.Rune.Sink <= Sink);
@@ -23,11 +34,6 @@ namespace Inkybot.Services
         protected override int Priority(ItemMage itemMage) {
             var basePriority = base.Priority(itemMage);
             return basePriority + itemMage.MageConfig.Priority*item.Stats.Length;
-        }
-
-        protected override ItemMage ChooseFromPrioritized(IOrderedEnumerable<ItemMage> prioritized) {
-            return prioritized
-                .FirstOrDefault(itemMage => itemMage.CanHitAccordingToConfiguration && !itemMage.WillOvermage);
         }
     }
 }

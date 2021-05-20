@@ -122,6 +122,12 @@ namespace Inkybot.Services
             Width = 1920,
             Height = 1017
         };
+
+        public static Responsive.Measurement InventorySelectResourcesCategoryBox = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1475, 90, 1550, 115),
+            Width = 1925,
+            Height = 1014
+        };
         
         public static readonly Responsive.Measurement InventoryFirstItemMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
@@ -129,10 +135,22 @@ namespace Inkybot.Services
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement InventorySearchTextBox = new Responsive.Measurement {
+        public static readonly Responsive.Measurement InventoryFirstItemBoxMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1392, 177, 1452, 238),
+            Width = 2035,
+            Height = 1150
+        };
+        
+        public static readonly Responsive.Measurement InventorySearchTextBoxSelectMeasurement = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
             Width = 1920,
             Height = 1017
+        };
+        
+        public static readonly Responsive.Measurement InventorySearchTextBox= new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1425, 859, 1739, 887),
+            Width = 2033,
+            Height = 1148
         };
         
         public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
@@ -145,6 +163,12 @@ namespace Inkybot.Services
             Rectangle = Rect.FromCoords(1050, 225, 1050, 225),
             Width = 1920,
             Height = 1017
+        };
+        
+        public static readonly Responsive.Measurement CombineButtonBoxMeasurement = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(957, 209, 1150, 235),
+            Width = 1925,
+            Height = 1014
         };
     }
 }

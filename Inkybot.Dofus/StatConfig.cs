@@ -15,7 +15,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>An empty stat configuration</summary>
          */
-        public static StatConfig None = new StatConfig();
+        public static StatConfig None = new StatConfig(default, default);
         
         /**
          * <summary>
@@ -74,34 +74,34 @@ namespace Inkybot.Dofus
          */
         public readonly bool ShouldUseRaRunes => UseRaRunes && ChangeToRaRuneThreshold != null;
         
-        /**
-         * <summary>
-         * Determines whether or not the stat should be interpreted as a high-sink stat.
-         * </summary>
-         */
-        public readonly bool HighSinkStat;
+       /**
+        * <summary>
+        * Determines whether or not the stat should be interpreted as a high-sink stat.
+        * </summary>
+        */
+       public readonly bool HighSinkStat;
 
         /**
          * <param name="maxValueSmRuneCanHit">
          * The maximum value at which a rune of SM strength can still land on the stat.
          * If set to null, SM runes can always land.
          * </param>
-         * 
+         *
          * <param name="changeToPaRuneThreshold">
          * The lowest value at which a rune of PA strength should begin to be used.
          * If set to null, PA runes should not be used.
          * </param>
-         * 
+         *
          * <param name="maxValuePaRuneCanHit">
          * The maximum value at which a rune of PA strength can still land on the stat.
          * If set to null, PA runes can always land.
          * </param>
-         * 
+         *
          * <param name="changeToRaRuneThreshold">
          * The lowest value at which a rune of RA strength should begin to be used.
          * If set to null, RA runes should not be used.
          * </param>
-         * 
+         *
          * <param name="highSinkStat">
          * Determines whether or not the stat should be interpreted as a high-sink stat.
          * </param>

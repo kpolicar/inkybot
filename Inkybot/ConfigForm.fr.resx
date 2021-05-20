@@ -58,7 +58,7 @@
     </data>
     <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
         <value>Restaurez immédiatement les statistiques de chute élevée
-(PA, MP, Portée, Invocations)</value>
+(PA, PM, Portée, Invocations)</value>
     </data>
     <data name="StatColumn.HeaderText" xml:space="preserve">
         <value>Statistique</value>
@@ -98,10 +98,10 @@
     <value>:rune peut être utilisée uniquement quand la valeur est inférieure ou égale à :maxvalue</value>
   </data>
     <data name="showWarningsCheckbox.Text" xml:space="preserve">
-    <value>Afficher des conseils et des avertissements utiles</value>
+    <value>Afficher des conseils et avertissements utiles</value>
   </data>
     <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
-    <value>Arrêtez de maging si la quantité de runes détectée à 0
+    <value>Arrêter de forgermager si la quantité de runes détectées est à 0
 (uniquement à haute résolution)</value>
   </data>
     <data name="customScriptLabel.Text" xml:space="preserve">
@@ -114,7 +114,7 @@
     <value>Réinitialiser IA</value>
   </data>
     <data name="publishExosCheckbox.Text" xml:space="preserve">
-    <value>Publier des exo mages au Hall of fame</value>
+    <value>Publier ses exos au Hall of Fame</value>
   </data>
     <data name="enableKamasCalculationCheckbox.Text" xml:space="preserve">
     <value>Suivre la moyenne des kamas dépensés</value>

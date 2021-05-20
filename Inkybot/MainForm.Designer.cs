@@ -46,6 +46,8 @@ namespace Inkybot
             this.statisticsButton = new System.Windows.Forms.Button();
             this.exoAttemptsLabel = new System.Windows.Forms.Label();
             this.exoAttemptsValueLabel = new System.Windows.Forms.Label();
+            this.kamasSpentLabel = new System.Windows.Forms.Label();
+            this.kamasSpentValueLabel = new System.Windows.Forms.Label();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.helpButton = new System.Windows.Forms.Button();
             this.hallOfFameButton = new System.Windows.Forms.Button();
@@ -132,6 +134,8 @@ namespace Inkybot
             this.primaryButtonsPanel.Controls.Add(this.statisticsButton);
             this.primaryButtonsPanel.Controls.Add(this.exoAttemptsLabel);
             this.primaryButtonsPanel.Controls.Add(this.exoAttemptsValueLabel);
+            this.primaryButtonsPanel.Controls.Add(this.kamasSpentLabel);
+            this.primaryButtonsPanel.Controls.Add(this.kamasSpentValueLabel);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
             // 
             // toggleMageButton
@@ -163,6 +167,18 @@ namespace Inkybot
             this.statisticsButton.Name = "statisticsButton";
             this.statisticsButton.UseVisualStyleBackColor = false;
             this.statisticsButton.Click += new System.EventHandler(this.statisticsButton_Click);
+            // 
+            // kamasSpentLabel
+            // 
+            resources.ApplyResources(this.kamasSpentLabel, "kamasSpentLabel");
+            this.kamasSpentLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.kamasSpentLabel.Name = "kamasSpentLabel";
+            // 
+            // kamasSpentValueLabel
+            // 
+            resources.ApplyResources(this.kamasSpentValueLabel, "kamasSpentValueLabel");
+            this.kamasSpentValueLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.kamasSpentValueLabel.Name = "kamasSpentValueLabel";
             // 
             // exoAttemptsLabel
             // 
@@ -342,6 +358,8 @@ namespace Inkybot
 
         private System.Windows.Forms.Label exoAttemptsLabel;
         private System.Windows.Forms.Label exoAttemptsValueLabel;
+        private System.Windows.Forms.Label kamasSpentLabel;
+        private System.Windows.Forms.Label kamasSpentValueLabel;
 
         private System.Windows.Forms.Button debugScreenshotButton;
 

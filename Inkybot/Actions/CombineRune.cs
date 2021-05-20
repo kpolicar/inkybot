@@ -43,7 +43,7 @@ namespace Inkybot.Actions
             Thread.Sleep(50);
             
             
-            var searchTextBoxPosition = GetCursorTarget(Measurements.InventorySearchTextBox);
+            var searchTextBoxPosition = GetCursorTarget(Measurements.InventorySearchTextBoxSelectMeasurement);
             Input.Click(searchTextBoxPosition.X, searchTextBoxPosition.Y);
             Thread.Sleep(500);
             
