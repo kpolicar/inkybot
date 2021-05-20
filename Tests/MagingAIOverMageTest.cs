@@ -55,6 +55,56 @@ namespace Tests
         }
 
         [Test]
+        public void TestOvermageBeforeExoWithSink() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 305, 250, 300),
+                new ItemStat("wisdom", 39, 31, 40),
+                new ItemStat("critical", 6, 4, 6),
+                new ItemStat("ap", 1, 1, 1),
+                new ItemStat("per_neutral_resistance", 10, 7, 10),
+                new ItemStat("per_earth_resistance", 10, 7, 10),
+            }));
+            Config.ResetConfig(item);
+            
+            Job.Sink = 3;
+            var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Mp, 
+                1, 
+                1,
+                0);
+            Config.ChangeStatConfig(Stat.Mp, exoAirPerResConfig);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.AreEqual(new Rune(Stat.Vitality, Rune.RuneType.Pa), action?.Rune);
+        }
+
+        [Test]
+        public void TestOvermageBeforeExoWithPrioritizeSink() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 300, 250, 300),
+                new ItemStat("agility", 39, 31, 40),
+                new ItemStat("wisdom", 39, 31, 40),
+                new ItemStat("critical", 6, 4, 6),
+                new ItemStat("ap", 1, 1, 1),
+                new ItemStat("per_neutral_resistance", 10, 7, 10),
+                new ItemStat("per_earth_resistance", 10, 7, 10),
+            }));
+            Config.ResetConfig(item);
+            
+            Job.Sink = 3;
+            var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(
+                Stat.Mp, 
+                1, 
+                1,
+                0);
+            Config.ChangeStatConfig(Stat.Mp, exoAirPerResConfig);
+            Config.ChangeStatConfigPriority(Stat.Agility, 1);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.AreEqual(new Rune(Stat.Agility, Rune.RuneType.Pa), action?.Rune);
+        }
+
+        [Test]
         public void TestExoTargetWithSink() {
             Job.Sink = 32;
             
