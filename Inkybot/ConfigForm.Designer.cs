@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -68,6 +69,7 @@ namespace Inkybot
             this.RaRuneThresholdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MaxSmRuneCanHitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.customScriptLabel = new System.Windows.Forms.Label();
+            this.automaticShutdownLabel = new System.Windows.Forms.Label();
             this.customScriptPathLabel = new System.Windows.Forms.Label();
             this.tooltipLabelExtra = new System.Windows.Forms.Label();
             this.exampleScriptsLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -76,7 +78,9 @@ namespace Inkybot
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
+            this.autoShutdownComboBox = new Inkybot.Controls.ComboBox();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.automaticShutdownPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
@@ -224,6 +228,30 @@ namespace Inkybot
             this.publishExosCheckbox.UseVisualStyleBackColor = true;
             this.publishExosCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnPublishExosCheckboxCheckedChanged);
             this.publishExosCheckbox.Dock = DockStyle.Fill;
+            // 
+            // autoShutdownComboBox
+            // 
+            resources.ApplyResources(this.autoShutdownComboBox, "autoShutdownComboBox");
+            this.autoShutdownComboBox.BackColor = System.Drawing.Color.Black;
+            this.autoShutdownComboBox.ForeColor = System.Drawing.SystemColors.Control;
+            this.autoShutdownComboBox.FormattingEnabled = true;
+            this.autoShutdownComboBox.Name = "autoShutdownComboBox";
+            this.autoShutdownComboBox.SelectedIndexChanged += new System.EventHandler(this.autoShutdownComboBox_SelectedIndexChanged);
+            this.autoShutdownComboBox.FlatStyle = FlatStyle.Flat;
+            this.autoShutdownComboBox.DropDownStyle = ComboBoxStyle.DropDown;
+            
+            this.autoShutdownComboBox.DataSource = new BindingSource(new Dictionary<int, string>() {
+                {-1, resources.GetString("autoShutdownComboBox.OptionDisabled")!},
+                {60, resources.GetString("autoShutdownComboBox.OptionMinute")!},
+                {60*2, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "2")},
+                {60*3, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "3")},
+                {60*5, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "5")},
+                {60*10, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "10")},
+                {60*15, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "15")},
+            }, null);
+            this.autoShutdownComboBox.ValueMember = "Key";
+            this.autoShutdownComboBox.DisplayMember = "Value";
+            this.autoShutdownComboBox.TabIndex = 3;
 
             // 
             // enableRuneCheckingCheckbox
@@ -266,6 +294,15 @@ namespace Inkybot
             this.mainPanel.Dock = DockStyle.Fill;
             this.mainPanel.AutoSize = true;
             //
+            // automaticShutdownPanel
+            // 
+            resources.ApplyResources(this.automaticShutdownPanel, "automaticShutdownPanel");
+            this.automaticShutdownPanel.Controls.Add(this.automaticShutdownLabel);
+            this.automaticShutdownPanel.Controls.Add(this.autoShutdownComboBox);
+            this.automaticShutdownPanel.Name = "automaticShutdownPanel";
+            this.automaticShutdownPanel.Dock = DockStyle.Fill;
+            this.automaticShutdownPanel.AutoSize = true;
+            //
             // dataGridViewSidebarPanel
             // 
             resources.ApplyResources(this.dataGridViewSidebarPanel, "dataGridViewSidebarPanel");
@@ -292,7 +329,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
             this.bottomPanel.ColumnCount = 2;
-            this.bottomPanel.RowCount = 3;
+            this.bottomPanel.RowCount = 4;
             this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             this.bottomPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
@@ -302,6 +339,7 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+            this.bottomPanel.Controls.Add(this.automaticShutdownPanel);
 
             this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
             this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
@@ -337,6 +375,14 @@ namespace Inkybot
             this.customScriptLabel.AutoSize = true;
             this.customScriptLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.customScriptLabel.Margin = new Padding(0, 7, 0, 0);
+            // 
+            // automaticShutdownLabel
+            // 
+            resources.ApplyResources(this.automaticShutdownLabel, "automaticShutdownLabel");
+            this.automaticShutdownLabel.Name = "automaticShutdownLabel";
+            this.automaticShutdownLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.automaticShutdownLabel.Margin = new Padding(0, 6, 0, 0);
+            this.automaticShutdownLabel.AutoSize = true;
             // 
             // scriptChangeButton
             // 
@@ -404,6 +450,7 @@ namespace Inkybot
 
         private System.Windows.Forms.Button showAdvancedOptionsButton;
         private System.Windows.Forms.Panel mainPanel;
+        private System.Windows.Forms.FlowLayoutPanel automaticShutdownPanel;
         private System.Windows.Forms.Panel dataGridViewSidebarPanel;
         private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
         private System.Windows.Forms.TableLayoutPanel bottomPanel;
@@ -416,6 +463,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
+        private Inkybot.Controls.ComboBox autoShutdownComboBox;
         private System.Windows.Forms.ToolTip tooltip;
 
         private System.Windows.Forms.DataGridViewCheckBoxColumn UseSmRunesColumn;
@@ -427,6 +475,7 @@ namespace Inkybot
         private System.Windows.Forms.DataGridViewTextBoxColumn RaRuneThresholdColumn;
         private System.Windows.Forms.Label customScriptLabel;
         private System.Windows.Forms.Label customScriptPathLabel;
+        private System.Windows.Forms.Label automaticShutdownLabel;
         private System.Windows.Forms.Label tooltipLabelExtra;
         private System.Windows.Forms.LinkLabel exampleScriptsLinkLabel;
 

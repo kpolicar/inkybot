@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Timers;
+using System.Windows.Forms;
 using Inkybot.Domain;
 
 namespace Inkybot
@@ -36,8 +37,15 @@ namespace Inkybot
             this.dofusClientPanel = new System.Windows.Forms.Panel();
             this.toastPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toastIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.toastIconPictureBox = new System.Windows.Forms.PictureBox();
             this.toastLabel = new System.Windows.Forms.Label();
             this.toastPanelCloseButton = new System.Windows.Forms.Button();
+            this.shutdownToastPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.shutdownToastIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.shutdownToastIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.shutdownToastLabel = new System.Windows.Forms.Label();
+            this.shutdownToastValueLabel = new System.Windows.Forms.Label();
+            this.shutdownToastPanelCloseButton = new System.Windows.Forms.Button();
             this.sidebarPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -64,8 +72,10 @@ namespace Inkybot
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.mousePositionLabel = new System.Windows.Forms.Label();
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
+            this.shutdownToastPanel.SuspendLayout();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
@@ -107,6 +117,42 @@ namespace Inkybot
             this.toastPanelCloseButton.Name = "toastPanelCloseButton";
             this.toastPanelCloseButton.UseVisualStyleBackColor = true;
             this.toastPanelCloseButton.Click += new System.EventHandler(this.toastPanelCloseButton_Click);
+            // 
+            // shutdownToastPanel
+            // 
+            resources.ApplyResources(this.shutdownToastPanel, "shutdownToastPanel");
+            this.shutdownToastPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
+            this.shutdownToastPanel.Controls.Add(this.shutdownToastIconPictureBox);
+            this.shutdownToastPanel.Controls.Add(this.shutdownToastLabel);
+            this.shutdownToastPanel.Controls.Add(this.shutdownToastValueLabel);
+            this.shutdownToastPanel.Controls.Add(this.shutdownToastPanelCloseButton);
+            this.shutdownToastPanel.Name = "shutdownToastPanel";
+            // 
+            // shutdownToastIconPictureBox
+            // 
+            resources.ApplyResources(this.shutdownToastIconPictureBox, "shutdownToastIconPictureBox");
+            this.shutdownToastIconPictureBox.Name = "shutdownToastIconPictureBox";
+            this.shutdownToastIconPictureBox.TabStop = false;
+            // 
+            // shutdownToastLabel
+            // 
+            resources.ApplyResources(this.shutdownToastLabel, "shutdownToastLabel");
+            this.shutdownToastLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.shutdownToastLabel.Name = "shutdownToastLabel";
+            // 
+            // shutdownToastValueLabel
+            // 
+            resources.ApplyResources(this.shutdownToastValueLabel, "shutdownToastValueLabel");
+            this.shutdownToastValueLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.shutdownToastValueLabel.Name = "shutdownToastValueLabel";
+            // 
+            // shutdownToastPanelCloseButton
+            // 
+            resources.ApplyResources(this.shutdownToastPanelCloseButton, "shutdownToastPanelCloseButton");
+            this.shutdownToastPanelCloseButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.shutdownToastPanelCloseButton.Name = "shutdownToastPanelCloseButton";
+            this.shutdownToastPanelCloseButton.UseVisualStyleBackColor = true;
+            this.shutdownToastPanelCloseButton.Click += new System.EventHandler(this.shutdownToastPanelCloseButton_Click);
             // 
             // sidebarPanel
             // 
@@ -330,6 +376,7 @@ namespace Inkybot
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.toastPanel);
+            this.Controls.Add(this.shutdownToastPanel);
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
             this.HelpButton = true;
@@ -339,7 +386,10 @@ namespace Inkybot
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.toastPanel.ResumeLayout(false);
             this.toastPanel.PerformLayout();
+            this.shutdownToastPanel.ResumeLayout(false);
+            this.shutdownToastPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).EndInit();
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);
@@ -366,6 +416,11 @@ namespace Inkybot
         private System.Windows.Forms.PictureBox toastIconPictureBox;
         private System.Windows.Forms.Label toastLabel;
         private System.Windows.Forms.Button toastPanelCloseButton;
+        
+        private System.Windows.Forms.PictureBox shutdownToastIconPictureBox;
+        private System.Windows.Forms.Label shutdownToastLabel;
+        private System.Windows.Forms.Label shutdownToastValueLabel;
+        private System.Windows.Forms.Button shutdownToastPanelCloseButton;
 
         private System.Windows.Forms.Button setupButton;
         private System.Windows.Forms.Button statisticsButton;
@@ -398,6 +453,7 @@ namespace Inkybot
 
         private System.Windows.Forms.Panel dofusClientPanel;
         private System.Windows.Forms.FlowLayoutPanel toastPanel;
+        private System.Windows.Forms.FlowLayoutPanel shutdownToastPanel;
         private System.Windows.Forms.Panel sidebarPanel;
         private System.Windows.Forms.Timer subscriptionCheckTimer;
     }

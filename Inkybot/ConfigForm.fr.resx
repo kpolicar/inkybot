@@ -100,6 +100,9 @@
     <data name="showWarningsCheckbox.Text" xml:space="preserve">
     <value>Afficher des conseils et avertissements utiles</value>
   </data>
+    <data name="automaticShutdownLabel.Text" xml:space="preserve">
+    <value>Arrêt automatique lorsque le bot s'arrête</value>
+  </data>
     <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
     <value>Arrêter de forgermager si la quantité de runes détectées est à 0
 (uniquement à haute résolution)</value>
@@ -133,5 +136,14 @@
   </data>
     <data name="popup.error_restricted" xml:space="preserve">
     <value>Fonctionnalité restreinte</value>
+  </data>
+  <data name="autoShutdownComboBox.OptionDisabled" xml:space="preserve">
+    <value>Désactivé</value>
+  </data>
+  <data name="autoShutdownComboBox.OptionMinute" xml:space="preserve">
+    <value>1 minute</value>
+  </data>
+  <data name="autoShutdownComboBox.OptionMinutes" xml:space="preserve">
+    <value>:value minutes</value>
   </data>
 </root>

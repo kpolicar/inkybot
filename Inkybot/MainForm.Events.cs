@@ -102,5 +102,9 @@ namespace Inkybot
         private void subscribePlanUpgradeLinkLabel_OnClick(object sender, EventArgs e) {
             Process.Start(Server.SubscribeUrl);
         }
+
+        private void shutdownToastPanelCloseButton_Click(object sender, EventArgs e) {
+            shutdownToastPanel.Hide();
+        }
     }
 }

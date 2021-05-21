@@ -33,9 +33,9 @@ namespace Inkybot
                 }
             }
 
-            pDofus = Process.Start(dofusPath);
-            WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
-            WindowHelpers.RemoveWindowBorders(hWndDocked);
+            //pDofus = Process.Start(dofusPath);
+            //WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
+            //WindowHelpers.RemoveWindowBorders(hWndDocked);
 
             BindServicesToDockedWindow();
 

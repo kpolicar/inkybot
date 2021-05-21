@@ -339,6 +339,10 @@ namespace Inkybot
                 statsDataGridView.Columns[6].Visible = 
                 statsDataGridView.Columns[7].Visible = !statsDataGridView.Columns[7].Visible;
         }
+
+        private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            
+        }
     }
 }
 
