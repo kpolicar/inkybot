@@ -41,7 +41,7 @@ namespace Inkybot.Services
                         DoMainMageAction();
                         break;
                     case State.JobStep.EXECUTING_COMBINE:
-                        if (job.state.PreviousCombineWasExoAttempt || job.changeTimeout.ElapsedMilliseconds > 1500)
+                        if (job.state.PreviousCombineWasExoAttempt || job.changeTimeout.ElapsedMilliseconds > 1200)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();
