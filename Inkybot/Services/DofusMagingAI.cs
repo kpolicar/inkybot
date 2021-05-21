@@ -53,10 +53,17 @@ namespace Inkybot.Services
                     new PerfectionItemMageResolve(config, item, Sink, 1).Resolve(),
                     OverridePerfectionResolve);
 
-            proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new OverMageToReachTargetMinimumItemMageResolve(config, item).Resolve() ??
-                new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).Resolve(),
-                OverrideReachMinimumResolve);
+            proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() => {
+                var proposed = new ReachTargetMinimumItemMageResolve(config, item).Resolve();
+                
+                if ((proposed?.WillOvermage ?? false) && !proposed!.Value.MageConfig.Exo) {
+                    var proposedWithoutOvermage = new ReachTargetMinimumItemMageResolve(config, item, 1).Resolve();
+                    proposed = proposedWithoutOvermage ?? proposed;
+                }
+
+                proposed ??= new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).Resolve();
+                return proposed;
+            }, OverrideReachMinimumResolve);
 
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new FinishOffRemainingSinkItemMageResolve(config, item, Sink).Resolve(),

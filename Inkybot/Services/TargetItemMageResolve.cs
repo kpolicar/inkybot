@@ -28,10 +28,18 @@ namespace Inkybot.Services
             itemMage.Stat.Config.HighSinkStat;
 
         protected override Rune.RuneType? ResolveRuneType(ItemStat itemStat) {
+            var itemConfig = config[itemStat]!.Value;
             var runeType = base.ResolveRuneType(itemStat);
             if (runeType == null)
                 return runeType;
-            return (Rune.RuneType) Math.Max(0, (int) runeType - runeTypeOffset);
+            
+            runeType = (Rune.RuneType) Math.Max(0, (int) runeType - runeTypeOffset);
+
+            return runeType switch {
+                Rune.RuneType.Sm when itemStat.Value > itemConfig.MaxValueAtWhichSmRuneCanHit || !itemConfig.ShouldUseSmRunes => null, 
+                Rune.RuneType.Pa when itemStat.Value > itemConfig.MaxValueAtWhichPaRuneCanHit || !itemConfig.ShouldUsePaRunes => null,
+                _ => runeType,
+            };
         }
     }
 }

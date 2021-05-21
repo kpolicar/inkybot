@@ -6,9 +6,9 @@ using Inkybot.Dofus.Domain;
 
 namespace Inkybot.Services
 {
-    internal class OverMageToReachTargetMinimumItemMageResolve : StandardStatsPrioritizedItemMageResolve
+    internal class ReachTargetMinimumItemMageResolve : TargetItemMageResolve
     {
-        public OverMageToReachTargetMinimumItemMageResolve(MageConfig config, Item item) : base(config, item) {
+        public ReachTargetMinimumItemMageResolve(MageConfig config, Item item, int runeTypeOffset=0) : base(config, item, runeTypeOffset) {
         }
 
         protected override bool MatchesCriteria(ItemMage itemMage) =>
