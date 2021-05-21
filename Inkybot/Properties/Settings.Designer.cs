@@ -134,12 +134,12 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
+        public bool FirstTime {
             get {
-                return ((bool)(this["UpgradeRequired"]));
+                return ((bool)(this["FirstTime"]));
             }
             set {
-                this["UpgradeRequired"] = value;
+                this["FirstTime"] = value;
             }
         }
         

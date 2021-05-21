@@ -71,9 +71,17 @@ namespace Inkybot
                 return;
             }
 
+            var firstTime = Settings.Default.FirstTime;
             Properties.Settings.Default.email = usernameTextBox.Text;
             Properties.Settings.Default.password = rememberPasswordCheckbox.Checked ? passwordTextBox.Text : "";
+            Settings.Default.FirstTime = false;
             Properties.Settings.Default.Save();
+
+            if (firstTime) {
+                Hide();
+                new FirstTimeInfoForm().ShowDialog(this);
+            }
+            
             DialogResult = DialogResult.OK;
         }
 
@@ -155,10 +163,6 @@ namespace Inkybot
             Application.Restart();
         }
 
-        private void settingsDropdownButton_Click(object sender, EventArgs e) {
-            throw new System.NotImplementedException();
-        }
-
         private void disableOpenCL_Clicked(object sender, EventArgs e) {
             if (!Settings.Default.DisableOpenCL) {
                 var confirmation =
@@ -187,6 +191,12 @@ namespace Inkybot
                 var lastIndexOfSlash = path.LastIndexOf('\\');
                 Process.Start(path.Substring(0, lastIndexOfSlash));
             }
+        }
+
+        private void button1_EnableChanged(object sender, EventArgs e) {
+            button1.BackColor = button1.Enabled
+                ? System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))))
+                : System.Drawing.SystemColors.ControlDarkDark;
         }
     }
 }

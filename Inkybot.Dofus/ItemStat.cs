@@ -34,6 +34,8 @@ namespace Inkybot.Dofus
          * <summary>Whether or not the item stat is exotically maged on the item</summary>
          */
         public bool Exo => Max == 0;
+
+        public bool Overmaged => Value > Max;
         
         /**
          * <summary>The amount of oversink of the stat on the item.</summary>

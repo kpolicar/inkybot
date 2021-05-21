@@ -314,7 +314,12 @@ namespace Inkybot.Services
             }
 
             private void RaiseEventIfMagingItemWithHighSinkExo(Item item) {
-                if (item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat)) {
+                var showSensitiveMageDialogue = (!job.IsMaging && !job.state.IsRestarting) 
+                                                && item.Stats.Any(itemStat => itemStat.Overmaged);
+                showSensitiveMageDialogue |=
+                    item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat);
+                
+                if (showSensitiveMageDialogue) {
                     job.SensitiveMage?.Invoke(
                         this, 
                         new MagingJobStartedEventArgs(false, item, job.configManager.Config!));

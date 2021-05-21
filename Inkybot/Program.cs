@@ -39,12 +39,10 @@ namespace Inkybot
             public const string Url = "http://inkybot.test";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
-            public const string Key = "***REMOVED***";
         #else
             public const string Url = "https://inkybot.me";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
-            public const string Key = "***REMOVED***";
         #endif
         
         public const string VersionNumber = "19";
@@ -90,7 +88,6 @@ namespace Inkybot
             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
             
-            UpgradeApp();
             ApplyAdditionalUserSettings();
             SetAppLocale();
             InitDependencies();
@@ -102,15 +99,6 @@ namespace Inkybot
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
-        }
-
-        public static void UpgradeApp() {
-            if (!Settings.Default.UpgradeRequired) return;
-            
-            // Settings.Default.Upgrade();
-            // Settings.Default.Reload();
-            Settings.Default.UpgradeRequired = false;
-            Settings.Default.Save();
         }
 
         private static void ApplyAdditionalUserSettings() {
