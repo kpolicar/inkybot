@@ -20,6 +20,7 @@ namespace Inkybot
         private AuthManager auth = null!;
         private ConfigManager config;
         private StatisticsForm statisticsForm;
+        private int autoShutdownTimeElapsed;
 
         public MainForm() {
             InitializeComponent();

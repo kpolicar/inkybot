@@ -13,6 +13,7 @@ namespace Inkybot
         private Action? onMagingJobConfirmedDelegate;
 
         private void MainFormDomainEvents() {
+            magingJob.Starting += OnMagingStarting;
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
                 screenReaderDofusMagingJob.SensitiveMage += OnSensitiveMage;
@@ -73,19 +74,45 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
                 debugScreenshotButton.Enabled = true;
+                if (configForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
+                    StartAutoShutdownCounter();
                 EnableDebugging();
+                HasManuallyStoppedMaging = false;
             }));
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
+        }
+
+        private void StartAutoShutdownCounter() {
+            autoShutdownTimeElapsed = 0;
+            shutdownToastPanel.Show();
+            shutdownToastPanel.BringToFront();
+            autoShutdownTimer.Start();
+        }
+
+        private void StopAutoShutdownCounter() {
+            shutdownToastPanel.Hide();
+            autoShutdownTimer.Stop();
+            
+            if (autoShutdownTimeElapsed > 0) {
+                toastLabel.Text = resources.GetString("autoShutdownTimeElapsed.TextStopped")!;
+                toastPanel.Show();
+                toastPanel.BringToFront();
+            }
+            
+            autoShutdownTimeElapsed = 0;
+            RefreshAutoShutdownLabels();
+        }
+        
+        private void OnMagingStarting(object sender, EventArgs e) {
+            Win32.SetThreadExecutionState(
+                Win32.EXECUTION_STATE.ES_CONTINUOUS
+                | Win32.EXECUTION_STATE.ES_DISPLAY_REQUIRED
+                | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
         }
 
         private void OnMagingStarted(object sender, MagingJobStartedEventArgs e) {
             if (e.Restarting) return;
             
-            Win32.SetThreadExecutionState(
-                Win32.EXECUTION_STATE.ES_CONTINUOUS
-                | Win32.EXECUTION_STATE.ES_DISPLAY_REQUIRED
-                | Win32.EXECUTION_STATE.ES_SYSTEM_REQUIRED);
-
             Invoke(new MethodInvoker(DisableDebugging));
 
             if (!hasShownUnsupportedWarning && config.UserSettings.ShowUserWarnings &&

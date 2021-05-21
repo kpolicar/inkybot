@@ -242,12 +242,12 @@ namespace Inkybot
             
             this.autoShutdownComboBox.DataSource = new BindingSource(new Dictionary<int, string>() {
                 {-1, resources.GetString("autoShutdownComboBox.OptionDisabled")!},
-                {60, resources.GetString("autoShutdownComboBox.OptionMinute")!},
-                {60*2, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "2")},
-                {60*3, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "3")},
-                {60*5, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "5")},
-                {60*10, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "10")},
-                {60*15, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "15")},
+                {59*1000, resources.GetString("autoShutdownComboBox.OptionMinute")!},
+                {60*2*1000, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "2")},
+                {60*3*1000, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "3")},
+                {60*5*1000, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "5")},
+                {60*10*1000, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "10")},
+                {60*15*1000, resources.GetString("autoShutdownComboBox.OptionMinutes")!.Replace(":value", "15")},
             }, null);
             this.autoShutdownComboBox.ValueMember = "Key";
             this.autoShutdownComboBox.DisplayMember = "Value";

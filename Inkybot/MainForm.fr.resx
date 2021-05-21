@@ -23,6 +23,9 @@
     <data name="exoAttemptsLabel.Text" xml:space="preserve">
         <value>EXO TENTATIVES</value>
     </data>
+    <data name="autoShutdownTimeElapsed.TextStopped" xml:space="preserve">
+    <value>La minuterie d'arrêt automatique a été arrêtée!</value>
+  </data>
     <data name="kamasSpentLabel.Text" xml:space="preserve">
         <value>KAMAS PASSÉ</value>
     </data>

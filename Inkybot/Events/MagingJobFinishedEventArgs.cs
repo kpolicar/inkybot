@@ -4,7 +4,9 @@ namespace Inkybot.Events
 {
     public class MagingJobFinishedEventArgs : MagingJobEventArgs
     {
-        public MagingJobFinishedEventArgs(Item item, MageConfig config) : base(item, config) {
+        public bool AutoShutdown;
+        public MagingJobFinishedEventArgs(Item item, MageConfig config, bool autoShutdown) : base(item, config) {
+            AutoShutdown = autoShutdown;
         }
     }
 }

@@ -27,6 +27,11 @@ namespace Inkybot
         private StatConfigProvider configProvider;
         private AuthManager auth;
 
+        public int AutoShutdownDelay {
+            private set;
+            get;
+        } = -1;
+
         public ConfigForm() {
             InitializeComponent();
             InitializeCustomComponents();
@@ -340,9 +345,8 @@ namespace Inkybot
                 statsDataGridView.Columns[7].Visible = !statsDataGridView.Columns[7].Visible;
         }
 
-        private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            
-        }
+        private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) =>
+            AutoShutdownDelay = (int) autoShutdownComboBox.SelectedValue;
     }
 }
 

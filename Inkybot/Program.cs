@@ -101,7 +101,7 @@ namespace Inkybot
             Measurements.BindDependencies(Services);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConfigForm());
+            Application.Run(new MainForm());
         }
 
         public static void UpgradeApp() {

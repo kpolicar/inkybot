@@ -72,6 +72,7 @@ namespace Inkybot
             this.loggedInAsLabel = new System.Windows.Forms.Label();
             this.mousePositionLabel = new System.Windows.Forms.Label();
             this.subscriptionCheckTimer = new System.Windows.Forms.Timer(this.components);
+            this.autoShutdownTimer = new System.Windows.Forms.Timer(this.components);
             this.shutdownToastPanel.SuspendLayout();
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
@@ -127,6 +128,10 @@ namespace Inkybot
             this.shutdownToastPanel.Controls.Add(this.shutdownToastValueLabel);
             this.shutdownToastPanel.Controls.Add(this.shutdownToastPanelCloseButton);
             this.shutdownToastPanel.Name = "shutdownToastPanel";
+            this.shutdownToastPanel.Visible = false;
+            this.shutdownToastPanel.Location = 
+                new Point(ClientSize.Width / 2 - shutdownToastPanel.Size.Width / 2, 
+                    ClientSize.Height / 2 - shutdownToastPanel.Size.Height);
             // 
             // shutdownToastIconPictureBox
             // 
@@ -371,8 +376,14 @@ namespace Inkybot
             this.subscriptionCheckTimer.Interval = 25000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
             // 
+            // autoShutdownTimer
+            // 
+            this.autoShutdownTimer.Interval = 1000;
+            this.autoShutdownTimer.Tick += new System.EventHandler(this.OnAutoShutdownTimer);
+            // 
             // MainForm
             // 
+            this.Resize += OnResize;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.toastPanel);
@@ -456,5 +467,6 @@ namespace Inkybot
         private System.Windows.Forms.FlowLayoutPanel shutdownToastPanel;
         private System.Windows.Forms.Panel sidebarPanel;
         private System.Windows.Forms.Timer subscriptionCheckTimer;
+        private System.Windows.Forms.Timer autoShutdownTimer;
     }
 }

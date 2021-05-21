@@ -164,6 +164,7 @@ namespace Inkybot.Services
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void DoMage(bool restarting=false) {
+            var autoShutdown = false;
             try {
                 PrepareMage(restarting);
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
@@ -172,18 +173,27 @@ namespace Inkybot.Services
 
                 while (IsMaging) new Tick(this).Execute();
             } catch (OutOfRunesException exception) {
+                autoShutdown = true;
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (NoItemToMageFoundException exception) {
+                autoShutdown = restarting;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (UserForbiddenException exception) {
+                autoShutdown = restarting;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException exception) {
+                autoShutdown = true;
                 dataProvider.Scan?.Save();
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasNotChangedException exception) {
+                autoShutdown = true;
                 dataProvider.Scan?.Save();
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (OperationCanceledException exception) {
+                autoShutdown = false;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (Exception exception) {
+                autoShutdown = true;
                 if (state.Step == State.JobStep.EXECUTING_COMBINE)
                     unsuccessfulCombineTicks++;
 
@@ -193,11 +203,11 @@ namespace Inkybot.Services
                 var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
                     ? "Please try running Inkybot as an administrator."
                     : "";
-                
+
                 if (Properties.Settings.Default.autoRestartBot) {
                     Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     Thread.Sleep(1000);
-                    
+
                     if (IsMaging) {
                         DoMage(true);
                         return;
@@ -210,11 +220,14 @@ namespace Inkybot.Services
                     Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 }
             }
-            
+
             state.IsMaging = true; // If an error occured during preparation, we still want to stop properly
             StopMage();
-            
-            Finished?.Invoke(this, new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!));
+            autoShutdown |= state.PreviousAction is Inkybot.Actions.Finish;
+
+            Finished?.Invoke(
+                this, 
+                new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
         }
         
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {

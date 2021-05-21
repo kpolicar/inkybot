@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
@@ -12,6 +13,8 @@ namespace Inkybot
 {
     public partial class MainForm
     {
+        public bool HasManuallyStoppedMaging { get; set; }
+        
         private void MainFormEvents() {
             Closing += (sender, args) => {
                 magingJob.StopMage();
@@ -31,8 +34,11 @@ namespace Inkybot
         
         private void toggleMageButton_Click(object sender, EventArgs e) {
             toastPanel.Hide();
+            StopAutoShutdownCounter();
 
             magingJob.BeginMage(!magingJob.IsMaging);
+            if (!magingJob.IsMaging)
+                HasManuallyStoppedMaging = true;
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
@@ -41,12 +47,12 @@ namespace Inkybot
         
         private void statsButton_Click(object sender, EventArgs e) {
             if (!setupForm.Visible) setupForm.Show();
-            else setupForm.Hide();
+            else setupForm.Focus();
         }
         
         private void configButton_Click(object sender, EventArgs e) {
             if (!configForm.Visible) configForm.Show();
-            else configForm.Hide();
+            else configForm.Focus();
         }
 
         private void toastPanelCloseButton_Click(object sender, EventArgs e) {
@@ -96,7 +102,7 @@ namespace Inkybot
             }
             
             if (!statisticsForm.Visible) statisticsForm.Show();
-            else statisticsForm.Hide();
+            else statisticsForm.Focus();
         }
 
         private void subscribePlanUpgradeLinkLabel_OnClick(object sender, EventArgs e) {
@@ -104,7 +110,35 @@ namespace Inkybot
         }
 
         private void shutdownToastPanelCloseButton_Click(object sender, EventArgs e) {
-            shutdownToastPanel.Hide();
+            StopAutoShutdownCounter();
+        }
+
+        private void OnResize(object sender, EventArgs e) {
+            this.shutdownToastPanel.Location = 
+                new Point(ClientSize.Width / 2 - shutdownToastPanel.Size.Width / 2, 
+                    ClientSize.Height / 2 - shutdownToastPanel.Size.Height);
+        }
+
+        private void OnAutoShutdownTimer(object sender, EventArgs e) {
+            autoShutdownTimeElapsed += autoShutdownTimer.Interval;
+            RefreshAutoShutdownLabels();
+            var timeLeft = configForm.AutoShutdownDelay - autoShutdownTimeElapsed;
+            if (timeLeft <= 0) {
+                Application.Exit();
+            }
+        }
+
+        private void RefreshAutoShutdownLabels() {
+            var timeLeft = configForm.AutoShutdownDelay - autoShutdownTimeElapsed;
+            var timeLeftInSeconds = timeLeft / 1000;
+            
+            shutdownToastValueLabel.Text = timeLeftInSeconds >= 60
+                ? resources.GetString("autoShutdownTimeElapsed.TextMinutes")!
+                    .Replace(":value", Math.Max(2, timeLeftInSeconds / 60).ToString())
+                : timeLeftInSeconds > 1
+                    ? resources.GetString("autoShutdownTimeElapsed.TextSeconds")!
+                        .Replace(":value", timeLeftInSeconds.ToString())
+                    : resources.GetString("autoShutdownTimeElapsed.TextSecond")!;
         }
     }
 }
