@@ -74,7 +74,7 @@ namespace Inkybot
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void TakeScreenshotsAndOpenFolder() {
-            var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true, true);
+            using var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true, true);
             var files = new List<string>();
             scan.Saved += (_, fileEvent) => files.Add(fileEvent.FullPath);
             scan.CaptureScreenshot();

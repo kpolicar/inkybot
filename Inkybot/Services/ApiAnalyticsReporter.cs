@@ -82,7 +82,7 @@ namespace Inkybot.Services
             lock (imageChangeMutex)
             lock (e.Image) {
                 previousImage?.Dispose();
-                var ms = new MemoryStream();
+                using var ms = new MemoryStream();
                 e.Image.Save(ms, ImageFormat.Bmp);
                 previousImage = Image.FromStream(ms);
             }
