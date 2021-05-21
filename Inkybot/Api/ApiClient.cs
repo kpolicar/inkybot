@@ -26,13 +26,14 @@ namespace Inkybot.Api
 {
     public class ApiClient : HasDependencies
     {
+        private AuthManager auth = null!;
         public ApiConnection? Connection { private set; get; }
 
         public event EventHandler<FetchedUserEventArgs>? UserFetched;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
-            var authManager = serviceContainer.GetService<AuthManager>();
-            authManager.ConnectionChanged += OnConnectionChanged;
+            auth = serviceContainer.GetService<AuthManager>();
+            auth.ConnectionChanged += OnConnectionChanged;
         }
         
         private void OnConnectionChanged(object sender, ApiConnectionChangedEventArgs e) {
@@ -84,6 +85,8 @@ namespace Inkybot.Api
         }
 
         public async Task SendStatistics(Dictionary<string,string> data) {
+            if (!auth.User?.canCreateStatistics ?? false)
+                return;
             Debug.WriteLine("Sending statistics to server:"+string.Join("; ", data));
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             var content = new StringContent(encrypted);
@@ -95,6 +98,8 @@ namespace Inkybot.Api
         }
 
         public async Task Publish(Image image, bool toForum) {
+            if (!auth.User?.canPublishExos ?? false)
+                return;
             using var ms = new MemoryStream();
             image.Save(ms, ImageFormat.Bmp);
             ms.Position = 0;

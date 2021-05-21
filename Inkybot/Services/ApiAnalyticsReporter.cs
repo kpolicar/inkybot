@@ -14,25 +14,37 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using Inkybot.Events;
 using Newtonsoft.Json;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Inkybot.Services
 {
     public class ApiAnalyticsReporter : AnalyticsReporter, HasDependencies
     {
+        private class ApiAnalyticsReporterState
+        {
+            public int newlySpent = 0;
+            public Dictionary<(Stat stat, Rune.RuneType runeType), int> attempts = new Dictionary<(Stat, Rune.RuneType), int>();
+            public Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
+            public Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
+        }
+        private ApiAnalyticsReporterState state = new ApiAnalyticsReporterState();
+        
         private ConfigManager config = null!;
         private ApiClient api = null!;
-        private int changesCount = 0;
-        const int MinChangesToSendCount = 10;
         
-        private int newlySpent = 0;
-        private Dictionary<(Stat stat, Rune.RuneType runeType), int> attempts = new Dictionary<(Stat, Rune.RuneType), int>();
-        private Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
-        private Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
         private readonly object imageChangeMutex = new object();
         private Image? previousImage;
         private IAction? previousAction;
         private Action? onMagingJobConfirmedDelegate;
         private Stopwatch timeMagingStopwatch = new Stopwatch();
+        private Timer sendStatisticsTimer = new Timer() {
+            Interval = 20000,
+            Enabled = false
+        };
+
+        public ApiAnalyticsReporter() {
+            sendStatisticsTimer.Tick += OnSendStatisticsTimerTick;
+        }
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
@@ -40,22 +52,31 @@ namespace Inkybot.Services
             var actionHandler = serviceContainer.GetService<ActionHandler>();
             var magus = (ScreenReaderDofusMagingJob) serviceContainer.GetService<DofusMagingJob>();
             magus.BalanceSpent += OnBalanceSpent;
-            magus.Starting += (_, _) => timeMagingStopwatch.Start();
-            magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;;
+            magus.Starting += (_, _) => {
+                timeMagingStopwatch.Start();
+                sendStatisticsTimer.Start();
+            };
+            magus.Started += (_, _) => onMagingJobConfirmedDelegate = null;
             magus.SuccessfulCombineTick += (_, _) => {
                 onMagingJobConfirmedDelegate?.Invoke();
                 onMagingJobConfirmedDelegate = null;
             };
-            magus.Stopped += (_, _) => {
-                Send();
-                timeMagingStopwatch.Stop();
-            };
+            magus.Finished += OnMagingFinished;
 
             ScreenReaderDataProvider.DofusScreenScan.Screenshot += OnMagingScreenshot;
             actionHandler.ActionExecuted += OnMagingAction;
             
             config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
         }
+
+        private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
+            Send();
+            timeMagingStopwatch.Stop();
+            sendStatisticsTimer.Stop();
+        }
+        
+        private void OnSendStatisticsTimerTick(object sender, EventArgs e) =>
+            Send();
 
         private void OnMagingScreenshot(object sender, ImageEventArgs e) {
             lock (imageChangeMutex)
@@ -85,10 +106,12 @@ namespace Inkybot.Services
             {
                 
                 var stat = previousCombine.Rune.Stat;
-                if (exoSuccesses.ContainsKey(stat))
-                    exoSuccesses[stat] += 1;
-                else
-                    exoSuccesses[stat] = 1;
+                lock (state) {
+                    if (state.exoSuccesses.ContainsKey(stat))
+                        state.exoSuccesses[stat] += 1;
+                    else
+                        state.exoSuccesses[stat] = 1;
+                }
                 
                 if (stat.Config.HighSinkStat)
                     Publish();
@@ -97,17 +120,19 @@ namespace Inkybot.Services
             if (e.action is CombineRune combine) {
                 var stat = combine.Rune.Stat;
                 var statRuneType = (stat, combine.Rune.Type);
-                
-                if (!combine.Exo) {
-                    if (attempts.ContainsKey(statRuneType))
-                        attempts[statRuneType] += 1;
-                    else
-                        attempts[statRuneType] = 1;
-                } else {
-                    if (exoAttempts.ContainsKey(stat))
-                        exoAttempts[stat] += 1;
-                    else
-                        exoAttempts[stat] = 1;
+
+                lock (state) {
+                    if (!combine.Exo) {
+                        if (state.attempts.ContainsKey(statRuneType))
+                            state.attempts[statRuneType] += 1;
+                        else
+                            state.attempts[statRuneType] = 1;
+                    } else {
+                        if (state.exoAttempts.ContainsKey(stat))
+                            state.exoAttempts[stat] += 1;
+                        else
+                            state.exoAttempts[stat] = 1;
+                    }
                 }
             }
             
@@ -115,11 +140,9 @@ namespace Inkybot.Services
         }
 
         private void OnBalanceSpent(object sender, BalanceChangedEventArgs e) {
-            changesCount++;
-            newlySpent += e.Balance - e.OldBalance;
-
-            if (changesCount >= MinChangesToSendCount)
-                Send();
+            lock (state) {
+                state.newlySpent += e.Balance - e.OldBalance;
+            }
         }
         
         private void Publish() {
@@ -131,41 +154,42 @@ namespace Inkybot.Services
         }
 
         private void Send() {
-            var attemptsByIdentifier =
-                attempts
-                    .GroupBy(pair => pair.Key.stat.Identifier)
-                    .ToDictionary(
-                        pairs => pairs.Key, 
-                        pairs => pairs.ToDictionary(
-                            pair => pair.Key.runeType.ToString().ToLower(), pair => pair.Value));
-            var exoAttemptsByIdentifier =
-                exoAttempts.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
-                    .ToDictionary(x => x.Key, x => x.Value);
-            var exoSuccessesByIdentifier =
-                exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
-                    .ToDictionary(x => x.Key, x => x.Value);
-
-            if (newlySpent == 0
-                && attemptsByIdentifier.Count == 0
-                && exoAttemptsByIdentifier.Count == 0
-                && exoSuccessesByIdentifier.Count == 0)
-                return;
+            Dictionary<string, string> data;
             
-            var data = new Dictionary<string, string> {
-                {"expend", newlySpent.ToString() },
-                {"time_maging", timeMagingStopwatch.Elapsed.Seconds.ToString() },
-                {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
-                {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
-                {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
-                {"successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier) },
-            };
+            lock (state) {
+                var attemptsByIdentifier =
+                    state.attempts
+                        .GroupBy(pair => pair.Key.stat.Identifier)
+                        .ToDictionary(
+                            pairs => pairs.Key, 
+                            pairs => pairs.ToDictionary(
+                                pair => pair.Key.runeType.ToString().ToLower(), pair => pair.Value));
+                var exoAttemptsByIdentifier =
+                    state.exoAttempts.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
+                        .ToDictionary(x => x.Key, x => x.Value);
+                var exoSuccessesByIdentifier =
+                    state.exoSuccesses.Select(pair => new KeyValuePair<string, int>(pair.Key.Identifier, pair.Value))
+                        .ToDictionary(x => x.Key, x => x.Value);
+
+                if (state.newlySpent == 0
+                    && attemptsByIdentifier.Count == 0
+                    && exoAttemptsByIdentifier.Count == 0
+                    && exoSuccessesByIdentifier.Count == 0)
+                    return;
+            
+                data = new Dictionary<string, string> {
+                    {"expend", state.newlySpent.ToString() },
+                    {"time_maging", timeMagingStopwatch.Elapsed.Seconds.ToString() },
+                    {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
+                    {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
+                    {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
+                    {"successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier) },
+                };
+                state = new ApiAnalyticsReporterState();
+            }
+            
             timeMagingStopwatch.Restart();
-            changesCount = 0;
-            newlySpent = 0;
-            exoSuccesses = new Dictionary<Stat, int>();
-            exoAttempts = new Dictionary<Stat, int>();
-            attempts = new Dictionary<(Stat,Rune.RuneType), int>();
-            _ = api.SendStatistics(data);
+            _ = api.SendStatistics(data); 
         }
     }
 }

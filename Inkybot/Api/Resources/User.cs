@@ -50,6 +50,14 @@ namespace Inkybot.Api.Resources
         [Obfuscation(Exclude = true)]
         public bool aloThuYtoJVqZYK;
         
+        public bool canCreateStatistics => OfGoZPnBHQxneiN;
+        [Obfuscation(Exclude = true)]
+        public bool OfGoZPnBHQxneiN;
+        
+        public bool canPublishExos => BwgdubYTUtyRdER;
+        [Obfuscation(Exclude = true)]
+        public bool BwgdubYTUtyRdER;
+        
         public bool canMageExos => jINhXckEVJaciuq;
         [Obfuscation(Exclude = true)]
         public bool jINhXckEVJaciuq;
