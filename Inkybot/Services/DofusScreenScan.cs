@@ -34,9 +34,10 @@ namespace Inkybot.Services
 
             private static CultureInfo? lang;
             private readonly IntPtr handle;
-            private readonly Image screenshot = null!;
+            private Image screenshot = null!;
             private bool saveToDisk;
             public static event EventHandler<ImageEventArgs>? Screenshot;
+            public event EventHandler<FileSystemEventArgs>? Saved;
 
 
             private DofusScreenScan(
@@ -47,6 +48,16 @@ namespace Inkybot.Services
                 Init();
                 screen = serviceContainer.GetService<ScreenCapture>();
                 LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
+
+                if (saveToDisk) {
+                    historyScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    latestHistoryScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    statValuesScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    statMinsScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    statMaxesScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    runeScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    averageItemPriceScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                }
 
                 this.saveToDisk = saveToDisk;
             }
@@ -66,9 +77,17 @@ namespace Inkybot.Services
                 IntPtr hwnd,
                 ServiceContainer serviceContainer,
                 Responsive.Measurement latestHistoryBounds,
-                bool saveToDisk = false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
+                bool saveToDisk = false, bool deferredScreenshot=false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
                 
                 handle = hwnd;
+                if (deferredScreenshot)
+                    return;
+                CaptureScreenshot();
+            }
+
+            public void CaptureScreenshot() {
+                if (screenshot != null)
+                    throw new ApplicationException("Screenshot has already been taken!");
                 screenshot = TakeScreenshot();
                 if (saveToDisk)
                     Save();
@@ -76,9 +95,12 @@ namespace Inkybot.Services
 
             public void Save() {
                 var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                                 @"/debug/images/";
+                                 @"/debug/images";
                 Directory.CreateDirectory(folderPath);
-                screenshot.Save(folderPath + $@"/{DateTime.Now.Ticks}.png");
+                var fileName = $"{DateTime.Now.Ticks}.png";
+                screenshot.Save(folderPath + $@"/{fileName}");
+                Saved?.Invoke(this, new FileSystemEventArgs(
+                    WatcherChangeTypes.Created, folderPath, fileName));
             }
 
             private void Init() {
@@ -240,6 +262,16 @@ namespace Inkybot.Services
             public void Dispose() {
                 lock (screenshot) {
                     screenshot.Dispose();
+                }
+
+                if (saveToDisk) {
+                    historyScanner!.Saved -= Saved;
+                    latestHistoryScanner!.Saved -= Saved;
+                    statValuesScanner!.Saved -= Saved;
+                    statMinsScanner!.Saved -= Saved;
+                    statMaxesScanner!.Saved -= Saved;
+                    runeScanner!.Saved -= Saved;
+                    averageItemPriceScanner!.Saved -= Saved;
                 }
                 latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;
             }

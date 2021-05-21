@@ -19,6 +19,7 @@ namespace Inkybot.Services
         public class ScreenScanner : IDisposable
         {
             public event EventHandler<TesseractPageProcessed>? PageProcessed;
+            public event EventHandler<FileSystemEventArgs>? Saved;
 
             private TesseractEngine engine;
             private Responsive.Measurement regionOfInterest;
@@ -78,11 +79,13 @@ namespace Inkybot.Services
 
                 if (saveToDisk) {
                     var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                                     @"/debug/images/";
+                                     @"/debug/images";
                     Directory.CreateDirectory(folderPath);
                     var fileName = Path.GetRandomFileName() + ".bmp";
 
                     PixConverter.ToPix(image).Save(folderPath + "/" + fileName);
+                    Saved?.Invoke(this, new FileSystemEventArgs(
+                        WatcherChangeTypes.Created, folderPath, fileName));
                 }
 
                 using (var ocrPage = ProcessImage(engine, image)) {

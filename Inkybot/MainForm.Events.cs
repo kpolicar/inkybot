@@ -1,6 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
@@ -60,27 +66,41 @@ namespace Inkybot
         }
 
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
-            var takeScreenshot = new ThreadStart(async delegate {
-                var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true);
-
-                for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
-                    try {
-                        await scan.MinMaxStats();
-                        await scan.History();
-                        await scan.Stats();
-                        break;
-                    } catch (OcrEngineNotReadyYetException) {
-                    }
-                    numOfTries++;
-                }
-
-                Invoke(new MethodInvoker(delegate {
-                    debugScreenshotButton.Enabled = true;
-                }));
-            });
+            var takeScreenshot = new ThreadStart(TakeScreenshotsAndOpenFolder);
             
             new Thread(takeScreenshot).Start();
             debugScreenshotButton.Enabled = false;
+        }
+
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
+        private void TakeScreenshotsAndOpenFolder() {
+            var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true, true);
+            var files = new List<string>();
+            scan.Saved += (_, fileEvent) => files.Add(fileEvent.FullPath);
+            scan.CaptureScreenshot();
+
+            for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
+                try {
+                    scan.MinMaxStats().Wait();
+                    scan.History().Wait();
+                    scan.Stats().Wait();
+                    break;
+                } catch (OcrEngineNotReadyYetException) {
+                }
+                numOfTries++;
+            }
+
+            Invoke(new MethodInvoker(delegate {
+                debugScreenshotButton.Enabled = true;
+            }));
+                
+            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images";
+            folderPath = folderPath.Replace("/", "\\");
+            try {
+                WindowHelpers.OpenFolderAndSelectFiles(folderPath, files.Select(fullPath => fullPath.Replace("/", "\\")).ToArray());
+            } catch (Exception e) {
+                Debug.WriteLine(e);
+            }
         }
 
         private void hallOfFameButton_Click(object sender, EventArgs e) {
