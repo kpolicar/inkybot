@@ -41,6 +41,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.webBrowser, "webBrowser");
             this.webBrowser.Name = "webBrowser";
+            this.webBrowser.ScriptErrorsSuppressed = true;
             // 
             // refreshButton
             // 

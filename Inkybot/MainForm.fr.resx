@@ -26,6 +26,15 @@
     <data name="autoShutdownTimeElapsed.TextStopped" xml:space="preserve">
     <value>La minuterie d'arrêt automatique a été arrêtée!</value>
   </data>
+    <data name="autoShutdownTimeElapsed.TextMinutes" xml:space="preserve">
+    <value>:value minutes</value>
+  </data>
+    <data name="autoShutdownTimeElapsed.TextSeconds" xml:space="preserve">
+    <value>:value secondes</value>
+  </data>
+    <data name="autoShutdownTimeElapsed.TextSecond" xml:space="preserve">
+    <value>1 seconde</value>
+  </data>
     <data name="kamasSpentLabel.Text" xml:space="preserve">
         <value>KAMAS PASSÉ</value>
     </data>
