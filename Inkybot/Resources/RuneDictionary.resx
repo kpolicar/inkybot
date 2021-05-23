@@ -47,7 +47,7 @@
         <value>int</value>
     </data>
     <data name="power" xml:space="preserve">
-        <value>power</value>
+        <value>pow</value>
     </data>
     <data name="critical" xml:space="preserve">
         <value>crit</value>
