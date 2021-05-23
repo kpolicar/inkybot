@@ -72,6 +72,9 @@ namespace Inkybot.Services
                     if (action is CombineRune combineRune) {
                         job.state.Step = State.JobStep.EXECUTING_COMBINE;
                         job.state.PreviousCombineWasExoAttempt = combineRune.Exo;
+                        if (combineRune.Exo) {
+                            Thread.Sleep(800);
+                        }
                     }
                 } catch (ItemHasChangedException exception) {
                     if (MaxStatsChangedChecks >= StatsChangedChecksCount)
