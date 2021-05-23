@@ -271,6 +271,7 @@ namespace Inkybot
             try {
                 Invoke(new MethodInvoker(() => {
                     selectPresetPanel.Enabled = false;
+                    refreshButton.Enabled = false;
                 }));
                     
                 dataProvider.Reset();
@@ -287,6 +288,7 @@ namespace Inkybot
                 
             Invoke(new MethodInvoker(() => {
                 selectPresetPanel.Enabled = true;
+                refreshButton.Enabled = true;
             }));
         }
 

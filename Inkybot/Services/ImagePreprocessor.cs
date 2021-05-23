@@ -37,6 +37,7 @@ namespace Inkybot.Services
             
             public Image PreprocessImage(Image image, Rectangle bounds, double resizeRatio) {
                 resizePercentage = (int) (resizeRatio * originalResizePercentage);
+                //resizePercentage = originalResizePercentage;
                 return base.PreprocessImage(image, bounds);
             }
 
@@ -52,23 +53,35 @@ namespace Inkybot.Services
 
         public class ResizeAndBinarizationImagePreprocessor : ResizeImagePreprocessor
         {
+            protected override int thresholdPercentage => originalImageHeight >= 1010
+                ? 60//53
+                : 60;
+            
             public ResizeAndBinarizationImagePreprocessor(int resizePercentage) : base(resizePercentage) {
             }
 
             protected override void PreprocessingSteps(MagickImage image) {
                 base.PreprocessingSteps(image);
                 image.Sharpen();
-                var percent = originalImageHeight >= 1080
-                    ? 53
-                    : 60;
-                image.BlackThreshold(new Percentage(percent));
-                image.WhiteThreshold(new Percentage(percent));
+                image.BlackThreshold(new Percentage(thresholdPercentage));
+                image.WhiteThreshold(new Percentage(thresholdPercentage));
+            }
+        }
+
+        public class StatValuesImagePreprocessor : ResizeImagePreprocessor
+        {
+            protected override int thresholdPercentage => originalImageHeight >= 1010
+                ? 27//29
+                : 27;
+            
+            public StatValuesImagePreprocessor(int resizePercentage) : base(resizePercentage) {
             }
         }
 
         public class ImagePreprocessor
         {
             protected int originalImageHeight;
+            protected virtual int thresholdPercentage => 27;
 
             public Image PreprocessImage(Image image, Rectangle bounds) {
                 return DoPreprocess(image, bounds, PreprocessingSteps);
@@ -76,10 +89,7 @@ namespace Inkybot.Services
 
             protected virtual void PreprocessingSteps(MagickImage image) {
                 image.Alpha(AlphaOption.Remove);
-                var percent = originalImageHeight >= 1080
-                    ? 29
-                    : 27;
-                image.BlackThreshold(new Percentage(percent));
+                image.BlackThreshold(new Percentage(thresholdPercentage));
                 image.Negate();
             }
 

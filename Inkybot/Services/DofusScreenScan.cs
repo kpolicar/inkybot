@@ -121,7 +121,7 @@ namespace Inkybot.Services
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(200));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                        new ResizeImagePreprocessor(150));
+                        new StatValuesImagePreprocessor(150));
                     statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
                         new ResizeAndBinarizationImagePreprocessor(300));
                     statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
