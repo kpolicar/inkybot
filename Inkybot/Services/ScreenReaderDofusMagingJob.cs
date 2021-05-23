@@ -141,6 +141,12 @@ namespace Inkybot.Services
                 dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
+                try {
+                    state.PreviousHistory = history.Analyse(dataProvider.History());
+                } catch (Exception) {
+                    // if we couldn't resolve previous history, no worries.
+                }
+
                 configManager.EnforceConfigSetForItem(item);
                 configManager.RemoveFallenUnconfiguredStats(item);
                 itemInfo = new ItemInfo {
@@ -197,8 +203,15 @@ namespace Inkybot.Services
                 if (state.Step == State.JobStep.EXECUTING_COMBINE)
                     unsuccessfulCombineTicks++;
 
-                Debug.WriteLine(exception.Message);
-                Debug.WriteLine(exception.StackTrace);
+                if (exception is AggregateException aggregateException) {
+                    foreach (var aggregateExceptionInnerException in aggregateException.InnerExceptions) {
+                        Debug.WriteLine(aggregateExceptionInnerException.Message);
+                        Debug.WriteLine(aggregateExceptionInnerException.StackTrace);
+                    }
+                } else {
+                    Debug.WriteLine(exception.Message);
+                    Debug.WriteLine(exception.StackTrace);
+                }
 
                 var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
                     ? "Please try running Inkybot as an administrator."

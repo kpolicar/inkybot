@@ -34,7 +34,11 @@ namespace Inkybot.Services
 
             private static CultureInfo? lang;
             private readonly IntPtr handle;
-            private Image screenshot = null!;
+
+            public Image screenshot {
+                private set;
+                get;
+            } = null!;
             private bool saveToDisk;
             public static event EventHandler<ImageEventArgs>? Screenshot;
             public event EventHandler<FileSystemEventArgs>? Saved;

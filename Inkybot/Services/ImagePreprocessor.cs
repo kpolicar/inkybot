@@ -58,20 +58,28 @@ namespace Inkybot.Services
             protected override void PreprocessingSteps(MagickImage image) {
                 base.PreprocessingSteps(image);
                 image.Sharpen();
-                image.BlackThreshold(new Percentage(53));
-                image.WhiteThreshold(new Percentage(53));
+                var percent = originalImageHeight >= 1080
+                    ? 53
+                    : 60;
+                image.BlackThreshold(new Percentage(percent));
+                image.WhiteThreshold(new Percentage(percent));
             }
         }
 
         public class ImagePreprocessor
         {
+            protected int originalImageHeight;
+
             public Image PreprocessImage(Image image, Rectangle bounds) {
                 return DoPreprocess(image, bounds, PreprocessingSteps);
             }
 
             protected virtual void PreprocessingSteps(MagickImage image) {
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(29));
+                var percent = originalImageHeight >= 1080
+                    ? 29
+                    : 27;
+                image.BlackThreshold(new Percentage(percent));
                 image.Negate();
             }
 
@@ -79,6 +87,7 @@ namespace Inkybot.Services
 
                 using (var ms = new MemoryStream()) {
                     lock (image) {
+                        originalImageHeight = image.Height;
                         image.Save(ms, ImageFormat.Bmp);
                     }
                     ms.Position = 0;

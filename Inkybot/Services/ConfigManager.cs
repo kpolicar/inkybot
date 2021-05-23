@@ -117,16 +117,6 @@ namespace Inkybot.Services
             priority = Math.Max(0, priority);
             var newStatConfig = currentStatConfig.Clone(currentStatConfig.Target, currentStatConfig.TargetMinimum, priority);
             ChangeStatConfig(stat, newStatConfig);
-
-            if (priority == 0)
-                return;
-            
-            var samePriority =
-                Config!.StatsConfig
-                    .FirstOrDefault(statConfig => statConfig.Value.Priority == priority && statConfig.Key != stat);
-            if (!samePriority.Equals(default(KeyValuePair<Stat,MageConfig.ItemStatMageConfig>))) {
-                ChangeStatConfigPriority(samePriority.Key, priority-1);
-            }
         }
         
         private void EnforceStatConfigPrioritiesInCorrectRange(object sender, ConfigModifiedEventArgs e) {

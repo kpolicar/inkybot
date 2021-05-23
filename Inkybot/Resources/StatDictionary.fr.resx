@@ -154,7 +154,7 @@
         <value>% Résistance Air</value>
     </data>
     <data name="critical_resistance" xml:space="preserve">
-        <value>Résistance Critique</value>
+        <value>Résistance Critiques</value>
     </data>
     <data name="pushback_resistance" xml:space="preserve">
         <value>Résistance Poussée</value>
