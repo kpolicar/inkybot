@@ -107,8 +107,14 @@
     <data name="popup.error_restricted" xml:space="preserve">
     <value>Fonctionnalité restreinte</value>
   </data>
+    <data name="subscribePlanUpgradeLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
+        <value>113, 28</value>
+    </data>
     <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
     <value>Modifier mon
 abonnement</value>
+  </data>
+    <data name="shutdownToastLabel.Text" xml:space="preserve">
+    <value>Inkybot va s'arrêter dans:</value>
   </data>
 </root>

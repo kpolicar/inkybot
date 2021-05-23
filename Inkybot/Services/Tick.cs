@@ -356,7 +356,7 @@ namespace Inkybot.Services
 
             private void EnforceStatsChanged(Item item) {
                 if (job.state.PreviousItem != null) {
-                    var lastHistoryRecord = job.state.PreviousHistory?.history.First();
+                    var lastHistoryRecord = job.state.PreviousHistory?.history.FirstOrDefault();
                     
                     var shouldBeDifferent = lastHistoryRecord?.Changed.Any() ?? true;
                     if (shouldBeDifferent) {

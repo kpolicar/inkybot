@@ -125,9 +125,6 @@
   <data name="webBrowser.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 20</value>
   </data>
-    <data name="subscribePlanUpgradeLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
-        <value>113, 28</value>
-    </data>
   <data name="webBrowser.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>20, 20</value>
   </data>
