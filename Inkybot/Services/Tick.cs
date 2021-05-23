@@ -270,6 +270,7 @@ namespace Inkybot.Services
                 var item = job.dataProvider.Item();
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
+                RaiseEventIfMagingItemWithHighSinkExo(item);
                 
                 EnforceSameItemAsPreviousTick(item);
                 EnforceStatsChanged(item);
@@ -296,7 +297,6 @@ namespace Inkybot.Services
                         if (combine.Exo) {
                             job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                         }
-                        RaiseEventIfMagingItemWithHighSinkExo(item);
                     }
                 }
 
@@ -315,9 +315,10 @@ namespace Inkybot.Services
                        && ReferenceEquals(item.Stats[previousAction.Rune.Stat], null);
             }
 
+            private bool IsFirstTick() => job.ticks == 1;
+
             private void RaiseEventIfMagingItemWithHighSinkExo(Item item) {
-                var showSensitiveMageDialogue = (!job.IsMaging && !job.state.IsRestarting) 
-                                                && item.Stats.Any(itemStat => itemStat.Overmaged);
+                var showSensitiveMageDialogue = IsFirstTick() && item.Stats.Any(itemStat => itemStat.Overmaged);
                 showSensitiveMageDialogue |=
                     item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat);
                 

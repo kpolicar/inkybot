@@ -47,6 +47,7 @@ namespace Inkybot.Services
         private ItemInfo itemInfo;
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
+        private int ticks;
         public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.First();
         private const int MaxReasonableBalanceDifference = 300000;
 
@@ -107,6 +108,7 @@ namespace Inkybot.Services
                 magus = serviceContainer.GetService<DofusMagingAIContract>();
                 Starting?.Invoke(this, EventArgs.Empty);
 
+                ticks = 0;
                 unsuccessfulCombineTicks = 0;
                 state.PreviousCheckHadRunOutOfRunes = null;
                 job = new Thread(() => DoMage());
@@ -177,7 +179,10 @@ namespace Inkybot.Services
                 Thread.Sleep(30);
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
 
-                while (IsMaging) new Tick(this).Execute();
+                while (IsMaging) {
+                    ticks++;
+                    new Tick(this).Execute();
+                }
             } catch (OutOfRunesException exception) {
                 autoShutdown = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
