@@ -15,10 +15,13 @@ namespace Inkybot.Services
             Sink = sink;
 
         protected override bool MatchesCriteria(ItemMage itemMage) =>
-            ShouldEvenConsider() && itemMage.Rune.Sink <= Sink;
+            ShouldEvenConsider(itemMage) && itemMage.Rune.Sink <= Sink;
 
-        private bool ShouldEvenConsider() {
-            if (item.HasExo || IsConfiguredForOvermageWithLowSinkStat() || config.Exos.Count > 1)
+        private bool ShouldEvenConsider(ItemMage itemMage) {
+            if (item.HasExo
+                || IsConfiguredForOvermageWithLowSinkStat()
+                || config.Exos.Count > 1
+                || item.Stats.Any(itemStat => itemStat.Overmaged && itemStat.Stat != itemMage.Stat))
                 return false;
 
             if (config.Exos.Count == 1) {
