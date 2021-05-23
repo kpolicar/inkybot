@@ -74,14 +74,19 @@ namespace Inkybot
             var firstTime = Settings.Default.FirstTime;
             Properties.Settings.Default.email = usernameTextBox.Text;
             Properties.Settings.Default.password = rememberPasswordCheckbox.Checked ? passwordTextBox.Text : "";
-            Settings.Default.FirstTime = false;
             Properties.Settings.Default.Save();
-
+            
             if (firstTime) {
                 Hide();
-                new FirstTimeInfoForm().ShowDialog(this);
+                var result = new FirstTimeInfoForm().ShowDialog(this);
+                if (result != DialogResult.OK) {
+                    DialogResult = DialogResult.Abort;
+                    return;
+                }
             }
             
+            Settings.Default.FirstTime = false;
+            Properties.Settings.Default.Save();
             DialogResult = DialogResult.OK;
         }
 
