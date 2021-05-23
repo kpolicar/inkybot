@@ -87,12 +87,12 @@ namespace Inkybot.Services
 
                 using (var ms = new MemoryStream()) {
                     lock (image) {
-                        originalImageHeight = image.Height;
                         image.Save(ms, ImageFormat.Bmp);
                     }
                     ms.Position = 0;
 
                     using (var newImage = new MagickImage(ms)) {
+                        originalImageHeight = newImage.Height;
                         var b = bounds;
 
                         // Resize each image in the collection to a width of 200. When zero is specified for the height

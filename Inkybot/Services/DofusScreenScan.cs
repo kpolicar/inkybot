@@ -35,10 +35,15 @@ namespace Inkybot.Services
             private static CultureInfo? lang;
             private readonly IntPtr handle;
 
+            private int screenshotHeight;
+            public Image _screenshot = null!;
             public Image screenshot {
-                private set;
-                get;
-            } = null!;
+                private set {
+                    _screenshot = value;
+                    screenshotHeight = value.Height;
+                }
+                get => _screenshot;
+            }
             private bool saveToDisk;
             public static event EventHandler<ImageEventArgs>? Screenshot;
             public event EventHandler<FileSystemEventArgs>? Saved;
@@ -151,8 +156,8 @@ namespace Inkybot.Services
 
             public async Task<string[]> MinMaxStats() {
 
-                var minstask = statMinsScanner!.ScanRegionAsync(screenshot, saveToDisk);
-                var maxesTask = statMaxesScanner!.ScanRegionAsync(screenshot, saveToDisk);
+                var minstask = statMinsScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
+                var maxesTask = statMaxesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
 
                 Task.WaitAll(minstask, maxesTask);
 
@@ -164,15 +169,14 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> Stats() {
-                var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, saveToDisk);
-                statValuesScanTask.Wait();
+                var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 return await statValuesScanTask;
             }
 
             public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
                 var runeBounds = Measurements.RuneBoxBounds(column, row);
                 runeScanner!.SetRegion(runeBounds);
-                var scanned = await runeScanner.ScanRegionAsync(screenshot);
+                var scanned = await runeScanner.ScanRegionAsync(screenshot, screenshotHeight);
                 var result = scanned.First();
                 
                 int runeQuantity;
@@ -192,7 +196,7 @@ namespace Inkybot.Services
                 var scanIndex = 0;
                 return runeBoxes.Select(runeBox => {
                     runeScanner!.SetRegion(runeBox);
-                    var scanned = runeScanner.ScanRegionAsync(screenshot).Result;
+                    var scanned = runeScanner.ScanRegionAsync(screenshot, screenshotHeight).Result;
                     var result = scanned.FirstOrDefault() ?? "";
 
                     int runeQuantity;
@@ -211,11 +215,11 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> History() {
-                return await historyScanner!.ScanRegionAsync(screenshot, saveToDisk);
+                return await historyScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
             }
 
             public async Task<int?> AverageItemBalance() {
-                var scanned = await averageItemPriceScanner!.ScanRegionAsync(screenshot);
+                var scanned = await averageItemPriceScanner!.ScanRegionAsync(screenshot, screenshotHeight);
                 var result = scanned.First();
 
                 var success = int.TryParse(result
@@ -227,7 +231,7 @@ namespace Inkybot.Services
 
             public async Task<string[]> LatestHistory() {
                 latestHistoryScanner!.SetRegion(LatestHistoryBounds);
-                return await latestHistoryScanner.ScanRegionAsync(screenshot, saveToDisk);
+                return await latestHistoryScanner.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
             }
 
             public Responsive.Measurement CalculateNextHistoryBounds() {

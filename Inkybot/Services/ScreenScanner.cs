@@ -62,19 +62,19 @@ namespace Inkybot.Services
                 }
             }
 
-            public Task<string[]> ScanRegionAsync(Image screenshot, bool saveToDisk = false) {
-                return Task.Run(() => ScanRegion(screenshot, saveToDisk));
+            public Task<string[]> ScanRegionAsync(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+                return Task.Run(() => ScanRegion(screenshot, screenshotHeight, saveToDisk));
             }
             
-            public double ratioFromOptimalScreenshotHeight(Image screenshot) =>
-                (1d*optimalScreenshotHeight)/(1d*screenshot.Height);
+            public double ratioFromOptimalScreenshotHeight(int screenshotHeight) =>
+                (1d*optimalScreenshotHeight)/(1d*screenshotHeight);
             private readonly int optimalScreenshotHeight = 1080; //1920x1080
 
-            public string[] ScanRegion(Image screenshot, bool saveToDisk = false) {
+            public string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
                 var bounds = CalculateBounds(screenshot);
 
                 var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
-                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshot))
+                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshotHeight))
                     : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
                 if (saveToDisk) {

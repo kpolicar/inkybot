@@ -204,6 +204,7 @@ namespace Inkybot.Services
                     unsuccessfulCombineTicks++;
 
                 if (exception is AggregateException aggregateException) {
+                    Debug.WriteLine("Aggregate exception!");
                     foreach (var aggregateExceptionInnerException in aggregateException.InnerExceptions) {
                         Debug.WriteLine(aggregateExceptionInnerException.Message);
                         Debug.WriteLine(aggregateExceptionInnerException.StackTrace);

@@ -79,6 +79,7 @@ namespace Inkybot
         }
 
         private void StartDebugging() {
+            debugging = true;
             sidebarPanel.BringToFront();
             #if DEBUG
             mousePositionLabel.Show();
@@ -132,6 +133,7 @@ namespace Inkybot
             debugButton.Enabled = true;
         
         private void StopDebugging() {
+            debugging = false;
             debugButton.Text = resources.GetString("debugButton.Text");
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
