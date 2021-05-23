@@ -43,7 +43,7 @@ namespace Inkybot.Services
                     case State.JobStep.EXECUTING_COMBINE:
                         if (job.state.PreviousCombineWasExoAttempt
                             || job.changeTimeout.ElapsedMilliseconds >= 1500
-                            || (job.dataProvider.Scan!.screenshot.Height < 750 && job.changeTimeout.ElapsedMilliseconds >= 1000))
+                            || job.dataProvider.Scan!.screenshot.Height <= 750)
                             DoHistoryCheckForChanges();
                         else
                             DoRuneCheckForChanges();

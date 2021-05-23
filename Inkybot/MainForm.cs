@@ -46,7 +46,7 @@ namespace Inkybot
 
             setupForm = new StatsForm();
             setupForm.Error += OnError;
-            configForm = new ConfigForm();
+            configForm = new ConfigForm(setupForm);
             magingJob.Error += OnError;
             statisticsForm = new StatisticsForm();
             

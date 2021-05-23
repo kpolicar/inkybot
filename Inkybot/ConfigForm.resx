@@ -251,6 +251,11 @@
     <data name="automaticShutdownLabel.Text" xml:space="preserve">
     <value>Automatic shutdown when bot stops</value>
   </data>
+    <data name="customResizeRatioNumericUpDownLabel.Text" xml:space="preserve">
+    <value>Custom OCR Image Resize Ratio
+(leave at "1" unless stats aren't
+recognized correctly)</value>
+  </data>
     <data name="autoShutdownComboBox.OptionDisabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
@@ -261,6 +266,9 @@
     <value>:value minutes</value>
   </data>
     <data name="automaticShutdownLabel.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 8.25pt</value>
+    </data>
+    <data name="customResizeRatioNumericUpDownLabel.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
     <data name="tooltipLabelExtra.Font" type="System.Drawing.Font, System.Drawing">

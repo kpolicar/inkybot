@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
@@ -16,6 +17,14 @@ namespace Inkybot.Services
                 Properties.Settings.Default.Save();
             }
             get => Properties.Settings.Default.restoreHighSinkStatImmediately;
+        }
+
+        public decimal CustomResizeMultiplier {
+            set {
+                Properties.Settings.Default.customResizeRatio = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.customResizeRatio;
         }
 
         public bool AutoRestartBot {

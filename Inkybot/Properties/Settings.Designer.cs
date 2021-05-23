@@ -145,6 +145,18 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.00")]
+        public decimal customResizeRatio {
+            get {
+                return ((decimal)(this["customResizeRatio"]));
+            }
+            set {
+                this["customResizeRatio"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DisableOpenCL {
             get {

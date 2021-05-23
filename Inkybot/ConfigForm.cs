@@ -32,9 +32,10 @@ namespace Inkybot
             get;
         } = -1;
 
-        public ConfigForm() {
+        public ConfigForm(StatsForm setupForm) {
             InitializeComponent();
             InitializeCustomComponents();
+            SetupForm = setupForm;
             userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
                 Program.Services.GetService<UserSettingsConfigManager>();
             magingAiManager =
@@ -43,6 +44,8 @@ namespace Inkybot
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
         }
+
+        public StatsForm SetupForm;
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
             var config = userSettingsConfigManager.Config();
@@ -79,6 +82,7 @@ namespace Inkybot
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
+            customResizeRatioNumericUpDown.Value = userSettingsConfigManager.CustomResizeMultiplier;
             magingAiManager.MagingAIChanged += OnMagingAIChanged;
         }
 
@@ -347,6 +351,19 @@ namespace Inkybot
 
         private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) =>
             AutoShutdownDelay = (int) autoShutdownComboBox.SelectedValue;
+
+        private int changes;
+        private void customResizeRatioNumericUpDown_ValueChanged(object sender, EventArgs e) {
+            userSettingsConfigManager.CustomResizeMultiplier = customResizeRatioNumericUpDown.Value;
+            changes++;
+            if (SetupForm.Visible) {
+                Task.Run(async () => {
+                    await Task.Delay(600);
+                    if (--changes <= 0)
+                        SetupForm.RefreshStats();
+                });
+            }
+        }
     }
 }
 

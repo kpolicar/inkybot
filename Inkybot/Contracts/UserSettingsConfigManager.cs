@@ -13,6 +13,7 @@ namespace Inkybot.Contracts
         public bool PublishExos { get; set; }
         public bool EnableKamasCalculation { get; set; }
         public bool EnableRuneChecking { get; set; }
+        public decimal CustomResizeMultiplier { get; set; }
         
         public void SetConfig(Stat stat, in StatConfig config);
     }

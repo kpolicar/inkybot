@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using ImageMagick;
+using Inkybot.Contracts;
 
 namespace Inkybot.Services
 {
@@ -24,10 +25,10 @@ namespace Inkybot.Services
 
         public class ResizeImagePreprocessor : ImagePreprocessor
         {
-            private int originalResizePercentage;
+            protected int originalResizePercentage;
 
-            public int resizePercentage {
-                private set;
+            public virtual int resizePercentage {
+                protected set;
                 get;
             }
 
@@ -35,9 +36,8 @@ namespace Inkybot.Services
                 this.resizePercentage = originalResizePercentage = resizePercentage;
             }
             
-            public Image PreprocessImage(Image image, Rectangle bounds, double resizeRatio) {
-                resizePercentage = (int) (resizeRatio * originalResizePercentage);
-                //resizePercentage = originalResizePercentage;
+            public virtual Image PreprocessImage(Image image, Rectangle bounds, double resizeRatio) {
+                //resizePercentage = (int) (resizeRatio * originalResizePercentage);
                 return base.PreprocessImage(image, bounds);
             }
 
@@ -47,34 +47,47 @@ namespace Inkybot.Services
             }
 
             protected void PreprocessResizeImage(MagickImage image) {
-                image.Resize(new Percentage(resizePercentage));
+                if (resizePercentage > 0)   
+                    image.Resize(new Percentage(resizePercentage));
             }
         }
 
         public class ResizeAndBinarizationImagePreprocessor : ResizeImagePreprocessor
         {
+            protected UserSettingsConfigManager UserSettings;
             protected override int thresholdPercentage => originalImageHeight >= 1010
                 ? 60//53
                 : 60;
             
-            public ResizeAndBinarizationImagePreprocessor(int resizePercentage) : base(resizePercentage) {
+            public ResizeAndBinarizationImagePreprocessor(UserSettingsConfigManager userSettings,
+                int resizePercentage) : base(resizePercentage) {
+                UserSettings = userSettings;
+            }
+
+            public override Image PreprocessImage(Image image, Rectangle bounds, double resizeRatio) {
+                resizePercentage = (int) (UserSettings.CustomResizeMultiplier * originalResizePercentage);
+                return base.PreprocessImage(image, bounds, resizeRatio);
             }
 
             protected override void PreprocessingSteps(MagickImage image) {
-                base.PreprocessingSteps(image);
+                PreprocessResizeImage(image);
                 image.Sharpen();
-                image.BlackThreshold(new Percentage(thresholdPercentage));
-                image.WhiteThreshold(new Percentage(thresholdPercentage));
+                image.Alpha(AlphaOption.Remove);
+                image.BlackThreshold(new Percentage(30));
+                image.Negate();
             }
         }
 
         public class StatValuesImagePreprocessor : ResizeImagePreprocessor
         {
+            protected UserSettingsConfigManager UserSettings;
             protected override int thresholdPercentage => originalImageHeight >= 1010
                 ? 27//29
                 : 27;
             
-            public StatValuesImagePreprocessor(int resizePercentage) : base(resizePercentage) {
+            public StatValuesImagePreprocessor(UserSettingsConfigManager userSettings,
+                int resizePercentage) : base(resizePercentage) {
+                UserSettings = userSettings;
             }
         }
 

@@ -192,6 +192,7 @@ namespace Inkybot
                 row.Cells[2].Value = Numbers.ToString(itemStatConfig.Target);
                 row.Cells[3].Value = Numbers.ToString(itemStatConfig.TargetMinimum);
                 row.Cells[4].Value = itemStatConfig.Priority;
+                row.Cells[0].ToolTipText = $"Min: {itemStatConfig.Minimum}\nMax: {itemStatConfig.Maximum}";
 
                 updatedStats.Add(rowItemStat.Stat);
             }
@@ -260,7 +261,7 @@ namespace Inkybot
             RefreshStats();
         }
         
-        private void RefreshStats() {
+        public void RefreshStats() {
             if (magingJob.IsMaging)
                 return;
             new Thread(RefreshStatsTask).Start();

@@ -146,4 +146,9 @@
   <data name="autoShutdownComboBox.OptionMinutes" xml:space="preserve">
     <value>:value minutes</value>
   </data>
+  <data name="customResizeRatioNumericUpDownLabel.Text" xml:space="preserve">
+    <value>Rapport de redimensionnement d'image ROC personnalisé
+(laisser à "1" sauf si les statistiques ne le sont pas
+reconnu correctement)</value>
+  </data>
 </root>

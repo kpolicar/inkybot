@@ -45,6 +45,7 @@ namespace Inkybot.Services
                 get => _screenshot;
             }
             private bool saveToDisk;
+            private UserSettingsConfigManager userSettings;
             public static event EventHandler<ImageEventArgs>? Screenshot;
             public event EventHandler<FileSystemEventArgs>? Saved;
 
@@ -54,8 +55,9 @@ namespace Inkybot.Services
                 Responsive.Measurement? latestHistoryBounds,
                 bool saveToDisk = false) {
                 
-                Init();
                 screen = serviceContainer.GetService<ScreenCapture>();
+                userSettings = serviceContainer.GetService<UserSettingsConfigManager>();
+                Init();
                 LatestHistoryBounds = latestHistoryBounds ?? Measurements.HistoryBounds;
 
                 if (saveToDisk) {
@@ -121,11 +123,11 @@ namespace Inkybot.Services
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(200));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(150));
+                        new StatValuesImagePreprocessor(userSettings, 150));
                     statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new ResizeAndBinarizationImagePreprocessor(300));
+                        new ResizeAndBinarizationImagePreprocessor(userSettings, 300));
                     statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new ResizeAndBinarizationImagePreprocessor(300));
+                        new ResizeAndBinarizationImagePreprocessor(userSettings, 300));
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =

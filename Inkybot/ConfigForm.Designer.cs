@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -79,8 +80,11 @@ namespace Inkybot
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
             this.autoShutdownComboBox = new Inkybot.Controls.ComboBox();
+            this.customResizeRatioNumericUpDownLabel = new System.Windows.Forms.Label();
+            this.customResizeRatioNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.mainPanel = new System.Windows.Forms.Panel();
             this.automaticShutdownPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.customResizeRatioPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
@@ -303,6 +307,15 @@ namespace Inkybot
             this.automaticShutdownPanel.Dock = DockStyle.Fill;
             this.automaticShutdownPanel.AutoSize = true;
             //
+            // customResizeRatioPanel
+            // 
+            resources.ApplyResources(this.customResizeRatioPanel, "customResizeRatioPanel");
+            this.customResizeRatioPanel.Controls.Add(this.customResizeRatioNumericUpDownLabel);
+            this.customResizeRatioPanel.Controls.Add(this.customResizeRatioNumericUpDown);
+            this.customResizeRatioPanel.Name = "customResizeRatioPanel";
+            this.customResizeRatioPanel.Dock = DockStyle.Fill;
+            this.customResizeRatioPanel.AutoSize = true;
+            //
             // dataGridViewSidebarPanel
             // 
             resources.ApplyResources(this.dataGridViewSidebarPanel, "dataGridViewSidebarPanel");
@@ -340,6 +353,7 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.bottomPanel.Controls.Add(this.automaticShutdownPanel);
+            this.bottomPanel.Controls.Add(this.customResizeRatioPanel);
 
             this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
             this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
@@ -383,6 +397,26 @@ namespace Inkybot
             this.automaticShutdownLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.automaticShutdownLabel.Margin = new Padding(0, 6, 0, 0);
             this.automaticShutdownLabel.AutoSize = true;
+            // 
+            // customResizeRatioNumericUpDown
+            // 
+            this.customResizeRatioNumericUpDown.BackColor = Color.Black;
+            this.customResizeRatioNumericUpDown.ForeColor = System.Drawing.SystemColors.Control;
+            this.customResizeRatioNumericUpDown.Minimum = 0;
+            this.customResizeRatioNumericUpDown.Maximum = 4;
+            this.customResizeRatioNumericUpDown.Increment = new decimal(0.01d);
+            this.customResizeRatioNumericUpDown.DecimalPlaces = 2;
+            this.customResizeRatioNumericUpDown.Value = 1;
+            this.customResizeRatioNumericUpDown.Width = 50;
+            this.customResizeRatioNumericUpDown.ValueChanged += new EventHandler(customResizeRatioNumericUpDown_ValueChanged);
+            // 
+            // customResizeRatioNumericUpDownLabel
+            // 
+            resources.ApplyResources(this.customResizeRatioNumericUpDownLabel, "customResizeRatioNumericUpDownLabel");
+            this.customResizeRatioNumericUpDownLabel.Name = "customResizeRatioNumericUpDownLabel";
+            this.customResizeRatioNumericUpDownLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.customResizeRatioNumericUpDownLabel.Margin = new Padding(0, 3, 10, 0);
+            this.customResizeRatioNumericUpDownLabel.AutoSize = true;
             // 
             // scriptChangeButton
             // 
@@ -451,6 +485,7 @@ namespace Inkybot
         private System.Windows.Forms.Button showAdvancedOptionsButton;
         private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.FlowLayoutPanel automaticShutdownPanel;
+        private System.Windows.Forms.FlowLayoutPanel customResizeRatioPanel;
         private System.Windows.Forms.Panel dataGridViewSidebarPanel;
         private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
         private System.Windows.Forms.TableLayoutPanel bottomPanel;
@@ -478,6 +513,8 @@ namespace Inkybot
         private System.Windows.Forms.Label automaticShutdownLabel;
         private System.Windows.Forms.Label tooltipLabelExtra;
         private System.Windows.Forms.LinkLabel exampleScriptsLinkLabel;
+        private System.Windows.Forms.Label customResizeRatioNumericUpDownLabel;
+        private System.Windows.Forms.NumericUpDown customResizeRatioNumericUpDown;
 
         private System.Windows.Forms.DataGridView statsDataGridView;
         private System.Windows.Forms.PictureBox scriptValidPictureBox;
