@@ -177,7 +177,7 @@ namespace Inkybot.Services
             
                 data = new Dictionary<string, string> {
                     {"expend", state.newlySpent.ToString() },
-                    {"time_maging", ((int)Math.Round(timeMagingStopwatch.Elapsed.TotalMilliseconds / 1000d)).ToString() },
+                    {"time_maging", timeMagingStopwatch.ElapsedMilliseconds.ToString() },
                     {"expended_enabled", config.UserSettings.EnableKamasCalculation.ToString() },
                     {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
                     {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
