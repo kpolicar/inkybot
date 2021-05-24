@@ -94,6 +94,11 @@ namespace Inkybot
             var config = userSettingsConfigManager.Config(stat);
             var defaultConfig = configProvider.Default.Config(stat).Deconstruct();
 
+            
+            row.Cells[1].Style = !config.UseSmRunes ? modifiedStyle : row.DefaultCellStyle;
+            row.Cells[2].Style = config.UsePaRunes != stat.CanUsePaRunes ? modifiedStyle : row.DefaultCellStyle;
+            row.Cells[3].Style = config.UseRaRunes != stat.CanUseRaRunes ? modifiedStyle : row.DefaultCellStyle;
+            
             row.Cells[1].ToolTipText = config.UseSmRunes
                 ? resources.GetString("config.useRune")!.Replace(":rune", smRune.DisplayName)
                 : resources.GetString("config.dontUseRune")!.Replace(":rune", smRune.DisplayName);

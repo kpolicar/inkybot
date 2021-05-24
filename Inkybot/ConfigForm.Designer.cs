@@ -464,7 +464,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MinimumSize = new System.Drawing.Size(660, 650);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.tooltipLabelExtra);
