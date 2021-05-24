@@ -220,7 +220,7 @@ namespace Inkybot
             resetSetttingsLabel.Click += new System.EventHandler(resetSettings_Clicked);
             resources.ApplyResources(resetSetttingsLabel, "resetSetttingsLabel");
 
-            disableOpenCLLabel = new ToolStripButton();
+            disableOpenCLLabel = new ToolStripMenuItem();
             disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
             resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
 
@@ -313,7 +313,7 @@ namespace Inkybot
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         
-        private System.Windows.Forms.ToolStripButton disableOpenCLLabel;
+        private System.Windows.Forms.ToolStripMenuItem disableOpenCLLabel;
 
         #endregion
     }
