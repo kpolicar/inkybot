@@ -108,7 +108,9 @@ namespace Inkybot
                 var row = statsDataGridView.Rows
                     .FindWithTag<ItemStatRow>(tag => tag.Stat == itemStat.Stat)!;
                 
-                row.Cells[0].ToolTipText = $"Min: {itemStat.Min}\nMax: {itemStat.Max}";
+                row.Cells[0].ToolTipText = itemStat.Exo
+                    ? "Min: -\nMax: -"
+                    : $"Min: {itemStat.Min}\nMax: {itemStat.Max}";
                 row.Cells[1].Value = itemStat.Value;
                 updatedStats.Add(itemStat.Stat);
             }
@@ -179,7 +181,6 @@ namespace Inkybot
                         true,
                         stat.Mageable);
                     row.Tag = new ItemStatRow(stat, true);
-                    row.Cells[0].ToolTipText = "Min: -\nMax: -";
                 }
                 if (row == null)
                     return false;
@@ -192,7 +193,9 @@ namespace Inkybot
                 row.Cells[2].Value = Numbers.ToString(itemStatConfig.Target);
                 row.Cells[3].Value = Numbers.ToString(itemStatConfig.TargetMinimum);
                 row.Cells[4].Value = itemStatConfig.Priority;
-                row.Cells[0].ToolTipText = $"Min: {itemStatConfig.Minimum}\nMax: {itemStatConfig.Maximum}";
+                row.Cells[0].ToolTipText = itemStatConfig.Exo
+                    ? "Min: -\nMax: -"
+                    : $"Min: {itemStatConfig.Minimum}\nMax: {itemStatConfig.Maximum}";
 
                 updatedStats.Add(rowItemStat.Stat);
             }
@@ -222,7 +225,9 @@ namespace Inkybot
                 
                 var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.Priority, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
                 row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
-                row.Cells[0].ToolTipText = "Min: "+Numbers.ToString(statConfig.Value.Minimum)+"\nMax: "+Numbers.ToString(statConfig.Value.Maximum);
+                row.Cells[0].ToolTipText = mageStatConfig.Exo
+                    ? "Min: -\nMax: -"
+                    : $"Min: {statConfig.Value.Minimum}\nMax: {statConfig.Value.Maximum}";
             }
         }
 
