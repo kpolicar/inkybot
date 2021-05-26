@@ -13,6 +13,7 @@ namespace Inkybot
     public partial class MainForm : Form
     {
         private StatsForm setupForm;
+        private AnalyticsReporter analytics;
         private ApiClient api = null!;
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
@@ -29,6 +30,7 @@ namespace Inkybot
             magingJob = Program.Services.GetService<DofusMagingJob>();
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
+            analytics = Program.Services.GetService<AnalyticsReporter>();
             
             InitOcrIndicators();
             toastPanel.Hide();

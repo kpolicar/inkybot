@@ -10,7 +10,6 @@ namespace Inkybot
     public partial class MainForm
     {
         protected bool hasShownUnsupportedWarning = false;
-        private Action? onMagingJobConfirmedDelegate;
 
         private void MainFormDomainEvents() {
             magingJob.Starting += OnMagingStarting;
@@ -22,13 +21,14 @@ namespace Inkybot
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
             magingJob.BalanceSpent += OnMagingBalanceSpent;
-            (magingJob as ScreenReaderDofusMagingJob)!.SuccessfulCombineTick += (_, _) => {
-                onMagingJobConfirmedDelegate?.Invoke();
-                onMagingJobConfirmedDelegate = null;
-            };
-            
-            var actionHandler = Program.Services.GetService<ActionHandler>();
-            actionHandler.ActionExecuted += OnMagingAction;
+            analytics.ExoAttempt += OnExoAttempt;
+        }
+
+        private void OnExoAttempt(object sender, EventArgs e) {
+            int count; 
+            var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
+            count = parsed ? ++count : 0;
+            exoAttemptsValueLabel.Text = count.ToString();
         }
 
         private void OnMagingBalanceSpent(object sender, BalanceChangedEventArgs e) {
@@ -43,18 +43,6 @@ namespace Inkybot
 
         private void OnSensitiveMage(object sender, MagingJobStartedEventArgs e) {
             StartMageExoOverConfirmDialog();
-        }
-
-        private void OnMagingAction(object sender, ActionExecutedEventArgs e) {
-            if (!(e.action is CombineRune combine) || !combine.Exo || !combine.Rune.Stat.Config.HighSinkStat)
-                return;
-            
-            onMagingJobConfirmedDelegate = () => BeginInvoke(new MethodInvoker(delegate {
-                int count; 
-                var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
-                count = parsed ? ++count : 0;
-                exoAttemptsValueLabel.Text = count.ToString();
-            }));
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {

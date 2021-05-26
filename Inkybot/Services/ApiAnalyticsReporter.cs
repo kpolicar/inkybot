@@ -27,6 +27,7 @@ namespace Inkybot.Services
             public Dictionary<Stat, int> exoAttempts = new Dictionary<Stat, int>();
             public Dictionary<Stat, int> exoSuccesses = new Dictionary<Stat, int>();
         }
+        public event EventHandler? ExoAttempt;
         private ApiAnalyticsReporterState state = new ApiAnalyticsReporterState();
         
         private ConfigManager config = null!;
@@ -130,6 +131,7 @@ namespace Inkybot.Services
                             state.exoAttempts[stat] += 1;
                         else
                             state.exoAttempts[stat] = 1;
+                        ExoAttempt?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
