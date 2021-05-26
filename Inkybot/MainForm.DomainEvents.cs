@@ -28,7 +28,9 @@ namespace Inkybot
             int count; 
             var parsed = int.TryParse(exoAttemptsValueLabel.Text, out count);
             count = parsed ? ++count : 0;
-            exoAttemptsValueLabel.Text = count.ToString();
+            BeginInvoke(new MethodInvoker(() => {
+                exoAttemptsValueLabel.Text = count.ToString();
+            }));
         }
 
         private void OnMagingBalanceSpent(object sender, BalanceChangedEventArgs e) {
