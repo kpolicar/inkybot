@@ -2176,7 +2176,8 @@ we highly suggest you read the usage instructions:</value>
   </data>
   <data name="discordLabel.Text" xml:space="preserve">
     <value>You should also link Discord with your Inkybot account,
-so you may receive notifications during the bot's maging session.</value>
+so you may receive notifications during the bot's
+maging session.</value>
   </data>
   <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
     <value>0</value>

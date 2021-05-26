@@ -96,7 +96,7 @@ namespace Inkybot.Services
             return true;
         }
 
-        private bool ConfigIsSetForItem(Item item)
+        public bool ConfigIsSetForItem(Item item)
             => Config?.IsConfiguredFor(item) ?? false;
 
         public void ChangeStatConfigTarget(Stat stat, int? target) {

@@ -273,7 +273,6 @@ namespace Inkybot.Services
                 var item = job.dataProvider.Item();
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
-                RaiseEventIfMagingItemWithHighSinkExo(item);
                 
                 EnforceSameItemAsPreviousTick(item);
                 EnforceStatsChanged(item);
@@ -300,6 +299,7 @@ namespace Inkybot.Services
                         if (combine.Exo) {
                             job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                         }
+                        RaiseEventIfMagingItemWithHighSinkExo(item);
                     }
                 }
 

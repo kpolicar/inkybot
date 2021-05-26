@@ -11,7 +11,7 @@ namespace Inkybot.Domain
         public static string StatisticsViewUrl => $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics";
         public static readonly string StatisticsNewSessionUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics/newsession";
         public static readonly string ApiUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}";
-        public static readonly string AuthUrl = $"{BaseUrl}/oauth";
+        public static readonly string AuthUrl = $"{BaseUrl}/oauth-v3";
         public static readonly string SubscribeUrl = $"{BaseUrl}/subscribe";
         public static string Signature => Aes256CbcEncrypter.Encrypt(PlainKey);
         public static byte[] Key => System.Convert.FromBase64String(PlainKey);
@@ -19,7 +19,7 @@ namespace Inkybot.Domain
         #if DEBUG
         public const string PlainKey = "***REMOVED***";
         #else
-        public const string PlainKey "***REMOVED***";
+        public const string PlainKey = "***REMOVED***";
         #endif
     }
 }

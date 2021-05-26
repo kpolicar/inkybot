@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,7 +36,9 @@ namespace Inkybot
             rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
             api = Program.Services.GetService<ApiClient>();
+            openSettingsInFileExplorer.Visible = File.Exists(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
         }
+
 
         private async void button1_Click(object sender, EventArgs e) {
             errorMessage.Text = "";

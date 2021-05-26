@@ -48,7 +48,7 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         private int ticks;
-        public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.First();
+        public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
         private const int MaxReasonableBalanceDifference = 300000;
 
 

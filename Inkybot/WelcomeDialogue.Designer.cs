@@ -224,7 +224,7 @@ namespace Inkybot
             disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
             resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
 
-            var openSettingsInFileExplorer = new ToolStripMenuItem();
+            openSettingsInFileExplorer = new ToolStripMenuItem();
             openSettingsInFileExplorer.Click += new System.EventHandler(openSettingsInFileExplorer_Clicked);
             resources.ApplyResources(openSettingsInFileExplorer, "openSettingsInFileExplorer");
             
@@ -280,6 +280,7 @@ namespace Inkybot
         private System.Windows.Forms.ContextMenuStrip settingsContextMenuStrip;
 
         private System.Windows.Forms.Panel panel2;
+        private ToolStripMenuItem openSettingsInFileExplorer;
 
         private System.Windows.Forms.CheckBox rememberPasswordCheckbox;
 

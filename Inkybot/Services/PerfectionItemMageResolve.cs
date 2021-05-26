@@ -22,6 +22,7 @@ namespace Inkybot.Services
 
         protected float SinkNeededForAllOvermagesToReachTargetMinimum() =>
             config.StatsConfig
+                .Where(stat => !stat.Value.HighSinkStat)
                 .Sum(statConfig => SinkNeededToReachTargetMinimum(statConfig.Key, statConfig.Value));
         
         protected int SinkNeededToReachTargetMinimum(Stat stat, MageConfig.ItemStatMageConfig mageConfig) =>
@@ -33,7 +34,8 @@ namespace Inkybot.Services
 
         protected override int Priority(ItemMage itemMage) {
             var basePriority = base.Priority(itemMage);
-            return basePriority + itemMage.MageConfig.Priority*item.Stats.Length;
+            return basePriority + itemMage.MageConfig.Priority*item.Stats.Length
+                                + (itemMage.HasReachedTargetMinimum ? 0 : 1000*item.Stats.Length);
         }
     }
 }

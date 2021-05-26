@@ -278,7 +278,8 @@
   <data name="greetingsLabel.Text" xml:space="preserve">
     <value>Salutations!
 C'est ta première fois avec Inkybot, nous recommandons
-fortement que tu te familiarise avec les instructions d'utilisation:</value>
+fortement que tu te familiarise avec les instructions
+d'utilisation:</value>
   </data>
   <data name="&gt;&gt;splitContainer1.Panel1.Name" xml:space="preserve">
     <value>splitContainer1.Panel1</value>
@@ -2175,8 +2176,9 @@ fortement que tu te familiarise avec les instructions d'utilisation:</value>
     <value>Inkybot - Bienvenu</value>
   </data>
   <data name="discordLabel.Text" xml:space="preserve">
-    <value>Tu dois aussi lier ton Discord avec ton compte Inkybot pour pouvoir
-recevoir les notifications du bot pendant sa session de forgemagie.</value>
+    <value>Tu dois aussi lier ton Discord avec ton compte Inkybot
+pour pouvoir recevoir les notifications du bot pendant
+sa session de forgemagie.</value>
   </data>
   <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
     <value>0</value>

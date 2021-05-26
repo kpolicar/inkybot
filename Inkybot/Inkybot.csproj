@@ -28,7 +28,6 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <Obfuscate>True</Obfuscate>
-        <ConfuserReplaceOutput>True</ConfuserReplaceOutput>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
