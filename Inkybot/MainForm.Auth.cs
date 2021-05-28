@@ -76,7 +76,7 @@ namespace Inkybot
                     UserNotSubscribedException =>
                         resources.GetString("subscriptiontimer.nolongersubscribed")!+"\n"+
                         resources.GetString("subscriptiontimer.nolongersubscribed_pleaseextend")!,
-                    _ => resources.GetString("subscriptiontimer.generalexception")!
+                    { } e => resources.GetString("subscriptiontimer.generalexception")+"\nMessage: "+e.Message
                 };
                 Debug.WriteLine(exception.Message);
                 magingJob.StopMage();
