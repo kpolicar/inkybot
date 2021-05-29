@@ -290,7 +290,7 @@ namespace Inkybot.Services
                         action = actions.Finish(item);
                     } else {
                         
-                        if (job.unsuccessfulCombineTicks >= 3) {
+                        if (job.unsuccessfulCombineTicks >= 5) {
                             throw new OutOfRunesException(combine.Rune);
                         }
                     

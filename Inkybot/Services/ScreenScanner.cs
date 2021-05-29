@@ -37,7 +37,7 @@ namespace Inkybot.Services
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) {
                 engine = new TesseractEngine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Resources\Tesseract",
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
                     CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
                     EngineMode.Default);
                 this.preprocessor = preprocessor ?? new ImagePreprocessor();
@@ -78,8 +78,7 @@ namespace Inkybot.Services
                     : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
                 if (saveToDisk) {
-                    var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                                     @"/debug/images";
+                    var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
                     Directory.CreateDirectory(folderPath);
                     var fileName = Path.GetRandomFileName() + ".bmp";
 

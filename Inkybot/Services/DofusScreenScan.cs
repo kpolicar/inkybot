@@ -105,8 +105,7 @@ namespace Inkybot.Services
             }
 
             public void Save() {
-                var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
-                                 @"/debug/images";
+                var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
                 Directory.CreateDirectory(folderPath);
                 var fileName = $"{DateTime.Now.Ticks}.png";
                 screenshot.Save(folderPath + $@"/{fileName}");

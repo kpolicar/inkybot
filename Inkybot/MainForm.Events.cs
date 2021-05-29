@@ -94,7 +94,7 @@ namespace Inkybot
                 debugScreenshotButton.Enabled = true;
             }));
                 
-            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/debug/images";
+            var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
             folderPath = folderPath.Replace("/", "\\");
             try {
                 WindowHelpers.OpenFolderAndSelectFiles(folderPath, files.Select(fullPath => fullPath.Replace("/", "\\")).ToArray());
