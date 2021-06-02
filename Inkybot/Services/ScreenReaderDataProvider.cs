@@ -100,9 +100,13 @@ namespace Inkybot.Services
             if (previousMinMaxScan.Length == 0) {
                 previousMinMaxScan = Scan!.MinMaxStats().Result;
             }
-            var scanResults = Scan!.Stats().Result;
-            var statsResult = scanResults
-                .ZipWithDefault(previousMinMaxScan, (value, minmax) => (minmax ?? "- -") + " " + value)
+            var statResults = Scan!.Stats().Result;
+            var relevantMinMaxes = previousMinMaxScan.Take(statResults.Length);
+            
+            var statsResult = statResults
+                .ZipWithDefault(
+                    relevantMinMaxes,
+                    (value, minmax) => (minmax ?? "- -") + " " + value)
                 .ToArray();
             
             ScannedStats?.Invoke(this, new ScannedRegionEventArgs(statsResult));

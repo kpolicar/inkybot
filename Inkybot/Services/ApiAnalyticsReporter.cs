@@ -131,7 +131,8 @@ namespace Inkybot.Services
                             state.exoAttempts[stat] += 1;
                         else
                             state.exoAttempts[stat] = 1;
-                        ExoAttempt?.Invoke(this, EventArgs.Empty);
+                        if (stat.Config.HighSinkStat)
+                            ExoAttempt?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }

@@ -27,7 +27,7 @@ namespace Inkybot.Domain
         }
 
         public bool IsDifferentFrom(ItemHistoryAnalysis? analysis) {
-            if (analysis == null)
+            if (analysis == null || !analysis.history.Any())
                 return history.Any();
             var comparison = history.Zip(analysis.history,
                 (target, comparator) => new {Target = target, Comparator = comparator});
