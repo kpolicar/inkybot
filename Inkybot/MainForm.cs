@@ -34,12 +34,7 @@ namespace Inkybot
             
             InitOcrIndicators();
             toastPanel.Hide();
-            mageInfoPanel.Hide();
             debugScreenshotButton.Hide();
-            exoAttemptsLabel.Hide();
-            exoAttemptsValueLabel.Hide();
-            kamasSpentLabel.Hide();
-            kamasSpentValueLabel.Hide();
             Hide();
             
             InitAuth();

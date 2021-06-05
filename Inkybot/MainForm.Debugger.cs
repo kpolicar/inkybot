@@ -80,7 +80,6 @@ namespace Inkybot
 
         private void StartDebugging() {
             debugging = true;
-            sidebarPanel.BringToFront();
             #if DEBUG
             mousePositionLabel.Show();
             #endif
@@ -105,6 +104,7 @@ namespace Inkybot
             var rect = Responsive.ResponsiveRectangle(measurements, width, height);
             rect.X -= 2;
             rect.Y -= 2;
+            rect.X += dofusClientPanel.Location.X;
             rect.Width += 4;
             rect.Height += 4;
             if (indicatorControl is Crosshair) {

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
 using Inkybot.Domain;
@@ -47,6 +48,7 @@ namespace Inkybot
             this.shutdownToastValueLabel = new System.Windows.Forms.Label();
             this.shutdownToastPanelCloseButton = new System.Windows.Forms.Button();
             this.sidebarPanel = new System.Windows.Forms.Panel();
+            this.sidebarRightPanel = new System.Windows.Forms.Panel();
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
@@ -78,6 +80,7 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
+            this.sidebarRightPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
             this.secondaryButtonsPanel.SuspendLayout();
@@ -89,6 +92,8 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.dofusClientPanel, "dofusClientPanel");
             this.dofusClientPanel.Name = "dofusClientPanel";
+            this.dofusClientPanel.Dock = DockStyle.Fill;
+            this.dofusClientPanel.BackColor = Color.Black;
             // 
             // toastPanel
             // 
@@ -164,10 +169,21 @@ namespace Inkybot
             resources.ApplyResources(this.sidebarPanel, "sidebarPanel");
             this.sidebarPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.sidebarPanel.Controls.Add(this.buttonsPanel);
-            this.sidebarPanel.Controls.Add(this.mageInfoPanel);
             this.sidebarPanel.Controls.Add(this.userInfoPanel);
             this.sidebarPanel.Controls.Add(this.mousePositionLabel);
             this.sidebarPanel.Name = "sidebarPanel";
+            this.sidebarPanel.Dock = DockStyle.Left;
+            // 
+            // sidebarRightPanel
+            // 
+            resources.ApplyResources(this.sidebarPanel, "sidebarRightPanel");
+            this.sidebarRightPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
+            this.sidebarRightPanel.Controls.Add(this.mageInfoPanel);
+            this.sidebarRightPanel.Controls.Add(this.statisticsButton);
+            this.sidebarRightPanel.Name = "sidebarRightPanel";
+            this.sidebarRightPanel.Dock = DockStyle.Right;
+            this.sidebarRightPanel.Padding = new Padding(0, 10, 0, 0);
+            this.sidebarRightPanel.MaximumSize = new Size(113, 100000);
             // 
             // buttonsPanel
             // 
@@ -182,11 +198,7 @@ namespace Inkybot
             resources.ApplyResources(this.primaryButtonsPanel, "primaryButtonsPanel");
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
             this.primaryButtonsPanel.Controls.Add(this.setupButton);
-            this.primaryButtonsPanel.Controls.Add(this.statisticsButton);
-            this.primaryButtonsPanel.Controls.Add(this.exoAttemptsLabel);
-            this.primaryButtonsPanel.Controls.Add(this.exoAttemptsValueLabel);
-            this.primaryButtonsPanel.Controls.Add(this.kamasSpentLabel);
-            this.primaryButtonsPanel.Controls.Add(this.kamasSpentValueLabel);
+            this.primaryButtonsPanel.Controls.Add(this.configButton);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
             // 
             // toggleMageButton
@@ -217,6 +229,7 @@ namespace Inkybot
             this.statisticsButton.ForeColor = System.Drawing.SystemColors.Control;
             this.statisticsButton.Name = "statisticsButton";
             this.statisticsButton.UseVisualStyleBackColor = false;
+            this.statisticsButton.Dock = DockStyle.Top;
             this.statisticsButton.Click += new System.EventHandler(this.statisticsButton_Click);
             // 
             // kamasSpentLabel
@@ -248,7 +261,6 @@ namespace Inkybot
             resources.ApplyResources(this.secondaryButtonsPanel, "secondaryButtonsPanel");
             this.secondaryButtonsPanel.Controls.Add(this.hallOfFameButton);
             this.secondaryButtonsPanel.Controls.Add(this.helpButton);
-            this.secondaryButtonsPanel.Controls.Add(this.configButton);
             this.secondaryButtonsPanel.Controls.Add(this.debugScreenshotButton);
             this.secondaryButtonsPanel.Controls.Add(this.debugButton);
             this.secondaryButtonsPanel.Name = "secondaryButtonsPanel";
@@ -313,6 +325,10 @@ namespace Inkybot
             this.mageInfoPanel.BackColor = System.Drawing.Color.Transparent;
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
+            this.mageInfoPanel.Controls.Add(this.kamasSpentValueLabel);
+            this.mageInfoPanel.Controls.Add(this.kamasSpentLabel);
+            this.mageInfoPanel.Controls.Add(this.exoAttemptsValueLabel);
+            this.mageInfoPanel.Controls.Add(this.exoAttemptsLabel);
             this.mageInfoPanel.Name = "mageInfoPanel";
             // 
             // sinkValueLabel
@@ -388,8 +404,10 @@ namespace Inkybot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.shutdownToastPanel);
-            this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.dofusClientPanel);
+            this.Controls.Add(this.sidebarPanel);
+            this.Controls.Add(this.sidebarRightPanel);
+            this.BackColor = Color.Black;
             this.HelpButton = true;
             this.MinimumSize = new System.Drawing.Size(720, 480);
             this.Name = "MainForm";
@@ -401,6 +419,8 @@ namespace Inkybot
             this.shutdownToastPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).EndInit();
+            this.sidebarRightPanel.ResumeLayout(false);
+            this.sidebarRightPanel.PerformLayout();
             this.sidebarPanel.ResumeLayout(false);
             this.sidebarPanel.PerformLayout();
             this.buttonsPanel.ResumeLayout(false);
@@ -466,6 +486,7 @@ namespace Inkybot
         private System.Windows.Forms.FlowLayoutPanel toastPanel;
         private System.Windows.Forms.FlowLayoutPanel shutdownToastPanel;
         private System.Windows.Forms.Panel sidebarPanel;
+        private System.Windows.Forms.Panel sidebarRightPanel;
         private System.Windows.Forms.Timer subscriptionCheckTimer;
         private System.Windows.Forms.Timer autoShutdownTimer;
     }

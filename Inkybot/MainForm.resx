@@ -145,9 +145,6 @@
   <data name="sinkLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
-  <data name="dofusClientPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="helpButton.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -188,10 +185,10 @@
     <value>0, 0</value>
   </data>
   <data name="configButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 45</value>
+    <value>113, 61</value>
   </data>
   <data name="mageInfoPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 57</value>
+    <value>113, 400</value>
   </data>
   <data name="usernameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -206,7 +203,7 @@
     <value>None</value>
   </data>
   <data name="configButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Calibri, 8.25pt</value>
+    <value>Calibri, 9.75pt</value>
   </data>
   <data name="autoShutdownTimeElapsed.TextMinutes" xml:space="preserve">
     <value>:value minutes</value>
@@ -274,14 +271,11 @@
   <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
   </data>
-  <data name="sidebarPanel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
     <value>Upgrade Plan</value>
   </data>
   <data name="sinkLabel.Text" xml:space="preserve">
-    <value>Sink</value>
+    <value>SINK</value>
   </data>
   <data name="autoShutdownTimeElapsed.TextStopped" xml:space="preserve">
     <value>Automatic shutdown timer has been stopped!</value>
@@ -290,7 +284,7 @@
     <value>95, 29</value>
   </data>
   <data name="configButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 3, 0, 0</value>
+    <value>0, 0, 0, 0</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Inkybot</value>
@@ -337,12 +331,6 @@
   <data name="shutdownToastValueLabel.Text" xml:space="preserve">
     <value>5 minutes</value>
   </data>
-  <data name="dofusClientPanel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="sidebarPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left</value>
-  </data>
   <data name="&gt;&gt;userInfoPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -364,6 +352,9 @@
   <data name="kamasSpentValueLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 5, 3, 0</value>
   </data>
+  <data name="sinkValueLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 5, 3, 0</value>
+  </data>
   <data name="sinkValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
@@ -378,12 +369,6 @@
   </data>
   <data name="shutdownToastPanelCloseButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
-  </data>
-  <data name="exoAttemptsLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="kamasSpentLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="kamasSpentLabel.Text" xml:space="preserve">
         <value>KAMAS SPENT</value>
@@ -439,8 +424,8 @@
   <data name="&gt;&gt;mousePositionLabel.Name" xml:space="preserve">
     <value>mousePositionLabel</value>
   </data>
-  <data name="mageInfoPanel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="sinkLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 10, 3, 0</value>
   </data>
   <data name="exoAttemptsLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 10, 3, 0</value>
@@ -530,7 +515,7 @@
     <value>50, 8</value>
   </data>
   <data name="sinkValueLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 28</value>
+    <value>0, 0</value>
   </data>
   <data name="&gt;&gt;toastLabel.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -542,7 +527,7 @@
     <value>0, 3, 0, 0</value>
   </data>
   <data name="dofusClientPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+    <value>114, 0</value>
   </data>
   <data name="mousePositionLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>TopCenter</value>
@@ -608,10 +593,10 @@
     <value>TopCenter</value>
   </data>
   <data name="&gt;&gt;exoAttemptsValueLabel.Parent" xml:space="preserve">
-    <value>primaryButtonsPanel</value>
+    <value>mageInfoPanel</value>
   </data>
   <data name="&gt;&gt;kamasSpentValueLabel.Parent" xml:space="preserve">
-    <value>primaryButtonsPanel</value>
+    <value>mageInfoPanel</value>
   </data>
   <data name="exoAttemptsLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -674,10 +659,10 @@
     <value>primaryButtonsPanel</value>
   </data>
   <data name="exoAttemptsValueLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 156</value>
+    <value>0, 0</value>
   </data>
   <data name="kamasSpentValueLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 156</value>
+    <value>0, 0</value>
   </data>
   <data name="&gt;&gt;exoAttemptsLabel.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -807,11 +792,14 @@
   <data name="sidebarPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="sidebarRightPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
   <data name="&gt;&gt;exoAttemptsLabel.Parent" xml:space="preserve">
-    <value>primaryButtonsPanel</value>
+    <value>mageInfoPanel</value>
   </data>
   <data name="&gt;&gt;kamasSpentLabel.Parent" xml:space="preserve">
-    <value>primaryButtonsPanel</value>
+    <value>mageInfoPanel</value>
   </data>
   <data name="loggedInAsLabel.Text" xml:space="preserve">
     <value>LOGGED IN AS</value>
@@ -938,10 +926,10 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="exoAttemptsLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 138</value>
+    <value>0, 0</value>
   </data>
   <data name="kamasSpentLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 151</value>
+    <value>0, 0</value>
   </data>
   <data name="toastPanelCloseButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>Stretch</value>
@@ -950,9 +938,6 @@
     <value>Stretch</value>
   </data>
   <data name="setupButton.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="statisticsButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="toastIconPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
@@ -989,10 +974,10 @@
     <value>113, 61</value>
   </data>
   <data name="exoAttemptsValueLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 24</value>
+    <value>113, 40</value>
   </data>
   <data name="kamasSpentValueLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 24</value>
+    <value>113, 40</value>
   </data>
   <data name="&gt;&gt;sinkValueLabel.Parent" xml:space="preserve">
     <value>mageInfoPanel</value>
@@ -1004,7 +989,7 @@
     <value>113, 96</value>
   </data>
   <data name="sinkLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 13</value>
+    <value>113, 16</value>
   </data>
   <data name="subscribePlanUpgradeLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 13</value>
@@ -1067,7 +1052,7 @@
     <value>Trebuchet MS, 14.25pt, style=Bold</value>
   </data>
   <data name="mageInfoPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 683</value>
+    <value>0, 0</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MainForm</value>
@@ -1107,12 +1092,6 @@
   </data>
   <data name="debugButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 45</value>
-  </data>
-  <data name="exoAttemptsValueLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="kamasSpentValueLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="&gt;&gt;subscribedInfoLabel.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -3018,16 +2997,16 @@
     <value>$this</value>
   </data>
   <data name="exoAttemptsLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 13</value>
+    <value>113, 16</value>
   </data>
   <data name="kamasSpentLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 13</value>
+    <value>113, 16</value>
   </data>
   <data name="secondaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 240</value>
   </data>
   <data name="sinkValueLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 24</value>
+    <value>113, 40</value>
   </data>
   <data name="statsValuesOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -3069,6 +3048,9 @@
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="sidebarPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 784</value>
+  </data>
+  <data name="sidebarRightPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 784</value>
   </data>
   <data name="&gt;&gt;loggedInAsLabel.Type" xml:space="preserve">
@@ -3147,7 +3129,7 @@
     <value>0, 15</value>
   </data>
   <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 300</value>
+    <value>113, 200</value>
   </data>
   <data name="historyOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -3162,7 +3144,7 @@
     <value>70, 13</value>
   </data>
   <data name="mageInfoPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
+    <value>Top</value>
   </data>
   <data name="configButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 101</value>
