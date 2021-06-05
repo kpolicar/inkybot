@@ -25,7 +25,6 @@ namespace Inkybot.Actions
             var itemStats = screenDataProvider.previousScannedItem!.Stats;
             var column = (int) Rune.Type;
 
-            var combineButtonPosition = GetCursorTarget(Measurements.CombineButtonMeasurement);;
             for (var row = 0; row < itemStats.Length; row++) {
                 if (Rune.Stat != itemStats[row].Stat)
                     continue;
@@ -33,7 +32,6 @@ namespace Inkybot.Actions
                 var pos = RunePosition(column, row);
                 
                 Input.Click(pos.X, pos.Y);
-                Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
                 return;
             }
 
