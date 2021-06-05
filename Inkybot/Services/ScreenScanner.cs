@@ -36,14 +36,18 @@ namespace Inkybot.Services
                 Func<string, string[]>? split = null,
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) {
-                engine = new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
-                    EngineMode.Default);
+                engine = CreateEngine();
                 this.preprocessor = preprocessor ?? new ImagePreprocessor();
                 this.regionOfInterest = regionOfInterest;
                 this.split = split;
                 this.segMode = segMode;
+            }
+
+            protected virtual TesseractEngine CreateEngine() {
+                return new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
+                    EngineMode.Default);
             }
 
             public void SetVariables(Action<TesseractEngine> callback) {
@@ -140,6 +144,12 @@ namespace Inkybot.Services
                     engine.SetVariable("classify_bln_numeric_mode", 1);
                 });
             }
+
+            protected override TesseractEngine CreateEngine() =>
+                new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    "digits",
+                    EngineMode.Default);
         }
 
         public class PositiveNumberScreenScanner : ScreenScanner
@@ -153,6 +163,12 @@ namespace Inkybot.Services
                     engine.SetVariable("classify_bln_numeric_mode", 1);
                 });
             }
+            
+            protected override TesseractEngine CreateEngine() =>
+                new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    "digits",
+                    EngineMode.Default);
         }
 
         public class KamasScanner : ScreenScanner
