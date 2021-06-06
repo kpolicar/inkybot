@@ -46,7 +46,7 @@ namespace Inkybot.Services
             protected virtual TesseractEngine CreateEngine() {
                 return new TesseractEngine(
                     Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
+                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName+"+digits",
                     EngineMode.Default);
             }
 
