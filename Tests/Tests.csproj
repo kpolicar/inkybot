@@ -74,6 +74,7 @@
         <Compile Include="MagingAIOverMageTest.cs" />
         <Compile Include="MagingAIOversinkTests.cs" />
         <Compile Include="MagingAIPreserveSinkForOvermage.cs" />
+        <Compile Include="MagingAIRangeExoTest.cs" />
         <Compile Include="OversinkTests.cs" />
         <Compile Include="MagingAIFinishedTests.cs" />
         <Compile Include="MagingAIOverTargetTest.cs" />

@@ -70,7 +70,7 @@ namespace Inkybot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (-? ?\d+) ?(%? ?[A-z( ]+[A-z)]).
+        ///   Looks up a localized string similar to (-? *\d+) ?(%? *[A-z( ]+[A-z)]).
         /// </summary>
         internal static string HistoryEntryPattern {
             get {

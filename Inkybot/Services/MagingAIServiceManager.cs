@@ -62,8 +62,7 @@ namespace Inkybot.Services
             try {
                 DofusMagingAIContract magus = script.CompileClass(code);
                 if (script.Error) {
-                    Debug.WriteLine("error: " + script.ErrorMessage);
-                    return;
+                    throw script.LastException;
                 }
                 if (magus is HasDependencies dependant)
                     dependant.BindDependencies(serviceContainer);

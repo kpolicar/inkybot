@@ -54,7 +54,7 @@ namespace Inkybot.Adapters
             var stat = GetStatFromName(name);
 
             int parsedValue;
-            if (!int.TryParse(value, out parsedValue)) {
+            if (!int.TryParse(value.Replace(" ", ""), out parsedValue)) {
                 throw new CouldNotResolveStatValueException($"Error occured trying to resolve stat value for \"{name}\"");
             }
 

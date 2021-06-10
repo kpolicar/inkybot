@@ -33,6 +33,8 @@ namespace Inkybot.Actions
                 var pos = RunePosition(column, row);
                 
                 Input.Click(pos.X, pos.Y);
+                Thread.Sleep(5);
+                Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
                 return;
             }
 

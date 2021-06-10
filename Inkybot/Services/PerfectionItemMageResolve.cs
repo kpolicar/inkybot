@@ -8,9 +8,9 @@ namespace Inkybot.Services
 {
     internal class PerfectionItemMageResolve : TargetItemMageResolve
     {
-        private float Sink;
+        private int Sink;
         
-        public PerfectionItemMageResolve(MageConfig config, Item item, float sink, int runeTypeOffset = 0)
+        public PerfectionItemMageResolve(MageConfig config, Item item, int sink, int runeTypeOffset = 0)
             : base(config, item, runeTypeOffset) =>
             Sink = sink;
         

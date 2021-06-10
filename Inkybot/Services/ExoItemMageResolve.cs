@@ -56,6 +56,6 @@ namespace Inkybot.Services
         }
         
         protected override int Priority(ItemMage itemMage) =>
-            (int) itemMage.Rune.Sink - (itemMage.Rune.Sink <= Sink ? 1 : 0) * 1000;
+            (int) itemMage.Rune.Sink - ((int)itemMage.Rune.Sink <= Sink ? 1 : 0) * 1000;
     }
 }

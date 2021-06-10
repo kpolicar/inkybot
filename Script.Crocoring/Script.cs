@@ -8,23 +8,17 @@ namespace Script.Crocoring
 {
     public class CrocoringMagingAI : CustomDofusMagingAI
     {
-        protected override bool ShouldPerfectStats => Sink > 33;
+        protected override bool ShouldPerfectStats => Sink > 13;
         protected override bool ShouldOvermageToUseRemainingSink => false;
 
         protected override IAction Resolve() {
-            if (SatisfiesCustomFinishCondition) {
-                return Finish();
-            }
             return ResolveDefault();
         }
-
-        protected bool SatisfiesCustomFinishCondition =>
-            Item.Stats[Stat.Vitality]?.Value >= 370 && Sink < 3;
 
         protected override ItemMage? BeforeExoRune(ItemMage proposedMage) =>
             (Item.IsOvermaged, Item.HasExo, Sink) switch {
                 (_, _, _) when Sink % 10 >= 3 => ItemMage(new Rune(Stat.Vitality, Rune.RuneType.Pa)),
-                (_, _, >=10) => ItemMage(new Rune(Stat.Vitality, Rune.RuneType.Ra)),
+                (_, _, _) when Sink >= 10 => ItemMage(new Rune(Stat.Vitality, Rune.RuneType.Ra)),
                 (false, false, 2) => ItemMage(new Rune(Stat.EarthResistance, Rune.RuneType.Sm)),
                 (false, false, 1) => ItemMage(new Rune(Stat.Initiative, Rune.RuneType.Sm)),
                 _ => null
