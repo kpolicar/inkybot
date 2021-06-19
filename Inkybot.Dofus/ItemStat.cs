@@ -40,7 +40,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of oversink of the stat on the item.</summary>
          */
-        public float Oversink => Math.Max(Value-Max, 0) * Stat.SinkValue;
+        public decimal Oversink => Math.Max(Value-Max, 0) * Stat.SinkValue;
 
         public ItemStat(string statIdentifier, int value, int min, int max)
             : this (Stat.FirstOrNew(statIdentifier), value, min, max) {

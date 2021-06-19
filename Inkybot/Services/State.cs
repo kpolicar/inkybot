@@ -22,7 +22,7 @@ namespace Inkybot.Services
             public bool IsRestarting { get; set; }
             public bool IsMaging { get; set; }
             public JobStep Step;
-            public float Sink;
+            public decimal Sink;
             public int Balance;
             public IAction? PreviousAction;
             public ItemHistoryAnalysis? PreviousHistory;
@@ -33,7 +33,7 @@ namespace Inkybot.Services
             public void Reset() {
                 Step = JobStep.STANDARD;
                 PreviousCombineWasExoAttempt = false;
-                Sink = 0f;
+                Sink = 0m;
                 Balance = 0;
                 PreviousAction = null;
                 PreviousHistory = null;

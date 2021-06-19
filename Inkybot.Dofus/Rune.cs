@@ -76,7 +76,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of sink the rune will consume.</summary>
          */
-        public float Sink => Stat.SinkValue * IncreaseInValue;
+        public decimal Sink => Stat.SinkValue * IncreaseInValue;
         
         /**
          * <summary>The representable display name of the rune.</summary>

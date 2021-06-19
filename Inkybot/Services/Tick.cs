@@ -230,8 +230,8 @@ namespace Inkybot.Services
 
             private void ChangeSinkFromLastAction(MageHistoryRecord lastHistoryRecord) {
                 var sink = job.Sink;
-                float sinkChange;
-                float attemptedSinkChange;
+                decimal sinkChange;
+                decimal attemptedSinkChange;
                 
                 try {
                     sinkChange = lastHistoryRecord.ChangeInSink;
@@ -265,7 +265,7 @@ namespace Inkybot.Services
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));
                 }
 
-                job.Sink = Math.Max(0f, sink);
+                job.Sink = Math.Max(0m, sink);
             }
 
 

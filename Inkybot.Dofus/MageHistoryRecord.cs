@@ -24,7 +24,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>How much sink had changed as a result of the stat change</summary>
          */
-        public float SinkModifier => stat.SinkValue * -value;
+        public decimal SinkModifier => stat.SinkValue * -value;
 
         /**
          * <param name="stat">The stat that was changed</param>
@@ -75,10 +75,10 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of sink that has been changed by the history record.</summary>
          */
-        public float ChangeInSink {
+        public decimal ChangeInSink {
             get {
                 if (!SinkChanged)
-                    return 0f;
+                    return 0m;
                 if (Landed == null)
                     throw new CouldNotResolveSinkException("Could not resolve sink solely from history record");
                 
@@ -89,7 +89,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of sink that has been decreased by the fallen stats in the history record.</summary>
          */
-        public float ChangeInSinkFromFallen =>
+        public decimal ChangeInSinkFromFallen =>
             Fell.Sum(statChange => statChange.SinkModifier);
 
         /**

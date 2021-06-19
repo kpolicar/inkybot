@@ -8,9 +8,9 @@ namespace Inkybot.Services
 {
     internal class FinishOffRemainingSinkItemMageResolve : StandardStatsPrioritizedItemMageResolve
     {
-        public readonly int Sink;
+        public readonly decimal Sink;
         
-        public FinishOffRemainingSinkItemMageResolve(MageConfig config, Item item, int sink)
+        public FinishOffRemainingSinkItemMageResolve(MageConfig config, Item item, decimal sink)
             : base(config, item) =>
             Sink = sink;
 

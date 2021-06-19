@@ -19,7 +19,7 @@ namespace Inkybot.Services
         public class DofusScreenScan : IDisposable
         {
             private Rectangle latestHistoryLastTextLineBounds;
-            private float latestHistoryLastTextLineBoundsRatio;
+            private double latestHistoryLastTextLineBoundsRatio;
             public Responsive.Measurement LatestHistoryBounds;
             
             private ScreenCapture screen;

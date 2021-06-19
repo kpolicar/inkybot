@@ -51,12 +51,12 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of sink a single unit of the stat will consume.</summary>
          */
-        public readonly float SinkValue;
+        public readonly decimal SinkValue;
         
         /**
          * <summary>The amount of sink a single unit of the stat will consume when the current value of the stat is below 0.</summary>
          */
-        public readonly float NegSinkValue;
+        public readonly decimal NegSinkValue;
         
         /**
          * <summary>Whether or not runes of PA strength can be used on the stat.</summary>
@@ -103,8 +103,8 @@ namespace Inkybot.Dofus
         private Stat(
             string identifier,
             int maximum,
-            float sinkValue,
-            float negSinkValue,
+            decimal sinkValue,
+            decimal negSinkValue,
             bool canUsePaRunes,
             bool canUseRaRunes) =>
             (Identifier, Maximum, SinkValue, NegSinkValue, CanUsePaRunes, CanUseRaRunes, Mageable) =
@@ -131,10 +131,10 @@ namespace Inkybot.Dofus
         
         public override string ToString() => DisplayName;
 
-        public static readonly Stat Initiative = new Stat("initiative", 1010, 0.1f, 0.05f, true, true);
-        public static readonly Stat Vitality = new Stat("vitality", 505, 0.2f, 0.1f, true, true);
-        public static readonly Stat Pods = new Stat("pods", 404, 0.25f, 0.125f, true, true);
-        public static readonly Stat Strength = new Stat("strength", 101, 1, 1, true, true);
+        public static readonly Stat Initiative = new Stat("initiative", 1010, 0.1m, 0.05m, true, true);
+        public static readonly Stat Vitality = new Stat("vitality", 505, 0.2m, 0.1m, true, true);
+        public static readonly Stat Pods = new Stat("pods", 404, 0.25m, 0.125m, true, true);
+        public static readonly Stat Strength = new Stat("strength", 101, 1m, 1, true, true);
         public static readonly Stat Intelligence = new Stat("intelligence", 101, 1, 1, true, true);
         public static readonly Stat Agility = new Stat("agility", 101, 1, 1, true, true);
         public static readonly Stat Chance = new Stat("chance", 101, 1, 1, true, true);
@@ -151,11 +151,11 @@ namespace Inkybot.Dofus
         public static readonly Stat Prospecting = new Stat("prospecting", 33, 3, 2, true, false);
         public static readonly Stat Lock = new Stat("lock", 25, 4, 2, true, false);
         public static readonly Stat Dodge = new Stat("dodge", 25, 4, 2, true, false);
-        public static readonly Stat NeutralDamage = new Stat("neutral_damage", 20, 5, 2.5f, true, false);
-        public static readonly Stat EarthDamage = new Stat("earth_damage", 20, 5, 2.5f, true, false);
-        public static readonly Stat FireDamage = new Stat("fire_damage", 20, 5, 2.5f, true, false);
-        public static readonly Stat AirDamage = new Stat("air_damage", 20, 5, 2.5f, true, false);
-        public static readonly Stat WaterDamage = new Stat("water_damage", 20, 5, 2.5f, true, false);
+        public static readonly Stat NeutralDamage = new Stat("neutral_damage", 20, 5, 2.5m, true, false);
+        public static readonly Stat EarthDamage = new Stat("earth_damage", 20, 5, 2.5m, true, false);
+        public static readonly Stat FireDamage = new Stat("fire_damage", 20, 5, 2.5m, true, false);
+        public static readonly Stat AirDamage = new Stat("air_damage", 20, 5, 2.5m, true, false);
+        public static readonly Stat WaterDamage = new Stat("water_damage", 20, 5, 2.5m, true, false);
         public static readonly Stat CriticalDamage = new Stat("critical_damage", 20, 5, 3, true, false);
         public static readonly Stat PushbackDamage = new Stat("pushback_damage", 20, 5, 3, true, false);
         public static readonly Stat TrapDamage = new Stat("trap_damage", 20, 5, 5, true, false);

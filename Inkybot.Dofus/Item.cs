@@ -40,7 +40,7 @@ namespace Inkybot.Dofus
         /**
          * <summary>The amount of oversink on the item.</summary>
          */
-        public float Oversink => Stats.Sum(itemStat => itemStat.Oversink);
+        public decimal Oversink => Stats.Sum(itemStat => itemStat.Oversink);
 
         public Item(ItemStatRepository stats) {
             Stats = stats;

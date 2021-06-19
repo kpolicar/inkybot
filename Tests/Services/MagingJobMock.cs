@@ -31,12 +31,12 @@ namespace Tests.Services
         public bool IsMaging { get; private set; }
         public MageHistoryRecord? LastHistoryRecord { get; }
 
-        private float sink;
-        public float Sink {
+        private decimal sink;
+        public decimal Sink {
             get => sink;
             set {
                 SinkChanged?.Invoke(this, 
-                    new SinkChangedEventArgs(null!, null!, 0f, value));
+                    new SinkChangedEventArgs(null!, null!, 0m, value));
                 sink = value;
             }
         }

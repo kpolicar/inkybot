@@ -4,10 +4,10 @@ namespace Inkybot.Events
 {
     public class SinkIncorrectEventArgs : EventArgs
     {
-        public readonly float Sink;
+        public readonly decimal Sink;
 
 
-        public SinkIncorrectEventArgs(float sink) {
+        public SinkIncorrectEventArgs(decimal sink) {
             this.Sink = sink;
         }
     }

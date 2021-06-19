@@ -22,8 +22,8 @@ namespace Inkybot.Domain
             this.fullHistory = fullHistory;
         }
 
-        public float CalculateSink() {
-            return Math.Max(0f, history.Sum(record => analyzer.ResolveSinkChange(record)));
+        public decimal CalculateSink() {
+            return Math.Max(0m, history.Sum(record => analyzer.ResolveSinkChange(record)));
         }
 
         public bool IsDifferentFrom(ItemHistoryAnalysis? analysis) {
@@ -46,7 +46,7 @@ namespace Inkybot.Domain
             return new ItemHistoryAnalysis(history, this, fullHistory);
         }
 
-        public float ResolveSinkChange(MageHistoryRecord record) {
+        public decimal ResolveSinkChange(MageHistoryRecord record) {
             try {
                 Debug.WriteLine("change in sink: " + record.ChangeInSink);
                 return record.ChangeInSink;

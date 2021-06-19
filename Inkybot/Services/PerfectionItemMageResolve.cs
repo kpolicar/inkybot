@@ -8,9 +8,9 @@ namespace Inkybot.Services
 {
     internal class PerfectionItemMageResolve : TargetItemMageResolve
     {
-        private int Sink;
+        private decimal Sink;
         
-        public PerfectionItemMageResolve(MageConfig config, Item item, int sink, int runeTypeOffset = 0)
+        public PerfectionItemMageResolve(MageConfig config, Item item, decimal sink, int runeTypeOffset = 0)
             : base(config, item, runeTypeOffset) =>
             Sink = sink;
         
@@ -18,14 +18,14 @@ namespace Inkybot.Services
             !itemMage.WillOvermage && ShouldEvenConsider(itemMage);
 
         private bool ShouldEvenConsider(ItemMage itemMage) =>
-            Sink - itemMage.Rune.Sink >= SinkNeededForAllOvermagesToReachTargetMinimum() * 2f;
+            Sink - itemMage.Rune.Sink >= SinkNeededForAllOvermagesToReachTargetMinimum() * 2m;
 
-        protected float SinkNeededForAllOvermagesToReachTargetMinimum() =>
+        protected decimal SinkNeededForAllOvermagesToReachTargetMinimum() =>
             config.StatsConfig
                 .Where(stat => !stat.Value.HighSinkStat)
                 .Sum(statConfig => SinkNeededToReachTargetMinimum(statConfig.Key, statConfig.Value));
         
-        protected int SinkNeededToReachTargetMinimum(Stat stat, MageConfig.ItemStatMageConfig mageConfig) =>
+        protected decimal SinkNeededToReachTargetMinimum(Stat stat, MageConfig.ItemStatMageConfig mageConfig) =>
             (int) Math.Floor(stat.SinkValue * Math.Max(0, mageConfig.TargetMinimum - item.Stats[stat]?.Value ?? 0));
 
         protected override IEnumerable<ItemMage> PotentialMages() {

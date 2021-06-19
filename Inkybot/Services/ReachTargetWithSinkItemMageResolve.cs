@@ -8,10 +8,10 @@ namespace Inkybot.Services
 {
     internal class OverMageToReachTargetWithSinkItemMageResolve : StandardStatsPrioritizedItemMageResolve
     {
-        public readonly int Sink;
+        public readonly decimal Sink;
         public readonly bool ShouldSaveSink;
         
-        public OverMageToReachTargetWithSinkItemMageResolve(MageConfig config, Item item, int sink) : base(config, item) {
+        public OverMageToReachTargetWithSinkItemMageResolve(MageConfig config, Item item, decimal sink) : base(config, item) {
             Sink = sink;
             ShouldSaveSink = config.StatsConfig.Any(config => config.Value.Exo || config.Value.Overmage);
         }

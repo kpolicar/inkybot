@@ -4,11 +4,11 @@ namespace Inkybot.Events
 {
     public class SinkChangedEventArgs : MagingJobEventArgs
     {
-        public readonly float Sink;
-        public readonly float OldSink;
+        public readonly decimal Sink;
+        public readonly decimal OldSink;
 
 
-        public SinkChangedEventArgs(Item item, MageConfig config, float oldSink, float sink) : base(item, config) {
+        public SinkChangedEventArgs(Item item, MageConfig config, decimal oldSink, decimal sink) : base(item, config) {
             this.Sink = sink;
             this.OldSink = oldSink;
         }

@@ -21,11 +21,11 @@ namespace Inkybot.Dofus.Domain
             MageConfig.Target == null || Value >= MageConfig.Target;
             
         public int NumberOfRunesNeededForFullMage =>
-            Math.Max(0, (int) Math.Ceiling((Max - Value) / (float) Rune.IncreaseInValue));
+            Math.Max(0, (int) Math.Ceiling((Max - Value) / (double) Rune.IncreaseInValue));
 
         public int NumberOfRunesNeededToReachTarget =>
             Target != null
-                ? Math.Max(0, (int) Math.Ceiling((Target.Value - Value) / (float) Rune.IncreaseInValue))
+                ? Math.Max(0, (int) Math.Ceiling((Target.Value - Value) / (double) Rune.IncreaseInValue))
                 : 0;
 
         public ItemMage? WithLowerRuneStrength =>

@@ -8,9 +8,9 @@ namespace Inkybot.Services
 {
     internal class ExoItemMageResolve : PrioritizedItemMageResolve
     {
-        public readonly int Sink;
+        public readonly decimal Sink;
         
-        public ExoItemMageResolve(MageConfig config, Item item, int sink) : base(config, item) =>
+        public ExoItemMageResolve(MageConfig config, Item item, decimal sink) : base(config, item) =>
             Sink = sink;
 
         protected override IEnumerable<ItemMage> PotentialMages() {
