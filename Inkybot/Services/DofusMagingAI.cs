@@ -62,6 +62,16 @@ namespace Inkybot.Services
                 }
 
                 proposed ??= new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).Resolve();
+
+                // If a different stat other than the proposed is already overmaged, reduce it first
+                if (proposed != null &&
+                    item.IsOvermaged &&
+                    proposed.Value.Rune.Sink >= 3 && // Whether or not this mage is likely to really ruin the current overmage
+                    (!item.Stats[proposed.Value.Stat]?.Overmaged ?? false))
+                {
+                    proposed = new ReduceOversinkItemMageResolve(config, item).Resolve();
+                }
+                
                 return proposed;
             }, OverrideReachMinimumResolve);
 

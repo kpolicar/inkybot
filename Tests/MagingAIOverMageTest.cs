@@ -35,6 +35,27 @@ namespace Tests
         }
 
         [Test]
+        public void TestReduceOvermageBeforeReachingMinimumWhichWouldReallyRuinOvermage() {
+            item = new Item(new ItemStatRepository(new[] {
+                new ItemStat("vitality", 410, 351, 400),
+                new ItemStat("wisdom", 39, 31, 40),
+                new ItemStat("strength", 58, 40, 60),
+                new ItemStat("critical", 6, 4, 6),
+                new ItemStat("ap", 1, 1, 1),
+                new ItemStat("initiative", 280, 200, 300),
+                new ItemStat("per_neutral_resistance", 10, 7, 10),
+                new ItemStat("per_earth_resistance", 13, 7, 10),
+            }));
+            Config.ResetConfig(item);
+            
+            Config.ChangeStatConfigTargetMinimum(Stat.Vitality, 400);
+            Config.ChangeStatConfigTargetMinimum(Stat.Strength, 60);
+            
+            var action = AI.ResolveAction(item) as CombineRune;
+            Assert.AreEqual(new Rune(Stat.Strength, Rune.RuneType.Sm), action?.Rune);
+        }
+
+        [Test]
         public void TestOverTargetStopIfReachedMinimum() {
             item = new Item(new ItemStatRepository(new[] {
                 new ItemStat("vitality", 370, 351, 400),

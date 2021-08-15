@@ -13,7 +13,7 @@ namespace Tests
         [SetUp]
         public void InitSetupItem() {
             item = new Item(new ItemStatRepository(new[] {
-                new ItemStat("vitality", 370, 301, 400),
+                new ItemStat("vitality", 380, 301, 400),
                 new ItemStat("strength", 93, 81, 100),
                 new ItemStat("wisdom", 38, 31, 40),
                 new ItemStat("critical", 5, 4, 5),
@@ -22,7 +22,7 @@ namespace Tests
                 new ItemStat("earth_damage", 18, 16, 20),
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 10, 7, 10),
-                new ItemStat("ap", 1, 0, 0),
+                new ItemStat("mp", 1, 1, 1),
                 new ItemStat("per_air_resistance", 1, 0, 0),
             }));
             Config.ResetConfig(item);
@@ -45,7 +45,7 @@ namespace Tests
             Job.Sink = 60;
             
             var action = AI.ResolveAction(item) as CombineRune;
-            Assert.AreEqual(Stat.PerAirResistance, action?.Rune.Stat);
+            Assert.AreEqual(new Rune(Stat.PerAirResistance, Rune.RuneType.Sm), action?.Rune);
         }
     }
 }
