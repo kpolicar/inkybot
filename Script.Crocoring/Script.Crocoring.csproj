@@ -41,6 +41,7 @@
     <ItemGroup>
         <Compile Include="ImproveDamagesFirstMagingAI.cs" />
         <Compile Include="ResAfterApFalls.cs" />
+        <Compile Include="RhinRing.cs" />
         <Compile Include="Script.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

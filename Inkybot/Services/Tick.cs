@@ -197,9 +197,12 @@ namespace Inkybot.Services
 
             private void HandleChangeCheckTimeout() {
                 job.changeTimeout.Stop();
+                var additional = job.state.PreviousAction is RuneAction runeAction
+                    ? runeAction.Rune.DisplayName+" "
+                    : "";
                 throw new ChangeCheckTimeoutException(
                     "Rune combination was expected to perform within 5 seconds, but did not. " +
-                    "This may be the result of a poor internet connection or you may have run out of runes.");
+                    $"This may be the result of a poor internet connection or you may have run out of {additional}runes.");
             }
 
             // Todo: We can also check if the expected result is correct by comparing sink change.
