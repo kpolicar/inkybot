@@ -11,6 +11,8 @@ namespace Inkybot.Services
 {
     public class FileSystemUserSettingsConfigManager : UserSettingsConfigManager
     {
+        public event EventHandler? EnableMageQueueingChanged;
+        
         public bool RestoreHighSinkStats {
             set {
                 Properties.Settings.Default.restoreHighSinkStatImmediately = value;
@@ -57,6 +59,15 @@ namespace Inkybot.Services
                 Properties.Settings.Default.Save();
             }
             get => Properties.Settings.Default.publishExos;
+        }
+
+        public bool EnableMageQueueing {
+            set {
+                Properties.Settings.Default.enableMageQueueing = value;
+                Properties.Settings.Default.Save();
+                EnableMageQueueingChanged?.Invoke(this, EventArgs.Empty);
+            }
+            get => Properties.Settings.Default.enableMageQueueing;
         }
 
         public bool EnableRuneChecking {

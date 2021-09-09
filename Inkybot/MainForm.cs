@@ -31,6 +31,8 @@ namespace Inkybot
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
             analytics = Program.Services.GetService<AnalyticsReporter>();
+            var userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
+                Program.Services.GetService<UserSettingsConfigManager>();
             
             InitOcrIndicators();
             toastPanel.Hide();
@@ -49,6 +51,9 @@ namespace Inkybot
             
             MainFormDomainEvents();
             MainFormEvents();
+            enqueueMageButton.Visible = userSettingsConfigManager.EnableMageQueueing;
+            userSettingsConfigManager.EnableMageQueueingChanged += (_, _) =>
+                enqueueMageButton.Visible = userSettingsConfigManager.EnableMageQueueing;
         }
 
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {

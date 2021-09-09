@@ -271,6 +271,9 @@
   <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
   </data>
+  <data name="enqueueMageButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 61</value>
+  </data>
   <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
     <value>Upgrade Plan</value>
   </data>
@@ -418,6 +421,9 @@
   <data name="toggleMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
+  <data name="enqueueMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
   <data name="debugButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
@@ -461,6 +467,9 @@
     <value>284, 284</value>
   </data>
   <data name="toggleMageButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="enqueueMageButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
   </data>
   <data name="&gt;&gt;helpButton.Name" xml:space="preserve">
@@ -649,6 +658,9 @@
   <data name="toggleMageButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="enqueueMageButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="sinkValueLabel.Text" xml:space="preserve">
     <value>0</value>
   </data>
@@ -656,6 +668,9 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;toggleMageButton.Parent" xml:space="preserve">
+    <value>primaryButtonsPanel</value>
+  </data>
+  <data name="&gt;&gt;enqueueMageButton.Parent" xml:space="preserve">
     <value>primaryButtonsPanel</value>
   </data>
   <data name="exoAttemptsValueLabel.Location" type="System.Drawing.Point, System.Drawing">
@@ -1011,6 +1026,9 @@
   </data>
   <data name="toggleMageButton.Text" xml:space="preserve">
     <value>START</value>
+  </data>
+  <data name="enqueueMageButton.Text" xml:space="preserve">
+    <value>ENQUEUE</value>
   </data>
   <data name="toastIconPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -3107,6 +3125,9 @@
   <data name="toggleMageButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 3</value>
   </data>
+  <data name="enqueueMageButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 3</value>
+  </data>
   <data name="&gt;&gt;mousePositionLabel.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
@@ -3129,7 +3150,7 @@
     <value>0, 15</value>
   </data>
   <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 200</value>
+    <value>113, 256</value>
   </data>
   <data name="historyOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>

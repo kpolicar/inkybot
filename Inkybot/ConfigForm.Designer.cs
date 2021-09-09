@@ -79,6 +79,7 @@ namespace Inkybot
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
+            this.enableMageQueueingCheckbox = new System.Windows.Forms.CheckBox();
             this.autoShutdownComboBox = new Inkybot.Controls.ComboBox();
             this.customResizeRatioNumericUpDownLabel = new System.Windows.Forms.Label();
             this.customResizeRatioNumericUpDown = new System.Windows.Forms.NumericUpDown();
@@ -203,6 +204,7 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.ForeColor = System.Drawing.SystemColors.Control;
             this.restoreHighSinkStatsCheckbox.Name = "restoreHighSinkStatsCheckbox";
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
+            this.restoreHighSinkStatsCheckbox.AutoCheck = false;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
             this.restoreHighSinkStatsCheckbox.Dock = DockStyle.Fill;
             // 
@@ -276,6 +278,15 @@ namespace Inkybot
             this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
             this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
             this.enableKamasCalculationCheckbox.Dock = DockStyle.Fill;
+            // 
+            // enableMageQueueingCheckbox
+            // 
+            resources.ApplyResources(this.enableMageQueueingCheckbox, "enableMageQueueingCheckbox");
+            this.enableMageQueueingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.enableMageQueueingCheckbox.Name = "enableMageQueueingCheckbox";
+            this.enableMageQueueingCheckbox.UseVisualStyleBackColor = true;
+            this.enableMageQueueingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged);
+            this.enableMageQueueingCheckbox.Dock = DockStyle.Fill;
 
             // 
             // exampleScriptsLinkLabel
@@ -352,6 +363,8 @@ namespace Inkybot
             this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
             this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+            this.bottomPanel.Controls.Add(this.enableMageQueueingCheckbox);
+            this.bottomPanel.Controls.Add(new Panel() {Size = Size.Empty });
             this.bottomPanel.Controls.Add(this.automaticShutdownPanel);
             this.bottomPanel.Controls.Add(this.customResizeRatioPanel);
 
@@ -496,6 +509,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
         private System.Windows.Forms.CheckBox publishExosCheckbox;
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
+        private System.Windows.Forms.CheckBox enableMageQueueingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
         private Inkybot.Controls.ComboBox autoShutdownComboBox;

@@ -52,6 +52,7 @@ namespace Inkybot
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
+            this.enqueueMageButton = new System.Windows.Forms.Button();
             this.setupButton = new System.Windows.Forms.Button();
             this.statisticsButton = new System.Windows.Forms.Button();
             this.exoAttemptsLabel = new System.Windows.Forms.Label();
@@ -197,6 +198,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.primaryButtonsPanel, "primaryButtonsPanel");
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
+            this.primaryButtonsPanel.Controls.Add(this.enqueueMageButton);
             this.primaryButtonsPanel.Controls.Add(this.setupButton);
             this.primaryButtonsPanel.Controls.Add(this.configButton);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
@@ -210,6 +212,16 @@ namespace Inkybot
             this.toggleMageButton.Name = "toggleMageButton";
             this.toggleMageButton.UseVisualStyleBackColor = false;
             this.toggleMageButton.Click += new System.EventHandler(this.toggleMageButton_Click);
+            // 
+            // enqueueMageButton
+            // 
+            resources.ApplyResources(this.enqueueMageButton, "enqueueMageButton");
+            this.enqueueMageButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.enqueueMageButton.FlatAppearance.BorderSize = 0;
+            this.enqueueMageButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.enqueueMageButton.Name = "enqueueMageButton";
+            this.enqueueMageButton.UseVisualStyleBackColor = false;
+            this.enqueueMageButton.Click += new System.EventHandler(this.enqueueMageButton_Click);
             // 
             // setupButton
             // 
@@ -409,7 +421,7 @@ namespace Inkybot
             this.Controls.Add(this.sidebarRightPanel);
             this.BackColor = Color.Black;
             this.HelpButton = true;
-            this.MinimumSize = new System.Drawing.Size(720, 480);
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
@@ -470,6 +482,7 @@ namespace Inkybot
         private System.Windows.Forms.Label subscribedInfoLabel;
         private System.Windows.Forms.LinkLabel subscribePlanUpgradeLinkLabel;
         private System.Windows.Forms.Button toggleMageButton;
+        private System.Windows.Forms.Button enqueueMageButton;
 
         private System.Windows.Forms.Panel buttonsPanel;
         private System.Windows.Forms.Panel mageInfoPanel;

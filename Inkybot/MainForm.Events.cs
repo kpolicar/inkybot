@@ -47,15 +47,19 @@ namespace Inkybot
                 HasManuallyStoppedMaging = true;
         }
 
+        private void enqueueMageButton_Click(object sender, EventArgs e) {
+            // todo
+        }
+
         private void helpButton_Click(object sender, EventArgs e) {
             Process.Start($"{Server.BaseUrl}/release/{Program.VersionEndpoint}#usage");
         }
-        
+
         private void statsButton_Click(object sender, EventArgs e) {
             if (!setupForm.Visible) setupForm.Show();
             else setupForm.Focus();
         }
-        
+
         private void configButton_Click(object sender, EventArgs e) {
             if (!configForm.Visible) configForm.Show();
             else configForm.Focus();
