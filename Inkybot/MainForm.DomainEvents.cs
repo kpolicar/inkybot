@@ -64,7 +64,7 @@ namespace Inkybot
         private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
-                enqueueMageButton.Enabled = true;
+                enqueueMageButton.Enabled = magingJob.EnqueuedCount == 0;
                 debugScreenshotButton.Enabled = true;
                 if (configForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
                     StartAutoShutdownCounter();
@@ -82,7 +82,6 @@ namespace Inkybot
             if (!debugging) {
                 StartDebugging();
             }
-            AddQueuedItemIndicator();
         }
 
         private void StartAutoShutdownCounter() {

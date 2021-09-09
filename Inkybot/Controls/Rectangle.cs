@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rect = System.Drawing.Rectangle;
 
@@ -9,11 +10,11 @@ namespace Inkybot.Controls
     public partial class Rectangle : UserControl
     {
         public int BorderWidth = 2;
-        
-        
+
         public Rectangle()
         {
             InitializeComponent();
+                
             Paint += Rectangle_Paint;
             ResizeRedraw = true;
             Rectangle_Paint(this, EventArgs.Empty);

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Inkybot.Dofus;
-using Inkybot.Dofus.Contracts;
+using Inkybot.Services;
+using StatConfigProvider = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Inkybot.Contracts
 {

@@ -196,6 +196,9 @@
           <DependentUpon>Crosshair.cs</DependentUpon>
         </Compile>
         <Compile Include="Controls\DataGridViewNumericUpDownColumn.cs" />
+        <Compile Include="Controls\EnqueueRectangle.cs">
+          <SubType>UserControl</SubType>
+        </Compile>
         <Compile Include="Controls\MenuButton.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>
@@ -313,6 +316,10 @@
         <Compile Include="Services\ActionHandler.cs" />
         <Compile Include="Services\FileSystemUserSettingsConfigManager.cs" />
         <Compile Include="Services\MageConfigProvider.cs" />
+        <Compile Include="Services\MageQueueItem.cs">
+          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Services\QueuedConfigProvider.cs" />
         <Compile Include="Services\ReachTargetMinimumItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
@@ -328,7 +335,7 @@
         <Compile Include="Services\StandardStatsPrioritizedItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\StatConfigManager.cs" />
+        <Compile Include="Services\StatConfigProvider.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>

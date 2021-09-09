@@ -13,13 +13,13 @@ namespace Inkybot.Services
     {
         public StatConfigProviderContract Default => DefaultStatConfigProvider.Instance;
         private UserSettingsConfigManager UserDefault = null!;
-        
-        public StatConfig Config(Stat stat) {
-            return UserDefault.Config(stat);
-        }
-        
+
         public void BindDependencies(ServiceContainer serviceContainer) {
             UserDefault = serviceContainer.GetService<UserSettingsConfigManager>();
+        }
+
+        public StatConfig Config(Stat stat) {
+            return UserDefault.Config(stat);
         }
 
         public Dictionary<Stat, StatConfig> Config() {

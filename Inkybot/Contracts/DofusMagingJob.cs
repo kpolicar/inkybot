@@ -9,6 +9,8 @@ namespace Inkybot.Contracts
     {
         public event EventHandler Starting;
         public event EventHandler Enqueued;
+        public event EventHandler Enqueueing;
+        public event EventHandler Dequeued;
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler? Preparing;
         public event EventHandler? Stopped;

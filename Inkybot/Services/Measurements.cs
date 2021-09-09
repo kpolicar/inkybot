@@ -84,7 +84,7 @@ namespace Inkybot.Services
 
         public static IEnumerable<Responsive.Measurement> InventoryBoundsIndividualMeasurements {
             get {
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < 9; i++) {
                     for (var j = 0; j < 5; j++) {
                         yield return InventoryBoxBounds(j, i);
                     }

@@ -22,7 +22,9 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
+        public event EventHandler? Enqueueing;
         public event EventHandler? Enqueued;
+        public event EventHandler? Dequeued;
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler<MagingJobStartedEventArgs>? SensitiveMage;
         public event EventHandler? Starting;
@@ -52,9 +54,9 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         private int ticks;
-        public int EnqueuedCountMax => 10 * 5;
+        public int EnqueuedCountMax => 9 * 5;
         public int EnqueuedCount => mageQueue.Count;
-        private Queue<ItemMageConfig> mageQueue = new Queue<ItemMageConfig>();
+        private Queue<MageQueueItem> mageQueue = new Queue<MageQueueItem>();
         public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
         private const int MaxReasonableBalanceDifference = 300000;
 
@@ -108,9 +110,13 @@ namespace Inkybot.Services
         }
 
         public void EnqueueMage() {
-            mageQueue.Enqueue(new ItemMageConfig());
-            Enqueued?.Invoke(this, EventArgs.Empty);
+            Enqueueing?.Invoke(this, EventArgs.Empty);
+            
             actions.Execute(actionFactory.Enqueue(), true);
+            var config = new QueuedConfigProvider(configManager.StatConfig.Config());
+            mageQueue.Enqueue(new MageQueueItem(config));
+            
+            Enqueued?.Invoke(this, EventArgs.Empty);
         }
 
         public void BeginMage() {
@@ -185,6 +191,17 @@ namespace Inkybot.Services
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void DoMage(bool restarting=false) {
+            if (configManager.UserSettings.EnableMageQueueing) {
+                var queuedMage = mageQueue.Dequeue();
+                queuedMage.Config.ApplyToConfigManager(configManager);
+                Dequeued?.Invoke(this, EventArgs.Empty);
+                DoMageWithoutCheckingQueue(restarting);
+            } else {
+                DoMageWithoutCheckingQueue(restarting);
+            }
+        }
+
+        private void DoMageWithoutCheckingQueue(bool restarting=false) {
             var autoShutdown = false;
             try {
                 PrepareMage(restarting);
@@ -261,7 +278,7 @@ namespace Inkybot.Services
                 this, 
                 new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
         }
-        
+
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             var magingAI = serviceContainer.GetService<DofusMagingAIContract>();
             if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI) && !state.IsRestarting)

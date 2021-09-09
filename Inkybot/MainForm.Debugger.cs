@@ -16,7 +16,6 @@ namespace Inkybot
     public partial class MainForm
     {
         private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
-        private ConcurrentQueue<Control> queuedItemsIndicators = new ConcurrentQueue<Control>();
         
         private bool debugging;
         #if DEBUG
@@ -34,6 +33,9 @@ namespace Inkybot
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
+            foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
+                RegisterOcrIndicator(inventoryBoundingBox, new EnqueueRectangle());
+            }
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
 
             screenReader.LatestHistoryBoundsChanged += OnLatestHistoryProcessed;
@@ -46,36 +48,15 @@ namespace Inkybot
             }));
         }
 
-        private void AddQueuedItemIndicator() {
-            var measurement = Measurements.InventoryBoundsIndividualMeasurements
-                .Skip(queuedItemsIndicators.Count)
-                .First();
-
-            var control = (Rectangle) RegisterOcrIndicator(measurement);
-
-            control.BorderWidth = 4;
-            control.BackColor = control.ForeColor = Color.SeaGreen;
-            control.Show();
-            control.BringToFront();
-            OnResize(EventArgs.Empty);
-
-            foreach (var queuedItemsIndicator in queuedItemsIndicators) {
-                (queuedItemsIndicator as Rectangle)!.BorderWidth = 2;
-                queuedItemsIndicator.BackColor = queuedItemsIndicator.ForeColor = System.Drawing.SystemColors.Control;
-            }
-            queuedItemsIndicators.Enqueue(control);
-        }
-
-        private Control RegisterOcrIndicator(Responsive.Measurement measurement, bool crosshair=false) {
-            Control control;
+        private Control RegisterOcrIndicator(Responsive.Measurement measurement, Control? control = null, bool crosshair=false) {
             if (crosshair) {
-                control = new Crosshair();
+                control ??= new Crosshair();
             } else {
-                control = new Rectangle();
+                control ??= new Rectangle();
             }
-            Controls.Add(control);
             control.BackColor = System.Drawing.SystemColors.Control;
             control.ForeColor = System.Drawing.SystemColors.Control;
+            Controls.Add(control);
             
             ocrIndicators[control] = measurement;
             return control;
@@ -108,12 +89,13 @@ namespace Inkybot
             mousePositionLabel.Show();
             #endif
             debugScreenshotButton.Show();
-            Resize += onWindowResize;
+            ResizeEnd += onWindowResize;
             debugButton.Text = resources.GetString("debugButton.TextStop");
             
             ShowOcrIndicators();
             
-            OnResize(EventArgs.Empty);
+            OnResizeBegin(EventArgs.Empty);
+            OnResizeEnd(EventArgs.Empty);
 
             #if DEBUG
             m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
@@ -164,7 +146,7 @@ namespace Inkybot
             #if DEBUG
             m_GlobalHook?.Dispose();
             #endif
-            Resize -= onWindowResize;
+            ResizeEnd -= onWindowResize;
             
             HideOcrIndicators();
         }
