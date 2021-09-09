@@ -48,7 +48,7 @@ namespace Inkybot
         }
 
         private void enqueueMageButton_Click(object sender, EventArgs e) {
-            // todo
+            magingJob.EnqueueMage();
         }
 
         private void helpButton_Click(object sender, EventArgs e) {

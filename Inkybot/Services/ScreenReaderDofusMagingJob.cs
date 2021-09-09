@@ -19,6 +19,7 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
+        public event EventHandler? Enqueued;
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler<MagingJobStartedEventArgs>? SensitiveMage;
         public event EventHandler? Starting;
@@ -98,6 +99,10 @@ namespace Inkybot.Services
                 BeginMage();
             else
                 StopMage();
+        }
+
+        public void EnqueueMage() {
+            Enqueued?.Invoke(this, EventArgs.Empty);
         }
 
         public void BeginMage() {

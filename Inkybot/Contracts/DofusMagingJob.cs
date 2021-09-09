@@ -8,6 +8,7 @@ namespace Inkybot.Contracts
     public interface DofusMagingJob : DofusSinkProvider
     {
         public event EventHandler Starting;
+        public event EventHandler Enqueued;
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler? Preparing;
         public event EventHandler? Stopped;
@@ -21,6 +22,7 @@ namespace Inkybot.Contracts
         
         public void BeginMage();
         public void BeginMage(bool begin);
+        public void EnqueueMage();
         public void StopMage();
         
         public bool IsMaging { get; }
