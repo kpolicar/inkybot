@@ -73,10 +73,16 @@ namespace Inkybot
             }));
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
-        
+
         private void OnMagingEnqueued(object sender, EventArgs e) {
-            if (!debugging)
+            Invoke(new MethodInvoker(delegate {
+                enqueueMageButton.Enabled = magingJob.EnqueuedCount < magingJob.EnqueuedCountMax;
+            }));
+            
+            if (!debugging) {
                 StartDebugging();
+            }
+            AddQueuedItemIndicator();
         }
 
         private void StartAutoShutdownCounter() {

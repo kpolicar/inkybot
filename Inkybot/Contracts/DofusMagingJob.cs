@@ -26,6 +26,8 @@ namespace Inkybot.Contracts
         public void StopMage();
         
         public bool IsMaging { get; }
+        public int EnqueuedCount { get; }
+        public int EnqueuedCountMax { get; }
         MageHistoryRecord? LastHistoryRecord { get; }
     }
 }

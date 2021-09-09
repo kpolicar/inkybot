@@ -8,6 +8,8 @@ namespace Inkybot.Controls
 {
     public partial class Rectangle : UserControl
     {
+        public int BorderWidth = 2;
+        
         
         public Rectangle()
         {
@@ -25,9 +27,9 @@ namespace Inkybot.Controls
             // punch some holes in our main rectangle
             // this will make a standard "windowpane" with four panes
             // and a border width of ten pixels
-            var sz = new Size(Width-4, Height-4);
+            var sz = new Size(Width-BorderWidth*2, Height-BorderWidth*2);
             path.FillMode = FillMode.Alternate;
-            path.AddRectangle(new Rect(new Point(2, 2), sz));
+            path.AddRectangle(new Rect(new Point(BorderWidth, BorderWidth), sz));
             // build a region from our path and set the forms region to that:
             Region = new Region(path);
         }

@@ -33,5 +33,7 @@ namespace Inkybot.Dofus.Contracts
          * <summary>An action that will clear the in-game selection query in the user's inventory.</summary>
          */
         IAction InventoryClearSelectionAction();
+
+        IAction Enqueue();
     }
 }

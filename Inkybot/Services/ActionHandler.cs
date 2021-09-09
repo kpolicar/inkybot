@@ -25,8 +25,8 @@ namespace Inkybot.Services
             cancelExecutingTask?.Cancel();
         }
 
-        public void Execute(IAction action) {
-            if (!magingJob.IsMaging)
+        public void Execute(IAction action, bool force=false) {
+            if (!magingJob.IsMaging && !force)
                 return;
             
             if (action is InputAction inputAction) {

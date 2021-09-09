@@ -24,6 +24,10 @@ namespace Inkybot.Services
         public IAction Finish(Item item) {
             return new Finish(targetControl, item, magingJob.LastHistoryRecord);
         }
+        
+        public IAction Enqueue() {
+            return new Enqueue(targetControl);
+        }
 
         public IAction CombineRune(Rune rune, bool exo) {
             return new CombineRune(targetControl, rune, exo);

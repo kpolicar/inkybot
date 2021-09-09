@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
+using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -49,6 +52,9 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         private int ticks;
+        public int EnqueuedCountMax => 10 * 5;
+        public int EnqueuedCount => mageQueue.Count;
+        private Queue<ItemMageConfig> mageQueue = new Queue<ItemMageConfig>();
         public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
         private const int MaxReasonableBalanceDifference = 300000;
 
@@ -102,7 +108,9 @@ namespace Inkybot.Services
         }
 
         public void EnqueueMage() {
+            mageQueue.Enqueue(new ItemMageConfig());
             Enqueued?.Invoke(this, EventArgs.Empty);
+            actions.Execute(actionFactory.Enqueue(), true);
         }
 
         public void BeginMage() {

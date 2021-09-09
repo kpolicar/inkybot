@@ -40,6 +40,19 @@ namespace Inkybot.Services
             };
         }
 
+        public static Responsive.Measurement InventoryBoxBounds(int column, int row) {
+            var x1 = 1259 + column * 70;
+            var y1 = 182 + row * 70;
+            var x2 = 1327 + column * 70;
+            var y2 = 249 + row * 70;
+
+            return new Responsive.Measurement {
+                Rectangle = Rect.FromCoords(x1, y1, x2, y2),
+                Width = 1744,
+                Height = 1189
+            };
+        }
+
         public static Responsive.Measurement[] SplitStatLineMeasurementsIntoIndividualLineMeasurements(
             Responsive.Measurement measurement) {
             var b = measurement.Rectangle;
@@ -69,6 +82,16 @@ namespace Inkybot.Services
             }
         }
 
+        public static IEnumerable<Responsive.Measurement> InventoryBoundsIndividualMeasurements {
+            get {
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 0; j < 5; j++) {
+                        yield return InventoryBoxBounds(j, i);
+                    }
+                }
+            }
+        }
+
         public static Responsive.Measurement[] StatMinBoundsIndividualLines =>
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMinBounds);
         
@@ -79,6 +102,12 @@ namespace Inkybot.Services
             Rectangle = Rect.FromCoords(230, 56, 1386, 1013),
             Width = 2050,
             Height = 1212
+        };
+        
+        public static readonly Responsive.Measurement RemoveItemBounds = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(885, 165, 885, 165),
+            Width = 1920,
+            Height = 1017
         };
         
         public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {

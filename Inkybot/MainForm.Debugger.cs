@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
@@ -7,12 +9,14 @@ using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
+using Rectangle = Inkybot.Controls.Rectangle;
 
 namespace Inkybot
 {
     public partial class MainForm
     {
         private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
+        private ConcurrentQueue<Control> queuedItemsIndicators = new ConcurrentQueue<Control>();
         
         private bool debugging;
         #if DEBUG
@@ -40,6 +44,26 @@ namespace Inkybot
             BeginInvoke(new MethodInvoker(() => {
                 FitOcrIndicatorRectangle(latestHistoryOcrIndicatorControl, ocrIndicators[latestHistoryOcrIndicatorControl]);
             }));
+        }
+
+        private void AddQueuedItemIndicator() {
+            var measurement = Measurements.InventoryBoundsIndividualMeasurements
+                .Skip(queuedItemsIndicators.Count)
+                .First();
+
+            var control = (Rectangle) RegisterOcrIndicator(measurement);
+
+            control.BorderWidth = 4;
+            control.BackColor = control.ForeColor = Color.SeaGreen;
+            control.Show();
+            control.BringToFront();
+            OnResize(EventArgs.Empty);
+
+            foreach (var queuedItemsIndicator in queuedItemsIndicators) {
+                (queuedItemsIndicator as Rectangle)!.BorderWidth = 2;
+                queuedItemsIndicator.BackColor = queuedItemsIndicator.ForeColor = System.Drawing.SystemColors.Control;
+            }
+            queuedItemsIndicators.Enqueue(control);
         }
 
         private Control RegisterOcrIndicator(Responsive.Measurement measurement, bool crosshair=false) {
