@@ -33,10 +33,14 @@ namespace Inkybot
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
+
             foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
                 var control = new EnqueueRectangle();
                 RegisterOcrIndicator(inventoryBoundingBox, control);
-                control.AddToQueue += EnqueueRectangle_AddToQueue;
+                control.AddToQueueMenuItem.Click +=
+                    (sender, _) => EnqueueRectangle_AddToQueue(sender, new ControlEventArgs(control));
+                control.RemoveFromQueueMenuItem.Click +=
+                    (sender, _) => EnqueueRectangle_RemoveFromQueue(sender, new ControlEventArgs(control));
             }
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
 

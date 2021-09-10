@@ -10,27 +10,33 @@ namespace Inkybot.Controls
     public class EnqueueRectangle : Rectangle
     {
         private Button button;
-        public event ControlEventHandler? AddToQueue;
-
-        public EnqueueRectangle()
-        {
+        public ToolStripMenuItem AddToQueueMenuItem { get; private set; }
+        public ToolStripMenuItem EditConfigMenuItem { get; private set; }
+        public ToolStripMenuItem RemoveFromQueueMenuItem { get; private set; }
+        
+        
+        public EnqueueRectangle() {
             ParentChanged += Rectangle_OnParentChanged;
             VisibleChanged += (_, _) => button!.Visible = Visible;
         }
 
+        public void NewOnLocationChanged(EventArgs e) {
+            OnLocationChanged(e);
+        }
+
         protected void Rectangle_OnParentChanged(object sender, EventArgs e) {
-            var toolstripItem = new ToolStripMenuItem("Add to queue");
-            toolstripItem.Click += (_, _) => {
-                BeginInvoke(new MethodInvoker(delegate {
-                    ForeColor = BackColor = Color.ForestGreen;
-                    BorderWidth = 4;
-                    OnLocationChanged(EventArgs.Empty);
-                    BringToFront();
-                }));
-                AddToQueue?.Invoke(this, new ControlEventArgs(this));
+            AddToQueueMenuItem = new ToolStripMenuItem("Add to queue");
+            EditConfigMenuItem = new ToolStripMenuItem("Edit config") {
+                Visible = false
             };
+            RemoveFromQueueMenuItem = new ToolStripMenuItem("Remove from queue") {
+                Visible = false
+            };
+            
             var menu = new ContextMenuStrip() {
-                Items = {toolstripItem},
+                Items = {
+                    AddToQueueMenuItem, EditConfigMenuItem, RemoveFromQueueMenuItem
+                },
                 AutoSize = true,
                 ShowCheckMargin = false,
                 ShowImageMargin = false,

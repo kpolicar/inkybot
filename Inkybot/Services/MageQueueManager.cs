@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 using ImageMagick;
 using Inkybot.Contracts;
+using Inkybot.Controls;
 using Inkybot.Design;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
@@ -18,11 +20,12 @@ namespace Inkybot.Services
         private ConfigManager configManager = null!;
         private ScreenCapture screen = null!;
         
-        private readonly Queue<MageQueueItem> Queue = new Queue<MageQueueItem>();
+        public readonly List<MageQueueItem> Queue = new List<MageQueueItem>();
 
         public event EventHandler<MeasurementEventArgs>? Enqueueing;
         public event EventHandler<MageQueueEventArgs>? Enqueued;
         public event EventHandler<MageQueueEventArgs>? Dequeued;
+        public event EventHandler<MageQueueEventArgs>? Removed;
 
         public bool Empty => Queue.Count == 0;
         public bool Full => Count < Max;
@@ -34,28 +37,47 @@ namespace Inkybot.Services
             configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
             screen = serviceContainer.GetService<ScreenCapture>();
         }
-        
+
         public MageQueueItem Dequeue() {
-            var mage = Queue.Dequeue();
+            var mage = Queue[0];
+            Queue.RemoveAt(0);
             mage.Config.ApplyToConfigManager(configManager);
-            
+
             Dequeued?.Invoke(this, new MageQueueEventArgs(mage));
             return mage;
         }
-        
-        public MageQueueItem Enqueue(Responsive.Measurement itemBoundingBox) {
+
+
+        public MageQueueItem Enqueue(EnqueueRectangle control, Responsive.Measurement itemBoundingBox) {
             Enqueueing?.Invoke(this, new MeasurementEventArgs(itemBoundingBox));
             
             var config = new QueuedConfigProvider(configManager.StatConfig.Config());
 
-            var image = CapturePreviewImageOfItem(itemBoundingBox);
+            Image image = null!;
             
-            var enqueued = new MageQueueItem(config, image, itemBoundingBox);
-            Queue.Enqueue(enqueued);
+            control.Invoke(new MethodInvoker(() => {
+                control.Visible = false;
+                control.Refresh();
+                System.Threading.Thread.Sleep(50);
+                image = CapturePreviewImageOfItem(itemBoundingBox);
+                control.Visible = true;
+            }));
+            
+            var enqueued = new MageQueueItem(config, image, itemBoundingBox, control);
+            Queue.Add(enqueued);
             
             Enqueued?.Invoke(this, new MageQueueEventArgs(enqueued));
             return enqueued;
         }
+
+        public void Remove(EnqueueRectangle control) {
+            var mage = Queue.Find(item => item.Control.Equals(control));
+            Queue.Remove(mage);
+            Removed?.Invoke(this, new MageQueueEventArgs(mage));
+        }
+
+        public MageQueueItem Peek() =>
+            Queue[0];
 
         protected Image CapturePreviewImageOfItem(Responsive.Measurement itemBoundingBox) {
             var r = itemBoundingBox.Rectangle;
@@ -84,12 +106,13 @@ namespace Inkybot.Services
         
         public class MageQueueItem : IDisposable
         {
-            public QueuedConfigProvider Config { get; private set; }
-            public Responsive.Measurement ItemBoundingBox { get; private set; }
-            public Image? ItemPreview;
+            public readonly QueuedConfigProvider Config;
+            public readonly Responsive.Measurement ItemBoundingBox;
+            public readonly Image? ItemPreview;
+            public readonly EnqueueRectangle Control;
 
-            public MageQueueItem(QueuedConfigProvider config, Image image, Responsive.Measurement itemBoundingBox) {
-                (Config, ItemPreview, ItemBoundingBox) = (config, image, itemBoundingBox);
+            public MageQueueItem(QueuedConfigProvider config, Image image, Responsive.Measurement itemBoundingBox, EnqueueRectangle control) {
+                (Config, ItemPreview, ItemBoundingBox, Control) = (config, image, itemBoundingBox, control);
             }
 
             public void Dispose() {

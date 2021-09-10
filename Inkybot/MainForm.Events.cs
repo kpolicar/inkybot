@@ -162,8 +162,14 @@ namespace Inkybot
                     : resources.GetString("autoShutdownTimeElapsed.TextSecond")!;
         }
 
-        private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs e) {
-            mageQueue.Enqueue(ocrIndicators[e.Control]);
+        private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs eventArgs) {
+            var rectangle = (eventArgs.Control as EnqueueRectangle)!;
+            mageQueue.Enqueue(rectangle, ocrIndicators[rectangle]);
+        }
+
+        private void EnqueueRectangle_RemoveFromQueue(object sender, ControlEventArgs eventArgs) {
+            var rectangle = (eventArgs.Control as EnqueueRectangle)!;
+            mageQueue.Remove(rectangle);
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {

@@ -10,6 +10,6 @@ namespace Inkybot.Events
         public readonly MageQueueManager.MageQueueItem QueueItem;
 
         public MageQueueEventArgs(MageQueueManager.MageQueueItem queueItem) =>
-            QueueItem = queueItem;
+            (QueueItem) = (queueItem);
     }
 }

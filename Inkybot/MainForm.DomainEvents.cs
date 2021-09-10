@@ -1,7 +1,10 @@
 using System;
+using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using Inkybot.Actions;
+using Inkybot.Controls;
 using Inkybot.Events;
 using Inkybot.Services;
 
@@ -13,6 +16,8 @@ namespace Inkybot
 
         private void MainFormDomainEvents() {
             mageQueue.Enqueued += OnMagingEnqueued;
+            mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
+            mageQueue.Removed += OnMagingDequeuedOrRemoved;
             magingJob.Starting += OnMagingStarting;
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
@@ -75,15 +80,49 @@ namespace Inkybot
         }
 
         private void OnMagingEnqueued(object sender, MageQueueEventArgs e) {
-            Invoke(new MethodInvoker(delegate {
-                nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = !mageQueue.Empty;
-                nextInQueuePreviewPictureBox.Image = e.QueueItem.ItemPreview;
-            }));
+            var control = e.QueueItem.Control;
+            
+            MarkQueueRectangleAsEnqueued(control);
+            UpdateQueueControls();
             
             if (!debugging) {
                 StartDebugging();
             }
         }
+        
+        private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
+            var control = e.QueueItem.Control;
+            
+            UnmarkQueueRectangleAsEnqueued(control);
+            UpdateQueueControls();
+        }
+
+        private void UpdateQueueControls() =>
+            BeginInvoke(new MethodInvoker(delegate {
+                nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = !mageQueue.Empty;
+                nextInQueuePreviewPictureBox.Image = !mageQueue.Empty
+                    ? mageQueue.Peek().ItemPreview
+                    : null;
+            }));
+
+        private void MarkQueueRectangleAsEnqueued(EnqueueRectangle control) =>
+            BeginInvoke(new MethodInvoker(delegate {
+                control.EditConfigMenuItem.Visible = control.RemoveFromQueueMenuItem.Visible = true;
+                control.AddToQueueMenuItem.Visible = false;
+                control.ForeColor = control.BackColor = Color.ForestGreen;
+                control.BorderWidth = 4;
+                control.NewOnLocationChanged(EventArgs.Empty);
+                control.BringToFront();
+            }));
+
+        private void UnmarkQueueRectangleAsEnqueued(EnqueueRectangle control) =>
+            BeginInvoke(new MethodInvoker(delegate {
+                control.EditConfigMenuItem.Visible = control.RemoveFromQueueMenuItem.Visible = false;
+                control.AddToQueueMenuItem.Visible = true;
+                control.ForeColor = control.BackColor = System.Drawing.SystemColors.Control;
+                control.BorderWidth = 2;
+                control.NewOnLocationChanged(EventArgs.Empty);
+            }));
 
         private void StartAutoShutdownCounter() {
             autoShutdownTimeElapsed = 0;
