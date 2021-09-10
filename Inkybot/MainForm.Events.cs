@@ -75,7 +75,7 @@ namespace Inkybot
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void TakeScreenshotsAndOpenFolder() {
-            using var scan = new ScreenReaderDataProvider.DofusScreenScan(hWndDocked, Program.Services, Measurements.HistoryBounds, true, true);
+            using var scan = new ScreenReaderDataProvider.DofusScreenScan(Program.Services, Measurements.HistoryBounds, true, true);
             var files = new List<string>();
             scan.Saved += (_, fileEvent) => files.Add(fileEvent.FullPath);
             scan.CaptureScreenshot();
@@ -164,6 +164,10 @@ namespace Inkybot
 
         private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs e) {
             mageQueue.Enqueue(ocrIndicators[e.Control]);
+        }
+
+        private void showMageQueueButton_Click(object sender, EventArgs e) {
+            throw new NotImplementedException();
         }
     }
 }

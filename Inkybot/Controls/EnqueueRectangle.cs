@@ -38,6 +38,7 @@ namespace Inkybot.Controls
             };
             button = new MenuButton() {
                 Menu = menu,
+                Visible = Visible
             };
             button.FlatStyle = FlatStyle.Flat;
             button.Location = Location;

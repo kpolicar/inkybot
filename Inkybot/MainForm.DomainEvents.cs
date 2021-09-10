@@ -64,7 +64,7 @@ namespace Inkybot
         private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
-                enqueueMageButton.Enabled = mageQueue.Empty;
+                showMageQueueButton.Enabled = mageQueue.Empty;
                 debugScreenshotButton.Enabled = true;
                 if (configForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
                     StartAutoShutdownCounter();
@@ -74,9 +74,10 @@ namespace Inkybot
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
 
-        private void OnMagingEnqueued(object sender, EventArgs e) {
+        private void OnMagingEnqueued(object sender, MageQueueEventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                enqueueMageButton.Enabled = !mageQueue.Full;
+                nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = !mageQueue.Empty;
+                nextInQueuePreviewPictureBox.Image = e.QueueItem.ItemPreview;
             }));
             
             if (!debugging) {
@@ -126,7 +127,7 @@ namespace Inkybot
                 
             Invoke(new MethodInvoker(delegate {
                 debugScreenshotButton.Enabled = false;
-                enqueueMageButton.Enabled = false;
+                showMageQueueButton.Enabled = false;
             }));
         }
 

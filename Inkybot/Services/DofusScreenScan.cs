@@ -33,7 +33,6 @@ namespace Inkybot.Services
             private static ScreenScanner? averageItemPriceScanner;
 
             private static CultureInfo? lang;
-            private readonly IntPtr handle;
 
             private int screenshotHeight;
             public Image _screenshot = null!;
@@ -85,12 +84,11 @@ namespace Inkybot.Services
             }
 
             public DofusScreenScan(
-                IntPtr hwnd,
                 ServiceContainer serviceContainer,
                 Responsive.Measurement latestHistoryBounds,
-                bool saveToDisk = false, bool deferredScreenshot=false) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
+                bool saveToDisk,
+                bool deferredScreenshot) : this(serviceContainer, latestHistoryBounds, saveToDisk) {
                 
-                handle = hwnd;
                 if (deferredScreenshot)
                     return;
                 CaptureScreenshot();
@@ -262,7 +260,7 @@ namespace Inkybot.Services
 
             private Image TakeScreenshot() {
                 //times = times >= 3 ? times : ++times;
-                var bitmap = screen.CaptureWindow(handle);
+                var bitmap = screen.CaptureWindow();
                 Screenshot?.Invoke(this, new ImageEventArgs(bitmap));
 
                 return bitmap;

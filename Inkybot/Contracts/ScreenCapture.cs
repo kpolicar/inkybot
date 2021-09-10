@@ -8,6 +8,6 @@ namespace Inkybot.Contracts
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
         
-        Image CaptureWindow(IntPtr handle);
+        Image CaptureWindow(IntPtr? handle=null);
     }
 }

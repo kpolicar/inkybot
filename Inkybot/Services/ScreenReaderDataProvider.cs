@@ -21,7 +21,6 @@ namespace Inkybot.Services
         public event EventHandler<ScannedRegionEventArgs>? ScannedHistory;
         public event EventHandler<ScanBoundsChanged>? LatestHistoryBoundsChanged;
         public event EventHandler<ItemEventArgs>? FetchedItem;
-        private IntPtr handle = IntPtr.Zero;
         public Item? previousScannedItem;
         public DofusScreenScan? Scan {
             get;
@@ -46,14 +45,10 @@ namespace Inkybot.Services
             Scan?.Dispose();
             Scan = null;
         }
-        
-        public void BindTo(IntPtr handle) {
-            this.handle = handle;
-        }
 
         public void FetchData() {
             Scan?.Dispose();
-            Scan = new DofusScreenScan(handle, serviceContainer, LatestHistoryBounds);
+            Scan = new DofusScreenScan(serviceContainer, LatestHistoryBounds, false, false);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {

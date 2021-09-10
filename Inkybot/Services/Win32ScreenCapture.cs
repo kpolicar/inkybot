@@ -12,24 +12,31 @@ namespace Inkybot
     /// </summary>
     public class Win32ScreenCapture : ScreenCapture
     {
+        private IntPtr handle;
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
+        
+        
+        public void BindTo(IntPtr handle) {
+            this.handle = handle;
+        }
 
         /// <summary>
         ///     Creates an Image object containing a screen shot of a specific window
         /// </summary>
         /// <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
         /// <returns></returns>
-        public Image CaptureWindow(IntPtr handle) {
+        public Image CaptureWindow(IntPtr? handle=null) {
+            handle ??= this.handle;
             if (handle == IntPtr.Zero)
                 throw new DofusProcessDetachedException("Handle of window to capture is invalid.");
             BeginScreenshot?.Invoke(this, EventArgs.Empty);
             
             // get te hDC of the target window
-            var hdcSrc = User32.GetWindowDC(handle);
+            var hdcSrc = User32.GetWindowDC(handle.Value);
             // get the size
             var windowRect = new User32.RECT();
-            User32.GetWindowRect(handle, ref windowRect);
+            User32.GetWindowRect(handle.Value, ref windowRect);
             var width = windowRect.right - windowRect.left;
             var height = windowRect.bottom - windowRect.top;
             // create a device context we can copy to
@@ -45,7 +52,7 @@ namespace Inkybot
             GDI32.SelectObject(hdcDest, hOld);
             // clean up
             GDI32.DeleteDC(hdcDest);
-            User32.ReleaseDC(handle, hdcSrc);
+            User32.ReleaseDC(handle.Value, hdcSrc);
             // get a .NET image object for it
             Image img = Image.FromHbitmap(hBitmap);
             // free up the Bitmap object

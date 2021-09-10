@@ -227,12 +227,14 @@
         <Compile Include="Domain\DetectUserGame.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
+        <Compile Include="Events\MageQueueEventArgs.cs" />
         <Compile Include="Events\MageResolveEventArgs.cs" />
         <Compile Include="Events\MagingAIChangedEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
         <Compile Include="Events\MagingJobFinishedEventArgs.cs" />
         <Compile Include="Events\MagingJobEventArgs.cs" />
         <Compile Include="Events\MagingJobStartedEventArgs.cs" />
+        <Compile Include="Events\MeasurementEventArgs.cs" />
         <Compile Include="Events\PathChangedEventArgs.cs" />
         <Compile Include="Events\RuneQuantityChangedEventArgs.cs" />
         <Compile Include="Events\ScanBoundsChanged.cs" />

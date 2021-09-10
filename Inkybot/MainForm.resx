@@ -174,6 +174,9 @@
   <data name="&gt;&gt;mageInfoPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;queuePanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="toastPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>792, 6</value>
@@ -188,7 +191,10 @@
     <value>113, 61</value>
   </data>
   <data name="mageInfoPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 400</value>
+    <value>113, 200</value>
+  </data>
+  <data name="queuePanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 200</value>
   </data>
   <data name="usernameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -271,8 +277,8 @@
   <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
   </data>
-  <data name="enqueueMageButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 61</value>
+  <data name="showMageQueueButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 45</value>
   </data>
   <data name="subscribePlanUpgradeLinkLabel.Text" xml:space="preserve">
     <value>Upgrade Plan</value>
@@ -302,6 +308,9 @@
     <value>None</value>
   </data>
   <data name="shutdownToastIconPictureBox.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="nextInQueuePreviewPictureBox.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="statsValuesOcrIndicatorRectangle.Size" type="System.Drawing.Size, System.Drawing">
@@ -394,6 +403,9 @@
   <data name="&gt;&gt;exoAttemptsLabel.Name" xml:space="preserve">
     <value>exoAttemptsLabel</value>
   </data>
+  <data name="&gt;&gt;nextInQueueLabel.Name" xml:space="preserve">
+    <value>nextInQueueLabel</value>
+  </data>
   <data name="&gt;&gt;kamasSpentLabel.Name" xml:space="preserve">
     <value>kamasSpentLabel</value>
   </data>
@@ -401,6 +413,9 @@
     <value>Flat</value>
   </data>
   <data name="exoAttemptsLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="nextInQueueLabel.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
   <data name="toastPanel.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
@@ -421,7 +436,7 @@
   <data name="toggleMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
-  <data name="enqueueMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+  <data name="showMageQueueButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
   <data name="debugButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
@@ -469,8 +484,8 @@
   <data name="toggleMageButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
   </data>
-  <data name="enqueueMageButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Calibri, 9.75pt</value>
+  <data name="showMageQueueButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
   </data>
   <data name="&gt;&gt;helpButton.Name" xml:space="preserve">
     <value>helpButton</value>
@@ -503,6 +518,9 @@
     <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="exoAttemptsLabel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
+  <data name="nextInQueueLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
   <data name="kamasSpentLabel.Font" type="System.Drawing.Font, System.Drawing">
@@ -574,6 +592,9 @@
   <data name="&gt;&gt;mageInfoPanel.Name" xml:space="preserve">
     <value>mageInfoPanel</value>
   </data>
+  <data name="&gt;&gt;queuePanel.Name" xml:space="preserve">
+    <value>queuePanel</value>
+  </data>
   <data name="primaryButtonsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
@@ -609,6 +630,9 @@
   </data>
   <data name="exoAttemptsLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
+  </data>
+  <data name="nextInQueueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
   </data>
   <data name="kamasSpentLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -658,7 +682,7 @@
   <data name="toggleMageButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="enqueueMageButton.AutoSize" type="System.Boolean, mscorlib">
+  <data name="showMageQueueButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="sinkValueLabel.Text" xml:space="preserve">
@@ -670,7 +694,7 @@
   <data name="&gt;&gt;toggleMageButton.Parent" xml:space="preserve">
     <value>primaryButtonsPanel</value>
   </data>
-  <data name="&gt;&gt;enqueueMageButton.Parent" xml:space="preserve">
+  <data name="&gt;&gt;showMageQueueButton.Parent" xml:space="preserve">
     <value>primaryButtonsPanel</value>
   </data>
   <data name="exoAttemptsValueLabel.Location" type="System.Drawing.Point, System.Drawing">
@@ -943,6 +967,9 @@
   <data name="exoAttemptsLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="nextInQueueLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
   <data name="kamasSpentLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -960,6 +987,9 @@
   </data>
   <data name="shutdownToastIconPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>StretchImage</value>
+  </data>
+  <data name="nextInQueuePreviewPictureBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>Zoom</value>
   </data>
   <data name="userInfoPanel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -990,6 +1020,9 @@
   </data>
   <data name="exoAttemptsValueLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
+  </data>
+  <data name="nextInQueueLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 26</value>
   </data>
   <data name="kamasSpentValueLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 40</value>
@@ -1027,13 +1060,16 @@
   <data name="toggleMageButton.Text" xml:space="preserve">
     <value>START</value>
   </data>
-  <data name="enqueueMageButton.Text" xml:space="preserve">
-    <value>ENQUEUE</value>
+  <data name="showMageQueueButton.Text" xml:space="preserve">
+    <value>SHOW QUEUE</value>
   </data>
   <data name="toastIconPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
   <data name="shutdownToastIconPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="nextInQueuePreviewPictureBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
   <data name="setupButton.TabIndex" type="System.Int32, mscorlib">
@@ -1070,6 +1106,9 @@
     <value>Trebuchet MS, 14.25pt, style=Bold</value>
   </data>
   <data name="mageInfoPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="queuePanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
@@ -1115,6 +1154,9 @@
     <value>0</value>
   </data>
   <data name="&gt;&gt;exoAttemptsLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;nextInQueueLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;kamasSpentLabel.Type" xml:space="preserve">
@@ -3044,6 +3086,9 @@
   <data name="exoAttemptsLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>TopCenter</value>
   </data>
+  <data name="nextInQueueLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
   <data name="toastIconPictureBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 11</value>
   </data>
@@ -3119,13 +3164,16 @@
   <data name="shutdownToastIconPictureBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>33, 31</value>
   </data>
+  <data name="nextInQueuePreviewPictureBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 48</value>
+  </data>
   <data name="buttonsPanel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="toggleMageButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 3</value>
   </data>
-  <data name="enqueueMageButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="showMageQueueButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 3</value>
   </data>
   <data name="&gt;&gt;mousePositionLabel.ZOrder" xml:space="preserve">
@@ -3149,6 +3197,12 @@
   <data name="sinkLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 15</value>
   </data>
+  <data name="nextInQueueLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 15</value>
+  </data>
+  <data name="nextInQueuePreviewPictureBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 15</value>
+  </data>
   <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 256</value>
   </data>
@@ -3167,6 +3221,9 @@
   <data name="mageInfoPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
+  <data name="queuePanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
   <data name="configButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 101</value>
   </data>
@@ -3181,6 +3238,9 @@
   </data>
   <data name="exoAttemptsLabel.Text" xml:space="preserve">
     <value>EXO ATTEMPTS</value>
+  </data>
+  <data name="nextInQueueLabel.Text" xml:space="preserve">
+    <value>UP NEXT</value>
   </data>
   <data name="&gt;&gt;helpButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

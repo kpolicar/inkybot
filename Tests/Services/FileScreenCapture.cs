@@ -15,7 +15,7 @@ namespace Tests.Services
             this.path = path;
         }
         
-        public Image CaptureWindow(IntPtr handle) {
+        public Image CaptureWindow(IntPtr? handle = null) {
             return Image.FromFile(path);
         }
     }

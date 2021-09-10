@@ -44,8 +44,8 @@ namespace Inkybot
         
 
         private void BindServicesToDockedWindow() {
-            var dataProvider = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
-            dataProvider.BindTo(hWndDocked);
+            var screen = (Win32ScreenCapture) Program.Services.GetService<ScreenCapture>();
+            screen.BindTo(hWndDocked);
             
             var mouse = (Win32Input) Program.Services.GetService<Input>();
             mouse.SetRelativeToHandle(hWndDocked);

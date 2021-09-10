@@ -44,6 +44,7 @@ namespace Inkybot
             this.shutdownToastPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.shutdownToastIconPictureBox = new System.Windows.Forms.PictureBox();
             this.shutdownToastIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.nextInQueuePreviewPictureBox = new System.Windows.Forms.PictureBox();
             this.shutdownToastLabel = new System.Windows.Forms.Label();
             this.shutdownToastValueLabel = new System.Windows.Forms.Label();
             this.shutdownToastPanelCloseButton = new System.Windows.Forms.Button();
@@ -52,10 +53,11 @@ namespace Inkybot
             this.buttonsPanel = new System.Windows.Forms.Panel();
             this.primaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.toggleMageButton = new System.Windows.Forms.Button();
-            this.enqueueMageButton = new System.Windows.Forms.Button();
+            this.showMageQueueButton = new System.Windows.Forms.Button();
             this.setupButton = new System.Windows.Forms.Button();
             this.statisticsButton = new System.Windows.Forms.Button();
             this.exoAttemptsLabel = new System.Windows.Forms.Label();
+            this.nextInQueueLabel = new System.Windows.Forms.Label();
             this.exoAttemptsValueLabel = new System.Windows.Forms.Label();
             this.kamasSpentLabel = new System.Windows.Forms.Label();
             this.kamasSpentValueLabel = new System.Windows.Forms.Label();
@@ -66,6 +68,7 @@ namespace Inkybot
             this.debugScreenshotButton = new System.Windows.Forms.Button();
             this.debugButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
+            this.queuePanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
             this.sinkLabel = new System.Windows.Forms.Label();
             this.userInfoPanel = new System.Windows.Forms.Panel();
@@ -80,11 +83,13 @@ namespace Inkybot
             this.toastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.nextInQueuePreviewPictureBox)).BeginInit();
             this.sidebarPanel.SuspendLayout();
             this.sidebarRightPanel.SuspendLayout();
             this.buttonsPanel.SuspendLayout();
             this.primaryButtonsPanel.SuspendLayout();
             this.secondaryButtonsPanel.SuspendLayout();
+            this.queuePanel.SuspendLayout();
             this.mageInfoPanel.SuspendLayout();
             this.userInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -145,6 +150,15 @@ namespace Inkybot
             this.shutdownToastIconPictureBox.Name = "shutdownToastIconPictureBox";
             this.shutdownToastIconPictureBox.TabStop = false;
             // 
+            // nextInQueuePreviewPictureBox
+            // 
+            resources.ApplyResources(this.nextInQueuePreviewPictureBox, "nextInQueuePreviewPictureBox");
+            this.nextInQueuePreviewPictureBox.Name = "nextInQueuePreviewPictureBox";
+            this.nextInQueuePreviewPictureBox.TabStop = false;
+            this.nextInQueuePreviewPictureBox.Dock = DockStyle.Bottom;
+            this.nextInQueuePreviewPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            this.nextInQueuePreviewPictureBox.Visible = false;
+            // 
             // shutdownToastLabel
             // 
             resources.ApplyResources(this.shutdownToastLabel, "shutdownToastLabel");
@@ -181,6 +195,7 @@ namespace Inkybot
             this.sidebarRightPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
             this.sidebarRightPanel.Controls.Add(this.mageInfoPanel);
             this.sidebarRightPanel.Controls.Add(this.statisticsButton);
+            this.sidebarRightPanel.Controls.Add(this.queuePanel);
             this.sidebarRightPanel.Name = "sidebarRightPanel";
             this.sidebarRightPanel.Dock = DockStyle.Right;
             this.sidebarRightPanel.Padding = new Padding(0, 10, 0, 0);
@@ -198,7 +213,6 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.primaryButtonsPanel, "primaryButtonsPanel");
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
-            this.primaryButtonsPanel.Controls.Add(this.enqueueMageButton);
             this.primaryButtonsPanel.Controls.Add(this.setupButton);
             this.primaryButtonsPanel.Controls.Add(this.configButton);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
@@ -215,12 +229,14 @@ namespace Inkybot
             // 
             // enqueueMageButton
             // 
-            resources.ApplyResources(this.enqueueMageButton, "enqueueMageButton");
-            this.enqueueMageButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.enqueueMageButton.FlatAppearance.BorderSize = 0;
-            this.enqueueMageButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.enqueueMageButton.Name = "enqueueMageButton";
-            this.enqueueMageButton.UseVisualStyleBackColor = false;
+            resources.ApplyResources(this.showMageQueueButton, "showMageQueueButton");
+            this.showMageQueueButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.showMageQueueButton.FlatAppearance.BorderSize = 0;
+            this.showMageQueueButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.showMageQueueButton.Name = "showMageQueueButton";
+            this.showMageQueueButton.UseVisualStyleBackColor = false;
+            this.showMageQueueButton.Dock = DockStyle.Bottom;
+            this.showMageQueueButton.Click += new System.EventHandler(this.showMageQueueButton_Click);
             // 
             // setupButton
             // 
@@ -260,6 +276,13 @@ namespace Inkybot
             resources.ApplyResources(this.exoAttemptsLabel, "exoAttemptsLabel");
             this.exoAttemptsLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.exoAttemptsLabel.Name = "exoAttemptsLabel";
+            // 
+            // nextInQueueLabel
+            // 
+            resources.ApplyResources(this.nextInQueueLabel, "nextInQueueLabel");
+            this.nextInQueueLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.nextInQueueLabel.Name = "nextInQueueLabel";
+            this.nextInQueueLabel.Visible = false;
             // 
             // exoAttemptsValueLabel
             // 
@@ -341,6 +364,16 @@ namespace Inkybot
             this.mageInfoPanel.Controls.Add(this.exoAttemptsValueLabel);
             this.mageInfoPanel.Controls.Add(this.exoAttemptsLabel);
             this.mageInfoPanel.Name = "mageInfoPanel";
+            // 
+            // queuePanel
+            // 
+            resources.ApplyResources(this.queuePanel, "queuePanel");
+            this.queuePanel.BackColor = System.Drawing.Color.Transparent;
+            this.queuePanel.Padding = new Padding(0, 5, 0, 5);
+            this.queuePanel.Controls.Add(this.showMageQueueButton);
+            this.queuePanel.Controls.Add(this.nextInQueueLabel);
+            this.queuePanel.Controls.Add(this.nextInQueuePreviewPictureBox);
+            this.queuePanel.Name = "queuePanel";
             // 
             // sinkValueLabel
             // 
@@ -430,6 +463,7 @@ namespace Inkybot
             this.shutdownToastPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize) (this.toastIconPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.shutdownToastIconPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.nextInQueuePreviewPictureBox)).EndInit();
             this.sidebarRightPanel.ResumeLayout(false);
             this.sidebarRightPanel.PerformLayout();
             this.sidebarPanel.ResumeLayout(false);
@@ -439,6 +473,7 @@ namespace Inkybot
             this.primaryButtonsPanel.PerformLayout();
             this.secondaryButtonsPanel.ResumeLayout(false);
             this.secondaryButtonsPanel.PerformLayout();
+            this.queuePanel.ResumeLayout(false);
             this.mageInfoPanel.ResumeLayout(false);
             this.userInfoPanel.ResumeLayout(false);
             this.userInfoPanel.PerformLayout();
@@ -448,6 +483,8 @@ namespace Inkybot
 
         private System.Windows.Forms.Button configButton;
 
+        private System.Windows.Forms.Label nextInQueueLabel;
+        private System.Windows.Forms.PictureBox nextInQueuePreviewPictureBox;
         private System.Windows.Forms.Label exoAttemptsLabel;
         private System.Windows.Forms.Label exoAttemptsValueLabel;
         private System.Windows.Forms.Label kamasSpentLabel;
@@ -481,10 +518,11 @@ namespace Inkybot
         private System.Windows.Forms.Label subscribedInfoLabel;
         private System.Windows.Forms.LinkLabel subscribePlanUpgradeLinkLabel;
         private System.Windows.Forms.Button toggleMageButton;
-        private System.Windows.Forms.Button enqueueMageButton;
+        private System.Windows.Forms.Button showMageQueueButton;
 
         private System.Windows.Forms.Panel buttonsPanel;
         private System.Windows.Forms.Panel mageInfoPanel;
+        private System.Windows.Forms.Panel queuePanel;
         private System.Windows.Forms.Panel userInfoPanel;
 
         private System.Windows.Forms.Label sinkLabel;

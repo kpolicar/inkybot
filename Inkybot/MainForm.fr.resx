@@ -14,6 +14,12 @@
     <data name="configButton.Text" xml:space="preserve">
         <value>CONFIG</value>
     </data>
+    <data name="showMageQueueButton.Text" xml:space="preserve">
+    <value>FILE D'ATTENTE</value>
+  </data>
+    <data name="nextInQueueLabel.Text" xml:space="preserve">
+    <value>Prochain item</value>
+  </data>
     <data name="debugButton.Text" xml:space="preserve">
         <value>DÉBOGUER</value>
     </data>
