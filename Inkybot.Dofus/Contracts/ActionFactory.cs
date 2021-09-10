@@ -29,11 +29,15 @@ namespace Inkybot.Dofus.Contracts
          */
         IAction InventorySelectResourcesAction();
         
+        IAction InventorySelectAllAction();
+        
+        IAction InventorySelectEquipmentAction();
+        
         /**
          * <summary>An action that will clear the in-game selection query in the user's inventory.</summary>
          */
         IAction InventoryClearSelectionAction();
 
-        IAction Enqueue();
+        IAction SelectItemFromQueue();
     }
 }

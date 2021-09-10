@@ -152,6 +152,18 @@ namespace Inkybot.Services
             Height = 1017
         };
 
+        public static Responsive.Measurement InventorySelectEquipmentCategory = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1074, 100, 1074, 100),
+            Width = 1269,
+            Height = 965
+        };
+
+        public static Responsive.Measurement InventorySelectAllCategory = new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1021, 100, 1021, 100),
+            Width = 1269,
+            Height = 965
+        };
+
         public static Responsive.Measurement InventorySelectResourcesCategoryBox = new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1475, 90, 1550, 115),
             Width = 1925,

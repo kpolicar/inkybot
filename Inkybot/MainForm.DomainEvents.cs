@@ -12,7 +12,7 @@ namespace Inkybot
         protected bool hasShownUnsupportedWarning = false;
 
         private void MainFormDomainEvents() {
-            magingJob.Enqueued += OnMagingEnqueued;
+            mageQueue.Enqueued += OnMagingEnqueued;
             magingJob.Starting += OnMagingStarting;
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
@@ -64,7 +64,7 @@ namespace Inkybot
         private void OnMagingFinished(object sender, MagingJobFinishedEventArgs e) {
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
-                enqueueMageButton.Enabled = magingJob.EnqueuedCount == 0;
+                enqueueMageButton.Enabled = mageQueue.Empty;
                 debugScreenshotButton.Enabled = true;
                 if (configForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
                     StartAutoShutdownCounter();
@@ -76,7 +76,7 @@ namespace Inkybot
 
         private void OnMagingEnqueued(object sender, EventArgs e) {
             Invoke(new MethodInvoker(delegate {
-                enqueueMageButton.Enabled = magingJob.EnqueuedCount < magingJob.EnqueuedCountMax;
+                enqueueMageButton.Enabled = !mageQueue.Full;
             }));
             
             if (!debugging) {

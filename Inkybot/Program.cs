@@ -77,6 +77,7 @@ namespace Inkybot
             { typeof(ApiClient), new ApiClient() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
             { typeof(ApiNotifier), new ApiNotifier() },
+            { typeof(MageQueueManager), new MageQueueManager() },
         };
         
         /// <summary>

@@ -151,7 +151,9 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Actions\Enqueue.cs" />
+        <Compile Include="Actions\InventorySelectAllAction.cs" />
+        <Compile Include="Actions\InventorySelectEquipmentAction.cs" />
+        <Compile Include="Actions\SelectEnqueuedItem.cs" />
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\InputAction.cs" />
         <Compile Include="Actions\CombineRune.cs" />
@@ -316,10 +318,8 @@
         <Compile Include="Services\ActionHandler.cs" />
         <Compile Include="Services\FileSystemUserSettingsConfigManager.cs" />
         <Compile Include="Services\MageConfigProvider.cs" />
-        <Compile Include="Services\MageQueueItem.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
         <Compile Include="Services\QueuedConfigProvider.cs" />
+        <Compile Include="Services\MageQueueManager.cs" />
         <Compile Include="Services\ReachTargetMinimumItemMageResolve.cs">
           <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>

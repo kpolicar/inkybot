@@ -12,9 +12,11 @@ namespace Inkybot.Services
     {
         private Control targetControl = null!;
         private DofusMagingJob magingJob = null!;
+        private MageQueueManager queueManager;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             magingJob = serviceContainer.GetService<DofusMagingJob>();
+            queueManager = serviceContainer.GetService<MageQueueManager>();
         }
         
         public void SetRelativeToControl(Control targetControl) {
@@ -25,16 +27,24 @@ namespace Inkybot.Services
             return new Finish(targetControl, item, magingJob.LastHistoryRecord);
         }
         
-        public IAction Enqueue() {
-            return new Enqueue(targetControl);
+        public IAction SelectItemFromQueue() {
+            return new SelectEnqueuedItem(queueManager.Dequeue(), targetControl);
         }
 
         public IAction CombineRune(Rune rune, bool exo) {
             return new CombineRune(targetControl, rune, exo);
         }
 
+        public IAction InventorySelectAllAction() {
+            return new InventorySelectAllAction(targetControl);
+        }
+
         public IAction InventorySelectResourcesAction() {
             return new InventorySelectResourcesAction(targetControl);
+        }
+
+        public IAction InventorySelectEquipmentAction() {
+            return new InventorySelectEquipmentAction(targetControl);
         }
 
         public IAction InventoryClearSelectionAction() {

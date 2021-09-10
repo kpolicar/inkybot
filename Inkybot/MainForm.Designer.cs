@@ -221,7 +221,6 @@ namespace Inkybot
             this.enqueueMageButton.ForeColor = System.Drawing.SystemColors.Control;
             this.enqueueMageButton.Name = "enqueueMageButton";
             this.enqueueMageButton.UseVisualStyleBackColor = false;
-            this.enqueueMageButton.Click += new System.EventHandler(this.enqueueMageButton_Click);
             // 
             // setupButton
             // 

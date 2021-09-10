@@ -15,6 +15,7 @@ namespace Inkybot
         private StatsForm setupForm;
         private AnalyticsReporter analytics;
         private ApiClient api = null!;
+        private MageQueueManager mageQueue;
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
         private ConfigForm configForm;
@@ -31,6 +32,7 @@ namespace Inkybot
             screenReader = (ScreenReaderDataProvider) Program.Services.GetService<DofusDataProvider>();
             config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
             analytics = Program.Services.GetService<AnalyticsReporter>();
+            mageQueue = Program.Services.GetService<MageQueueManager>();
             var userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
                 Program.Services.GetService<UserSettingsConfigManager>();
             

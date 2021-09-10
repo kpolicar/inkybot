@@ -10,6 +10,7 @@ using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Controls;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
 using Inkybot.Services;
@@ -45,10 +46,6 @@ namespace Inkybot
             magingJob.BeginMage(!magingJob.IsMaging);
             if (!magingJob.IsMaging)
                 HasManuallyStoppedMaging = true;
-        }
-
-        private void enqueueMageButton_Click(object sender, EventArgs e) {
-            magingJob.EnqueueMage();
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
@@ -163,6 +160,10 @@ namespace Inkybot
                     ? resources.GetString("autoShutdownTimeElapsed.TextSeconds")!
                         .Replace(":value", timeLeftInSeconds.ToString())
                     : resources.GetString("autoShutdownTimeElapsed.TextSecond")!;
+        }
+
+        private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs e) {
+            mageQueue.Enqueue(ocrIndicators[e.Control]);
         }
     }
 }

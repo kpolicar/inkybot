@@ -34,7 +34,9 @@ namespace Inkybot
                 RegisterOcrIndicator(runeBoundingBox);
             }
             foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
-                RegisterOcrIndicator(inventoryBoundingBox, new EnqueueRectangle());
+                var control = new EnqueueRectangle();
+                RegisterOcrIndicator(inventoryBoundingBox, control);
+                control.AddToQueue += EnqueueRectangle_AddToQueue;
             }
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
 

@@ -10,6 +10,7 @@ namespace Inkybot.Controls
     public class EnqueueRectangle : Rectangle
     {
         private Button button;
+        public event ControlEventHandler? AddToQueue;
 
         public EnqueueRectangle()
         {
@@ -20,10 +21,13 @@ namespace Inkybot.Controls
         protected void Rectangle_OnParentChanged(object sender, EventArgs e) {
             var toolstripItem = new ToolStripMenuItem("Add to queue");
             toolstripItem.Click += (_, _) => {
-                ForeColor = BackColor = Color.ForestGreen;
-                BorderWidth = 4;
-                OnLocationChanged(EventArgs.Empty);
-                BringToFront();
+                BeginInvoke(new MethodInvoker(delegate {
+                    ForeColor = BackColor = Color.ForestGreen;
+                    BorderWidth = 4;
+                    OnLocationChanged(EventArgs.Empty);
+                    BringToFront();
+                }));
+                AddToQueue?.Invoke(this, new ControlEventArgs(this));
             };
             var menu = new ContextMenuStrip() {
                 Items = {toolstripItem},
@@ -50,6 +54,7 @@ namespace Inkybot.Controls
                 button.Location = Location + new Size(Width - button.Width, Height - button.Height) - new Size(BorderWidth, BorderWidth);
             };
             var tooltip = new System.Windows.Forms.ToolTip();
+            tooltip.ShowAlways = true;
             tooltip.SetToolTip(button, "Show options");
             Parent.Controls.Add(button);
             button.BringToFront();

@@ -22,9 +22,6 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDofusMagingJob : DofusMagingJobContract, IDisposable, HasDependencies
     {
-        public event EventHandler? Enqueueing;
-        public event EventHandler? Enqueued;
-        public event EventHandler? Dequeued;
         public event EventHandler<MagingJobStartedEventArgs>? Started;
         public event EventHandler<MagingJobStartedEventArgs>? SensitiveMage;
         public event EventHandler? Starting;
@@ -46,6 +43,7 @@ namespace Inkybot.Services
         private ConfigManager configManager = null!;
         private DofusMagingAIContract magus = null!;
         private ServiceContainer serviceContainer = null!;
+        private MageQueueManager mageQueue = null!;
 
         private Supervisor? supervisor;
         private Thread? job;
@@ -54,14 +52,12 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         private int ticks;
-        public int EnqueuedCountMax => 9 * 5;
-        public int EnqueuedCount => mageQueue.Count;
-        private Queue<MageQueueItem> mageQueue = new Queue<MageQueueItem>();
         public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
         private const int MaxReasonableBalanceDifference = 300000;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
+            mageQueue = serviceContainer.GetService<MageQueueManager>();
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
             configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
@@ -74,6 +70,7 @@ namespace Inkybot.Services
         }
 
         private int BalanceSpending;
+
         private int Balance {
             get => state.Balance;
             set {
@@ -107,16 +104,6 @@ namespace Inkybot.Services
                 BeginMage();
             else
                 StopMage();
-        }
-
-        public void EnqueueMage() {
-            Enqueueing?.Invoke(this, EventArgs.Empty);
-            
-            actions.Execute(actionFactory.Enqueue(), true);
-            var config = new QueuedConfigProvider(configManager.StatConfig.Config());
-            mageQueue.Enqueue(new MageQueueItem(config));
-            
-            Enqueued?.Invoke(this, EventArgs.Empty);
         }
 
         public void BeginMage() {
@@ -192,10 +179,27 @@ namespace Inkybot.Services
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void DoMage(bool restarting=false) {
             if (configManager.UserSettings.EnableMageQueueing) {
-                var queuedMage = mageQueue.Dequeue();
-                queuedMage.Config.ApplyToConfigManager(configManager);
-                Dequeued?.Invoke(this, EventArgs.Empty);
-                DoMageWithoutCheckingQueue(restarting);
+
+                while (!mageQueue.Empty) {
+                    
+                    state.IsMaging = true;
+                
+                    actions.Execute(actionFactory.InventorySelectAllAction());
+                    Thread.Sleep(500);
+                    actions.Execute(actionFactory.InventorySelectEquipmentAction());
+                    Thread.Sleep(500);
+                
+                    actions.Execute(actionFactory.SelectItemFromQueue());
+                    state.IsMaging = false;
+                
+                    Thread.Sleep(1000);
+                
+                    DoMageWithoutCheckingQueue(restarting);
+                    
+                    if (!mageQueue.Empty)
+                        Thread.Sleep(1000);
+                }
+                
             } else {
                 DoMageWithoutCheckingQueue(restarting);
             }
