@@ -41,6 +41,8 @@ namespace Inkybot
                     (sender, _) => EnqueueRectangle_AddToQueue(sender, new ControlEventArgs(control));
                 control.RemoveFromQueueMenuItem.Click +=
                     (sender, _) => EnqueueRectangle_RemoveFromQueue(sender, new ControlEventArgs(control));
+                control.EditConfigMenuItem.Click +=
+                    (sender, _) => EnqueueRectangle_Edit(sender, new ControlEventArgs(control));
             }
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
 

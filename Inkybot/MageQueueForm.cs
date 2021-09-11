@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
@@ -74,6 +75,35 @@ namespace Inkybot
         private void MageQueueForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
             Hide();
+        }
+
+        public async Task Highlight(MageQueueManager.MageQueueItem mageQueueItem, int delay=1500) {
+            var index = mageQueue.Queue.IndexOf(mageQueueItem);
+            var control = mageQueueGroupBoxesPanel.Controls[index] as GroupBox;
+            if (control == null)
+                return;
+
+            Invoke(new MethodInvoker(() => {
+                control.Focus();
+            }));
+            
+            delay = 800;
+            var currentColor = control.BorderColor;
+            for (int i = 0; i < 3; i++) {
+                Invoke(new MethodInvoker(() => {
+                    control.BorderColor = Color.ForestGreen;
+                    control.Invalidate();
+                }));
+            
+                await Task.Delay(delay/12);
+            
+                Invoke(new MethodInvoker(() => {
+                    control.BorderColor = currentColor;
+                    control.Invalidate();
+                }));
+                
+                await Task.Delay(delay/6);
+            }
         }
     }
 }

@@ -181,5 +181,14 @@ namespace Inkybot
         private void MainForm_Loaded(object sender, EventArgs e) {
             _ = mageQueueForm.Handle;
         }
+
+        private void EnqueueRectangle_Edit(object sender, ControlEventArgs e) {
+            var rectangle = (e.Control as EnqueueRectangle)!;
+            if (!mageQueueForm.Visible) mageQueueForm.Show();
+            else mageQueueForm.Focus();
+            
+            var mageQueueItem =  mageQueue.Queue.Find(item => item.Control.Equals(rectangle));
+            _ = mageQueueForm.Highlight(mageQueueItem);
+        }
     }
 }

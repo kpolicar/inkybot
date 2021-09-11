@@ -50,7 +50,7 @@ namespace Inkybot
             this.emptyLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.emptyLabel.Location = new System.Drawing.Point(0, 0);
             this.emptyLabel.Name = "emptyLabel";
-            this.emptyLabel.Size = new System.Drawing.Size(512, 384);
+            this.emptyLabel.Size = new System.Drawing.Size(642, 450);
             this.emptyLabel.TabIndex = 1;
             this.emptyLabel.Text = "There are no items in the queue";
             this.emptyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -60,14 +60,14 @@ namespace Inkybot
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.ClientSize = new System.Drawing.Size(512, 384);
+            this.ClientSize = new System.Drawing.Size(642, 450);
             this.MinimumSize = new System.Drawing.Size(512, 384);
             this.MinimizeBox = false;
             this.MaximizeBox = false;
             this.Controls.Add(this.emptyLabel);
             this.Controls.Add(this.mageQueueGroupBoxesPanel);
             this.Name = "MageQueueForm";
-            this.Text = "Inkybot - Maging Queue";
+            this.Text = "Inkybot - Mage Queue";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.MageQueueForm_Closing);
             this.ResumeLayout(false);
         }
