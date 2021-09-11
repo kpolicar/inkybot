@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Linq;
 using Inkybot.Controls;
 using Inkybot.Resources;
@@ -6,7 +7,7 @@ namespace Inkybot
 {
     public partial class MageQueueForm
     {
-        private GroupBox BuildMageQueueGroupBox() {
+        private GroupBox BuildMageQueueGroupBox(Image? queueItemItemPreview=null) {
             System.Windows.Forms.Panel previewPanel;
             System.Windows.Forms.FlowLayoutPanel buttonsPanel;
             System.Windows.Forms.Button moveUpButton;
@@ -197,6 +198,7 @@ namespace Inkybot
             previewPictureBox.Size = new System.Drawing.Size(64, 64);
             previewPictureBox.TabIndex = 0;
             previewPictureBox.TabStop = false;
+            previewPictureBox.Image = queueItemItemPreview;
             
             queueItemGroupBox.ResumeLayout(false);
             buttonsPanel.ResumeLayout(false);

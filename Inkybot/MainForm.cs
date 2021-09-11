@@ -22,6 +22,7 @@ namespace Inkybot
         private AuthManager auth = null!;
         private ConfigManager config;
         private StatisticsForm statisticsForm;
+        private MageQueueForm mageQueueForm;
         private int autoShutdownTimeElapsed;
 
         public MainForm() {
@@ -50,6 +51,7 @@ namespace Inkybot
             configForm = new ConfigForm(setupForm);
             magingJob.Error += OnError;
             statisticsForm = new StatisticsForm();
+            mageQueueForm = new MageQueueForm();
             
             MainFormDomainEvents();
             MainFormEvents();

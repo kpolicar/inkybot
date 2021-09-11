@@ -174,7 +174,8 @@ namespace Inkybot
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            if (!mageQueueForm.Visible) mageQueueForm.Show();
+            else mageQueueForm.Focus();
         }
     }
 }

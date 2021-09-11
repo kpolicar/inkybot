@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -25,22 +26,21 @@ namespace Inkybot
             mageQueue.Enqueued += OnMagingEnqueued;
             mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
             mageQueue.Removed += OnMagingDequeuedOrRemoved;
-            
-            SuspendLayout();
-            Controls.Add(BuildMageQueueGroupBox());
-            Controls.Add(BuildMageQueueGroupBox());
-            Controls.Add(BuildMageQueueGroupBox());
-            ResumeLayout();
         }
 
-        private void OnMagingEnqueued(object sender, MageQueueEventArgs e) {
-            var control = BuildMageQueueGroupBox();
-            Controls.Add(control);
-            mageQueueGroupBoxes[e.QueueItem] = control;
-        }
+        private void OnMagingEnqueued(object sender, MageQueueEventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                var control = BuildMageQueueGroupBox(e.QueueItem.ItemPreview);
+                SuspendLayout();
+                Controls.Add(control);
+                ResumeLayout();
+                mageQueueGroupBoxes[e.QueueItem] = control;
+            }));
         
         private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
+            SuspendLayout();
             Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
+            ResumeLayout();
             mageQueueGroupBoxes.Remove(e.QueueItem);
         }
     }
