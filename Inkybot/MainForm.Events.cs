@@ -35,7 +35,7 @@ namespace Inkybot
                 StopDebugging();
             };
 
-            Resize += OnWindowResize_FitQueueControls;
+            ResizeEnd += OnWindowResize_FitQueueControls;
             mageQueueForm.VisibleChanged += MageQueueFormVisibleChanged;
 
             foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
