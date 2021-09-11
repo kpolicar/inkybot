@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using ImageMagick;
 using Inkybot.Contracts;
@@ -58,8 +59,12 @@ namespace Inkybot.Services
             control.Invoke(new MethodInvoker(() => {
                 control.Visible = false;
                 control.Refresh();
-                System.Threading.Thread.Sleep(50);
-                image = CapturePreviewImageOfItem(itemBoundingBox);
+            }));
+            
+            Thread.Sleep(50);
+            image = CapturePreviewImageOfItem(itemBoundingBox);
+            
+            control.Invoke(new MethodInvoker(() => {
                 control.Visible = true;
             }));
             

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Controls;
@@ -164,7 +165,7 @@ namespace Inkybot
 
         private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs eventArgs) {
             var rectangle = (eventArgs.Control as EnqueueRectangle)!;
-            mageQueue.Enqueue(rectangle, ocrIndicators[rectangle]);
+            Task.Run(() => mageQueue.Enqueue(rectangle, ocrIndicators[rectangle]));
         }
 
         private void EnqueueRectangle_RemoveFromQueue(object sender, ControlEventArgs eventArgs) {
