@@ -282,6 +282,9 @@
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
+        <Compile Include="MageQueueForm.Builder.cs">
+          <DependentUpon>MageQueueForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="MageQueueForm.cs">
           <SubType>Form</SubType>
         </Compile>
