@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -14,13 +15,18 @@ using Inkybot.Contracts;
 using Inkybot.Controls;
 using Inkybot.Domain;
 using Inkybot.Exceptions;
+using Inkybot.Helpers;
 using Inkybot.Services;
+using Debug = System.Diagnostics.Debug;
 
 
 namespace Inkybot
 {
     public partial class MainForm
     {
+        private ConcurrentDictionary<EnqueueRectangle, Responsive.Measurement> queueControls = new ConcurrentDictionary<EnqueueRectangle, Responsive.Measurement>();
+        
+        
         public bool HasManuallyStoppedMaging { get; set; }
         
         private void MainFormEvents() {
@@ -28,6 +34,60 @@ namespace Inkybot
                 magingJob.StopMage();
                 StopDebugging();
             };
+
+            Resize += OnWindowResize_FitQueueControls;
+            mageQueueForm.VisibleChanged += MageQueueFormVisibleChanged;
+
+            foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
+                RegisterQueueControl(inventoryBoundingBox);
+            }
+        }
+        
+        private void ShowQueueControls() {
+            foreach (var control in queueControls) {
+                control.Key.Show();
+                control.Key.BringToFront();
+            }
+        }
+
+        private void HideQueueControls() {
+            foreach (var control in queueControls) {
+                control.Key.Hide();
+            }
+        }
+
+        private void MageQueueFormVisibleChanged(object sender, EventArgs e) {
+            if (mageQueueForm.Visible && !magingJob.IsMaging)
+                ShowQueueControls();
+            else {
+                HideQueueControls();
+            }
+        }
+
+        private void OnWindowResize_FitQueueControls(object sender, EventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                foreach (var control in queueControls) {
+                    FitOcrIndicatorRectangle(control.Key, control.Value);
+                }
+            }));
+
+        private EnqueueRectangle RegisterQueueControl(Responsive.Measurement measurement) {
+            var control = new EnqueueRectangle() {
+                Visible = false
+            };
+            queueControls[control] = measurement;
+            control.BackColor = System.Drawing.SystemColors.Control;
+            control.ForeColor = System.Drawing.SystemColors.Control;
+            Controls.Add(control);
+            
+            control.AddToQueueMenuItem.Click +=
+                (sender, _) => EnqueueRectangle_AddToQueue(sender, new ControlEventArgs(control));
+            control.RemoveFromQueueMenuItem.Click +=
+                (sender, _) => EnqueueRectangle_RemoveFromQueue(sender, new ControlEventArgs(control));
+            control.EditConfigMenuItem.Click +=
+                (sender, _) => EnqueueRectangle_Edit(sender, new ControlEventArgs(control));
+
+            return control;
         }
         
         private void MainForm_VisibleChanged(object sender, EventArgs e) {
@@ -165,7 +225,7 @@ namespace Inkybot
 
         private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs eventArgs) {
             var rectangle = (eventArgs.Control as EnqueueRectangle)!;
-            Task.Run(() => mageQueue.Enqueue(rectangle, ocrIndicators[rectangle]));
+            Task.Run(() => mageQueue.Enqueue(rectangle, queueControls[rectangle]));
         }
 
         private void EnqueueRectangle_RemoveFromQueue(object sender, ControlEventArgs eventArgs) {

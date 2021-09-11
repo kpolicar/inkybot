@@ -76,6 +76,8 @@ namespace Inkybot
                     StartAutoShutdownCounter();
                 EnableDebugging();
                 HasManuallyStoppedMaging = false;
+                if (mageQueueForm.Visible)
+                    ShowQueueControls();
             }));
             Win32.SetThreadExecutionState(Win32.EXECUTION_STATE.ES_CONTINUOUS);
         }
@@ -160,7 +162,10 @@ namespace Inkybot
         private void OnMagingStarted(object sender, MagingJobStartedEventArgs e) {
             if (e.Restarting) return;
             
-            Invoke(new MethodInvoker(DisableDebugging));
+            Invoke(new MethodInvoker(delegate {
+                DisableDebugging();
+                HideQueueControls();
+            }));
 
             if (!hasShownUnsupportedWarning && config.UserSettings.ShowUserWarnings &&
                 (!screenReader.IsSupportedItem(e.Item) || !screenReader.IsSupportedConfig(e.Config)))

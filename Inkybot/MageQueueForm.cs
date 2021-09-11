@@ -77,7 +77,7 @@ namespace Inkybot
             Hide();
         }
 
-        public async Task Highlight(MageQueueManager.MageQueueItem mageQueueItem, int delay=1500) {
+        public async Task Highlight(MageQueueManager.MageQueueItem mageQueueItem, int delay=800) {
             var index = mageQueue.Queue.IndexOf(mageQueueItem);
             var control = mageQueueGroupBoxesPanel.Controls[index] as GroupBox;
             if (control == null)
@@ -87,7 +87,6 @@ namespace Inkybot
                 control.Focus();
             }));
             
-            delay = 800;
             var currentColor = control.BorderColor;
             for (int i = 0; i < 3; i++) {
                 Invoke(new MethodInvoker(() => {

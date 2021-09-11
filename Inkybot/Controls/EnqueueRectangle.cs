@@ -17,7 +17,6 @@ namespace Inkybot.Controls
         
         public EnqueueRectangle() {
             ParentChanged += Rectangle_OnParentChanged;
-            VisibleChanged += (_, _) => button!.Visible = Visible;
         }
 
         public void NewOnLocationChanged(EventArgs e) {
@@ -46,6 +45,7 @@ namespace Inkybot.Controls
                 Menu = menu,
                 Visible = Visible
             };
+            VisibleChanged += (_, _) => button!.Visible = Visible;
             button.FlatStyle = FlatStyle.Flat;
             button.Location = Location;
             button.Font = new Font("Calibri", 9.75f, FontStyle.Bold);

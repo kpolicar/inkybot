@@ -33,19 +33,8 @@ namespace Inkybot
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
-
-            foreach (var inventoryBoundingBox in Measurements.InventoryBoundsIndividualMeasurements) {
-                var control = new EnqueueRectangle();
-                RegisterOcrIndicator(inventoryBoundingBox, control);
-                control.AddToQueueMenuItem.Click +=
-                    (sender, _) => EnqueueRectangle_AddToQueue(sender, new ControlEventArgs(control));
-                control.RemoveFromQueueMenuItem.Click +=
-                    (sender, _) => EnqueueRectangle_RemoveFromQueue(sender, new ControlEventArgs(control));
-                control.EditConfigMenuItem.Click +=
-                    (sender, _) => EnqueueRectangle_Edit(sender, new ControlEventArgs(control));
-            }
+            
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
-
             screenReader.LatestHistoryBoundsChanged += OnLatestHistoryProcessed;
         }
 
@@ -56,12 +45,11 @@ namespace Inkybot
             }));
         }
 
-        private Control RegisterOcrIndicator(Responsive.Measurement measurement, Control? control = null, bool crosshair=false) {
-            if (crosshair) {
-                control ??= new Crosshair();
-            } else {
-                control ??= new Rectangle();
-            }
+        private Control RegisterOcrIndicator(Responsive.Measurement measurement, bool crosshair=false) {
+            Control control = crosshair
+                ? new Crosshair()
+                : new Rectangle();
+            
             control.BackColor = System.Drawing.SystemColors.Control;
             control.ForeColor = System.Drawing.SystemColors.Control;
             Controls.Add(control);
