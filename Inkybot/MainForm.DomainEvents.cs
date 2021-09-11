@@ -18,6 +18,7 @@ namespace Inkybot
             mageQueue.Enqueued += OnMagingEnqueued;
             mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
             mageQueue.Removed += OnMagingDequeuedOrRemoved;
+            mageQueue.Moved += OnMagingMoved;
             magingJob.Starting += OnMagingStarting;
             magingJob.Started += OnMagingStarted;
             if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
@@ -94,6 +95,10 @@ namespace Inkybot
             var control = e.QueueItem.Control;
             
             UnmarkQueueRectangleAsEnqueued(control);
+            UpdateQueueControls();
+        }
+        
+        private void OnMagingMoved(object sender, MageQueueMovedEventArgs mageQueueMovedEventArgs) {
             UpdateQueueControls();
         }
 

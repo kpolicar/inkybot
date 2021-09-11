@@ -457,6 +457,7 @@ namespace Inkybot
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
+            this.Load += new System.EventHandler(this.MainForm_Loaded);
             this.toastPanel.ResumeLayout(false);
             this.toastPanel.PerformLayout();
             this.shutdownToastPanel.ResumeLayout(false);

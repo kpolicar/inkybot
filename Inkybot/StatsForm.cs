@@ -58,7 +58,7 @@ namespace Inkybot
         }
 
         private void LoadPresetsToComboBox() {
-            var presets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
+            var presets = configManager.UserSettings.Presets.Presets;
             
             presetsComboBox.DataSource =
                 presets.Select(preset => preset.Name)
@@ -418,17 +418,16 @@ namespace Inkybot
                 Stats = config
             };
             
-            var existingPresets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
+            var existingPresets = configManager.UserSettings.Presets.Presets;
 
             if (index <= 0) {
-                Properties.Settings.Default.presets = new ItemPresets {
+                configManager.UserSettings.Presets = new ItemPresets {
                     Presets = existingPresets.Append(preset).ToArray()
                 };
-                index = Properties.Settings.Default.presets.Presets.Length;
+                index = configManager.UserSettings.Presets.Presets.Length;
             } else {
                 existingPresets[index - 1] = preset;
             }
-            Properties.Settings.Default.Save();
             LoadPresetsToComboBox();
             presetsComboBox.SelectedIndex = index;
         }
@@ -471,12 +470,11 @@ namespace Inkybot
             var index = presetsComboBox.SelectedIndex;
             if (index <= 0) return;
             
-            var existingPresets = (Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {}).ToList();
+            var existingPresets = configManager.UserSettings.Presets.Presets.ToList();
             existingPresets.RemoveAt(index-1);
-            Properties.Settings.Default.presets = new ItemPresets {
+            configManager.UserSettings.Presets = new ItemPresets {
                 Presets = existingPresets.ToArray()
             };
-            Properties.Settings.Default.Save();
             LoadPresetsToComboBox();
         }
 

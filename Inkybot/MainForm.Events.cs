@@ -177,5 +177,9 @@ namespace Inkybot
             if (!mageQueueForm.Visible) mageQueueForm.Show();
             else mageQueueForm.Focus();
         }
+
+        private void MainForm_Loaded(object sender, EventArgs e) {
+            _ = mageQueueForm.Handle;
+        }
     }
 }

@@ -10,8 +10,10 @@ using Inkybot.Controls;
 using Inkybot.Design;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
+using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace Inkybot.Services
@@ -26,6 +28,7 @@ namespace Inkybot.Services
         public event EventHandler<MeasurementEventArgs>? Enqueueing;
         public event EventHandler<MageQueueEventArgs>? Enqueued;
         public event EventHandler<MageQueueEventArgs>? Dequeued;
+        public event EventHandler<MageQueueMovedEventArgs>? Moved;
         public event EventHandler<MageQueueEventArgs>? Removed;
 
         public bool Empty => Queue.Count == 0;
@@ -43,9 +46,30 @@ namespace Inkybot.Services
             var mage = Queue[0];
             Queue.RemoveAt(0);
             mage.Config.ApplyToConfigManager(configManager);
-
+            
             Dequeued?.Invoke(this, new MageQueueEventArgs(mage));
             return mage;
+        }
+
+        public MageQueueItem Move(MageQueueItem mage, int newIndex) {
+            var index = Queue.IndexOf(mage);
+            if (index == newIndex)
+                return mage;
+            Queue.Move(index, newIndex);
+            
+            Moved?.Invoke(this, new MageQueueMovedEventArgs(mage, newIndex));
+            Debug.WriteLine("New index: "+newIndex+", old index: "+index+", current: "+Queue.IndexOf(mage)+", length: "+Queue.Count);
+            return mage;
+        }
+
+        public MageQueueItem MoveForward(MageQueueItem mage) {
+            var index = Queue.IndexOf(mage);
+            return Move(mage, Math.Max(0, index-1));
+        }
+
+        public MageQueueItem MoveBack(MageQueueItem mage) {
+            var index = Queue.IndexOf(mage);
+            return Move(mage, Math.Min(Count-1, index+1));
         }
 
 
@@ -75,8 +99,10 @@ namespace Inkybot.Services
             return enqueued;
         }
 
-        public void Remove(EnqueueRectangle control) {
-            var mage = Queue.Find(item => item.Control.Equals(control));
+        public void Remove(EnqueueRectangle control) => Remove(
+            Queue.Find(item => item.Control.Equals(control)));
+
+        public void Remove(MageQueueItem mage) {
             Queue.Remove(mage);
             Removed?.Invoke(this, new MageQueueEventArgs(mage));
         }

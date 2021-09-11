@@ -5,13 +5,16 @@ using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Helpers;
+using Inkybot.Resources;
 using Debug = System.Diagnostics.Debug;
+using StatConfig = Inkybot.Dofus.StatConfig;
 
 namespace Inkybot.Services
 {
     public class FileSystemUserSettingsConfigManager : UserSettingsConfigManager
     {
         public event EventHandler? EnableMageQueueingChanged;
+        public event EventHandler? PresetsChanged;
         
         public bool RestoreHighSinkStats {
             set {
@@ -76,6 +79,15 @@ namespace Inkybot.Services
                 Properties.Settings.Default.Save();
             }
             get => Properties.Settings.Default.enableRuneChecking;
+        }
+
+        public ItemPresets Presets {
+            set {
+                Properties.Settings.Default.presets = value;
+                Properties.Settings.Default.Save();
+                PresetsChanged?.Invoke(this, EventArgs.Empty);
+            }
+            get => Properties.Settings.Default.presets;
         }
         
         public StatConfig Config(Stat stat) {

@@ -40,6 +40,7 @@ namespace Inkybot
             this.mageQueueGroupBoxesPanel.Name = "mageQueueGroupBoxesPanel";
             this.mageQueueGroupBoxesPanel.Size = new System.Drawing.Size(642, 450);
             this.mageQueueGroupBoxesPanel.TabIndex = 0;
+            this.mageQueueGroupBoxesPanel.AutoScroll = true;
             // 
             // MageQueueForm
             // 

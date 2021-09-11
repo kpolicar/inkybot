@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Inkybot.Dofus;
+using Inkybot.Resources;
 using Inkybot.Services;
+using StatConfig = Inkybot.Dofus.StatConfig;
 using StatConfigProvider = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Inkybot.Contracts
@@ -16,8 +18,10 @@ namespace Inkybot.Contracts
         public bool EnableRuneChecking { get; set; }
         public bool EnableMageQueueing { get; set; }
         public decimal CustomResizeMultiplier { get; set; }
+        public ItemPresets Presets { get; set; }
         
         public event EventHandler? EnableMageQueueingChanged;
+        public event EventHandler? PresetsChanged;
         
         public void SetConfig(Stat stat, in StatConfig config);
     }

@@ -230,6 +230,7 @@
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
         <Compile Include="Events\ExceptionEventArgs.cs" />
         <Compile Include="Events\MageQueueEventArgs.cs" />
+        <Compile Include="Events\MageQueueMovedEventArgs.cs" />
         <Compile Include="Events\MageResolveEventArgs.cs" />
         <Compile Include="Events\MagingAIChangedEventArgs.cs" />
         <Compile Include="Events\MagingJobErrorEventArgs.cs" />
@@ -270,6 +271,7 @@
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
         <Compile Include="Extensions\DataGridViewRowCollection.cs" />
         <Compile Include="Extensions\IEnumerable.cs" />
+        <Compile Include="Extensions\ListExtensions.cs" />
         <Compile Include="Extensions\StringExtensions.cs" />
         <Compile Include="FirstTimeInfoForm.cs">
           <SubType>Form</SubType>

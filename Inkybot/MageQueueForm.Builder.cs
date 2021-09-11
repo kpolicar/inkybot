@@ -1,13 +1,16 @@
 using System.Drawing;
 using System.Linq;
 using Inkybot.Controls;
+using Inkybot.Events;
 using Inkybot.Resources;
+using Inkybot.Services;
 
 namespace Inkybot
 {
     public partial class MageQueueForm
     {
-        private GroupBox BuildMageQueueGroupBox(Image? queueItemItemPreview=null) {
+        private GroupBox BuildMageQueueGroupBox(MageQueueManager.MageQueueItem mageQueueItem)
+        {
             System.Windows.Forms.Panel previewPanel;
             System.Windows.Forms.FlowLayoutPanel buttonsPanel;
             System.Windows.Forms.Button moveUpButton;
@@ -82,6 +85,7 @@ namespace Inkybot
             moveUpButton.TabIndex = 5;
             moveUpButton.Text = "Move up";
             moveUpButton.UseVisualStyleBackColor = false;
+            moveUpButton.Click += (sender, _) => OnMageQueueItemMoveUp(sender, new MageQueueEventArgs(mageQueueItem));
             // 
             // moveDownButton
             // 
@@ -96,6 +100,7 @@ namespace Inkybot
             moveDownButton.TabIndex = 6;
             moveDownButton.Text = "Move down";
             moveDownButton.UseVisualStyleBackColor = false;
+            moveDownButton.Click += (sender, _) => OnMageQueueItemMoveDown(sender, new MageQueueEventArgs(mageQueueItem));
             // 
             // removeButton
             // 
@@ -110,6 +115,7 @@ namespace Inkybot
             removeButton.TabIndex = 4;
             removeButton.Text = "Remove";
             removeButton.UseVisualStyleBackColor = false;
+            removeButton.Click += (sender, _) => OnMageQueueItemRemove(sender, new MageQueueEventArgs(mageQueueItem));
             // 
             // configPresetPanel
             // 
@@ -198,7 +204,7 @@ namespace Inkybot
             previewPictureBox.Size = new System.Drawing.Size(64, 64);
             previewPictureBox.TabIndex = 0;
             previewPictureBox.TabStop = false;
-            previewPictureBox.Image = queueItemItemPreview;
+            previewPictureBox.Image = mageQueueItem.ItemPreview;
             
             queueItemGroupBox.ResumeLayout(false);
             buttonsPanel.ResumeLayout(false);
@@ -210,19 +216,22 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (previewPictureBox)).EndInit();
             
             
-            var presets = Properties.Settings.Default.presets?.Presets ?? new ItemPreset[] {};
-            
-            statPresetComboBox.DataSource =
-                presets.Select(preset => preset.Name)
-                    .Prepend("Default")
-                    .ToArray();
-            
-            configPresetComboBox.DataSource =
-                presets.Select(preset => preset.Name)
-                    .Prepend("Default")
-                    .ToArray();
+            configManager.UserSettings.PresetsChanged += (_, _) => UpdatePresets(statPresetComboBox);
+            UpdatePresets(statPresetComboBox);
+            configManager.UserSettings.PresetsChanged += (_, _) => UpdatePresets(configPresetComboBox);
+            UpdatePresets(configPresetComboBox);
 
             return queueItemGroupBox;
+        }
+
+        private void UpdatePresets(ComboBox comboBox) {
+            var selectedIndex = comboBox.SelectedItem;
+            comboBox.DataSource =
+                configManager.UserSettings.Presets.Presets.Select(preset => preset.Name)
+                    .Prepend("Default")
+                    .ToArray();
+            comboBox.SelectedItem = selectedIndex;
+
         }
     }
 }
