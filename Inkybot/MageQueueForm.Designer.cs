@@ -28,7 +28,18 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            SuspendLayout();
+            this.mageQueueGroupBoxesPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.SuspendLayout();
+            // 
+            // mageQueueGroupBoxesPanel
+            // 
+            this.mageQueueGroupBoxesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mageQueueGroupBoxesPanel.ColumnCount = 1;
+            this.mageQueueGroupBoxesPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.mageQueueGroupBoxesPanel.Location = new System.Drawing.Point(0, 0);
+            this.mageQueueGroupBoxesPanel.Name = "mageQueueGroupBoxesPanel";
+            this.mageQueueGroupBoxesPanel.Size = new System.Drawing.Size(642, 450);
+            this.mageQueueGroupBoxesPanel.TabIndex = 0;
             // 
             // MageQueueForm
             // 
@@ -36,10 +47,13 @@ namespace Inkybot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.ClientSize = new System.Drawing.Size(642, 450);
+            this.Controls.Add(this.mageQueueGroupBoxesPanel);
             this.Name = "MageQueueForm";
             this.Text = "MageQueueForm";
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.TableLayoutPanel mageQueueGroupBoxesPanel;
 
         #endregion
     }

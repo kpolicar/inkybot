@@ -32,14 +32,14 @@ namespace Inkybot
             BeginInvoke(new MethodInvoker(() => {
                 var control = BuildMageQueueGroupBox(e.QueueItem.ItemPreview);
                 SuspendLayout();
-                Controls.Add(control);
+                mageQueueGroupBoxesPanel.Controls.Add(control);
                 ResumeLayout();
                 mageQueueGroupBoxes[e.QueueItem] = control;
             }));
         
         private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
             SuspendLayout();
-            Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
+            mageQueueGroupBoxesPanel.Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
             ResumeLayout();
             mageQueueGroupBoxes.Remove(e.QueueItem);
         }
