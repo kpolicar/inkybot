@@ -202,6 +202,7 @@
         <Compile Include="Controls\EnqueueRectangle.cs">
           <SubType>UserControl</SubType>
         </Compile>
+        <Compile Include="Controls\GroupBox.cs" />
         <Compile Include="Controls\MenuButton.cs" />
         <Compile Include="Controls\Rectangle.cs">
           <SubType>UserControl</SubType>

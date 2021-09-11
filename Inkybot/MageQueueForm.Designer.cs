@@ -28,16 +28,16 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new Inkybot.Controls.GroupBox();
             this.buttonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.moveUpButton = new System.Windows.Forms.Button();
             this.moveDownButton = new System.Windows.Forms.Button();
             this.removeButton = new System.Windows.Forms.Button();
             this.configPresetPanel = new System.Windows.Forms.Panel();
-            this.configPresetComboBox = new System.Windows.Forms.ComboBox();
+            this.configPresetComboBox = new Inkybot.Controls.ComboBox();
             this.configPresetLabel = new System.Windows.Forms.Label();
             this.statPresetPanel = new System.Windows.Forms.Panel();
-            this.statPresetComboBox = new System.Windows.Forms.ComboBox();
+            this.statPresetComboBox = new Inkybot.Controls.ComboBox();
             this.statPresetLabel = new System.Windows.Forms.Label();
             this.previewPanel = new System.Windows.Forms.Panel();
             this.previewPictureBox = new System.Windows.Forms.PictureBox();
@@ -59,6 +59,7 @@ namespace Inkybot
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(642, 120);
+            this.groupBox1.BorderColor = System.Drawing.Color.FromArgb(((int) (((byte) (70)))), ((int) (((byte) (70)))), ((int) (((byte) (70)))));
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -69,7 +70,7 @@ namespace Inkybot
             this.buttonsPanel.Controls.Add(this.removeButton);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.buttonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.buttonsPanel.Location = new System.Drawing.Point(536, 18);
+            this.buttonsPanel.Location = new System.Drawing.Point(536, 14);
             this.buttonsPanel.Name = "buttonsPanel";
             this.buttonsPanel.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.buttonsPanel.Size = new System.Drawing.Size(103, 99);
@@ -82,7 +83,7 @@ namespace Inkybot
             this.moveUpButton.FlatAppearance.BorderSize = 0;
             this.moveUpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.moveUpButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.moveUpButton.Location = new System.Drawing.Point(5, 3);
+            this.moveUpButton.Location = new System.Drawing.Point(0,0);
             this.moveUpButton.Name = "moveUpButton";
             this.moveUpButton.Size = new System.Drawing.Size(93, 26);
             this.moveUpButton.TabIndex = 5;
@@ -96,7 +97,7 @@ namespace Inkybot
             this.moveDownButton.FlatAppearance.BorderSize = 0;
             this.moveDownButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.moveDownButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.moveDownButton.Location = new System.Drawing.Point(5, 35);
+            this.moveDownButton.Location = new System.Drawing.Point(0,0);
             this.moveDownButton.Name = "moveDownButton";
             this.moveDownButton.Size = new System.Drawing.Size(93, 26);
             this.moveDownButton.TabIndex = 6;
@@ -110,7 +111,7 @@ namespace Inkybot
             this.removeButton.FlatAppearance.BorderSize = 0;
             this.removeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.removeButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.removeButton.Location = new System.Drawing.Point(5, 67);
+            this.removeButton.Location = new System.Drawing.Point(0,0);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(93, 26);
             this.removeButton.TabIndex = 4;
@@ -132,9 +133,11 @@ namespace Inkybot
             // 
             this.configPresetComboBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.configPresetComboBox.BackColor = System.Drawing.Color.Black;
+            this.configPresetComboBox.ForeColor = System.Drawing.SystemColors.Control;
             this.configPresetComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.configPresetComboBox.FormattingEnabled = true;
             this.configPresetComboBox.Location = new System.Drawing.Point(10, 26);
+            this.configPresetComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.configPresetComboBox.Name = "configPresetComboBox";
             this.configPresetComboBox.Size = new System.Drawing.Size(180, 24);
             this.configPresetComboBox.TabIndex = 1;
@@ -148,7 +151,7 @@ namespace Inkybot
             this.configPresetLabel.Size = new System.Drawing.Size(180, 23);
             this.configPresetLabel.TabIndex = 0;
             this.configPresetLabel.Text = "Config Preset";
-            this.configPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.configPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // statPresetPanel
             // 
@@ -165,7 +168,9 @@ namespace Inkybot
             // 
             this.statPresetComboBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.statPresetComboBox.BackColor = System.Drawing.Color.Black;
+            this.statPresetComboBox.ForeColor = System.Drawing.SystemColors.Control;
             this.statPresetComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.statPresetComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.statPresetComboBox.FormattingEnabled = true;
             this.statPresetComboBox.Location = new System.Drawing.Point(10, 26);
             this.statPresetComboBox.Name = "statPresetComboBox";
@@ -181,7 +186,7 @@ namespace Inkybot
             this.statPresetLabel.Size = new System.Drawing.Size(180, 23);
             this.statPresetLabel.TabIndex = 0;
             this.statPresetLabel.Text = "Stat Preset";
-            this.statPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.statPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // previewPanel
             // 
@@ -210,6 +215,7 @@ namespace Inkybot
             this.Controls.Add(this.groupBox1);
             this.Name = "MageQueueForm";
             this.Text = "MageQueueForm";
+            this.Load += new System.EventHandler(this.MageQueueForm_Loaded);
             this.groupBox1.ResumeLayout(false);
             this.buttonsPanel.ResumeLayout(false);
             this.buttonsPanel.PerformLayout();
@@ -229,17 +235,17 @@ namespace Inkybot
 
         private System.Windows.Forms.Button removeButton;
 
-        private System.Windows.Forms.ComboBox configPresetComboBox;
         private System.Windows.Forms.Label configPresetLabel;
         private System.Windows.Forms.Panel configPresetPanel;
 
-        private System.Windows.Forms.ComboBox statPresetComboBox;
+        private Inkybot.Controls.ComboBox statPresetComboBox;
+        private Inkybot.Controls.ComboBox configPresetComboBox;
 
         private System.Windows.Forms.Label statPresetLabel;
         private System.Windows.Forms.Panel statPresetPanel;
         private System.Windows.Forms.PictureBox previewPictureBox;
 
-        private System.Windows.Forms.GroupBox groupBox1;
+        private Inkybot.Controls.GroupBox groupBox1;
 
         #endregion
     }
