@@ -55,13 +55,14 @@ namespace Inkybot
                 UpdateControlsVisibility();
             }));
         
-        private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
-            SuspendLayout();
-            mageQueueGroupBoxesPanel.Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
-            ResumeLayout();
-            mageQueueGroupBoxes.Remove(e.QueueItem);
-            UpdateControlsVisibility();
-        }
+        private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                SuspendLayout();
+                mageQueueGroupBoxesPanel.Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
+                ResumeLayout();
+                mageQueueGroupBoxes.Remove(e.QueueItem);
+                UpdateControlsVisibility();
+            }));
 
         private void OnMageQueueItemRemove(object sender, MageQueueEventArgs e) =>
             mageQueue.Remove(e.QueueItem);
