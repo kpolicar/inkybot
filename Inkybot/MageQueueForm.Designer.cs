@@ -49,6 +49,7 @@ namespace Inkybot
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.ClientSize = new System.Drawing.Size(642, 450);
             this.Controls.Add(this.mageQueueGroupBoxesPanel);
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.MageQueueForm_Closing);
             this.Name = "MageQueueForm";
             this.Text = "MageQueueForm";
             this.ResumeLayout(false);

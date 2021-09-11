@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -62,6 +63,11 @@ namespace Inkybot
 
         private void OnMageQueueItemMoveDown(object sender, MageQueueEventArgs e) =>
             mageQueue.MoveBack(e.QueueItem);
+        
+        private void MageQueueForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
+            cancelEventArgs.Cancel = true;
+            Hide();
+        }
     }
 }
 
