@@ -28,46 +28,32 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MageQueueForm));
             this.mageQueueGroupBoxesPanel = new System.Windows.Forms.TableLayoutPanel();
             this.emptyLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // mageQueueGroupBoxesPanel
             // 
-            this.mageQueueGroupBoxesPanel.AutoScroll = true;
-            this.mageQueueGroupBoxesPanel.ColumnCount = 1;
-            this.mageQueueGroupBoxesPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mageQueueGroupBoxesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mageQueueGroupBoxesPanel.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.mageQueueGroupBoxesPanel, "mageQueueGroupBoxesPanel");
             this.mageQueueGroupBoxesPanel.Name = "mageQueueGroupBoxesPanel";
-            this.mageQueueGroupBoxesPanel.Size = new System.Drawing.Size(642, 450);
-            this.mageQueueGroupBoxesPanel.TabIndex = 0;
-            this.mageQueueGroupBoxesPanel.Visible = false;
             // 
             // emptyLabel
             // 
-            this.emptyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.emptyLabel, "emptyLabel");
             this.emptyLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.emptyLabel.Location = new System.Drawing.Point(0, 0);
             this.emptyLabel.Name = "emptyLabel";
-            this.emptyLabel.Size = new System.Drawing.Size(642, 450);
-            this.emptyLabel.TabIndex = 1;
-            this.emptyLabel.Text = "There are no items in the queue";
-            this.emptyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MageQueueForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            this.ClientSize = new System.Drawing.Size(642, 450);
-            this.MinimumSize = new System.Drawing.Size(512, 384);
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
             this.Controls.Add(this.emptyLabel);
             this.Controls.Add(this.mageQueueGroupBoxesPanel);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MageQueueForm";
-            this.Text = "Inkybot - Mage Queue";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.MageQueueForm_Closing);
             this.ResumeLayout(false);
         }

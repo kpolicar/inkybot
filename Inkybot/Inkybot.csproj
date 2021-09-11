@@ -464,6 +464,9 @@
         <EmbeddedResource Include="FirstTimeInfoForm.resx">
           <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
         </EmbeddedResource>
+        <EmbeddedResource Include="MageQueueForm.fr.resx">
+          <DependentUpon>MageQueueForm.cs</DependentUpon>
+        </EmbeddedResource>
         <EmbeddedResource Include="MageQueueForm.resx">
           <DependentUpon>MageQueueForm.cs</DependentUpon>
         </EmbeddedResource>
