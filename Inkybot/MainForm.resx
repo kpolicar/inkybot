@@ -3204,7 +3204,7 @@
     <value>0, 15</value>
   </data>
   <data name="primaryButtonsPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 256</value>
+    <value>113, 200</value>
   </data>
   <data name="historyOcrIndicatorRectangle.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>

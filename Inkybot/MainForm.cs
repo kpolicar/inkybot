@@ -59,6 +59,33 @@ namespace Inkybot
             userSettingsConfigManager.EnableMageQueueingChanged += (_, _) =>
                 showMageQueueButton.Visible = userSettingsConfigManager.EnableMageQueueing;
         }
+        
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            // WM_SYSCOMMAND
+            if (m.Msg == 0x00A3) { // WM_NCLBUTTONDBLCLK
+                OnResizeEnd(EventArgs.Empty);
+            }
+            
+            if (m.Msg == 0x0112)
+            {
+                if (m.WParam == new IntPtr(0xF030) // Maximize event - SC_MAXIMIZE from Winuser.h
+                    || m.WParam == new IntPtr(0xF120)) // Restore event - WM_NCLBUTTONDBLCLK from Winuser.h
+                {
+                    OnResizeEnd(EventArgs.Empty);
+                }
+                if (m.WParam == new IntPtr(0xF020)) // Maximize event - SC_MINIMIZE from Winuser.h
+                {
+                    OnMinimize();
+                }
+            }
+        }
+
+        private void OnMinimize() {
+            magingJob.StopMage();
+        }
 
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
             Hide();
