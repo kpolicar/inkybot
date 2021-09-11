@@ -135,6 +135,7 @@
         <Reference Include="System.Threading.Thread" />
         <Reference Include="System.Transactions" />
         <Reference Include="System.Web" />
+        <Reference Include="System.Workflow.ComponentModel" />
         <Reference Include="System.Xaml" />
         <Reference Include="System.Xml.Linq" />
         <Reference Include="Microsoft.CSharp" />
@@ -280,6 +281,12 @@
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
+        <Compile Include="MageQueueForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="MageQueueForm.Designer.cs">
+          <DependentUpon>MageQueueForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="MainForm.Auth.cs">
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
@@ -450,6 +457,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="FirstTimeInfoForm.resx">
           <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="MageQueueForm.resx">
+          <DependentUpon>MageQueueForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.fr.resx" />
         <EmbeddedResource Include="Properties\Regex.fr.resx" />
