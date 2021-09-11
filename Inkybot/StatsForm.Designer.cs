@@ -351,7 +351,9 @@ namespace Inkybot
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.helpPanel);
             this.Controls.Add(this.actionsPanel);
-            this.MinimumSize = new Size(460, 340);
+            this.MinimumSize = new Size(512, 384);
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
             this.Name = "StatsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
             this.Load += new System.EventHandler(this.StatsForm_Loaded);

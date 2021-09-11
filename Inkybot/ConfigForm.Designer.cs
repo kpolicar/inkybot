@@ -477,12 +477,14 @@ namespace Inkybot
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MinimumSize = new System.Drawing.Size(400, 400);
+            this.MinimumSize = new System.Drawing.Size(640, 480);
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.tooltipLabelExtra);
             this.Controls.Add(this.bottomPanel);
             this.Controls.Add(this.customMagingAIPanel);
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
             this.Name = "ConfigForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
             this.Load += new System.EventHandler(this.ConfigForm_OnLoad);

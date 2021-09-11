@@ -33,6 +33,11 @@ namespace Inkybot
             mageQueue.Moved += OnMagingMoved;
         }
 
+        private void UpdateControlsVisibility() {
+            emptyLabel.Visible = mageQueue.Empty;
+            mageQueueGroupBoxesPanel.Visible = !mageQueue.Empty;
+        }
+
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
                 var groupBox = mageQueueGroupBoxes[e.QueueItem];
@@ -46,6 +51,7 @@ namespace Inkybot
                 mageQueueGroupBoxesPanel.Controls.Add(control);
                 ResumeLayout();
                 mageQueueGroupBoxes[e.QueueItem] = control;
+                UpdateControlsVisibility();
             }));
         
         private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
@@ -53,6 +59,7 @@ namespace Inkybot
             mageQueueGroupBoxesPanel.Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
             ResumeLayout();
             mageQueueGroupBoxes.Remove(e.QueueItem);
+            UpdateControlsVisibility();
         }
 
         private void OnMageQueueItemRemove(object sender, MageQueueEventArgs e) =>
