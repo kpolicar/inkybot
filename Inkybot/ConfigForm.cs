@@ -287,29 +287,32 @@ namespace Inkybot
             var result = scriptFileDialog.ShowDialog();
             if (result == DialogResult.OK) {
                 var path = scriptFileDialog.FileName;
-                customScriptPathLabel.Text = Path.GetFileName(path);
-                resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxLoading");
-                scriptValidPictureBox.Show();
-                
-                _ = Task.Run(() => {
-                    Thread.Sleep(300);
-                    TrySwitchToCustomAIScript();
-                });
+                TrySwitchToCustomAIScript(path);
             }
         }
 
-        private void TrySwitchToCustomAIScript() {
-            try {
-                magingAiManager.UseCustomAIScript(scriptFileDialog.FileName);
+        private void TrySwitchToCustomAIScript(string path) {
+            Invoke(new MethodInvoker(() => {
+                customScriptPathLabel.Text = Path.GetFileName(path);
+                resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxLoading");
+                scriptValidPictureBox.Show();
+            }));
                 
-                Invoke(new MethodInvoker(() => {
-                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
-                }));
-            } catch (Exception) {
-                Invoke(new MethodInvoker(() => {
-                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
-                }));
-            }
+            _ = Task.Run(() => {
+                Thread.Sleep(300);
+                
+                try {
+                    magingAiManager.UseCustomAIScript(path);
+                
+                    Invoke(new MethodInvoker(() => {
+                        resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
+                    }));
+                } catch (Exception) {
+                    Invoke(new MethodInvoker(() => {
+                        resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
+                    }));
+                }
+            });
         }
 
         private void scriptResetButton_Click(object sender, EventArgs e) {
@@ -396,9 +399,63 @@ namespace Inkybot
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
+
+            var preset = userSettingsConfigManager.ConfigPresets.Presets
+                .Skip(index - 1).First();
             
-            var preset = Properties.Settings.Default.configPresets.Presets.Skip(index-1).First();
-            Debug.WriteLine(preset.Name);
+            if (preset.CustomScriptPath != null) {
+                TrySwitchToCustomAIScript(preset.CustomScriptPath);
+            } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
+                magingAiManager.UseBuiltInAIScript();
+            }
+
+            foreach (var defaultStatConfig in configProvider.Default.Config()) {
+                userSettingsConfigManager.SetConfig(defaultStatConfig.Key, defaultStatConfig.Value, false);
+            }
+            
+            foreach (var statConfigPreset in preset.Configs) {
+                var stat = Stat.FirstOrNew(statConfigPreset.Stat);
+                userSettingsConfigManager.SetConfig(stat, new StatConfig(
+                    Numbers.Parse(statConfigPreset.MaxValueAtWhichSmRuneCanLand),
+                    Numbers.Parse(statConfigPreset.ChangeToPaRuneThreshold),
+                    Numbers.Parse(statConfigPreset.MaxValueAtWhichPaRuneCanLand),
+                    Numbers.Parse(statConfigPreset.ChangeToRaRuneThreshold),
+                    statConfigPreset.UseSmRunes,
+                    statConfigPreset.UsePaRunes,
+                    statConfigPreset.UseRaRunes,
+                    configProvider.Default.Config(stat).HighSinkStat
+                    ));
+            }
+            Properties.Settings.Default.Save();
+            
+            foreach (var rowObj in statsDataGridView.Rows) {
+                var row = (DataGridViewRow) rowObj;
+                var stat = (Stat) row.Tag;
+                var config = configProvider.Config(stat);
+                row.Cells[4].Value = Numbers.ToString(config.ChangeToPaRuneThreshold);
+                row.Cells[5].Value = Numbers.ToString(config.ChangeToRaRuneThreshold);
+                row.Cells[6].Value = Numbers.ToString(config.MaxValueAtWhichSmRuneCanHit);
+                row.Cells[7].Value = Numbers.ToString(config.MaxValueAtWhichPaRuneCanHit);
+                row.Cells[1].Value = config.UseSmRunes;
+                row.Cells[2].Value = config.UsePaRunes;
+                row.Cells[3].Value = config.UseRaRunes;
+                SetConfigRowTooltipsAndChangeStyles(row);
+            }
+            
+            // changeToPaRuneThreshold:
+            // e.ColumnIndex == 4 ? intValue() : currentConfig.changeToPaRuneThreshold,
+            // changeToRaRuneThreshold:
+            // e.ColumnIndex == 5 ? intValue() : currentConfig.changeToRaRuneThreshold,
+            // maxValueSmRuneCanHit:
+            // e.ColumnIndex == 6 ? intValue() : currentConfig.maxValueSmRuneCanHit,
+            // maxValuePaRuneCanHit:
+            // e.ColumnIndex == 7 ? intValue() : currentConfig.maxValuePaRuneCanHit,
+            // useSmRunes:
+            // e.ColumnIndex == 1 ? boolValue() : currentConfig.useSmRunes,
+            // usePaRunes:
+            // e.ColumnIndex == 2 ? boolValue() : currentConfig.usePaRunes,
+            // useRaRunes:
+            // e.ColumnIndex == 3 ? boolValue() : currentConfig.useRaRunes
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
@@ -411,8 +468,6 @@ namespace Inkybot
                 .Select(statConfig => 
                     new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
                 .ToArray();
-            
-            Debug.WriteLine(changedConfig.Length);
             
             var ai = Program.Services.GetService<DofusMagingAI>();
             var preset = new ConfigPreset {

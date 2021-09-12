@@ -16,7 +16,7 @@ namespace Inkybot.Services
     {
         public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
-        
+
         public bool RestoreHighSinkStats {
             set {
                 Properties.Settings.Default.restoreHighSinkStatImmediately = value;
@@ -120,7 +120,10 @@ namespace Inkybot.Services
                     pair => Config(pair.Value));
         }
 
-        public void SetConfig(Stat stat, in StatConfig config) {
+        public void SetConfig(Stat stat, in StatConfig config) =>
+            SetConfig(stat, config, true);
+
+        public void SetConfig(Stat stat, in StatConfig config, bool save) {
             Properties.Settings.Default[stat.Identifier] = new Resources.StatConfig {
                 ChangeToPaRuneThreshold = Numbers.ToString(config.ChangeToPaRuneThreshold),
                 ChangeToRaRuneThreshold = Numbers.ToString(config.ChangeToRaRuneThreshold),
@@ -130,7 +133,8 @@ namespace Inkybot.Services
                 UsePaRunes = config.UsePaRunes,
                 UseRaRunes = config.UseRaRunes,
             };
-            Properties.Settings.Default.Save();
+            if (save)
+                Properties.Settings.Default.Save();
         }
     }
 }
