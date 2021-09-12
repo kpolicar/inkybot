@@ -286,13 +286,13 @@ recognized correctly)</value>
     <data name="&gt;&gt;scriptChangeButton.Name" xml:space="preserve">
     <value>scriptChangeButton</value>
   </data>
-  <data name="bottomPanel.TabIndex" type="System.Int32, mscorlib">
+  <data name="userSettingsPanel.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="&gt;&gt;StatColumn.Name" xml:space="preserve">
     <value>StatColumn</value>
   </data>
-  <data name="bottomPanel.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="userSettingsPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>775, 41</value>
   </data>
   <data name="restoreHighSinkStatsCheckbox.Location" type="System.Drawing.Point, System.Drawing">
@@ -304,8 +304,8 @@ recognized correctly)</value>
   <data name="statsDataGridView.Size" type="System.Drawing.Size, System.Drawing">
     <value>775, 592</value>
   </data>
-  <data name="&gt;&gt;bottomPanel.Name" xml:space="preserve">
-    <value>bottomPanel</value>
+  <data name="&gt;&gt;userSettingsPanel.Name" xml:space="preserve">
+    <value>userSettingsPanel</value>
   </data>
   <data name="&gt;&gt;RaRuneThresholdColumn.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -313,11 +313,11 @@ recognized correctly)</value>
   <data name="StatColumn.HeaderText" xml:space="preserve">
     <value>Stat</value>
   </data>
-  <data name="&gt;&gt;bottomPanel.Type" xml:space="preserve">
+  <data name="&gt;&gt;userSettingsPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;restoreHighSinkStatsCheckbox.Parent" xml:space="preserve">
-    <value>bottomPanel</value>
+    <value>userSettingsPanel</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -325,7 +325,7 @@ recognized correctly)</value>
   <data name="restoreHighSinkStatsCheckbox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;bottomPanel.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;userSettingsPanel.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="&gt;&gt;restoreHighSinkStatsCheckbox.Name" xml:space="preserve">
@@ -343,7 +343,7 @@ recognized correctly)</value>
   <data name="MaxPaRuneCanHitColumn.HeaderText" xml:space="preserve">
     <value>Max (PA Rune)</value>
   </data>
-  <data name="bottomPanel.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="userSettingsPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 551</value>
   </data>
   <data name="&gt;&gt;PaRuneThresholdColumn.Type" xml:space="preserve">
@@ -2183,7 +2183,7 @@ recognized correctly)</value>
   <data name="restoreHighSinkStatsCheckbox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="bottomPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+  <data name="userSettingsPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.Parent" xml:space="preserve">
@@ -2210,7 +2210,7 @@ recognized correctly)</value>
     <data name="enableKamasCalculationCheckbox.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
-  <data name="bottomPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="userSettingsPanel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>15, 10, 15, 10</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.Name" xml:space="preserve">
@@ -2219,13 +2219,42 @@ recognized correctly)</value>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>640, 480</value>
   </data>
+    <data name="addPresetButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>113, 40</value>
+    </data>
+    <data name="addPresetButton.AutoSize" type="System.Boolean, mscorlib">
+        <value>True</value>
+    </data>
+    <data name="addPresetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+        <value>Flat</value>
+    </data>
+    <data name="addPresetButton.Font" type="System.Drawing.Font, System.Drawing">
+        <value>Calibri, 9.75pt</value>
+    </data>
+    <data name="deletePresetButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>
+            iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABu0lEQVRoge2av07CQACHv+sgxA6eG2HzTfQZnEwcfQOji6sw8QxObj6J8R0wxh3bEkvLwDkYEmnsHe2V9gr9tlKO+33cv96BwBKlVD8MwyfgEjjasliqlHqRUt4IIVKb+j2bwgBRFN0BV2wfHqAnhLiOoujetn5hU3g2m514nvcOnJb8iBA4k1J+lc2wIRAEwRi4pdi3WSdLYCKlfFi/kBVIcTf8mlRK2V9fZMeA6+EBen8vrAdx02QFlo2kKMbGtJsVmOC2xJLfjB0dVZG7EgdBsAD6efdrZiGlPP7vhm4aDXYUpjBKqdwsrRAQQrRbAE2WTqAmOoGmKSUQ7iBIWXKz7G8L6ObeBmj3GDjMhcylLlSqBTzPc0ZAlyVXwPf90odNVeP7fqkulALJThIVY6E7PzUdqzTejXR7AWiBgGkycV4AQ4ZOoAY6gaaxEnBhT6DNsN8t4MgDXbvHwGEvZC50IasWcGFPYMqgFXBhT6DbC4C5C6XAZ6WJivFh+i/FNj+zPlcUpgzGuo0CSZKMgLdK4hTjNY7jselNRoHBYPAdx/E5MAKmwMo+Wy4rYKqUepzP5xfD4TA2FfgBja+Qg3SOjBYAAAAASUVORK5CYII=
+        </value>
+    </data>
+    <data name="deletePresetButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>21, 21</value>
+    </data>
+    <data name="deletePresetButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+        <value>Stretch</value>
+    </data>
+    <data name="addPresetButton.Dock" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+    <data name="addPresetButton.Text" xml:space="preserve">
+    <value>SAVE AS PRESET</value>
+  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ConfigForm</value>
   </data>
   <data name="&gt;&gt;statsDataGridView.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;bottomPanel.Parent" xml:space="preserve">
+  <data name="&gt;&gt;userSettingsPanel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="statsDataGridView.TabIndex" type="System.Int32, mscorlib">
@@ -2303,6 +2332,9 @@ recognized correctly)</value>
   <metadata name="MaxSmRuneCanHitColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+    <data name="presetsComboBox.Size" type="System.Drawing.Size, System.Drawing">
+        <value>175, 21</value>
+    </data>
   <data name="config.useRune" xml:space="preserve">
     <value>Usage of :rune is enabled</value>
   </data>

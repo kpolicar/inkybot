@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -85,6 +86,8 @@ namespace Inkybot
             enableMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableMageQueueing;
             customResizeRatioNumericUpDown.Value = userSettingsConfigManager.CustomResizeMultiplier;
             magingAiManager.MagingAIChanged += OnMagingAIChanged;
+            
+            LoadPresetsToComboBox();
         }
 
         private void SetConfigRowTooltipsAndChangeStyles(DataGridViewRow row) {
@@ -285,7 +288,7 @@ namespace Inkybot
                 scriptValidPictureBox.Show();
                 
                 _ = Task.Run(() => {
-                    Thread.Sleep(500);
+                    Thread.Sleep(300);
                     TrySwitchToCustomAIScript();
                 });
             }
@@ -372,6 +375,27 @@ namespace Inkybot
                         SetupForm.RefreshStats();
                 });
             }
+        }
+        
+        private void LoadPresetsToComboBox() {
+            var presets = userSettingsConfigManager.Presets.Presets;
+            
+            presetsComboBox.DataSource =
+                presets.Select(preset => preset.Name)
+                    .Prepend("None")
+                    .ToArray();
+        }
+
+        private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            throw new NotImplementedException();
+        }
+
+        private void addPresetButton_Click(object sender, EventArgs e) {
+            throw new NotImplementedException();
+        }
+
+        private void deletePresetButton_Click(object sender, EventArgs e) {
+            throw new NotImplementedException();
         }
     }
 }

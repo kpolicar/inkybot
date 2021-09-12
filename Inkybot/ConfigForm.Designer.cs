@@ -87,17 +87,23 @@ namespace Inkybot
             this.automaticShutdownPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.customResizeRatioPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
+            this.bottomPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
-            this.bottomPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.userSettingsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.customMagingAIPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.presetPanel = new System.Windows.Forms.Panel();
+            this.selectPresetPanel = new System.Windows.Forms.Panel();
+            this.addPresetButton = new System.Windows.Forms.Button();
+            this.deletePresetButton = new System.Windows.Forms.Button();
             this.scriptChangeButton = new System.Windows.Forms.Button();
+            this.presetsComboBox = new Inkybot.Controls.ComboBox();
             this.scriptResetButton = new System.Windows.Forms.Button();
             this.showAdvancedOptionsButton = new System.Windows.Forms.Button();
             this.tooltip = new System.Windows.Forms.ToolTip();
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).BeginInit();
-            this.bottomPanel.SuspendLayout();
+            this.userSettingsPanel.SuspendLayout();
             this.customMagingAIPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -334,6 +340,19 @@ namespace Inkybot
             this.dataGridViewSidebarPanel.Name = "dataGridViewSidebarPanel";
             this.dataGridViewSidebarPanel.Dock = DockStyle.Right;
             this.dataGridViewSidebarPanel.AutoSize = true;
+            //
+            // dataGridViewSidebarPanel
+            // 
+            resources.ApplyResources(this.bottomPanel, "bottomPanel");
+            this.bottomPanel.Name = "bottomPanel";
+            this.bottomPanel.Dock = DockStyle.Bottom;
+            this.bottomPanel.Height = 75;
+            this.bottomPanel.Controls.Add(customMagingAIPanel);
+            this.bottomPanel.Controls.Add(presetPanel);
+            this.bottomPanel.Padding = new Padding(0, 10, 0, 0);
+            this.bottomPanel.Paint += (sender, e) => {
+                e.Graphics.DrawLine(borderPen, 0, 0, this.bottomPanel.ClientRectangle.Width, 1);
+            };
             // 
             // showAdvancedOptionsButton
             // 
@@ -351,22 +370,22 @@ namespace Inkybot
             // 
             // bottomPanel
             // 
-            resources.ApplyResources(this.bottomPanel, "bottomPanel");
-            this.bottomPanel.ColumnCount = 2;
-            this.bottomPanel.RowCount = 4;
-            this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            this.bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            this.bottomPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            this.bottomPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
-            this.bottomPanel.Controls.Add(this.publishExosCheckbox);
-            this.bottomPanel.Controls.Add(this.showWarningsCheckbox);
-            this.bottomPanel.Controls.Add(this.enableKamasCalculationCheckbox);
-            this.bottomPanel.Controls.Add(this.autoRestartBotCheckbox);
-            this.bottomPanel.Controls.Add(this.enableRuneCheckingCheckbox);
-            this.bottomPanel.Controls.Add(this.enableMageQueueingCheckbox);
-            this.bottomPanel.Controls.Add(new Panel() {Size = Size.Empty });
-            this.bottomPanel.Controls.Add(this.automaticShutdownPanel);
-            this.bottomPanel.Controls.Add(this.customResizeRatioPanel);
+            resources.ApplyResources(this.userSettingsPanel, "userSettingsPanel");
+            this.userSettingsPanel.ColumnCount = 2;
+            this.userSettingsPanel.RowCount = 4;
+            this.userSettingsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.userSettingsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.userSettingsPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.userSettingsPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
+            this.userSettingsPanel.Controls.Add(this.publishExosCheckbox);
+            this.userSettingsPanel.Controls.Add(this.showWarningsCheckbox);
+            this.userSettingsPanel.Controls.Add(this.enableKamasCalculationCheckbox);
+            this.userSettingsPanel.Controls.Add(this.autoRestartBotCheckbox);
+            this.userSettingsPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+            this.userSettingsPanel.Controls.Add(this.enableMageQueueingCheckbox);
+            this.userSettingsPanel.Controls.Add(new Panel() {Size = Size.Empty });
+            this.userSettingsPanel.Controls.Add(this.automaticShutdownPanel);
+            this.userSettingsPanel.Controls.Add(this.customResizeRatioPanel);
 
             this.customMagingAIPanel.Controls.Add(this.exampleScriptsLinkLabel);
             this.customMagingAIPanel.SetFlowBreak(this.exampleScriptsLinkLabel, true);
@@ -376,14 +395,30 @@ namespace Inkybot
             this.customMagingAIPanel.Controls.Add(this.scriptResetButton);
             this.customMagingAIPanel.Controls.Add(this.customScriptPathLabel);
             this.customMagingAIPanel.Controls.Add(this.scriptValidPictureBox);
-            this.customMagingAIPanel.Paint += (sender, e) => {
-                e.Graphics.DrawLine(borderPen, 0, 0, this.customMagingAIPanel.ClientRectangle.Width, 1);
-            };
-            this.bottomPanel.Name = "bottomPanel";
-            this.bottomPanel.AutoSize = true;
+            this.userSettingsPanel.Name = "userSettingsPanel";
+            this.userSettingsPanel.AutoSize = true;
             this.customMagingAIPanel.Name = "customMagingAIPanel";
-            this.customMagingAIPanel.AutoSize = true;
-            this.customMagingAIPanel.Dock = DockStyle.Bottom;
+            this.customMagingAIPanel.Dock = DockStyle.Fill;
+            // 
+            // presetPanel
+            // 
+            this.presetPanel.Name = "presetPanel";
+            this.presetPanel.Dock = DockStyle.Right;
+            this.presetPanel.Width = 200;
+            this.presetPanel.Controls.Add(this.addPresetButton);
+            this.presetPanel.Controls.Add(this.selectPresetPanel);
+            // 
+            // presetsComboBox
+            // 
+            resources.ApplyResources(this.presetsComboBox, "presetsComboBox");
+            this.presetsComboBox.BackColor = System.Drawing.Color.Black;
+            this.presetsComboBox.ForeColor = System.Drawing.SystemColors.Control;
+            this.presetsComboBox.FormattingEnabled = true;
+            this.presetsComboBox.Name = "presetsComboBox";
+            this.presetsComboBox.SelectedIndexChanged += new System.EventHandler(this.presetsComboBox_SelectedIndexChanged);
+            this.presetsComboBox.FlatStyle = FlatStyle.Flat;
+            this.presetsComboBox.DropDownStyle = ComboBoxStyle.DropDown;
+            this.presetsComboBox.Dock = DockStyle.Left;
             // 
             // tooltipLabelExtra
             // 
@@ -394,6 +429,32 @@ namespace Inkybot
             this.tooltipLabelExtra.AutoSize = true;
             this.tooltipLabelExtra.Dock = DockStyle.Top;
             this.tooltipLabelExtra.Height = 20;
+            // 
+            // addPresetButton
+            // 
+            resources.ApplyResources(this.addPresetButton, "addPresetButton");
+            this.addPresetButton.BackColor = System.Drawing.Color.Black;
+            this.addPresetButton.FlatAppearance.BorderSize = 0;
+            this.addPresetButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.addPresetButton.Name = "addPresetButton";
+            this.addPresetButton.UseVisualStyleBackColor = false;
+            this.addPresetButton.Dock = DockStyle.Bottom;
+            this.addPresetButton.Location = new Point(0, 0);
+            this.addPresetButton.Click += new System.EventHandler(this.addPresetButton_Click);
+            // 
+            // deletePresetButton
+            // 
+            resources.ApplyResources(this.deletePresetButton, "deletePresetButton");
+            this.deletePresetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.deletePresetButton.FlatStyle = FlatStyle.Flat;
+            this.deletePresetButton.FlatAppearance.BorderSize = 0;
+            this.deletePresetButton.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.deletePresetButton.Name = "deletePresetButton";
+            this.deletePresetButton.UseVisualStyleBackColor = false;
+            this.deletePresetButton.Dock = DockStyle.Right;
+            this.deletePresetButton.Cursor = Cursors.Hand;
+            this.deletePresetButton.Location = new Point(0, 0);
+            this.deletePresetButton.Click += new System.EventHandler(this.deletePresetButton_Click);
             // 
             // customScriptLabel
             // 
@@ -466,6 +527,15 @@ namespace Inkybot
             this.scriptValidPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             this.scriptValidPictureBox.Size = new System.Drawing.Size(20, 20);
             this.scriptValidPictureBox.Visible = false;
+            // 
+            // selectPresetPanel
+            // 
+            resources.ApplyResources(this.presetPanel, "selectPresetPanel");
+            this.selectPresetPanel.Controls.Add(this.presetsComboBox);
+            this.selectPresetPanel.Controls.Add(this.deletePresetButton);
+            this.selectPresetPanel.Name = "presetPanel";
+            this.selectPresetPanel.Dock = DockStyle.Top;
+            this.selectPresetPanel.Height = 21;
             
             // 
             // scriptFileDialog
@@ -481,8 +551,8 @@ namespace Inkybot
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.tooltipLabelExtra);
+            this.Controls.Add(this.userSettingsPanel);
             this.Controls.Add(this.bottomPanel);
-            this.Controls.Add(this.customMagingAIPanel);
             this.MinimizeBox = false;
             this.MaximizeBox = false;
             this.Name = "ConfigForm";
@@ -492,8 +562,8 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).EndInit();
             this.customMagingAIPanel.ResumeLayout(false);
             this.customMagingAIPanel.PerformLayout();
-            this.bottomPanel.ResumeLayout(false);
-            this.bottomPanel.PerformLayout();
+            this.userSettingsPanel.ResumeLayout(false);
+            this.userSettingsPanel.PerformLayout();
             this.ResumeLayout(false);
         }
 
@@ -502,10 +572,17 @@ namespace Inkybot
         private System.Windows.Forms.FlowLayoutPanel automaticShutdownPanel;
         private System.Windows.Forms.FlowLayoutPanel customResizeRatioPanel;
         private System.Windows.Forms.Panel dataGridViewSidebarPanel;
+        private System.Windows.Forms.Panel bottomPanel;
         private System.Windows.Forms.FlowLayoutPanel customMagingAIPanel;
-        private System.Windows.Forms.TableLayoutPanel bottomPanel;
+        private System.Windows.Forms.TableLayoutPanel userSettingsPanel;
         private System.Windows.Forms.Button scriptChangeButton;
         private System.Windows.Forms.Button scriptResetButton;
+
+        private System.Windows.Forms.Panel presetPanel;
+        private System.Windows.Forms.Button addPresetButton;
+        private System.Windows.Forms.Button deletePresetButton;
+        private System.Windows.Forms.Panel selectPresetPanel;
+        private Inkybot.Controls.ComboBox presetsComboBox;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
