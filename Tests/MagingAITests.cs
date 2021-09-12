@@ -24,7 +24,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Tests
                 new ItemStat("water_damage", 10, 7, 10),
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             Config.ChangeStatConfig(Stat.Initiative, exoIniConfig);
             Config.ChangeStatConfig(Stat.Ap, exoApConfig);
             Job.Sink = 1;
@@ -118,7 +118,7 @@ namespace Tests
                 new ItemStat("critical_resistance", 20, 11, 20),
                 new ItemStat("pushback_resistance", 20, 11, 20),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
 
             var exoMpConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Mp, 
@@ -160,7 +160,7 @@ namespace Tests
                 new ItemStat("wisdom", 38, 31, 50),
                 new ItemStat("critical", 5, 4, 5),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             
             var action = AI.ResolveAction(item) as CombineRune;
             Assert.NotNull(action);
@@ -179,7 +179,7 @@ namespace Tests
                 new ItemStat("air_damage", 10, 7, 10),
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             var exoApConfig = MageConfig.ItemStatMageConfig.MakeExo(
                 Stat.Ap, 
                 1, 

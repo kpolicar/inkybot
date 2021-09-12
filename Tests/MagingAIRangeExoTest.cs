@@ -25,7 +25,7 @@ namespace Tests
                 new ItemStat("mp", 1, 1, 1),
                 new ItemStat("per_air_resistance", 1, 0, 0),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]

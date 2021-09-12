@@ -143,6 +143,8 @@ namespace Inkybot
             configPresetComboBox.Name = "configPresetComboBox";
             configPresetComboBox.Size = new System.Drawing.Size(180, 24);
             configPresetComboBox.TabIndex = 1;
+            configPresetComboBox.SelectedIndexChanged += (sender, _) =>
+                OnMageQueueConfigPresetSelectedIndexChanged(sender, new MageQueueEventArgs(mageQueueItem), configPresetComboBox.SelectedIndex);
             // 
             // configPresetLabel
             // 
@@ -178,6 +180,8 @@ namespace Inkybot
             statPresetComboBox.Name = "statPresetComboBox";
             statPresetComboBox.Size = new System.Drawing.Size(180, 24);
             statPresetComboBox.TabIndex = 1;
+            statPresetComboBox.SelectedIndexChanged += (sender, _) =>
+                OnMageQueueStatPresetSelectedIndexChanged(sender, new MageQueueEventArgs(mageQueueItem), statPresetComboBox.SelectedIndex);
             // 
             // statPresetLabel
             // 

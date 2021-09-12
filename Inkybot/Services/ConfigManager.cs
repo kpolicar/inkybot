@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Adapters;
+using Inkybot.Api.Resources;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
+using Inkybot.Dofus.Repositories;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 using Inkybot.Helpers;
+using Inkybot.Resources;
 using Tesseract;
 using MageConfig = Inkybot.Dofus.MageConfig;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
@@ -20,6 +24,8 @@ namespace Inkybot.Services
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
         public event EventHandler<ConfigResetEventArgs>? ConfigReset;
+        public event EventHandler<ItemEventArgs>? ApplyingPreset;
+        public event EventHandler<PresetEventArgs>? AppliedPreset;
         public StatConfigProviderContract StatConfig = null!;
         public MageConfigProviderContract MageConfig = null!;
         public UserSettingsConfigManager UserSettings = null!;
@@ -68,7 +74,7 @@ namespace Inkybot.Services
                     new ConfigModifiedEventArgs(Config, true, true));
         }
 
-        public void ResetConfig(Item item) {
+        public void ResetUserSettings(Item item) {
             var previousConfig = Config;
             Config = new MageConfig(item);
             ConfigModified?.Invoke(this, 
@@ -81,7 +87,7 @@ namespace Inkybot.Services
             if (!ConfigIsSetForItem(item)) {
                 var success = TryToAddMissingItemStats(item);
                 if (!success || !ConfigIsSetForItem(item))
-                    ResetConfig(item);
+                    ResetUserSettings(item);
             }
         }
 
@@ -143,6 +149,41 @@ namespace Inkybot.Services
             Config.StatsConfig[stat] = statConfig;
             ConfigModified?.Invoke(this, 
                 new ConfigModifiedEventArgs(Config, true, isNewStatConfiguration));
+        }
+
+        public void ApplyConfigPreset(int index) =>
+            UserSettings.ApplyConfigPreset(index);
+
+        public void ResetUserSettings() {
+            UserSettings.Reset();
+        }
+
+        public void ApplyPreset(int index) {
+            var preset = UserSettings.Presets.Presets[index];
+            
+            var itemStats = preset.Stats.Select(statPreset => {
+                var stat = Stat.FirstOrNew(statPreset.Stat);
+
+                return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
+            }).ToArray();
+            
+            var item = new Item(new ItemStatRepository(itemStats));
+            
+            ApplyingPreset?.Invoke(this, new ItemEventArgs(item));
+            
+            if (!ConfigIsSetForItem(item)) {
+                ResetUserSettings(item);
+            }
+            foreach (var statPreset in preset.Stats) {
+                var stat = Stat.FirstOrNew(statPreset.Stat);
+                if (!stat.Mageable)
+                    continue;
+                ChangeStatConfigTarget(stat, statPreset.Target);
+                ChangeStatConfigTargetMinimum(stat, statPreset.TargetMinimum);
+                ChangeStatConfigPriority(stat, statPreset.Priority);
+            }
+            
+            AppliedPreset?.Invoke(this, new PresetEventArgs(preset, index));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Tests
                 new ItemStat("per_earth_resistance", 10, 7, 10),
                 new ItemStat("ap", 1, 0, 0),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Tests
                 new ItemStat("ap_parry", 7, 7, 10),
                 new ItemStat("critical_resistance", -30, -30, -30),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             Config.ChangeStatConfigTarget(Stat.Vitality, 399);
             Config.ChangeStatConfigTargetMinimum(Stat.Vitality, 370);
             Config.ChangeStatConfigTarget(Stat.Intelligence, 69);

@@ -21,7 +21,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 4, 7, 10),
                 new ItemStat("per_earth_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Tests
                 new ItemStat("per_earth_resistance", 10, 7, 10),
                 new ItemStat("earth_resistance", 1, 1, 2),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             Job.Sink = 14; // we need 12 sink
             Config.ChangeStatConfigTarget(Stat.PerNeutralResistance, 4);
             Config.ChangeStatConfigTarget(Stat.PerEarthResistance, 14);

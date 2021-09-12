@@ -48,8 +48,10 @@ namespace Inkybot
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
-        }
 
+            userSettingsConfigManager.AppliedPreset += OnApplyPreset;
+        }
+        
         public StatsForm SetupForm;
 
         public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
@@ -395,38 +397,13 @@ namespace Inkybot
                     .Prepend("None")
                     .ToArray();
         }
-
-        private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            var index = presetsComboBox.SelectedIndex;
-            if (index == 0) return;
-
-            var preset = userSettingsConfigManager.ConfigPresets.Presets
-                .Skip(index - 1).First();
-            
-            if (preset.CustomScriptPath != null) {
-                TrySwitchToCustomAIScript(preset.CustomScriptPath);
+        
+        private void OnApplyPreset(object sender, ConfigPresetEventArgs e) {
+            if (e.Preset.CustomScriptPath != null) {
+                TrySwitchToCustomAIScript(e.Preset.CustomScriptPath);
             } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
                 magingAiManager.UseBuiltInAIScript();
             }
-
-            foreach (var defaultStatConfig in configProvider.Default.Config()) {
-                userSettingsConfigManager.SetConfig(defaultStatConfig.Key, defaultStatConfig.Value, false);
-            }
-            
-            foreach (var statConfigPreset in preset.Configs) {
-                var stat = Stat.FirstOrNew(statConfigPreset.Stat);
-                userSettingsConfigManager.SetConfig(stat, new StatConfig(
-                    Numbers.Parse(statConfigPreset.MaxValueAtWhichSmRuneCanLand),
-                    Numbers.Parse(statConfigPreset.ChangeToPaRuneThreshold),
-                    Numbers.Parse(statConfigPreset.MaxValueAtWhichPaRuneCanLand),
-                    Numbers.Parse(statConfigPreset.ChangeToRaRuneThreshold),
-                    statConfigPreset.UseSmRunes,
-                    statConfigPreset.UsePaRunes,
-                    statConfigPreset.UseRaRunes,
-                    configProvider.Default.Config(stat).HighSinkStat
-                    ));
-            }
-            Properties.Settings.Default.Save();
             
             foreach (var rowObj in statsDataGridView.Rows) {
                 var row = (DataGridViewRow) rowObj;
@@ -441,21 +418,19 @@ namespace Inkybot
                 row.Cells[3].Value = config.UseRaRunes;
                 SetConfigRowTooltipsAndChangeStyles(row);
             }
-            
-            // changeToPaRuneThreshold:
-            // e.ColumnIndex == 4 ? intValue() : currentConfig.changeToPaRuneThreshold,
-            // changeToRaRuneThreshold:
-            // e.ColumnIndex == 5 ? intValue() : currentConfig.changeToRaRuneThreshold,
-            // maxValueSmRuneCanHit:
-            // e.ColumnIndex == 6 ? intValue() : currentConfig.maxValueSmRuneCanHit,
-            // maxValuePaRuneCanHit:
-            // e.ColumnIndex == 7 ? intValue() : currentConfig.maxValuePaRuneCanHit,
-            // useSmRunes:
-            // e.ColumnIndex == 1 ? boolValue() : currentConfig.useSmRunes,
-            // usePaRunes:
-            // e.ColumnIndex == 2 ? boolValue() : currentConfig.usePaRunes,
-            // useRaRunes:
-            // e.ColumnIndex == 3 ? boolValue() : currentConfig.useRaRunes
+
+            if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
+                presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
+                presetsComboBox.SelectedIndex = e.PresetIndex.Value;
+                presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
+            }
+        }
+
+        private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) return;
+
+            userSettingsConfigManager.ApplyConfigPreset(index);
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {

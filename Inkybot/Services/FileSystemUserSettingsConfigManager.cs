@@ -5,6 +5,7 @@ using System.Linq;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Resources;
 using Debug = System.Diagnostics.Debug;
@@ -17,6 +18,7 @@ namespace Inkybot.Services
         public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
         public event EventHandler? ConfigPresetsChanged;
+        public event EventHandler<ConfigPresetEventArgs>? AppliedPreset;
 
         public bool RestoreHighSinkStats {
             set {
@@ -124,6 +126,40 @@ namespace Inkybot.Services
 
         public void SetConfig(Stat stat, in StatConfig config) =>
             SetConfig(stat, config, true);
+
+        public void ApplyConfigPreset(int index) {
+            var preset = ConfigPresets.Presets
+                .Skip(index - 1).First();
+            
+            Reset(false);
+            
+            foreach (var statConfigPreset in preset.Configs) {
+                var stat = Stat.FirstOrNew(statConfigPreset.Stat);
+                SetConfig(stat, new StatConfig(
+                    Numbers.Parse(statConfigPreset.MaxValueAtWhichSmRuneCanLand),
+                    Numbers.Parse(statConfigPreset.ChangeToPaRuneThreshold),
+                    Numbers.Parse(statConfigPreset.MaxValueAtWhichPaRuneCanLand),
+                    Numbers.Parse(statConfigPreset.ChangeToRaRuneThreshold),
+                    statConfigPreset.UseSmRunes,
+                    statConfigPreset.UsePaRunes,
+                    statConfigPreset.UseRaRunes,
+                    DefaultStatConfigProvider.Instance.Config(stat).HighSinkStat
+                ));
+            }
+            Properties.Settings.Default.Save();
+            AppliedPreset?.Invoke(this, new ConfigPresetEventArgs(preset, index));
+        }
+
+        public void Reset() =>
+            Reset(true);
+
+        public void Reset(bool save) {
+            foreach (var defaultStatConfig in DefaultStatConfigProvider.Instance.Config()) {
+                SetConfig(defaultStatConfig.Key, defaultStatConfig.Value, false);
+            }
+            if (save)
+                Properties.Settings.Default.Save();
+        }
 
         public void SetConfig(Stat stat, in StatConfig config, bool save) {
             Properties.Settings.Default[stat.Identifier] = new Resources.StatConfig {

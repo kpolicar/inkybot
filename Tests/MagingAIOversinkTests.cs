@@ -23,7 +23,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 11, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]

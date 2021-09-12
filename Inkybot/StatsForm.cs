@@ -53,6 +53,8 @@ namespace Inkybot
                 Stat.Stats.Values.Select(stat => stat.DisplayName).ToArray();
             exoStatComboBox.SelectedIndex = Stat.Stats.Count - 1;
             configManager.ConfigModified += OnConfigModified;
+            configManager.ApplyingPreset += OnApplyingPreset;
+            configManager.AppliedPreset += OnPresetApplied;
             dataProvider.FetchedItem += OnStatsFetched;
             LoadPresetsToComboBox();
         }
@@ -439,33 +441,24 @@ namespace Inkybot
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
             
-            var preset = Properties.Settings.Default.presets.Presets.Skip(index-1).First();
-            var itemStats = preset.Stats.Select(statPreset => {
-                var stat = Stat.FirstOrNew(statPreset.Stat);
-
-                return new ItemStat(stat, 0, statPreset.Minimum, statPreset.Maximum);
-            }).ToArray();
-            
-            var item = new Item(new ItemStatRepository(itemStats));
-            if (item.HasExo) {
-                try {
-                    EnforceUserHasPermissionToMageExo();
-                } catch (UserForbiddenException) {
-                    presetsComboBox.SelectedIndex = 0;
-                    return;
-                }
+            try {
+                configManager.ApplyPreset(index);
+            } catch (UserForbiddenException) {
+                presetsComboBox.SelectedIndex = 0;
             }
-            if (!configManager.ConfigIsSetForItem(item)) {
-                configManager.ResetConfig(item);
+        }
+        
+        private void OnApplyingPreset(object sender, ItemEventArgs e) {
+            if (e.Item.HasExo) {
+                EnforceUserHasPermissionToMageExo();
             }
-            
-            foreach (var statPreset in preset.Stats) {
-                var stat = Stat.FirstOrNew(statPreset.Stat);
-                if (!stat.Mageable)
-                    continue;
-                configManager.ChangeStatConfigTarget(stat, statPreset.Target);
-                configManager.ChangeStatConfigTargetMinimum(stat, statPreset.TargetMinimum);
-                configManager.ChangeStatConfigPriority(stat, statPreset.Priority);
+        }
+        
+        private void OnPresetApplied(object sender, PresetEventArgs e) {
+            if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
+                presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
+                presetsComboBox.SelectedIndex = e.PresetIndex.Value;
+                presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
             }
         }
 

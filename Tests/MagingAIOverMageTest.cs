@@ -21,7 +21,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 13, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 13, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             
             Config.ChangeStatConfigTargetMinimum(Stat.Vitality, 400);
             Config.ChangeStatConfigTargetMinimum(Stat.Strength, 60);
@@ -65,7 +65,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 13, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             
             Job.Sink = 5;
             Config.ChangeStatConfigTarget(Stat.PerEarthResistance, 14);
@@ -85,7 +85,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             
             Job.Sink = 3;
             var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(
@@ -110,7 +110,7 @@ namespace Tests
                 new ItemStat("per_neutral_resistance", 10, 7, 10),
                 new ItemStat("per_earth_resistance", 10, 7, 10),
             }));
-            Config.ResetConfig(item);
+            Config.ResetUserSettings(item);
             
             Job.Sink = 3;
             var exoAirPerResConfig = MageConfig.ItemStatMageConfig.MakeExo(

@@ -26,5 +26,7 @@ namespace Inkybot.Contracts
         public event EventHandler? ConfigPresetsChanged;
         
         public void SetConfig(Stat stat, in StatConfig config);
+        public void ApplyConfigPreset(int index);
+        public void Reset();
     }
 }

@@ -77,6 +77,16 @@ namespace Inkybot
             cancelEventArgs.Cancel = true;
             Hide();
         }
+        
+        private void OnMageQueueStatPresetSelectedIndexChanged(object sender, MageQueueEventArgs e, int selectedIndex) {
+            var mage = mageQueue.Queue.Find(item => item == e.QueueItem);
+            mage.Config.PresetIndex = selectedIndex != 0 ? selectedIndex : null;
+        }
+
+        private void OnMageQueueConfigPresetSelectedIndexChanged(object sender, MageQueueEventArgs e, int selectedIndex) {
+            var mage = mageQueue.Queue.Find(item => item == e.QueueItem);
+            mage.Config.ConfigPresetIndex = selectedIndex != 0 ? selectedIndex : null;
+        }
 
         public async Task Highlight(MageQueueManager.MageQueueItem mageQueueItem, int delay=800) {
             var index = mageQueue.Queue.IndexOf(mageQueueItem);
