@@ -557,7 +557,6 @@ namespace Inkybot
             this.MaximizeBox = false;
             this.Name = "ConfigForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ConfigForm_Closing);
-            this.Load += new System.EventHandler(this.ConfigForm_OnLoad);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.scriptValidPictureBox)).EndInit();
             this.customMagingAIPanel.ResumeLayout(false);

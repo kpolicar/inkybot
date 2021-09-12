@@ -146,6 +146,12 @@ namespace Inkybot.Services
             try {
                 state.IsMaging = true;
                 var resetMinMaxScan = !restarting;
+                
+                if (configManager.UserSettings.EnableMageQueueing) {
+                    actions.Execute(actionFactory.SelectItemFromQueue());
+                    Thread.Sleep(1000);
+                }
+                
                 dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
                 var item = dataProvider.Item();
@@ -188,11 +194,6 @@ namespace Inkybot.Services
                     Thread.Sleep(500);
                     actions.Execute(actionFactory.InventorySelectEquipmentAction());
                     Thread.Sleep(500);
-                
-                    actions.Execute(actionFactory.SelectItemFromQueue());
-                    state.IsMaging = false;
-                
-                    Thread.Sleep(1000);
                 
                     DoMageWithoutCheckingQueue(restarting);
                     
@@ -294,9 +295,12 @@ namespace Inkybot.Services
                 StopMage();
             }
         }
-        
-        private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) =>
-            StopMage();
+
+        private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) {
+            if (!state.IsPreparing)
+                StopMage();
+        }
+            
 
         public void Dispose() =>
             StopMage();

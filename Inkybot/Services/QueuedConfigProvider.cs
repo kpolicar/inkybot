@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Resources;
 using StatConfig = Inkybot.Dofus.StatConfig;

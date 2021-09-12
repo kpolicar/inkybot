@@ -240,6 +240,8 @@ namespace Inkybot
 
         private void MainForm_Loaded(object sender, EventArgs e) {
             _ = mageQueueForm.Handle;
+            _ = configForm.Handle;
+            _ = setupForm.Handle;
         }
 
         private void EnqueueRectangle_Edit(object sender, ControlEventArgs e) {

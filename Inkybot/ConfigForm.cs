@@ -48,13 +48,15 @@ namespace Inkybot
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
-
-            userSettingsConfigManager.AppliedPreset += OnApplyPreset;
+            
+            SuspendLayout();
+            PrepareControls();
+            ResumeLayout();
         }
         
         public StatsForm SetupForm;
 
-        public void ConfigForm_OnLoad(object sender, EventArgs eventArgs) {
+        public void PrepareControls() {
             var config = userSettingsConfigManager.Config();
             foreach (var stat in Stat.Stats.Values) {
                 var statConfig = config[stat];
@@ -92,6 +94,8 @@ namespace Inkybot
             enableMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableMageQueueing;
             customResizeRatioNumericUpDown.Value = userSettingsConfigManager.CustomResizeMultiplier;
             magingAiManager.MagingAIChanged += OnMagingAIChanged;
+            userSettingsConfigManager.AppliedPreset += OnApplyPreset;
+            userSettingsConfigManager.ResetFinished += OnReset;
             
             LoadPresetsToComboBox();
         }
@@ -387,50 +391,53 @@ namespace Inkybot
         }
         
         private void LoadPresetsToComboBox() {
-            var presets1 = userSettingsConfigManager.ConfigPresets;
             var presets = userSettingsConfigManager.ConfigPresets.Presets;
-            var b = userSettingsConfigManager.Presets;
-            var c = userSettingsConfigManager.Presets.Presets;
             
             presetsComboBox.DataSource =
                 presets.Select(preset => preset.Name)
                     .Prepend("None")
                     .ToArray();
         }
-        
-        private void OnApplyPreset(object sender, ConfigPresetEventArgs e) {
-            if (e.Preset.CustomScriptPath != null) {
-                TrySwitchToCustomAIScript(e.Preset.CustomScriptPath);
-            } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
-                magingAiManager.UseBuiltInAIScript();
-            }
-            
-            foreach (var rowObj in statsDataGridView.Rows) {
-                var row = (DataGridViewRow) rowObj;
-                var stat = (Stat) row.Tag;
-                var config = configProvider.Config(stat);
-                row.Cells[4].Value = Numbers.ToString(config.ChangeToPaRuneThreshold);
-                row.Cells[5].Value = Numbers.ToString(config.ChangeToRaRuneThreshold);
-                row.Cells[6].Value = Numbers.ToString(config.MaxValueAtWhichSmRuneCanHit);
-                row.Cells[7].Value = Numbers.ToString(config.MaxValueAtWhichPaRuneCanHit);
-                row.Cells[1].Value = config.UseSmRunes;
-                row.Cells[2].Value = config.UsePaRunes;
-                row.Cells[3].Value = config.UseRaRunes;
-                SetConfigRowTooltipsAndChangeStyles(row);
-            }
 
-            if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
-                presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
-                presetsComboBox.SelectedIndex = e.PresetIndex.Value;
-                presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
-            }
-        }
+        private void OnReset(object sender, EventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                presetsComboBox.SelectedIndex = 0;
+            }));
+
+        private void OnApplyPreset(object sender, ConfigPresetEventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                if (e.Preset.CustomScriptPath != null) {
+                    TrySwitchToCustomAIScript(e.Preset.CustomScriptPath);
+                } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
+                    magingAiManager.UseBuiltInAIScript();
+                }
+            
+                foreach (var rowObj in statsDataGridView.Rows) {
+                    var row = (DataGridViewRow) rowObj;
+                    var stat = (Stat) row.Tag;
+                    var config = configProvider.Config(stat);
+                    row.Cells[4].Value = Numbers.ToString(config.ChangeToPaRuneThreshold);
+                    row.Cells[5].Value = Numbers.ToString(config.ChangeToRaRuneThreshold);
+                    row.Cells[6].Value = Numbers.ToString(config.MaxValueAtWhichSmRuneCanHit);
+                    row.Cells[7].Value = Numbers.ToString(config.MaxValueAtWhichPaRuneCanHit);
+                    row.Cells[1].Value = config.UseSmRunes;
+                    row.Cells[2].Value = config.UsePaRunes;
+                    row.Cells[3].Value = config.UseRaRunes;
+                    SetConfigRowTooltipsAndChangeStyles(row);
+                }
+
+                if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
+                    presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
+                    presetsComboBox.SelectedIndex = e.PresetIndex.Value+1;
+                    presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
+                }
+            }));
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
 
-            userSettingsConfigManager.ApplyConfigPreset(index);
+            userSettingsConfigManager.ApplyConfigPreset(index-1);
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {

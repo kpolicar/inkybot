@@ -19,6 +19,7 @@ namespace Inkybot.Services
         public event EventHandler? PresetsChanged;
         public event EventHandler? ConfigPresetsChanged;
         public event EventHandler<ConfigPresetEventArgs>? AppliedPreset;
+        public event EventHandler? ResetFinished;
 
         public bool RestoreHighSinkStats {
             set {
@@ -159,6 +160,7 @@ namespace Inkybot.Services
             }
             if (save)
                 Properties.Settings.Default.Save();
+            ResetFinished?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetConfig(Stat stat, in StatConfig config, bool save) {

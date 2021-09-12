@@ -46,9 +46,13 @@ namespace Inkybot
             auth = Program.Services.GetService<AuthManager>();
             actionsPanel.Hide();
             helpPanel.Hide();
+            
+            SuspendLayout();
+            PrepareControls();
+            ResumeLayout();
         }
 
-        private void StatsForm_Loaded(object sender, EventArgs e) {
+        private void PrepareControls() {
             exoStatComboBox.DataSource =
                 Stat.Stats.Values.Select(stat => stat.DisplayName).ToArray();
             exoStatComboBox.SelectedIndex = Stat.Stats.Count - 1;
@@ -442,7 +446,7 @@ namespace Inkybot
             if (index == 0) return;
             
             try {
-                configManager.ApplyPreset(index);
+                configManager.ApplyPreset(index-1);
             } catch (UserForbiddenException) {
                 presetsComboBox.SelectedIndex = 0;
             }
@@ -454,13 +458,14 @@ namespace Inkybot
             }
         }
         
-        private void OnPresetApplied(object sender, PresetEventArgs e) {
-            if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
-                presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
-                presetsComboBox.SelectedIndex = e.PresetIndex.Value;
-                presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
-            }
-        }
+        private void OnPresetApplied(object sender, PresetEventArgs e) =>
+            BeginInvoke(new MethodInvoker(() => {
+                if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
+                    presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
+                    presetsComboBox.SelectedIndex = e.PresetIndex.Value+1;
+                    presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
+                }
+            }));
 
         private void deletePresetButton_Click(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;

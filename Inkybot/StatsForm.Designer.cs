@@ -356,7 +356,6 @@ namespace Inkybot
             this.MaximizeBox = false;
             this.Name = "StatsForm";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
-            this.Load += new System.EventHandler(this.StatsForm_Loaded);
             this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.helpPanel.ResumeLayout(false);
