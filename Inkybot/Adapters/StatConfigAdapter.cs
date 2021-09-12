@@ -1,5 +1,6 @@
 using Inkybot.Dofus;
 using Inkybot.Domain;
+using Inkybot.Helpers;
 using ItemStatMageConfig = Inkybot.Dofus.MageConfig.ItemStatMageConfig;
 
 namespace Inkybot.Adapters
@@ -7,21 +8,23 @@ namespace Inkybot.Adapters
     public class StatConfigAdapter
     {
         private readonly Stat Stat;
-        private readonly ItemStatMageConfig ItemConfig;
+        private readonly StatConfig Config;
 
-        public StatConfigAdapter(Stat stat, ItemStatMageConfig itemConfig) {
+        public StatConfigAdapter(Stat stat, StatConfig config) {
             Stat = stat;
-            ItemConfig = itemConfig;
+            Config = config;
         }
 
-        public Resources.ItemStatPreset ToSerializable() {
-            return new Resources.ItemStatPreset {
-                Minimum = ItemConfig.Minimum,
-                Maximum = ItemConfig.Maximum,
+        public Resources.StatConfigPreset ToSerializable() {
+            return new Resources.StatConfigPreset {
                 Stat = Stat.Identifier,
-                Target = ItemConfig.Target,
-                TargetMinimum = ItemConfig.TargetMinimum,
-                Priority = ItemConfig.Priority
+                UseSmRunes = Config.UseSmRunes,
+                UsePaRunes = Config.UsePaRunes,
+                UseRaRunes = Config.UseRaRunes,
+                ChangeToPaRuneThreshold = Numbers.ToString(Config.ChangeToPaRuneThreshold),
+                ChangeToRaRuneThreshold = Numbers.ToString(Config.ChangeToRaRuneThreshold),
+                MaxValueAtWhichSmRuneCanLand = Numbers.ToString(Config.MaxValueAtWhichSmRuneCanHit),
+                MaxValueAtWhichPaRuneCanLand = Numbers.ToString(Config.MaxValueAtWhichPaRuneCanHit),
             };
         }
     }

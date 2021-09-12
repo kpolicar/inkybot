@@ -165,6 +165,7 @@
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatUserRunesOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
+        <Compile Include="Adapters\ItemStatConfigAdapter.cs" />
         <Compile Include="Adapters\StatConfigAdapter.cs" />
         <Compile Include="Aes256CbcEncrypter.cs" />
         <Compile Include="Api\ApiConnection.cs">
@@ -311,6 +312,8 @@
           <AutoGen>True</AutoGen>
           <DependentUpon>Regex.resx</DependentUpon>
         </Compile>
+        <Compile Include="Resources\ConfigPreset.cs" />
+        <Compile Include="Resources\ConfigPresets.cs" />
         <Compile Include="Resources\ItemPreset.cs" />
         <Compile Include="Resources\ItemPresets.cs" />
         <Compile Include="Resources\ItemStatPreset.cs" />
@@ -325,6 +328,7 @@
           <DependentUpon>RuneDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Resources\StatConfig.cs" />
+        <Compile Include="Resources\StatConfigPreset.cs" />
         <Compile Include="Resources\StatDictionary.Designer.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>

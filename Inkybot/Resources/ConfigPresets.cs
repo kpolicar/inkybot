@@ -4,9 +4,9 @@ namespace Inkybot.Resources
 {
     #pragma warning disable 8618
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-    public class ItemPresets
+    public class ConfigPresets
     {
-        public ItemPreset[] Presets = {};
+        public ConfigPreset[] Presets = {};
     }
     #pragma warning restore 8618
 }

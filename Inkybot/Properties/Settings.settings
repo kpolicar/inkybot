@@ -13,6 +13,9 @@
     <Setting Name="example" Type="Inkybot.Resources.StatConfig" Scope="User">
       <Value Profile="(Default)">&lt;StatConfig name=&quot;what&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;                                 xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;                         &lt;ChangeToPaRuneThreshold&gt;0&lt;/ChangeToPaRuneThreshold&gt;                         &lt;ChangeToRaRuneThreshold&gt;0&lt;/ChangeToRaRuneThreshold&gt;                         &lt;MaxValueSmRuneCanHit&gt;0&lt;/MaxValueSmRuneCanHit&gt;                         &lt;MaxValuePaRuneCanHit&gt;0&lt;/MaxValuePaRuneCanHit&gt;                     &lt;/StatConfig&gt;</Value>
     </Setting>
+    <Setting Name="configPresets" Type="ConfigPresets" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Inkybot.Contracts;
+using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Helpers;
 using Inkybot.Resources;
@@ -88,6 +89,14 @@ namespace Inkybot.Services
                 PresetsChanged?.Invoke(this, EventArgs.Empty);
             }
             get => Properties.Settings.Default.presets;
+        }
+
+        public ConfigPresets ConfigPresets {
+            set {
+                Properties.Settings.Default.configPresets = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.configPresets;
         }
         
         public StatConfig Config(Stat stat) {

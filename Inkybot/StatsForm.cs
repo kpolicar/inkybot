@@ -411,7 +411,7 @@ namespace Inkybot
             
             var config = configManager.Config!.StatsConfig
                 .Select(statConfig =>
-                    new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
+                    new ItemStatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
                 .ToArray();
             var preset = new ItemPreset {
                 Name = presetsComboBox.Text,
@@ -421,13 +421,16 @@ namespace Inkybot
             var existingPresets = configManager.UserSettings.Presets.Presets;
 
             if (index <= 0) {
-                configManager.UserSettings.Presets = new ItemPresets {
-                    Presets = existingPresets.Append(preset).ToArray()
-                };
-                index = configManager.UserSettings.Presets.Presets.Length;
+                existingPresets = existingPresets.Append(preset).ToArray();
+                index = existingPresets.Length;
             } else {
                 existingPresets[index - 1] = preset;
             }
+            
+            configManager.UserSettings.Presets = new ItemPresets {
+                Presets = existingPresets
+            };
+            
             LoadPresetsToComboBox();
             presetsComboBox.SelectedIndex = index;
         }

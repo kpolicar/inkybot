@@ -16,7 +16,31 @@ namespace Inkybot.Dofus
          * <summary>An empty stat configuration</summary>
          */
         public static StatConfig None = new StatConfig(default, default);
-        
+
+        public override bool Equals(object obj) {
+            if (obj is StatConfig other) {
+                return Equals(other);
+            }
+            return base.Equals(obj);
+        }
+
+        public bool Equals(StatConfig other) =>
+            Deconstruct().Equals(other.Deconstruct());
+
+        public override int GetHashCode() {
+         unchecked {
+          var hashCode = MaxValueAtWhichSmRuneCanHit.GetHashCode();
+          hashCode = (hashCode * 397) ^ ChangeToPaRuneThreshold.GetHashCode();
+          hashCode = (hashCode * 397) ^ UseSmRunes.GetHashCode();
+          hashCode = (hashCode * 397) ^ UsePaRunes.GetHashCode();
+          hashCode = (hashCode * 397) ^ UseRaRunes.GetHashCode();
+          hashCode = (hashCode * 397) ^ MaxValueAtWhichPaRuneCanHit.GetHashCode();
+          hashCode = (hashCode * 397) ^ ChangeToRaRuneThreshold.GetHashCode();
+          hashCode = (hashCode * 397) ^ HighSinkStat.GetHashCode();
+          return hashCode;
+         }
+        }
+
         /**
          * <summary>
          * The maximum value at which a rune of SM strength can still land on the stat.

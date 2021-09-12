@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
@@ -13,9 +14,12 @@ using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
+using Inkybot.Resources;
 using Inkybot.Services;
 using DataGridView = Inkybot.Helpers.DataGridView;
 using Debug = System.Diagnostics.Debug;
+using DofusMagingAI = Inkybot.Dofus.Contracts.DofusMagingAI;
+using StatConfig = Inkybot.Dofus.StatConfig;
 using StatConfigProvider = Inkybot.Services.StatConfigProvider;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 
@@ -378,7 +382,10 @@ namespace Inkybot
         }
         
         private void LoadPresetsToComboBox() {
-            var presets = userSettingsConfigManager.Presets.Presets;
+            var presets1 = userSettingsConfigManager.ConfigPresets;
+            var presets = userSettingsConfigManager.ConfigPresets.Presets;
+            var b = userSettingsConfigManager.Presets;
+            var c = userSettingsConfigManager.Presets.Presets;
             
             presetsComboBox.DataSource =
                 presets.Select(preset => preset.Name)
@@ -387,15 +394,61 @@ namespace Inkybot
         }
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) return;
+            
+            var preset = Properties.Settings.Default.configPresets.Presets.Skip(index-1).First();
+            Debug.WriteLine(preset.Name);
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            var index = presetsComboBox.SelectedIndex;
+            if (index == 0) return;
+
+            var changedConfig = userSettingsConfigManager.Config()
+                .Where(statConfig =>
+                    !statConfig.Value.Equals(configProvider.Default.Config(statConfig.Key)))
+                .Select(statConfig => 
+                    new StatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
+                .ToArray();
+            
+            Debug.WriteLine(changedConfig.Length);
+            
+            var ai = Program.Services.GetService<DofusMagingAI>();
+            var preset = new ConfigPreset {
+                Name = presetsComboBox.Text,
+                Configs = changedConfig,
+                CustomScriptPath = (ai as CustomDofusMagingAI)?.Path
+            };
+            
+            var existingPresets = userSettingsConfigManager.ConfigPresets.Presets;
+
+            if (index <= 0) {
+                existingPresets = existingPresets.Append(preset).ToArray();
+                index = existingPresets.Length;
+            } else {
+                existingPresets[index - 1] = preset;
+            }
+
+            userSettingsConfigManager.ConfigPresets = new ConfigPresets {
+                Presets = existingPresets
+            };
+            
+            LoadPresetsToComboBox();
+            presetsComboBox.SelectedIndex = index;
         }
 
         private void deletePresetButton_Click(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            var index = presetsComboBox.SelectedIndex;
+            if (index <= 0) return;
+            
+            var existingPresets = userSettingsConfigManager.ConfigPresets.Presets.ToList();
+            existingPresets.RemoveAt(index-1);
+            userSettingsConfigManager.ConfigPresets = new ConfigPresets() {
+                Presets = existingPresets.ToArray(),
+                
+            };
+            LoadPresetsToComboBox();
         }
     }
 }

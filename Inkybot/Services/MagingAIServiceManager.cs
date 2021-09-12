@@ -67,6 +67,7 @@ namespace Inkybot.Services
                 if (magus is HasDependencies dependant)
                     dependant.BindDependencies(serviceContainer);
                 if (magus is CustomDofusMagingAI customDofusMagingAI) {
+                    customDofusMagingAI.SetPath(scriptPath);
                     var defaultAI = new DofusMagingAI();
                     defaultAI.BindDependencies(serviceContainer);
                     defaultAI.Init();

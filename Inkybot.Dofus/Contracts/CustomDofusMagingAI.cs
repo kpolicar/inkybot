@@ -6,6 +6,7 @@ namespace Inkybot.Dofus.Contracts
 {
     public abstract class CustomDofusMagingAI : DofusMagingAI
     {
+        public string Path { get; private set; }
         private DofusMagingAI Default = null!;
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
@@ -38,5 +39,9 @@ namespace Inkybot.Dofus.Contracts
         }
         
         protected virtual ItemMage? BeforeExoRune(ItemMage proposedMage) => null;
+
+        public void SetPath(string scriptPath) {
+            Path = scriptPath;
+        }
     }
 }
