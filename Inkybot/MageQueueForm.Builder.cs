@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Inkybot.Controls;
@@ -9,6 +10,8 @@ namespace Inkybot
 {
     public partial class MageQueueForm
     {
+        private ComponentResourceManager resources;
+
         private GroupBox BuildMageQueueGroupBox(MageQueueManager.MageQueueItem mageQueueItem)
         {
             System.Windows.Forms.Panel previewPanel;
@@ -83,7 +86,7 @@ namespace Inkybot
             moveUpButton.Name = "moveUpButton";
             moveUpButton.Size = new System.Drawing.Size(93, 26);
             moveUpButton.TabIndex = 5;
-            moveUpButton.Text = "Move up";
+            moveUpButton.Text = resources.GetString("moveUpButton.Text");
             moveUpButton.UseVisualStyleBackColor = false;
             moveUpButton.Click += (sender, _) => OnMageQueueItemMoveUp(sender, new MageQueueEventArgs(mageQueueItem));
             // 
@@ -98,7 +101,7 @@ namespace Inkybot
             moveDownButton.Name = "moveDownButton";
             moveDownButton.Size = new System.Drawing.Size(93, 26);
             moveDownButton.TabIndex = 6;
-            moveDownButton.Text = "Move down";
+            moveDownButton.Text = resources.GetString("moveDownButton.Text");
             moveDownButton.UseVisualStyleBackColor = false;
             moveDownButton.Click += (sender, _) => OnMageQueueItemMoveDown(sender, new MageQueueEventArgs(mageQueueItem));
             // 
@@ -113,7 +116,7 @@ namespace Inkybot
             removeButton.Name = "removeButton";
             removeButton.Size = new System.Drawing.Size(93, 26);
             removeButton.TabIndex = 4;
-            removeButton.Text = "Remove";
+            removeButton.Text = resources.GetString("removeButton.Text");
             removeButton.UseVisualStyleBackColor = false;
             removeButton.Click += (sender, _) => OnMageQueueItemRemove(sender, new MageQueueEventArgs(mageQueueItem));
             // 
@@ -149,7 +152,7 @@ namespace Inkybot
             configPresetLabel.Name = "configPresetLabel";
             configPresetLabel.Size = new System.Drawing.Size(180, 23);
             configPresetLabel.TabIndex = 0;
-            configPresetLabel.Text = "Config Preset";
+            configPresetLabel.Text = resources.GetString("configPresetLabel.Text");
             configPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // statPresetPanel
@@ -184,7 +187,7 @@ namespace Inkybot
             statPresetLabel.Name = "statPresetLabel";
             statPresetLabel.Size = new System.Drawing.Size(180, 23);
             statPresetLabel.TabIndex = 0;
-            statPresetLabel.Text = "Stat Preset";
+            statPresetLabel.Text = resources.GetString("statPresetLabel.Text");
             statPresetLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // previewPanel

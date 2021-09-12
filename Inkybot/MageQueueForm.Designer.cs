@@ -28,7 +28,7 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MageQueueForm));
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(MageQueueForm));
             this.mageQueueGroupBoxesPanel = new System.Windows.Forms.TableLayoutPanel();
             this.emptyLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();

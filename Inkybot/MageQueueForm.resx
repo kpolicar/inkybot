@@ -1990,4 +1990,19 @@
       QCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgELvg/Vy1SSrLYrB4AAAAASUVORK5CYII=
     </value>
   </data>
+  <data name="statPresetLabel.Text" xml:space="preserve">
+    <value>Stat Preset</value>
+  </data>
+  <data name="configPresetLabel.Text" xml:space="preserve">
+    <value>Config Preset</value>
+  </data>
+  <data name="removeButton.Text" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="moveDownButton.Text" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="moveUpButton.Text" xml:space="preserve">
+    <value>Move up</value>
+  </data>
 </root>
