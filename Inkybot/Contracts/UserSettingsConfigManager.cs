@@ -19,9 +19,11 @@ namespace Inkybot.Contracts
         public bool EnableMageQueueing { get; set; }
         public decimal CustomResizeMultiplier { get; set; }
         public ItemPresets Presets { get; set; }
+        public ConfigPresets ConfigPresets { get; set; }
         
         public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
+        public event EventHandler? ConfigPresetsChanged;
         
         public void SetConfig(Stat stat, in StatConfig config);
     }

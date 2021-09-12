@@ -16,6 +16,7 @@ namespace Inkybot.Services
     {
         public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
+        public event EventHandler? ConfigPresetsChanged;
 
         public bool RestoreHighSinkStats {
             set {
@@ -95,6 +96,7 @@ namespace Inkybot.Services
             set {
                 Properties.Settings.Default.configPresets = value;
                 Properties.Settings.Default.Save();
+                ConfigPresetsChanged?.Invoke(this, EventArgs.Empty);
             }
             get => Properties.Settings.Default.configPresets;
         }

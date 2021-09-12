@@ -219,22 +219,30 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (previewPictureBox)).EndInit();
             
             
-            configManager.UserSettings.PresetsChanged += (_, _) => UpdatePresets(statPresetComboBox);
-            UpdatePresets(statPresetComboBox);
-            configManager.UserSettings.PresetsChanged += (_, _) => UpdatePresets(configPresetComboBox);
-            UpdatePresets(configPresetComboBox);
+            configManager.UserSettings.PresetsChanged += (_, _) => UpdateStatPresets(statPresetComboBox);
+            UpdateStatPresets(statPresetComboBox);
+            configManager.UserSettings.ConfigPresetsChanged += (_, _) => UpdateConfigPresets(configPresetComboBox);
+            UpdateConfigPresets(configPresetComboBox);
 
             return queueItemGroupBox;
         }
 
-        private void UpdatePresets(ComboBox comboBox) {
+        private void UpdateStatPresets(ComboBox comboBox) {
             var selectedIndex = comboBox.SelectedItem;
             comboBox.DataSource =
                 configManager.UserSettings.Presets.Presets.Select(preset => preset.Name)
                     .Prepend("Default")
                     .ToArray();
             comboBox.SelectedItem = selectedIndex;
+        }
 
+        private void UpdateConfigPresets(ComboBox comboBox) {
+            var selectedIndex = comboBox.SelectedItem;
+            comboBox.DataSource =
+                configManager.UserSettings.ConfigPresets.Presets.Select(preset => preset.Name)
+                    .Prepend("Default")
+                    .ToArray();
+            comboBox.SelectedItem = selectedIndex;
         }
     }
 }

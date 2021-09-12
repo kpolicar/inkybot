@@ -100,8 +100,8 @@ namespace Inkybot
             Measurements.BindDependencies(Services);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConfigForm(new StatsForm()));
-            // Application.Run(new MainForm());
+            // Application.Run(new ConfigForm(new StatsForm()));
+            Application.Run(new MainForm());
         }
 
         private static void ApplyAdditionalUserSettings() {
