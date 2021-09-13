@@ -293,32 +293,30 @@ namespace Inkybot
             var result = scriptFileDialog.ShowDialog();
             if (result == DialogResult.OK) {
                 var path = scriptFileDialog.FileName;
-                TrySwitchToCustomAIScript(path);
+                _ = TrySwitchToCustomAIScript(path);
             }
         }
 
-        private void TrySwitchToCustomAIScript(string path) {
+        private async Task TrySwitchToCustomAIScript(string path) {
             Invoke(new MethodInvoker(() => {
                 customScriptPathLabel.Text = Path.GetFileName(path);
                 resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxLoading");
                 scriptValidPictureBox.Show();
             }));
                 
-            _ = Task.Run(() => {
-                Thread.Sleep(300);
-                
-                try {
-                    magingAiManager.UseCustomAIScript(path);
-                
-                    Invoke(new MethodInvoker(() => {
-                        resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
-                    }));
-                } catch (Exception) {
-                    Invoke(new MethodInvoker(() => {
-                        resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
-                    }));
-                }
-            });
+            await Task.Delay(300).ConfigureAwait(false);
+            
+            try {
+                magingAiManager.UseCustomAIScript(path);
+            
+                Invoke(new MethodInvoker(() => {
+                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
+                }));
+            } catch (Exception) {
+                Invoke(new MethodInvoker(() => {
+                    resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
+                }));
+            }
         }
 
         private void scriptResetButton_Click(object sender, EventArgs e) {
@@ -402,14 +400,14 @@ namespace Inkybot
         private void OnReset(object sender, EventArgs e) =>
             OnApplyPreset(sender, new ConfigPresetEventArgs(null, null));
 
-        private void OnApplyPreset(object sender, ConfigPresetEventArgs e) =>
-            BeginInvoke(new MethodInvoker(() => {
-                if (e.Preset?.CustomScriptPath != null) {
-                    TrySwitchToCustomAIScript(e.Preset.CustomScriptPath);
-                } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
-                    magingAiManager.UseBuiltInAIScript();
-                }
+        private void OnApplyPreset(object sender, ConfigPresetEventArgs e) {
+            if (e.Preset?.CustomScriptPath != null) {
+                TrySwitchToCustomAIScript(e.Preset.CustomScriptPath).Wait();
+            } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
+                magingAiManager.UseBuiltInAIScript();
+            }
             
+            BeginInvoke(new MethodInvoker(() => {
                 foreach (var rowObj in statsDataGridView.Rows) {
                     var row = (DataGridViewRow) rowObj;
                     var stat = (Stat) row.Tag;
@@ -434,12 +432,13 @@ namespace Inkybot
                     presetsComboBox.SelectedIndex = 0;
                 }
             }));
+        }
 
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
 
-            userSettingsConfigManager.ApplyConfigPreset(index-1);
+            Task.Run(() => userSettingsConfigManager.ApplyConfigPreset(index - 1));
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {

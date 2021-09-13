@@ -156,9 +156,11 @@ namespace Inkybot.Services
             foreach (var defaultStatConfig in DefaultStatConfigProvider.Instance.Config()) {
                 SetConfig(defaultStatConfig.Key, defaultStatConfig.Value, false);
             }
-            if (save)
+
+            if (save) {
                 Properties.Settings.Default.Save();
-            ResetFinished?.Invoke(this, EventArgs.Empty);
+                ResetFinished?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void SetConfig(Stat stat, in StatConfig config, bool save) {
