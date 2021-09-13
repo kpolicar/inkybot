@@ -6,65 +6,69 @@ namespace Inkybot.Api.Resources
     #pragma warning disable 8618
     public class User
     {
-        public string email => CXpD6X71WZhYsHf;
+        public string email => gMUnPVsYkgMgZqkulaQJ;
         [Obfuscation(Exclude = true)]
-        public string CXpD6X71WZhYsHf;
+        public string gMUnPVsYkgMgZqkulaQJ;
         
-        public bool is_subscribed => wVakGMaAnUQkCFZ;
+        public bool is_subscribed => xXEgoygDzogjOgiNIxJH;
         [Obfuscation(Exclude = true)]
-        public bool wVakGMaAnUQkCFZ;
+        public bool xXEgoygDzogjOgiNIxJH;
         
-        public bool is_free_trial => Sw6mNjvR0HZofKj;
+        public bool is_free_trial => gNdQBAzXtFIXjCfjNPIK;
         [Obfuscation(Exclude = true)]
-        public bool Sw6mNjvR0HZofKj;
+        public bool gNdQBAzXtFIXjCfjNPIK;
         
-        public string? free_trial_ends_at => xXTPOXHgAlFoCHx;
+        public string? free_trial_ends_at => zSinZTfatTfVLaFljOqC;
         [Obfuscation(Exclude = true)]
-        public string? xXTPOXHgAlFoCHx;
+        public string? zSinZTfatTfVLaFljOqC;
         
-        public bool free_trial_available => EbP8tMjESR6IGvi;
+        public bool free_trial_available => dSkngxkoTRycwTHwkRWq;
         [Obfuscation(Exclude = true)]
-        public bool EbP8tMjESR6IGvi;
+        public bool dSkngxkoTRycwTHwkRWq;
         
-        public string name => i30jfVx9krmacQH;
+        public string name => RTPbmvpAWeIUXnsnPdcm;
         [Obfuscation(Exclude = true)]
-        public string i30jfVx9krmacQH;
+        public string RTPbmvpAWeIUXnsnPdcm;
         
-        public bool onStarterPlan => bP6Aa9RdmDlggKY;
+        public bool onStarterPlan => JKrhIgzULnxEiszhYvam;
         [Obfuscation(Exclude = true)]
-        public bool bP6Aa9RdmDlggKY;
+        public bool JKrhIgzULnxEiszhYvam;
         
-        public bool onStandardPlan => ls6uIocgdyUtp4c;
+        public bool onStandardPlan => xrxqfXZtzcPHQMrccSSd;
         [Obfuscation(Exclude = true)]
-        public bool ls6uIocgdyUtp4c;
+        public bool xrxqfXZtzcPHQMrccSSd;
         
-        public bool onUnlimitedPlan => SniDbUjb49VghoM;
+        public bool onUnlimitedPlan => MgtwORXnPLSWksFIVdJg;
         [Obfuscation(Exclude = true)]
-        public bool SniDbUjb49VghoM;
+        public bool MgtwORXnPLSWksFIVdJg;
         
-        public bool canUseCustomMagingAI => GIZiGvqAkMRUyZc;
+        public bool canUseCustomMagingAI => tNzptPqDMerMLogKzJfk;
         [Obfuscation(Exclude = true)]
-        public bool GIZiGvqAkMRUyZc;
+        public bool tNzptPqDMerMLogKzJfk;
         
-        public bool canViewStatistics => aloThuYtoJVqZYK;
+        public bool canViewStatistics => JVaYDkExoaVfqEqSWlwA;
         [Obfuscation(Exclude = true)]
-        public bool aloThuYtoJVqZYK;
+        public bool JVaYDkExoaVfqEqSWlwA;
         
-        public bool canCreateStatistics => OfGoZPnBHQxneiN;
+        public bool canCreateStatistics => tnsVaYvUYfUyMoUCLcSk;
         [Obfuscation(Exclude = true)]
-        public bool OfGoZPnBHQxneiN;
+        public bool tnsVaYvUYfUyMoUCLcSk;
         
-        public bool canPublishExos => BwgdubYTUtyRdER;
+        public bool canPublishExos => ItfTLInEaoqhyTIMXclm;
         [Obfuscation(Exclude = true)]
-        public bool BwgdubYTUtyRdER;
+        public bool ItfTLInEaoqhyTIMXclm;
         
-        public bool canMageExos => jINhXckEVJaciuq;
+        public bool canMageExos => sLQXvDUEEttotgvaSwTj;
         [Obfuscation(Exclude = true)]
-        public bool jINhXckEVJaciuq;
+        public bool sLQXvDUEEttotgvaSwTj;
         
-        public int numberOfExoMagesLeftInPlan => rGEFoEUizObjmwg;
+        public bool canUseMageQueue => QMESAtjSbArNTcegpcQn;
         [Obfuscation(Exclude = true)]
-        public int rGEFoEUizObjmwg;
+        public bool QMESAtjSbArNTcegpcQn;
+        
+        public int numberOfExoMagesLeftInPlan => HMsEyaQcEUMkgnCBhgvX;
+        [Obfuscation(Exclude = true)]
+        public int HMsEyaQcEUMkgnCBhgvX;
     }
     #pragma warning restore 8618
 }

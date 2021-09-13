@@ -228,8 +228,12 @@ namespace Inkybot
         }
 
         private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs eventArgs) {
-            var rectangle = (eventArgs.Control as EnqueueRectangle)!;
-            Task.Run(() => mageQueue.Enqueue(rectangle, queueControls[rectangle]));
+            if (auth.User?.canUseMageQueue ?? false) {
+                var rectangle = (eventArgs.Control as EnqueueRectangle)!;
+                Task.Run(() => mageQueue.Enqueue(rectangle, queueControls[rectangle]));
+            } else {
+                ShowMagingQueueRestrictedPopup();
+            }
         }
 
         private void EnqueueRectangle_RemoveFromQueue(object sender, ControlEventArgs eventArgs) {
@@ -238,8 +242,22 @@ namespace Inkybot
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {
-            if (!mageQueueForm.Visible) mageQueueForm.Show();
-            else mageQueueForm.Focus();
+            if ((auth.User?.canUseMageQueue ?? false) || !mageQueue.Empty) {
+                if (!mageQueueForm.Visible) mageQueueForm.Show();
+                else mageQueueForm.Focus();
+            } else {
+                ShowMagingQueueRestrictedPopup();
+            }
+        }
+
+        private void ShowMagingQueueRestrictedPopup() {
+            var text = resources.GetString("popup.error_notavailable_current_plan");
+                
+            MessageBox.Show(
+                text,
+                resources.GetString("popup.error_restricted"),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
 
         private void MainForm_Loaded(object sender, EventArgs e) {
