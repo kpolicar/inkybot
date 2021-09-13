@@ -90,7 +90,7 @@
     <value>Cet objet contient des caractéristiques sensibles (exo/over). Êtes-vous sûr de vouloir forgemager cet objet?</value>
   </data>
     <data name="popup.warning_unsupported" xml:space="preserve">
-    <value>InkyBot a détecté que cet objet peut contenir des statistiques qui n’apparaîtraient pas toutes en même temps à l’écran. Êtes-vous sûr de vouloir forgemager cet objet?</value>
+    <value>InkyBot a détecté que cet objet peut contenir des caractéristiques qui n’apparaîtraient pas toutes en même temps à l’écran. Êtes-vous sûr de vouloir forgemager cet objet?</value>
   </data>
     <data name="subscriptiontimer.nolongersubscribed" xml:space="preserve">
     <value>L'utilisateur n'est plus abonné!</value>
@@ -124,7 +124,7 @@ abonnement</value>
     <value>Inkybot va s'arrêter dans:</value>
   </data>
     <data name="popup.warning_sensitive_highsinkstat" xml:space="preserve">
-    <value>Es-tu sûr? Cet objet a une statistique exotique de grande valeur!</value>
+    <value>Es-tu sûr? Cet objet a une caractéristique exotique de grande valeur!</value>
   </data>
     <data name="enqueueRectangle.EditConfigText" xml:space="preserve">
     <value>Modifier la configuration</value>

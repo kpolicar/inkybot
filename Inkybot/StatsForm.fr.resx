@@ -21,7 +21,7 @@
     <value>Voir des exemples</value>
   </data>
     <data name="clearExosButton.Text" xml:space="preserve">
-        <value>CLAIR EXOS</value>
+        <value>SUPPRIMER EXOS</value>
     </data>
     <data name="TargetColumn.HeaderText" xml:space="preserve">
         <value>Cible</value>
@@ -30,7 +30,7 @@
         <value>Valeur</value>
     </data>
     <data name="StatColumn.HeaderText" xml:space="preserve">
-        <value>Statistique</value>
+        <value>Caractéristique</value>
     </data>
     <data name="addPresetButton.Text" xml:space="preserve">
     <value>ENREGISTRER LE PRÉRÉGLAGE</value>
@@ -72,7 +72,7 @@ Les minimums sont utilisés pour être sûr que les tentatives exos ne soient pa
     <value>Priorité</value>
   </data>
     <data name="ValueColumn.ToolTipText" xml:space="preserve">
-    <value>La valeur actuelle de cette statistique</value>
+    <value>La valeur actuelle de cette caractéristique</value>
   </data>
     <data name="TargetColumn.ToolTipText" xml:space="preserve">
     <value>La valeur de stats que tu souhaiterais atteindre</value>
@@ -90,6 +90,6 @@ Les minimums sont utilisés pour être sûr que les tentatives exos ne soient pa
     <value>Masquer les options avancées</value>
   </data>
     <data name="refreshButton.ToolTipText" xml:space="preserve">
-    <value>Recharger statistique</value>
+    <value>Actualiser les caractéristiques</value>
   </data>
 </root>

@@ -27,7 +27,7 @@
     <value>Rien</value>
   </data>
   <data name="enableSafeMageQueueingCheckbox.Text" xml:space="preserve">
-    <value>File d'attente des mage en mode sans échec</value>
+    <value>Mise en file d'attente en mode sans échec</value>
   </data>
     <data name="UsePaRunesColumn.HeaderText" xml:space="preserve">
     <value>Utiliser des runes PA</value>
@@ -69,11 +69,11 @@
         <value>RA Rune Seuil</value>
     </data>
     <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
-        <value>Restaurez immédiatement les statistiques de chute élevée
+        <value>Restaurez immédiatement les caractéristiques de chute élevée
 (PA, PM, Portée, Invocations)</value>
     </data>
     <data name="StatColumn.HeaderText" xml:space="preserve">
-        <value>Statistique</value>
+        <value>Caractéristique</value>
     </data>
     <data name="PaRuneThresholdColumn.ToolTipText" xml:space="preserve">
     <value>Changez en runes PA une fois que cette valeur est atteinte</value>
@@ -160,7 +160,7 @@
   </data>
   <data name="customResizeRatioNumericUpDownLabel.Text" xml:space="preserve">
     <value>Rapport de redimensionnement d'image ROC personnalisé
-(laisser à "1" sauf si les statistiques ne le sont pas
+(laisser à "1" sauf si les caractéristiques ne le sont pas
 reconnu correctement)</value>
   </data>
 </root>
