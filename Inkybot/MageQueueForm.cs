@@ -40,6 +40,7 @@ namespace Inkybot
         private void UpdateControlsVisibility() {
             emptyLabel.Visible = mageQueue.Empty;
             mageQueueGroupBoxesPanel.Visible = !mageQueue.Empty;
+            bottomPanel.Visible = !mageQueue.Empty;
         }
 
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) =>
@@ -131,6 +132,12 @@ namespace Inkybot
                 }));
                 
                 await Task.Delay(delay/6);
+            }
+        }
+
+        private void OnClearQueueButtonClick(object sender, EventArgs e) {
+            while (!mageQueue.Empty) {
+                mageQueue.Dequeue();
             }
         }
     }

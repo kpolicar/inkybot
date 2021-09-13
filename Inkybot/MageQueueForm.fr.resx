@@ -124,11 +124,17 @@
     <data name="$this.Text" xml:space="preserve">
     <value>Inkybot - File d'attente</value>
   </data>
+    <data name="clearQueueButton.Text" xml:space="preserve">
+    <value>Effacer la file d'attente</value>
+  </data>
+    <data name="clearQueueButton.Size" type="System.Drawing.Size, System.Drawing">
+        <value>180, 40</value>
+  </data>
     <data name="statPresetLabel.Text" xml:space="preserve">
-    <value>Item Préréglage</value>
+    <value>Préréglage des Caractéristiques</value>
   </data>
     <data name="configPresetLabel.Text" xml:space="preserve">
-    <value>Config Préréglage</value>
+    <value>Préréglage de la Configuration</value>
   </data>
     <data name="removeButton.Text" xml:space="preserve">
     <value>Supprimer</value>

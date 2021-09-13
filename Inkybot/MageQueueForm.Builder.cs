@@ -128,7 +128,7 @@ namespace Inkybot
             configPresetPanel.Location = new System.Drawing.Point(303, 18);
             configPresetPanel.Name = "configPresetPanel";
             configPresetPanel.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            configPresetPanel.Size = new System.Drawing.Size(200, 99);
+            configPresetPanel.Size = new System.Drawing.Size(240, 99);
             configPresetPanel.TabIndex = 2;
             // 
             // configPresetComboBox
@@ -165,7 +165,7 @@ namespace Inkybot
             statPresetPanel.Location = new System.Drawing.Point(103, 18);
             statPresetPanel.Name = "statPresetPanel";
             statPresetPanel.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            statPresetPanel.Size = new System.Drawing.Size(200, 99);
+            statPresetPanel.Size = new System.Drawing.Size(240, 99);
             statPresetPanel.TabIndex = 1;
             // 
             // statPresetComboBox
