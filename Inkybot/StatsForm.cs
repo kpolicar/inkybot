@@ -460,7 +460,7 @@ namespace Inkybot
         
         private void OnPresetApplied(object sender, PresetEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
-                if (e.PresetIndex != null && e.PresetIndex != presetsComboBox.SelectedIndex) {
+                if (e.PresetIndex != null && e.PresetIndex+1 != presetsComboBox.SelectedIndex) {
                     presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
                     presetsComboBox.SelectedIndex = e.PresetIndex.Value+1;
                     presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
