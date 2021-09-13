@@ -259,6 +259,7 @@
         <Compile Include="Exceptions\DofusProcessDetachedException.cs" />
         <Compile Include="Exceptions\ExoAfterExoAttemptException.cs" />
         <Compile Include="Exceptions\HistoryHasntChangedException.cs" />
+        <Compile Include="Exceptions\ItemDoesNotMatchPresetException.cs" />
         <Compile Include="Exceptions\ItemHasNotChangedException.cs" />
         <Compile Include="Exceptions\MagingException.cs" />
         <Compile Include="Exceptions\NoItemToMageFoundException.cs" />

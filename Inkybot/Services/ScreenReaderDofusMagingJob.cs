@@ -165,6 +165,13 @@ namespace Inkybot.Services
                 } catch (Exception) {
                     // if we couldn't resolve previous history, no worries.
                 }
+                
+                if (configManager.UserSettings.EnableMageQueueing
+                    && selectNewFromQueue
+                    && mageQueue.Peek().Config.PresetIndex != null
+                    && !configManager.ConfigIsSetForItem(item)) {
+                    throw new ItemDoesNotMatchPresetException(item);
+                }
 
                 configManager.EnforceConfigSetForItem(item);
                 configManager.RemoveFallenUnconfiguredStats(item);
@@ -214,7 +221,6 @@ namespace Inkybot.Services
                     }
                     
                     
-                    Debug.WriteLine("continue maging? "+IsMaging);
                     if (!IsMaging)
                         break;
                 }
@@ -233,10 +239,10 @@ namespace Inkybot.Services
             var stopMage = false;
             try {
                 var item = PrepareMage(fromQueue, restarting);
-                
+
                 if (IsMaging && runStartedEvent)
                     Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!));
-                
+
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 Thread.Sleep(30);
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
@@ -261,6 +267,10 @@ namespace Inkybot.Services
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (UserForbiddenException exception) {
                 autoShutdown = restarting;
+                stopMage = true;
+                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+            } catch (ItemDoesNotMatchPresetException exception) {
+                autoShutdown = true;
                 stopMage = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException exception) {
@@ -311,6 +321,7 @@ namespace Inkybot.Services
                 } else {
                     Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 }
+
                 stopMage = true;
             }
 
