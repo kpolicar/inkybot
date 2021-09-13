@@ -17,6 +17,7 @@ namespace Inkybot
         private void MainFormDomainEvents() {
             mageQueue.Enqueued += OnMagingEnqueued;
             mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
+            mageQueue.Head += OnMagingHead;
             mageQueue.Removed += OnMagingDequeuedOrRemoved;
             mageQueue.Moved += OnMagingMoved;
             magingJob.Starting += OnMagingStarting;
@@ -61,6 +62,7 @@ namespace Inkybot
         }
 
         private void OnMagingStopped(object sender, EventArgs e) {
+            UpdateQueueControls();
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Text = resources.GetString("toggleMageButton.Text");
                 toggleMageButton.Enabled = false;
@@ -96,19 +98,32 @@ namespace Inkybot
             var control = e.QueueItem.Control;
             
             UnmarkQueueRectangleAsEnqueued(control);
+            if (!magingJob.IsMaging) {
+                UpdateQueueControls();
+            }
+        }
+
+        private void OnMagingHead(object sender, MageQueueEventArgs e) {
             UpdateQueueControls();
         }
-        
+
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs mageQueueMovedEventArgs) {
             UpdateQueueControls();
         }
 
         private void UpdateQueueControls() =>
             BeginInvoke(new MethodInvoker(delegate {
-                nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = !mageQueue.Empty;
-                nextInQueuePreviewPictureBox.Image = !mageQueue.Empty
-                    ? mageQueue.Peek().ItemPreview
-                    : null;
+                if (magingJob.IsMaging) {
+                    nextInQueuePreviewPictureBox.Image = mageQueue.Queue.Count >= 2
+                        ? mageQueue.Queue[1].ItemPreview
+                        : null;
+                    nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = mageQueue.Queue.Count >= 2;
+                } else {
+                    nextInQueuePreviewPictureBox.Image = !mageQueue.Empty
+                        ? mageQueue.Peek().ItemPreview
+                        : null;
+                    nextInQueueLabel.Visible = nextInQueuePreviewPictureBox.Visible = !mageQueue.Empty;
+                }
             }));
 
         private void MarkQueueRectangleAsEnqueued(EnqueueRectangle control) =>

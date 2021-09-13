@@ -27,6 +27,7 @@ namespace Inkybot.Services
 
         public event EventHandler<MeasurementEventArgs>? Enqueueing;
         public event EventHandler<MageQueueEventArgs>? Enqueued;
+        public event EventHandler<MageQueueEventArgs>? Head;
         public event EventHandler<MageQueueEventArgs>? Dequeued;
         public event EventHandler<MageQueueMovedEventArgs>? Moved;
         public event EventHandler<MageQueueEventArgs>? Removed;
@@ -42,10 +43,17 @@ namespace Inkybot.Services
             screen = serviceContainer.GetService<ScreenCapture>();
         }
 
+        public MageQueueItem ApplyHead() {
+            var mage = Queue[0];
+            mage.Config.ApplyToConfigManager(configManager);
+            
+            Head?.Invoke(this, new MageQueueEventArgs(mage));
+            return mage;
+        }
+
         public MageQueueItem Dequeue() {
             var mage = Queue[0];
             Queue.RemoveAt(0);
-            mage.Config.ApplyToConfigManager(configManager);
             
             Dequeued?.Invoke(this, new MageQueueEventArgs(mage));
             return mage;

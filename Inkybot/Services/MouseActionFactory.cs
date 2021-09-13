@@ -28,7 +28,7 @@ namespace Inkybot.Services
         }
         
         public IAction SelectItemFromQueue() {
-            return new SelectEnqueuedItem(queueManager.Dequeue(), targetControl);
+            return new SelectEnqueuedItem(queueManager.ApplyHead(), targetControl);
         }
 
         public IAction RemoveItemFromMagingTable() {

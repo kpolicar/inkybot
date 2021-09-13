@@ -198,16 +198,20 @@ namespace Inkybot.Services
                     state.IsMaging = true;
                 
                     actions.Execute(actionFactory.RemoveItemFromMagingTable());
-                    Thread.Sleep(750);
+                    if (IsMaging) Thread.Sleep(750);
                     actions.Execute(actionFactory.InventorySelectAllAction());
-                    Thread.Sleep(500);
+                    if (IsMaging) Thread.Sleep(500);
                     actions.Execute(actionFactory.InventorySelectEquipmentAction());
-                    Thread.Sleep(500);
-                
-                    autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting);
+                    if (IsMaging) Thread.Sleep(500);
+
+                    if (IsMaging) {
+                        autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting);
+                        if (!mageQueue.Empty)
+                            Thread.Sleep(500);
+                    }
                     
-                    if (!mageQueue.Empty)
-                        Thread.Sleep(500);
+                    
+                    Debug.WriteLine("continue maging? "+IsMaging);
                     if (!IsMaging)
                         break;
                 }
@@ -238,6 +242,11 @@ namespace Inkybot.Services
                     ticks++;
                     new Tick(this).Execute();
                 }
+
+                stopMage = !(state.PreviousAction is Finish);
+                state.IsMaging = true;
+                if (!mageQueue.Empty && state.PreviousAction is Finish)
+                    mageQueue.Dequeue();
 
             } catch (OutOfRunesException exception) {
                 autoShutdown = true;
