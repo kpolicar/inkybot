@@ -48,6 +48,10 @@ namespace Inkybot
                 control.Key.Show();
                 control.Key.BringToFront();
             }
+
+            foreach (var mageQueueItem in mageQueue.Queue) {
+                mageQueueItem.Control.BringToFront();
+            }
         }
 
         private void HideQueueControls() {
