@@ -1991,7 +1991,7 @@
     <value>Impossible de se connecter à Inkybot!</value>
   </data>
     <data name="switchLanguageLabel.Text" xml:space="preserve">
-    <value>Passer à l'Anglais</value>
+    <value>Passer à l'Anglais (doit correspondre à la langue du client Dofus)</value>
   </data>
   <data name="errorMessage.TextTrialExpired" xml:space="preserve">
     <value>Vous avez déjà utilisé votre essai gratuit!</value>

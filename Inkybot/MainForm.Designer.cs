@@ -416,6 +416,7 @@ namespace Inkybot
             resources.ApplyResources(this.usernameLabel, "usernameLabel");
             this.usernameLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.AutoEllipsis = true;
             // 
             // loggedInAsLabel
             // 

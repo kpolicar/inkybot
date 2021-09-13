@@ -617,7 +617,7 @@
     <value>1178, 784</value>
   </data>
   <data name="usernameLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 24</value>
+    <value>113, 24</value>
   </data>
   <data name="sinkValueLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>TopCenter</value>
@@ -674,7 +674,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="usernameLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+    <value>False</value>
   </data>
   <data name="debugButton.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -3346,5 +3346,17 @@
   </data>
   <data name="popup.error_restricted" xml:space="preserve">
     <value>Feature Restricted</value>
+  </data>
+  <data name="enqueueRectangle.EditConfigText" xml:space="preserve">
+    <value>Edit Config</value>
+  </data>
+  <data name="enqueueRectangle.AddToQueueText" xml:space="preserve">
+    <value>Add to queue</value>
+  </data>
+  <data name="enqueueRectangle.RemoveFromQueueText" xml:space="preserve">
+    <value>Remove from queue</value>
+  </data>
+  <data name="enqueueRectangle.Tooltip" xml:space="preserve">
+    <value>Show options</value>
   </data>
 </root>

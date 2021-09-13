@@ -2414,7 +2414,7 @@
     <value>True</value>
   </data>
   <data name="switchLanguageLabel.Text" xml:space="preserve">
-    <value>Switch to French</value>
+    <value>Switch to French (must match the Dofus client's language)</value>
   </data>
   <data name="resetSetttingsLabel.Text" xml:space="preserve">
     <value>Reset User Settings</value>

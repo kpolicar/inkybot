@@ -269,6 +269,8 @@ namespace Inkybot
             this.deletePresetButton.Cursor = Cursors.Hand;
             this.deletePresetButton.Location = new Point(0, 0);
             this.deletePresetButton.Click += new System.EventHandler(this.deletePresetButton_Click);
+            var tooltip2 = new ToolTip();
+            tooltip2.SetToolTip(this.deletePresetButton, resources.GetString("deletePresetButton.TooltipText"));
             // 
             // exoStatComboBox
             // 

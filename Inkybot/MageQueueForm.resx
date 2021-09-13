@@ -1991,7 +1991,7 @@
     </value>
   </data>
   <data name="statPresetLabel.Text" xml:space="preserve">
-    <value>Stat Preset</value>
+    <value>Item Preset</value>
   </data>
   <data name="configPresetLabel.Text" xml:space="preserve">
     <value>Config Preset</value>

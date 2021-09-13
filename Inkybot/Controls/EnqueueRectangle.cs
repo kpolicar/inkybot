@@ -10,20 +10,14 @@ namespace Inkybot.Controls
     public class EnqueueRectangle : Rectangle
     {
         private Button button;
-        public ToolStripMenuItem AddToQueueMenuItem { get; private set; }
-        public ToolStripMenuItem EditConfigMenuItem { get; private set; }
-        public ToolStripMenuItem RemoveFromQueueMenuItem { get; private set; }
+        public string Tooltip = "Show options";
+        public ToolStripMenuItem AddToQueueMenuItem { get; }
+        public ToolStripMenuItem EditConfigMenuItem { get; }
+        public ToolStripMenuItem RemoveFromQueueMenuItem { get; }
         
         
         public EnqueueRectangle() {
             ParentChanged += Rectangle_OnParentChanged;
-        }
-
-        public void NewOnLocationChanged(EventArgs e) {
-            OnLocationChanged(e);
-        }
-
-        protected void Rectangle_OnParentChanged(object sender, EventArgs e) {
             AddToQueueMenuItem = new ToolStripMenuItem("Add to queue");
             EditConfigMenuItem = new ToolStripMenuItem("Edit config") {
                 Visible = false
@@ -31,7 +25,13 @@ namespace Inkybot.Controls
             RemoveFromQueueMenuItem = new ToolStripMenuItem("Remove from queue") {
                 Visible = false
             };
-            
+        }
+
+        public void NewOnLocationChanged(EventArgs e) {
+            OnLocationChanged(e);
+        }
+
+        protected void Rectangle_OnParentChanged(object sender, EventArgs e) {
             var menu = new ContextMenuStrip() {
                 Items = {
                     AddToQueueMenuItem, EditConfigMenuItem, RemoveFromQueueMenuItem
@@ -62,7 +62,7 @@ namespace Inkybot.Controls
             };
             var tooltip = new System.Windows.Forms.ToolTip();
             tooltip.ShowAlways = true;
-            tooltip.SetToolTip(button, "Show options");
+            tooltip.SetToolTip(button, Tooltip);
             Parent.Controls.Add(button);
             button.BringToFront();
         }

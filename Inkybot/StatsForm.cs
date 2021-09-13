@@ -68,7 +68,7 @@ namespace Inkybot
             
             presetsComboBox.DataSource =
                 presets.Select(preset => preset.Name)
-                    .Prepend("None")
+                    .Prepend(resources.GetString("presetsComboBox.TextEmpty"))
                     .ToArray();
         }
 

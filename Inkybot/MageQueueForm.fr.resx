@@ -125,10 +125,10 @@
     <value>Inkybot - File d'attente</value>
   </data>
     <data name="statPresetLabel.Text" xml:space="preserve">
-    <value>Préréglage de statistiques</value>
+    <value>Item Préréglage</value>
   </data>
     <data name="configPresetLabel.Text" xml:space="preserve">
-    <value>Config Preset</value>
+    <value>Config Préréglage</value>
   </data>
     <data name="removeButton.Text" xml:space="preserve">
     <value>Supprimer</value>
@@ -137,6 +137,6 @@
     <value>Descendre</value>
   </data>
     <data name="moveUpButton.Text" xml:space="preserve">
-    <value>Ascendre</value>
+    <value>Monter</value>
   </data>
 </root>

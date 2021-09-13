@@ -18,7 +18,7 @@
     <value>FILE D'ATTENTE</value>
   </data>
     <data name="nextInQueueLabel.Text" xml:space="preserve">
-    <value>Prochain item</value>
+    <value>PROCHAIN ITEM</value>
   </data>
     <data name="debugButton.Text" xml:space="preserve">
         <value>DÉBOGUER</value>
@@ -125,5 +125,17 @@ abonnement</value>
   </data>
     <data name="popup.warning_sensitive_highsinkstat" xml:space="preserve">
     <value>Es-tu sûr? Cet objet a une statistique exotique de grande valeur!</value>
+  </data>
+    <data name="enqueueRectangle.EditConfigText" xml:space="preserve">
+    <value>Modifier la configuration</value>
+  </data>
+    <data name="enqueueRectangle.AddToQueueText" xml:space="preserve">
+    <value>Ajouter à la file d'attente</value>
+  </data>
+    <data name="enqueueRectangle.RemoveFromQueueText" xml:space="preserve">
+    <value>Supprimer de la file d'attente</value>
+  </data>
+    <data name="enqueueRectangle.Tooltip" xml:space="preserve">
+    <value>Afficher les options</value>
   </data>
 </root>

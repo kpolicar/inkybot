@@ -2236,6 +2236,9 @@ recognized correctly)</value>
             iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABu0lEQVRoge2av07CQACHv+sgxA6eG2HzTfQZnEwcfQOji6sw8QxObj6J8R0wxh3bEkvLwDkYEmnsHe2V9gr9tlKO+33cv96BwBKlVD8MwyfgEjjasliqlHqRUt4IIVKb+j2bwgBRFN0BV2wfHqAnhLiOoujetn5hU3g2m514nvcOnJb8iBA4k1J+lc2wIRAEwRi4pdi3WSdLYCKlfFi/kBVIcTf8mlRK2V9fZMeA6+EBen8vrAdx02QFlo2kKMbGtJsVmOC2xJLfjB0dVZG7EgdBsAD6efdrZiGlPP7vhm4aDXYUpjBKqdwsrRAQQrRbAE2WTqAmOoGmKSUQ7iBIWXKz7G8L6ObeBmj3GDjMhcylLlSqBTzPc0ZAlyVXwPf90odNVeP7fqkulALJThIVY6E7PzUdqzTejXR7AWiBgGkycV4AQ4ZOoAY6gaaxEnBhT6DNsN8t4MgDXbvHwGEvZC50IasWcGFPYMqgFXBhT6DbC4C5C6XAZ6WJivFh+i/FNj+zPlcUpgzGuo0CSZKMgLdK4hTjNY7jselNRoHBYPAdx/E5MAKmwMo+Wy4rYKqUepzP5xfD4TA2FfgBja+Qg3SOjBYAAAAASUVORK5CYII=
         </value>
     </data>
+    <data name="deletePresetButton.TooltipText" xml:space="preserve">
+        <value>Delete preset</value>
+    </data>
     <data name="deletePresetButton.Size" type="System.Drawing.Size, System.Drawing">
         <value>21, 21</value>
     </data>
@@ -2335,6 +2338,9 @@ recognized correctly)</value>
     <data name="presetsComboBox.Size" type="System.Drawing.Size, System.Drawing">
         <value>175, 21</value>
     </data>
+    <data name="presetsComboBox.TextEmpty" xml:space="preserve">
+    <value>None</value>
+  </data>
   <data name="config.useRune" xml:space="preserve">
     <value>Usage of :rune is enabled</value>
   </data>

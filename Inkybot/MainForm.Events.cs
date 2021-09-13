@@ -79,6 +79,10 @@ namespace Inkybot
             var control = new EnqueueRectangle() {
                 Visible = false
             };
+            control.EditConfigMenuItem.Text = resources.GetString("enqueueRectangle.EditConfigText");
+            control.AddToQueueMenuItem.Text = resources.GetString("enqueueRectangle.AddToQueueText");
+            control.RemoveFromQueueMenuItem.Text = resources.GetString("enqueueRectangle.RemoveFromQueueText");
+            control.Tooltip = resources.GetString("enqueueRectangle.Tooltip")!;
             queueControls[control] = measurement;
             control.BackColor = System.Drawing.SystemColors.Control;
             control.ForeColor = System.Drawing.SystemColors.Control;
