@@ -31,6 +31,10 @@ namespace Inkybot.Services
             return new SelectEnqueuedItem(queueManager.Dequeue(), targetControl);
         }
 
+        public IAction RemoveItemFromMagingTable() {
+            return new RemoveItemFromMagingTable(targetControl);
+        }
+
         public IAction CombineRune(Rune rune, bool exo) {
             return new CombineRune(targetControl, rune, exo);
         }

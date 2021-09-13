@@ -154,6 +154,7 @@
     <ItemGroup>
         <Compile Include="Actions\InventorySelectAllAction.cs" />
         <Compile Include="Actions\InventorySelectEquipmentAction.cs" />
+        <Compile Include="Actions\RemoveItemFromMagingTable.cs" />
         <Compile Include="Actions\SelectEnqueuedItem.cs" />
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\InputAction.cs" />

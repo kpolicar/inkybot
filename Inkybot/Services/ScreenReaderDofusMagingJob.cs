@@ -67,6 +67,7 @@ namespace Inkybot.Services
             this.serviceContainer = serviceContainer;
             if (magingAiManager != null)
                 magingAiManager.MagingAIChanged += OnMagingAiChanged;
+            actions.ActionExecuted += OnActionExecuted;
         }
 
         private int BalanceSpending;
@@ -134,7 +135,7 @@ namespace Inkybot.Services
             changeTimeout.Reset();
         }
 
-        private void PrepareMage(bool restarting) {
+        private Item PrepareMage(bool selectNewFromQueue, bool restarting) {
             var (previousItem, previousSink, previousCheckHadRunOutOfRunes) =
                 (state.PreviousItem, state.Sink, state.PreviousCheckHadRunOutOfRunes);
             state.Reset();
@@ -143,18 +144,19 @@ namespace Inkybot.Services
             state.PreviousCheckHadRunOutOfRunes = previousCheckHadRunOutOfRunes;
             supervisor = new Supervisor(this);
 
+            Item item;
             try {
                 state.IsMaging = true;
                 var resetMinMaxScan = !restarting;
                 
-                if (configManager.UserSettings.EnableMageQueueing) {
+                if (configManager.UserSettings.EnableMageQueueing && selectNewFromQueue) {
                     actions.Execute(actionFactory.SelectItemFromQueue());
                     Thread.Sleep(1000);
                 }
                 
                 dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
-                var item = dataProvider.Item();
+                item = dataProvider.Item();
                 try {
                     state.PreviousHistory = history.Analyse(dataProvider.History());
                 } catch (Exception) {
@@ -170,46 +172,64 @@ namespace Inkybot.Services
                 if (previousItem != null && item.Equals(previousItem)) {
                     state.Sink = previousSink;
                     state.PreviousItem = previousItem;
+                } else {
+                    state.PreviousItem = null;
+                    state.Sink = 0;
                 }
-            
-                if (IsMaging)
-                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!));
             } catch (Exception) {
                 state.IsMaging = false;
                 throw;
             }
             state.IsPreparing = false;
             state.IsRestarting = false;
+            
+            return item;
         }
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void DoMage(bool restarting=false) {
-            if (configManager.UserSettings.EnableMageQueueing) {
+            bool autoShutdown = false;
 
+            if (!mageQueue.Empty) {
+
+                var i = 0;
                 while (!mageQueue.Empty) {
                     
                     state.IsMaging = true;
                 
+                    actions.Execute(actionFactory.RemoveItemFromMagingTable());
+                    Thread.Sleep(750);
                     actions.Execute(actionFactory.InventorySelectAllAction());
                     Thread.Sleep(500);
                     actions.Execute(actionFactory.InventorySelectEquipmentAction());
                     Thread.Sleep(500);
                 
-                    DoMageWithoutCheckingQueue(restarting);
+                    autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting);
                     
                     if (!mageQueue.Empty)
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
+                    if (!IsMaging)
+                        break;
                 }
                 
             } else {
-                DoMageWithoutCheckingQueue(restarting);
+                autoShutdown = DoMageWithoutCheckingQueue(true, false, restarting);
             }
+            
+            Finished?.Invoke(
+                this, 
+                new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
         }
 
-        private void DoMageWithoutCheckingQueue(bool restarting=false) {
+        private bool DoMageWithoutCheckingQueue(bool runStartedEvent, bool fromQueue, bool restarting=false) {
             var autoShutdown = false;
+            var stopMage = false;
             try {
-                PrepareMage(restarting);
+                var item = PrepareMage(fromQueue, restarting);
+                
+                if (IsMaging && runStartedEvent)
+                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!));
+                
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 Thread.Sleep(30);
                 actions.Execute(actionFactory.InventoryClearSelectionAction());
@@ -218,25 +238,32 @@ namespace Inkybot.Services
                     ticks++;
                     new Tick(this).Execute();
                 }
+
             } catch (OutOfRunesException exception) {
                 autoShutdown = true;
+                stopMage = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (NoItemToMageFoundException exception) {
                 autoShutdown = restarting;
+                stopMage = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (UserForbiddenException exception) {
                 autoShutdown = restarting;
+                stopMage = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasChangedException exception) {
                 autoShutdown = true;
+                stopMage = true;
                 dataProvider.Scan?.Save();
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (ItemHasNotChangedException exception) {
                 autoShutdown = true;
+                stopMage = true;
                 dataProvider.Scan?.Save();
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (OperationCanceledException exception) {
                 autoShutdown = false;
+                stopMage = true;
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             } catch (Exception exception) {
                 autoShutdown = true;
@@ -263,8 +290,7 @@ namespace Inkybot.Services
                     Thread.Sleep(1000);
 
                     if (IsMaging) {
-                        DoMage(true);
-                        return;
+                        return DoMageWithoutCheckingQueue(true, false, true);
                     }
 
                     if (restarting) {
@@ -273,15 +299,20 @@ namespace Inkybot.Services
                 } else {
                     Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                 }
+                stopMage = true;
             }
 
             state.IsMaging = true; // If an error occured during preparation, we still want to stop properly
-            StopMage();
+            if (mageQueue.Empty || stopMage)
+                StopMage();
             autoShutdown |= state.PreviousAction is Inkybot.Actions.Finish;
 
-            Finished?.Invoke(
-                this, 
-                new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
+            return autoShutdown;
+        }
+        
+        private void OnActionExecuted(object sender, ActionExecutedEventArgs e) {
+            if (e.action is Finish)
+                state.IsMaging = false;
         }
 
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
