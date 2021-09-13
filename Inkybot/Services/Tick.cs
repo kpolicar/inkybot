@@ -198,7 +198,7 @@ namespace Inkybot.Services
             private void HandleChangeCheckTimeout() {
                 job.changeTimeout.Stop();
                 var additional = job.state.PreviousAction is RuneAction runeAction
-                    ? runeAction.Rune.DisplayName+" "
+                    ? "\""+runeAction.Rune.DisplayName+"\" "
                     : "";
                 throw new ChangeCheckTimeoutException(
                     "Rune combination was expected to perform within 5 seconds, but did not. " +
