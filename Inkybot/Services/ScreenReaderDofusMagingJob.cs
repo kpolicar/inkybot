@@ -69,8 +69,7 @@ namespace Inkybot.Services
                 magingAiManager.MagingAIChanged += OnMagingAiChanged;
             actions.ActionExecuted += OnActionExecuted;
             mageQueue.Enqueued += OnMagingEnqueued;
-            mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
-            mageQueue.Removed += OnMagingDequeuedOrRemoved;
+            mageQueue.Removed += OnMagingRemoved;
             mageQueue.Moved += OnMagingMoved;
         }
 
@@ -350,7 +349,7 @@ namespace Inkybot.Services
                 StopMage();
         }
 
-        private void OnMagingDequeuedOrRemoved(object sender, MageQueueMovedEventArgs e) {
+        private void OnMagingRemoved(object sender, MageQueueMovedEventArgs e) {
             if (e.Index == 0)
                 StopMage();
         }

@@ -130,7 +130,7 @@ namespace Inkybot.Services
 
         public void ApplyConfigPreset(int index) {
             var preset = ConfigPresets.Presets
-                .Skip(index - 1).First();
+                .Skip(index).First();
             
             Reset(false);
             

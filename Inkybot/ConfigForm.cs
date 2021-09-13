@@ -400,13 +400,11 @@ namespace Inkybot
         }
 
         private void OnReset(object sender, EventArgs e) =>
-            BeginInvoke(new MethodInvoker(() => {
-                presetsComboBox.SelectedIndex = 0;
-            }));
+            OnApplyPreset(sender, new ConfigPresetEventArgs(null, null));
 
         private void OnApplyPreset(object sender, ConfigPresetEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
-                if (e.Preset.CustomScriptPath != null) {
+                if (e.Preset?.CustomScriptPath != null) {
                     TrySwitchToCustomAIScript(e.Preset.CustomScriptPath);
                 } else if (Program.Services.GetService<DofusMagingAI>() is CustomDofusMagingAI) {
                     magingAiManager.UseBuiltInAIScript();
@@ -430,6 +428,10 @@ namespace Inkybot
                     presetsComboBox.SelectedIndexChanged -= presetsComboBox_SelectedIndexChanged;
                     presetsComboBox.SelectedIndex = e.PresetIndex.Value+1;
                     presetsComboBox.SelectedIndexChanged += presetsComboBox_SelectedIndexChanged;
+                }
+
+                if (e.PresetIndex == null) {
+                    presetsComboBox.SelectedIndex = 0;
                 }
             }));
 

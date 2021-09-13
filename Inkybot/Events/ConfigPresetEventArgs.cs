@@ -5,11 +5,11 @@ namespace Inkybot.Events
 {
     public class ConfigPresetEventArgs : EventArgs
     {
-        public readonly ConfigPreset Preset;
+        public readonly ConfigPreset? Preset;
         public readonly int? PresetIndex;
 
 
-        public ConfigPresetEventArgs(ConfigPreset preset, int index) {
+        public ConfigPresetEventArgs(ConfigPreset? preset, int? index) {
             (Preset, PresetIndex) = (preset, index);
         }
     }
