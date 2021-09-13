@@ -68,6 +68,10 @@ namespace Inkybot.Services
             if (magingAiManager != null)
                 magingAiManager.MagingAIChanged += OnMagingAiChanged;
             actions.ActionExecuted += OnActionExecuted;
+            mageQueue.Enqueued += OnMagingEnqueued;
+            mageQueue.Dequeued += OnMagingDequeuedOrRemoved;
+            mageQueue.Removed += OnMagingDequeuedOrRemoved;
+            mageQueue.Moved += OnMagingMoved;
         }
 
         private int BalanceSpending;
@@ -338,6 +342,21 @@ namespace Inkybot.Services
 
         private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) {
             if (!state.IsPreparing)
+                StopMage();
+        }
+        
+        private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) {
+            if (mageQueue.Peek() == e.QueueItem || e.Index == 0)
+                StopMage();
+        }
+
+        private void OnMagingDequeuedOrRemoved(object sender, MageQueueMovedEventArgs e) {
+            if (e.Index == 0)
+                StopMage();
+        }
+
+        private void OnMagingEnqueued(object sender, MageQueueMovedEventArgs e) {
+            if (e.Index == 0)
                 StopMage();
         }
             

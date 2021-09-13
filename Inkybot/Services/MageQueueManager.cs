@@ -26,11 +26,11 @@ namespace Inkybot.Services
         public readonly List<MageQueueItem> Queue = new List<MageQueueItem>();
 
         public event EventHandler<MeasurementEventArgs>? Enqueueing;
-        public event EventHandler<MageQueueEventArgs>? Enqueued;
+        public event EventHandler<MageQueueMovedEventArgs>? Enqueued;
         public event EventHandler<MageQueueEventArgs>? Head;
-        public event EventHandler<MageQueueEventArgs>? Dequeued;
+        public event EventHandler<MageQueueMovedEventArgs>? Dequeued;
         public event EventHandler<MageQueueMovedEventArgs>? Moved;
-        public event EventHandler<MageQueueEventArgs>? Removed;
+        public event EventHandler<MageQueueMovedEventArgs>? Removed;
 
         public bool Empty => Queue.Count == 0;
         public bool Full => Count < Max;
@@ -55,7 +55,7 @@ namespace Inkybot.Services
             var mage = Queue[0];
             Queue.RemoveAt(0);
             
-            Dequeued?.Invoke(this, new MageQueueEventArgs(mage));
+            Dequeued?.Invoke(this, new MageQueueMovedEventArgs(mage, 0));
             return mage;
         }
 
@@ -103,7 +103,7 @@ namespace Inkybot.Services
             var enqueued = new MageQueueItem(config, image, itemBoundingBox, control);
             Queue.Add(enqueued);
             
-            Enqueued?.Invoke(this, new MageQueueEventArgs(enqueued));
+            Enqueued?.Invoke(this, new MageQueueMovedEventArgs(enqueued, Queue.Count-1));
             return enqueued;
         }
 
@@ -111,8 +111,9 @@ namespace Inkybot.Services
             Queue.Find(item => item.Control.Equals(control)));
 
         public void Remove(MageQueueItem mage) {
+            var index = Queue.IndexOf(mage);
             Queue.Remove(mage);
-            Removed?.Invoke(this, new MageQueueEventArgs(mage));
+            Removed?.Invoke(this, new MageQueueMovedEventArgs(mage, index));
         }
 
         public MageQueueItem Peek() =>

@@ -42,16 +42,13 @@ namespace Inkybot
             mageQueueGroupBoxesPanel.Visible = !mageQueue.Empty;
         }
 
-        private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) {
-            if (mageQueue.Peek() == e.QueueItem || e.Index == 0)
-                magingJob.StopMage();
+        private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
                 var groupBox = mageQueueGroupBoxes[e.QueueItem];
                 mageQueueGroupBoxesPanel.Controls.SetChildIndex(groupBox, e.Index);
             }));
-        }
 
-        private void OnMagingEnqueued(object sender, MageQueueEventArgs e) {
+        private void OnMagingEnqueued(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
                 var control = BuildMageQueueGroupBox(e.QueueItem);
                 SuspendLayout();
@@ -60,13 +57,8 @@ namespace Inkybot
                 mageQueueGroupBoxes[e.QueueItem] = control;
                 UpdateControlsVisibility();
             }));
-            if (mageQueue.Peek() == e.QueueItem)
-                magingJob.StopMage();
-        }
 
-        private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {
-            if (mageQueue.Peek() == e.QueueItem)
-                magingJob.StopMage();
+        private void OnMagingDequeuedOrRemoved(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
                 SuspendLayout();
                 mageQueueGroupBoxesPanel.Controls.Remove(mageQueueGroupBoxes[e.QueueItem]);
@@ -74,7 +66,6 @@ namespace Inkybot
                 mageQueueGroupBoxes.Remove(e.QueueItem);
                 UpdateControlsVisibility();
             }));
-        }
 
         private void OnMageQueueItemRemove(object sender, MageQueueEventArgs e) {
             if (mageQueue.Peek() == e.QueueItem)
