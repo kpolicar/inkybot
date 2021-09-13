@@ -42,6 +42,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.mageQueueGroupBoxesPanel, "mageQueueGroupBoxesPanel");
             this.mageQueueGroupBoxesPanel.Name = "mageQueueGroupBoxesPanel";
+            this.mageQueueGroupBoxesPanel.ControlAdded += onMageQueueGroupBoxPanelControlAdded;
             // 
             // clearQueueButton
             // 
@@ -62,6 +63,7 @@ namespace Inkybot
             // bottomPanel
             // 
             resources.ApplyResources(this.bottomPanel, "bottomPanel");
+            this.ResizeEnd += onMageQueueGroupBoxPanelControlAdded;
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.Dock = DockStyle.Bottom;
             this.bottomPanel.Height = 43;

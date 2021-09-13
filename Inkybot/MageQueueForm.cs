@@ -54,10 +54,18 @@ namespace Inkybot
                 var control = BuildMageQueueGroupBox(e.QueueItem);
                 SuspendLayout();
                 mageQueueGroupBoxesPanel.Controls.Add(control);
+                
                 ResumeLayout();
                 mageQueueGroupBoxes[e.QueueItem] = control;
                 UpdateControlsVisibility();
             }));
+
+        private void onMageQueueGroupBoxPanelControlAdded(object sender, EventArgs e) {
+            if (mageQueueGroupBoxesPanel.HorizontalScroll.Visible) {
+                mageQueueGroupBoxesPanel.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
+            }
+            mageQueueGroupBoxesPanel.Padding = Padding.Empty;
+        }
 
         private void OnMagingDequeuedOrRemoved(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
@@ -136,6 +144,9 @@ namespace Inkybot
         }
 
         private void OnClearQueueButtonClick(object sender, EventArgs e) {
+            mageQueueGroupBoxesPanel.HorizontalScroll.Maximum = 0;
+            mageQueueGroupBoxesPanel.HorizontalScroll.Enabled = false;
+            mageQueueGroupBoxesPanel.HorizontalScroll.Visible = false;
             while (!mageQueue.Empty) {
                 mageQueue.Dequeue();
             }
