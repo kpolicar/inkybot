@@ -241,7 +241,7 @@ namespace Inkybot.Services
                 var item = PrepareMage(fromQueue, restarting);
 
                 if (IsMaging && runStartedEvent)
-                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!));
+                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!, false));
 
                 actions.Execute(actionFactory.InventorySelectResourcesAction());
                 Thread.Sleep(30);

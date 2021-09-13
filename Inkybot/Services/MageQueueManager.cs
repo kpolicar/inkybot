@@ -70,7 +70,6 @@ namespace Inkybot.Services
             Queue.Move(index, newIndex);
             
             Moved?.Invoke(this, new MageQueueMovedEventArgs(mage, newIndex));
-            Debug.WriteLine("New index: "+newIndex+", old index: "+index+", current: "+Queue.IndexOf(mage)+", length: "+Queue.Count);
             return mage;
         }
 

@@ -134,6 +134,12 @@ namespace Inkybot.Api
             await client?.PostAsync($"{Server.ApiUrl}/publish", formData)!;
         }
 
+        public async Task NotifyActionNeeded() {
+            await WaitForStableConnection();
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/actionneeded", new StringContent(""));
+        }
+
         public async Task NotifyFinished() {
             await WaitForStableConnection();
             Connection?.Request()

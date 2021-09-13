@@ -3314,6 +3314,9 @@
   <data name="subscribedInfoLabel.FreeTrial" xml:space="preserve">
     <value>Free Trial</value>
   </data>
+  <data name="popup.warning_sensitive_highsinkstat" xml:space="preserve">
+    <value>Are you sure? This item has a high value exo stat!</value>
+  </data>
   <data name="popup.warning_sensitive" xml:space="preserve">
     <value>This item contains sensitive stats (exo/overmaged). Are you sure you want to mage this item?</value>
   </data>

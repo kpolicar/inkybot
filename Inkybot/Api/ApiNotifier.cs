@@ -20,11 +20,19 @@ namespace Inkybot.Api
             
             actions!.ActionExecuted += Notify;
             magingJob!.Error += Notify;
+            if (magingJob is ScreenReaderDofusMagingJob screenReaderDofusMagingJob)
+                screenReaderDofusMagingJob.SensitiveMage += OnSensitiveMage;
         }
-        
+
+        private void OnSensitiveMage(object sender, MagingJobStartedEventArgs e) {
+            if (e.Interrupted) {
+                _ = api.NotifyActionNeeded();
+            }
+        }
+
         public void Notify(object sender, ActionExecutedEventArgs e) {
             if (e.action is Finish) {
-                api.NotifyFinished();
+                _ = api.NotifyFinished();
             }
         }
         

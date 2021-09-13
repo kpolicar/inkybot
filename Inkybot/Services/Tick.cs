@@ -324,14 +324,20 @@ namespace Inkybot.Services
             private bool IsFirstTick() => job.ticks == 1;
 
             private void RaiseEventIfMagingItemWithHighSinkExo(Item item) {
+                var interrupted = false;
                 var showSensitiveMageDialogue = IsFirstTick() && item.Stats.Any(itemStat => itemStat.Overmaged);
-                showSensitiveMageDialogue |=
-                    item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat);
+                
+                if (!showSensitiveMageDialogue) {
+                    showSensitiveMageDialogue =
+                        item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat);
+                    if (showSensitiveMageDialogue)
+                        interrupted = true;
+                }
                 
                 if (showSensitiveMageDialogue) {
                     job.SensitiveMage?.Invoke(
                         this, 
-                        new MagingJobStartedEventArgs(false, item, job.configManager.Config!));
+                        new MagingJobStartedEventArgs(false, item, job.configManager.Config!, interrupted));
                     if (!job.IsMaging)
                         throw new OperationCanceledException();
                 }

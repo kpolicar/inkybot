@@ -123,4 +123,7 @@ abonnement</value>
     <data name="shutdownToastLabel.Text" xml:space="preserve">
     <value>Inkybot va s'arrêter dans:</value>
   </data>
+    <data name="popup.warning_sensitive_highsinkstat" xml:space="preserve">
+    <value>Es-tu sûr? Cet objet a une statistique exotique de grande valeur!</value>
+  </data>
 </root>

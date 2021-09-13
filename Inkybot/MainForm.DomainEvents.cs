@@ -53,6 +53,19 @@ namespace Inkybot
 
         private void OnSensitiveMage(object sender, MagingJobStartedEventArgs e) {
             StartMageExoOverConfirmDialog();
+            
+            // Double confirmation for high sink stats
+            if (magingJob.IsMaging && e.Item.Stats.ExoStats.Any(exoStat => exoStat.Value > 0 && exoStat.Stat.Config.HighSinkStat)) {
+                var confirmation =
+                    MessageBox.Show(
+                        resources.GetString("popup.warning_sensitive_highsinkstat"),
+                        resources.GetString("popup.title_confirmation"),
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+
+                if (confirmation == DialogResult.No)
+                    magingJob.StopMage();
+            }
         }
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
