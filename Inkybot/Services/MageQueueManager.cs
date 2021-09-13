@@ -24,6 +24,8 @@ namespace Inkybot.Services
         private ScreenCapture screen = null!;
         
         public readonly List<MageQueueItem> Queue = new List<MageQueueItem>();
+        private ActionFactory actionFactory;
+        private ActionHandler actions;
 
         public event EventHandler<MeasurementEventArgs>? Enqueueing;
         public event EventHandler<MageQueueMovedEventArgs>? Enqueued;
@@ -41,6 +43,8 @@ namespace Inkybot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
             screen = serviceContainer.GetService<ScreenCapture>();
+            actionFactory = serviceContainer.GetService<ActionFactory>();
+            actions = serviceContainer.GetService<ActionHandler>();
         }
 
         public MageQueueItem ApplyHead() {
@@ -92,8 +96,16 @@ namespace Inkybot.Services
                 control.Visible = false;
                 control.Refresh();
             }));
+
+            if (configManager.UserSettings.EnableSafeMageQueueing) {
+                actions.Execute(actionFactory.InventorySelectAllAction(), true);
+                Thread.Sleep(300);
+                actions.Execute(actionFactory.InventorySelectEquipmentAction(), true);
+                Thread.Sleep(300);
+            } else {
+                Thread.Sleep(50);
+            }
             
-            Thread.Sleep(50);
             image = CapturePreviewImageOfItem(itemBoundingBox);
             
             control.Invoke(new MethodInvoker(() => {

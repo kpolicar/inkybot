@@ -26,7 +26,11 @@ namespace Inkybot.Services
         }
 
         public void Execute(IAction action) {
-            if (!magingJob.IsMaging)
+            Execute(action, false);
+        }
+
+        public void Execute(IAction action, bool force) {
+            if (!magingJob.IsMaging && !force)
                 return;
             
             if (action is InputAction inputAction) {

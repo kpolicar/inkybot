@@ -121,13 +121,13 @@ namespace Inkybot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool enableMageQueueing {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableSafeMageQueueing {
             get {
-                return ((bool)(this["enableMageQueueing"]));
+                return ((bool)(this["enableSafeMageQueueing"]));
             }
             set {
-                this["enableMageQueueing"] = value;
+                this["enableSafeMageQueueing"] = value;
             }
         }
         

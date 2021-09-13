@@ -15,7 +15,6 @@ namespace Inkybot.Services
 {
     public class FileSystemUserSettingsConfigManager : UserSettingsConfigManager
     {
-        public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
         public event EventHandler? ConfigPresetsChanged;
         public event EventHandler<ConfigPresetEventArgs>? AppliedPreset;
@@ -69,13 +68,12 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.publishExos;
         }
 
-        public bool EnableMageQueueing {
+        public bool EnableSafeMageQueueing {
             set {
-                Properties.Settings.Default.enableMageQueueing = value;
+                Properties.Settings.Default.enableSafeMageQueueing = value;
                 Properties.Settings.Default.Save();
-                EnableMageQueueingChanged?.Invoke(this, EventArgs.Empty);
             }
-            get => Properties.Settings.Default.enableMageQueueing;
+            get => Properties.Settings.Default.enableSafeMageQueueing;
         }
 
         public bool EnableRuneChecking {

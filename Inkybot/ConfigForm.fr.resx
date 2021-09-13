@@ -20,6 +20,9 @@
     <data name="UseSmRunesColumn.ToolTipText" xml:space="preserve">
     <value>Indiquez si vous souhaitez ou non utiliser des runes SM</value>
   </data>
+  <data name="enableSafeMageQueueingCheckbox.Text" xml:space="preserve">
+    <value>File d'attente des mage en mode sans échec</value>
+  </data>
     <data name="UsePaRunesColumn.HeaderText" xml:space="preserve">
     <value>Utiliser des runes PA</value>
   </data>

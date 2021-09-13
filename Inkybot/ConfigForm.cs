@@ -91,7 +91,7 @@ namespace Inkybot
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
-            enableMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableMageQueueing;
+            enableSafeMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableSafeMageQueueing;
             customResizeRatioNumericUpDown.Value = userSettingsConfigManager.CustomResizeMultiplier;
             magingAiManager.MagingAIChanged += OnMagingAIChanged;
             userSettingsConfigManager.AppliedPreset += OnApplyPreset;
@@ -270,7 +270,7 @@ namespace Inkybot
             userSettingsConfigManager.EnableKamasCalculation = enableKamasCalculationCheckbox.Checked;
         
         private void ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
-            userSettingsConfigManager.EnableMageQueueing = enableMageQueueingCheckbox.Checked;
+            userSettingsConfigManager.EnableSafeMageQueueing = enableSafeMageQueueingCheckbox.Checked;
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;

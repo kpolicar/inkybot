@@ -16,12 +16,11 @@ namespace Inkybot.Contracts
         public bool PublishExos { get; set; }
         public bool EnableKamasCalculation { get; set; }
         public bool EnableRuneChecking { get; set; }
-        public bool EnableMageQueueing { get; set; }
+        public bool EnableSafeMageQueueing { get; set; }
         public decimal CustomResizeMultiplier { get; set; }
         public ItemPresets Presets { get; set; }
         public ConfigPresets ConfigPresets { get; set; }
         
-        public event EventHandler? EnableMageQueueingChanged;
         public event EventHandler? PresetsChanged;
         public event EventHandler? ConfigPresetsChanged;
         

@@ -55,9 +55,6 @@ namespace Inkybot
             
             MainFormDomainEvents();
             MainFormEvents();
-            showMageQueueButton.Visible = userSettingsConfigManager.EnableMageQueueing;
-            userSettingsConfigManager.EnableMageQueueingChanged += (_, _) =>
-                showMageQueueButton.Visible = userSettingsConfigManager.EnableMageQueueing;
         }
         
         protected override void WndProc(ref Message m)

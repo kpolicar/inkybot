@@ -79,7 +79,7 @@ namespace Inkybot
             this.autoRestartBotCheckbox = new System.Windows.Forms.CheckBox();
             this.showWarningsCheckbox = new System.Windows.Forms.CheckBox();
             this.publishExosCheckbox = new System.Windows.Forms.CheckBox();
-            this.enableMageQueueingCheckbox = new System.Windows.Forms.CheckBox();
+            this.enableSafeMageQueueingCheckbox = new System.Windows.Forms.CheckBox();
             this.autoShutdownComboBox = new Inkybot.Controls.ComboBox();
             this.customResizeRatioNumericUpDownLabel = new System.Windows.Forms.Label();
             this.customResizeRatioNumericUpDown = new System.Windows.Forms.NumericUpDown();
@@ -287,12 +287,12 @@ namespace Inkybot
             // 
             // enableMageQueueingCheckbox
             // 
-            resources.ApplyResources(this.enableMageQueueingCheckbox, "enableMageQueueingCheckbox");
-            this.enableMageQueueingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
-            this.enableMageQueueingCheckbox.Name = "enableMageQueueingCheckbox";
-            this.enableMageQueueingCheckbox.UseVisualStyleBackColor = true;
-            this.enableMageQueueingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged);
-            this.enableMageQueueingCheckbox.Dock = DockStyle.Fill;
+            resources.ApplyResources(this.enableSafeMageQueueingCheckbox, "enableSafeMageQueueingCheckbox");
+            this.enableSafeMageQueueingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.enableSafeMageQueueingCheckbox.Name = "enableSafeMageQueueingCheckbox";
+            this.enableSafeMageQueueingCheckbox.UseVisualStyleBackColor = true;
+            this.enableSafeMageQueueingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged);
+            this.enableSafeMageQueueingCheckbox.Dock = DockStyle.Fill;
 
             // 
             // exampleScriptsLinkLabel
@@ -382,7 +382,7 @@ namespace Inkybot
             this.userSettingsPanel.Controls.Add(this.enableKamasCalculationCheckbox);
             this.userSettingsPanel.Controls.Add(this.autoRestartBotCheckbox);
             this.userSettingsPanel.Controls.Add(this.enableRuneCheckingCheckbox);
-            this.userSettingsPanel.Controls.Add(this.enableMageQueueingCheckbox);
+            this.userSettingsPanel.Controls.Add(this.enableSafeMageQueueingCheckbox);
             this.userSettingsPanel.Controls.Add(new Panel() {Size = Size.Empty });
             this.userSettingsPanel.Controls.Add(this.automaticShutdownPanel);
             this.userSettingsPanel.Controls.Add(this.customResizeRatioPanel);
@@ -587,7 +587,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
         private System.Windows.Forms.CheckBox publishExosCheckbox;
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
-        private System.Windows.Forms.CheckBox enableMageQueueingCheckbox;
+        private System.Windows.Forms.CheckBox enableSafeMageQueueingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;
         private Inkybot.Controls.ComboBox autoShutdownComboBox;

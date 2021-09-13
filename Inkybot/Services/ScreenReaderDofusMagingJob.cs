@@ -152,7 +152,7 @@ namespace Inkybot.Services
                 state.IsMaging = true;
                 var resetMinMaxScan = !restarting;
                 
-                if (configManager.UserSettings.EnableMageQueueing && selectNewFromQueue) {
+                if (!mageQueue.Empty && selectNewFromQueue) {
                     actions.Execute(actionFactory.SelectItemFromQueue());
                     Thread.Sleep(1000);
                 }
@@ -166,7 +166,7 @@ namespace Inkybot.Services
                     // if we couldn't resolve previous history, no worries.
                 }
                 
-                if (configManager.UserSettings.EnableMageQueueing
+                if (!mageQueue.Empty
                     && selectNewFromQueue
                     && mageQueue.Peek().Config.PresetIndex != null
                     && !configManager.ConfigIsSetForItem(item)) {

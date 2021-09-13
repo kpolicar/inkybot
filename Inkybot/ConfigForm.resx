@@ -2198,7 +2198,7 @@ recognized correctly)</value>
     <data name="showWarningsCheckbox.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
-    <data name="enableMageQueueingCheckbox.Font" type="System.Drawing.Font, System.Drawing">
+    <data name="enableSafeMageQueueingCheckbox.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
     <data name="publishExosCheckbox.Font" type="System.Drawing.Font, System.Drawing">
@@ -2266,10 +2266,10 @@ recognized correctly)</value>
   <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
     <value>Automatically restart bot (abnormalities can interrupt the bot)</value>
   </data>
-  <data name="enableMageQueueingCheckbox.Text" xml:space="preserve">
-    <value>Enable Mage Queueing</value>
+  <data name="enableSafeMageQueueingCheckbox.Text" xml:space="preserve">
+    <value>Mage Queueing Safe Mode</value>
   </data>
-  <data name="enableMageQueueingCheckbox.AutoSize" xml:space="preserve">
+  <data name="enableSafeMageQueueingCheckbox.AutoSize" xml:space="preserve">
     <value>true</value>
   </data>
   <data name="autoRestartBotCheckbox.AutoSize" xml:space="preserve">
