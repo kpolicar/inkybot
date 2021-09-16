@@ -115,7 +115,6 @@ namespace Inkybot
             // setupForm.Size = new Size(720, 640);
             // MinimumSize = new Size(1920, 1080);
             // Size = new Size(1280, 720);
-            // return;
             toastPanel.Hide();
             StopAutoShutdownCounter();
 

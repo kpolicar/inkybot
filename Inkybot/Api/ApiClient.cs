@@ -27,12 +27,14 @@ namespace Inkybot.Api
     public class ApiClient : HasDependencies
     {
         private AuthManager auth = null!;
+        private MageQueueManager mageQueue = null!;
         public ApiConnection? Connection { private set; get; }
 
         public event EventHandler<FetchedUserEventArgs>? UserFetched;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             auth = serviceContainer.GetService<AuthManager>();
+            mageQueue = serviceContainer.GetService<MageQueueManager>();
             auth.ConnectionChanged += OnConnectionChanged;
         }
         
@@ -141,9 +143,12 @@ namespace Inkybot.Api
         }
 
         public async Task NotifyFinished() {
+            var data = new[] {
+                new KeyValuePair<string,string>("continueQueue", (mageQueue.Count > 1).ToString())
+            };
             await WaitForStableConnection();
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/finished", new StringContent(""));
+                .PostAsync($"{Server.ApiUrl}/notify/finished", new FormUrlEncodedContent(data));
         }
 
         public async Task NotifyError() {
