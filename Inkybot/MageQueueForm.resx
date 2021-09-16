@@ -2011,4 +2011,7 @@
   <data name="moveUpButton.Text" xml:space="preserve">
     <value>Move up</value>
   </data>
+  <data name="presetsComboBox.TextDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
 </root>

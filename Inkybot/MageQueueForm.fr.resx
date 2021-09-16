@@ -145,4 +145,7 @@
     <data name="moveUpButton.Text" xml:space="preserve">
     <value>Monter</value>
   </data>
+    <data name="presetsComboBox.TextDefault" xml:space="preserve">
+    <value>Défaut</value>
+  </data>
 </root>

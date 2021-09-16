@@ -45,6 +45,7 @@ namespace Inkybot
 
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) =>
             BeginInvoke(new MethodInvoker(() => {
+                
                 var groupBox = mageQueueGroupBoxes[e.QueueItem];
                 mageQueueGroupBoxesPanel.Controls.SetChildIndex(groupBox, e.Index);
             }));

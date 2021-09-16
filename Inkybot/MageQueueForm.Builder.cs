@@ -235,7 +235,7 @@ namespace Inkybot
             var selectedIndex = comboBox.SelectedItem;
             comboBox.DataSource =
                 configManager.UserSettings.Presets.Presets.Select(preset => preset.Name)
-                    .Prepend("Default")
+                    .Prepend(resources.GetString("presetsComboBox.TextDefault"))
                     .ToArray();
             comboBox.SelectedItem = selectedIndex;
         }
@@ -244,7 +244,7 @@ namespace Inkybot
             var selectedIndex = comboBox.SelectedItem;
             comboBox.DataSource =
                 configManager.UserSettings.ConfigPresets.Presets.Select(preset => preset.Name)
-                    .Prepend("Default")
+                    .Prepend(resources.GetString("presetsComboBox.TextDefault"))
                     .ToArray();
             comboBox.SelectedItem = selectedIndex;
         }

@@ -109,6 +109,13 @@ namespace Inkybot
         }
         
         private void toggleMageButton_Click(object sender, EventArgs e) {
+            // configForm.MinimumSize = new Size(720, 640);
+            // configForm.Size = new Size(720, 640);
+            // setupForm.MinimumSize = new Size(720, 640);
+            // setupForm.Size = new Size(720, 640);
+            // MinimumSize = new Size(1920, 1080);
+            // Size = new Size(1280, 720);
+            // return;
             toastPanel.Hide();
             StopAutoShutdownCounter();
 
