@@ -92,7 +92,9 @@ namespace Inkybot.Services
                 }
             }
         }
-        public decimal Sink {
+
+        public int Sink => (int) dSink;
+        public decimal dSink {
             get => state.Sink;
             private set {
                 SinkChanged?.Invoke(this, 

@@ -6,7 +6,7 @@ namespace Inkybot.Domain
         public static readonly string HallOfFameUrl = "https://forum.cheat-gam3.com/forums/hall-of-fame.1714/";
         public static readonly string CustomScriptsUrl = "https://forum.cheat-gam3.com/forums/custom-scripts.1715/";
         public static readonly string BaseUrl = Program.Url;
-        public static readonly string UsageInstructions = $"{BaseUrl}/release/{Program.VersionEndpoint}#usage";
+        public static readonly string UsageInstructions = $"{BaseUrl}/release/{Program.VersionEndpoint}/usage";
         public static readonly string DiscordLink = $"{BaseUrl}/discord";
         public static string StatisticsViewUrl => $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics";
         public static readonly string StatisticsNewSessionUrl = $"{BaseUrl}/api/{Program.VersionEndpoint}/statistics/newsession";

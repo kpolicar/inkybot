@@ -2,6 +2,6 @@ namespace Inkybot.Dofus.Contracts
 {
     public interface DofusSinkProvider
     {
-        public decimal Sink { get; }
+        public int Sink { get; }
     }
 }

@@ -31,8 +31,8 @@ namespace Tests.Services
         public bool IsMaging { get; private set; }
         public MageHistoryRecord? LastHistoryRecord { get; }
 
-        private decimal sink;
-        public decimal Sink {
+        private int sink;
+        public int Sink {
             get => sink;
             set {
                 SinkChanged?.Invoke(this, 

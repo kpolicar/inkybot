@@ -101,10 +101,6 @@ namespace Inkybot
             
             MarkQueueRectangleAsEnqueued(control);
             UpdateQueueControls();
-            
-            if (!debugging) {
-                StartDebugging();
-            }
         }
         
         private void OnMagingDequeuedOrRemoved(object sender, MageQueueEventArgs e) {

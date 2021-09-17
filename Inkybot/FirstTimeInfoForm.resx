@@ -174,7 +174,7 @@
     <value>Reconfigure your items</value>
   </data>
   <data name="usageInstructionsLinkLabel.Text" xml:space="preserve">
-    <value>www.inkybot.me/release/latest#usage</value>
+    <value>www.inkybot.me/release/latest/usage</value>
   </data>
   <data name="discordLinkLabel.Text" xml:space="preserve">
     <value>www.inkybot.me/discord</value>

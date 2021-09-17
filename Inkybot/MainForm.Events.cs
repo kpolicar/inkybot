@@ -124,7 +124,7 @@ namespace Inkybot
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
-            Process.Start($"{Server.BaseUrl}/release/{Program.VersionEndpoint}#usage");
+            Process.Start(Server.UsageInstructions);
         }
 
         private void statsButton_Click(object sender, EventArgs e) {
