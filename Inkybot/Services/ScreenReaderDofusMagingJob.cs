@@ -116,7 +116,6 @@ namespace Inkybot.Services
             if (state.IsMaging) return;
 
             try {
-                
                 magus = serviceContainer.GetService<DofusMagingAIContract>();
                 Starting?.Invoke(this, EventArgs.Empty);
 
@@ -355,6 +354,7 @@ namespace Inkybot.Services
         private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) {
             if (!state.IsPreparing)
                 StopMage();
+            magus = e.AI;
         }
         
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) {
