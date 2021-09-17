@@ -112,7 +112,8 @@ namespace Inkybot.Api
             using var compressedImage = new MagickImage(ms);
             compressedImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
             compressedImage.SetCompression(CompressionMethod.JPEG);
-            compressedImage.Resize(new MagickGeometry(908,750));
+            compressedImage.Resize(908,750);
+            compressedImage.Extent(908,750, Gravity.Center, new MagickColor("#000000"));
             compressedImage.Write(ms, MagickFormat.Jpeg);
             ms.Position = 0;
             optimizer.LosslessCompress(ms);
