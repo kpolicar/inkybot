@@ -111,6 +111,11 @@ namespace Inkybot.Services
                     .itemInfo
                     .Runes.Find(previousAction.Rune);
 
+                if (ReferenceEquals(null, userRune)) {
+                    DoHistoryCheckForChanges();
+                    return;
+                }
+
                 if (newUserRune.Quantity != userRune.Quantity) {
                     job.state.Step = State.JobStep.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();

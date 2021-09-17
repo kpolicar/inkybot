@@ -252,7 +252,13 @@ namespace Inkybot
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {
-            actions.Execute(actionFactory.InventorySelectEquipmentAction(), true);
+            Task.Run(async () => {
+                if (config.UserSettings.EnableSafeMageQueueing) {
+                    actions.Execute(actionFactory.InventorySelectAllAction(), true);
+                    await Task.Delay(500);
+                }
+                actions.Execute(actionFactory.InventorySelectEquipmentAction(), true);
+            });
             
             if ((auth.User?.canUseMageQueue ?? false) || !mageQueue.Empty) {
                 if (!mageQueueForm.Visible) mageQueueForm.Show();

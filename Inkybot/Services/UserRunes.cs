@@ -7,8 +7,8 @@ namespace Inkybot.Services
 {
     public class UserRunes : Dictionary<Stat, UserRune[]>
     {
-        public UserRune Find(Rune rune) =>
+        public UserRune? Find(Rune rune) =>
             this.SelectMany(userRunes => userRunes.Value)
-                .First(userRune => userRune.Rune.Equals(rune));
+                .FirstOrDefault(userRune => userRune.Rune.Equals(rune));
     }
 }
