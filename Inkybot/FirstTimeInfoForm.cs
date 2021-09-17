@@ -10,7 +10,7 @@ namespace Inkybot
     public partial class FirstTimeInfoForm : Form
     {
         private int continueTimerElapsedTime;
-        private const int timeoutToEnableButton = 5000;
+        private const int timeoutToEnableButton = 10000;
 
         public FirstTimeInfoForm() {
             InitializeComponent();
