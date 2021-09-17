@@ -210,7 +210,7 @@ namespace Inkybot.Services
                     state.IsMaging = true;
                 
                     actions.Execute(actionFactory.RemoveItemFromMagingTable());
-                    if (IsMaging) Thread.Sleep(750);
+                    if (IsMaging) Thread.Sleep(1000);
                     actions.Execute(actionFactory.InventorySelectAllAction());
                     if (IsMaging) Thread.Sleep(500);
                     actions.Execute(actionFactory.InventorySelectEquipmentAction());

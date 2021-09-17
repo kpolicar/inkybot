@@ -24,6 +24,8 @@ namespace Inkybot
         private StatisticsForm statisticsForm;
         private MageQueueForm mageQueueForm;
         private int autoShutdownTimeElapsed;
+        private ActionHandler actions;
+        private ActionFactory actionFactory;
 
         public MainForm() {
             InitializeComponent();
@@ -34,6 +36,8 @@ namespace Inkybot
             config = (ConfigManager) Program.Services.GetService<MageConfigManager>();
             analytics = Program.Services.GetService<AnalyticsReporter>();
             mageQueue = Program.Services.GetService<MageQueueManager>();
+            actions = Program.Services.GetService<ActionHandler>();
+            actionFactory = Program.Services.GetService<ActionFactory>();
             var userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
                 Program.Services.GetService<UserSettingsConfigManager>();
             

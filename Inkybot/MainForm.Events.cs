@@ -252,6 +252,8 @@ namespace Inkybot
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {
+            actions.Execute(actionFactory.InventorySelectEquipmentAction(), true);
+            
             if ((auth.User?.canUseMageQueue ?? false) || !mageQueue.Empty) {
                 if (!mageQueueForm.Visible) mageQueueForm.Show();
                 else mageQueueForm.Focus();
