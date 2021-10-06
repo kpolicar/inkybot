@@ -1,5 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus.Contracts;
@@ -27,13 +30,39 @@ namespace Inkybot
                 : UserSettings.Default.dofusPath;
             
             if (dofusPath == "") {
-                var result = new DofusPathForm().ShowDialog(this);
+                var result = new WaitingForDofusForm().ShowDialog(this);
                 if (result != DialogResult.OK) {
                     return false;
                 }
             }
 
-            pDofus = Process.Start(dofusPath);
+            var waitingForm = new WaitingForDofusForm();
+
+            Task.Run(() => {
+                do {
+                    var processes = Process.GetProcesses();
+                    foreach (var process in processes
+                        .Where(process =>
+                            process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0)) {
+                        pDofus = process;
+                        Debug.WriteLine(
+                            $"Found process: id: {process.Id}, name: {process.ProcessName}, window: {process.MainWindowTitle}");
+                            
+                        waitingForm.DialogResult = DialogResult.OK;
+                        waitingForm.Close();
+
+                        break;
+                    }
+                } while (pDofus == null);
+
+                Thread.Sleep(1000);
+            });
+            
+            var resultWaiting = waitingForm.ShowDialog(this);
+            if (resultWaiting != DialogResult.OK || pDofus == null) {
+                return false;
+            }
+            
             WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 

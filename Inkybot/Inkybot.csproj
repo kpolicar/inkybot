@@ -213,11 +213,11 @@
           <DependentUpon>Rectangle.cs</DependentUpon>
         </Compile>
         <Compile Include="Debugging\WelcomeDialogue.cs" />
-        <Compile Include="DofusPathForm.cs">
+        <Compile Include="WaitingForDofusForm.cs">
           <SubType>Form</SubType>
         </Compile>
-        <Compile Include="DofusPathForm.Designer.cs">
-          <DependentUpon>DofusPathForm.cs</DependentUpon>
+        <Compile Include="WaitingForDofusForm.Designer.cs">
+          <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\ItemHistoryAnalyzer.cs" />
@@ -462,9 +462,9 @@
         <EmbeddedResource Include="ConfigForm.resx">
           <DependentUpon>ConfigForm.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="DofusPathForm.fr.resx" />
-        <EmbeddedResource Include="DofusPathForm.resx">
-          <DependentUpon>DofusPathForm.cs</DependentUpon>
+        <EmbeddedResource Include="WaitingForDofusForm.fr.resx" />
+        <EmbeddedResource Include="WaitingForDofusForm.resx">
+          <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="FirstTimeInfoForm.fr.resx">
           <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>

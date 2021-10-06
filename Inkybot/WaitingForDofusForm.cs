@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace Inkybot
 {
-    public partial class DofusPathForm : Form
+    public partial class WaitingForDofusForm : Form
     {
-        public DofusPathForm() {
+        public WaitingForDofusForm() {
             InitializeComponent();
         }
 

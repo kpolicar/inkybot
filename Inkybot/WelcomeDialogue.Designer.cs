@@ -208,10 +208,6 @@ namespace Inkybot
             // 
             // settingsContextMenuStrip
             // 
-            var dofusPathLink = new ToolStripMenuItem();
-            dofusPathLink.Click += new System.EventHandler(dofusPathButton_Clicked);
-            resources.ApplyResources(dofusPathLink, "dofusPathLink");
-            
             var switchLanguageLabel = new ToolStripMenuItem();
             switchLanguageLabel.Click += new System.EventHandler(switchLanguageButton_Clicked);
             resources.ApplyResources(switchLanguageLabel, "switchLanguageLabel");
@@ -229,7 +225,7 @@ namespace Inkybot
             resources.ApplyResources(openSettingsInFileExplorer, "openSettingsInFileExplorer");
             
             this.settingsContextMenuStrip.Items.AddRange(new [] {
-                dofusPathLink, switchLanguageLabel, resetSetttingsLabel, openSettingsInFileExplorer
+                switchLanguageLabel, resetSetttingsLabel, openSettingsInFileExplorer
             });
             this.settingsContextMenuStrip.Items.Add(disableOpenCLLabel);
             this.settingsContextMenuStrip.AutoSize = true;

@@ -17,7 +17,7 @@
     <data name="label2.Text" xml:space="preserve">
         <value>Améliorez vos équipements</value>
     </data>
-    <data name="selectPathLabel.Text" xml:space="preserve">
+    <data name="waitingLabel.Text" xml:space="preserve">
         <value>Veuillez sélectionner le chemin vers dofus.exe
 installé sur votre système</value>
     </data>

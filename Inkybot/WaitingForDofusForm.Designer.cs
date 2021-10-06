@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Inkybot
 {
-    partial class DofusPathForm
+    partial class WaitingForDofusForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,16 +30,14 @@ namespace Inkybot
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DofusPathForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WaitingForDofusForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.errorMessage = new System.Windows.Forms.Label();
-            this.selectPathLabel = new System.Windows.Forms.Label();
-            this.pathChangeButton = new System.Windows.Forms.Button();
-            this.pathTextBox = new System.Windows.Forms.TextBox();
+            this.waitingLabel = new System.Windows.Forms.Label();
             this.dofusFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -89,9 +87,7 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.errorMessage);
-            this.panel1.Controls.Add(this.selectPathLabel);
-            this.panel1.Controls.Add(this.pathChangeButton);
-            this.panel1.Controls.Add(this.pathTextBox);
+            this.panel1.Controls.Add(this.waitingLabel);
             this.panel1.Name = "panel1";
             // 
             // errorMessage
@@ -100,24 +96,10 @@ namespace Inkybot
             this.errorMessage.ForeColor = System.Drawing.Color.Maroon;
             this.errorMessage.Name = "errorMessage";
             // 
-            // selectPathLabel
+            // waitingLabel
             // 
-            resources.ApplyResources(this.selectPathLabel, "selectPathLabel");
-            this.selectPathLabel.Name = "selectPathLabel";
-            // 
-            // pathChangeButton
-            // 
-            resources.ApplyResources(this.pathChangeButton, "pathChangeButton");
-            this.pathChangeButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (15)))), ((int) (((byte) (15)))), ((int) (((byte) (15)))));
-            this.pathChangeButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.pathChangeButton.Name = "pathChangeButton";
-            this.pathChangeButton.UseVisualStyleBackColor = false;
-            this.pathChangeButton.Click += new System.EventHandler(this.pathChangeButton_Click);
-            // 
-            // pathTextBox
-            // 
-            resources.ApplyResources(this.pathTextBox, "pathTextBox");
-            this.pathTextBox.Name = "pathTextBox";
+            resources.ApplyResources(this.waitingLabel, "waitingLabel");
+            this.waitingLabel.Name = "waitingLabel";
             // 
             // dofusFileDialog
             // 
@@ -133,7 +115,7 @@ namespace Inkybot
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "DofusPathForm";
+            this.Name = "WaitingForDofusForm";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).EndInit();
@@ -146,9 +128,7 @@ namespace Inkybot
 
         private System.Windows.Forms.OpenFileDialog dofusFileDialog;
 
-        private System.Windows.Forms.Button pathChangeButton;
-        private System.Windows.Forms.TextBox pathTextBox;
-        private System.Windows.Forms.Label selectPathLabel;
+        private System.Windows.Forms.Label waitingLabel;
 
         private System.Windows.Forms.PictureBox logoPictureBox;
 

@@ -174,7 +174,7 @@ namespace Inkybot
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Shown += OnFirstTimeInfoFormShown;
-            this.Name = "DofusPathForm";
+            this.Name = "WaitingForDofusForm";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.bottomPanel.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
