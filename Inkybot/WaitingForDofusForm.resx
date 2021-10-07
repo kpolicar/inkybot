@@ -210,11 +210,11 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="waitingLabel.Text" xml:space="preserve">
-    <value>En attente de Dofus...
+    <value>Waiting for Dofus...
 
-Veuillez démarrer Dofus via Ankama Launcher.
+Please start Dofus through the Ankama Launcher.
 
-Inkybot s'attachera automatiquement au processus.</value>
+Inkybot will automatically attach to the process.</value>
   </data>
   <data name="&gt;&gt;waitingLabel.Parent" xml:space="preserve">
     <value>panel1</value>

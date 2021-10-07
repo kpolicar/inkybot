@@ -31,6 +31,11 @@ namespace Inkybot
             return oldParentHandle;
         }
 
+        public static void UndockProcess(IntPtr handle, IntPtr handleDestination) {
+            Win32.SetParent(handle, handleDestination);
+        }
+
+
         public static void RemoveWindowBorders(IntPtr window) {
             var style = Win32.GetWindowLong(window, Win32.GWL_STYLE);
             Win32.SetWindowLong(window, Win32.GWL_STYLE, style & ~Win32.WS_CAPTION);

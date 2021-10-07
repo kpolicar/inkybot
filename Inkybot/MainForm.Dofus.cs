@@ -16,6 +16,7 @@ namespace Inkybot
     {
         private Process? pDofus;
         private IntPtr hWndDocked;
+        private IntPtr parentHandle;
 
         private bool InitializeDofusClient() {
             if (pDofus != null && !pDofus.HasExited) {
@@ -63,7 +64,7 @@ namespace Inkybot
                 return false;
             }
             
-            WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
+            parentHandle = WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 
             BindServicesToDockedWindow();

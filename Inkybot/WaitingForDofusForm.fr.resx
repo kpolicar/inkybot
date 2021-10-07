@@ -18,7 +18,10 @@
         <value>Améliorez vos équipements</value>
     </data>
     <data name="waitingLabel.Text" xml:space="preserve">
-        <value>Veuillez sélectionner le chemin vers dofus.exe
-installé sur votre système</value>
+        <value>En attente de Dofus...
+
+Veuillez lancer Dofus via le lanceur Ankama.
+
+Inkybot sera automatiquement intégré au processus.</value>
     </data>
 </root>
