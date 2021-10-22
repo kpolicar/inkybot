@@ -24,39 +24,29 @@ namespace Inkybot
                 hWndDocked = IntPtr.Zero;
             }
             
-            var gameVersion = DetectUserGame.ReadRelease();
-            var dofusPath =
-                gameVersion != null && DetectUserGame.HasValidGamePath(gameVersion) && UserSettings.Default.dofusPath == ""
-                ? gameVersion.ExeLocation
-                : UserSettings.Default.dofusPath;
-            
-            if (dofusPath == "") {
-                var result = new WaitingForDofusForm().ShowDialog(this);
-                if (result != DialogResult.OK) {
-                    return false;
-                }
+            var result = new WaitingForDofusForm().ShowDialog(this);
+            if (result != DialogResult.OK) {
+                return false;
             }
 
             var waitingForm = new WaitingForDofusForm();
 
-            Task.Run(() => {
+            Task.Run(async () => {
                 do {
                     var processes = Process.GetProcesses();
-                    foreach (var process in processes
-                        .Where(process =>
-                            process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0)) {
-                        pDofus = process;
-                        Debug.WriteLine(
-                            $"Found process: id: {process.Id}, name: {process.ProcessName}, window: {process.MainWindowTitle}");
-                            
+                    var dofusProcesses = processes
+                        .Where(process => process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToArray();
+                    
+                    if (dofusProcesses.Length == 1) {
+                        pDofus = dofusProcesses[0];
                         waitingForm.DialogResult = DialogResult.OK;
                         waitingForm.Close();
-
-                        break;
+                    } else if(dofusProcesses.Length > 1) {
+                        waitingForm.UpdateProcessList(dofusProcesses);
                     }
+                    await Task.Delay(1000);
                 } while (pDofus == null);
-
-                Thread.Sleep(1000);
             });
             
             var resultWaiting = waitingForm.ShowDialog(this);

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Inkybot
@@ -16,6 +17,10 @@ namespace Inkybot
                 Properties.Settings.Default.Save();
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        public void UpdateProcessList(Process[] dofusProcesses) {
+            
         }
     }
 }

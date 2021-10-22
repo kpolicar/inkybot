@@ -90,13 +90,15 @@ namespace Inkybot
         }
 
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
+            var success = DoLoginDialog();
+            if (!success)
+                return;
+            
             Hide();
             var openedDofusSuccessfully = InitializeDofusClient();
             if (!openedDofusSuccessfully) {
                 Close();
-                return;
             }
-            DoLoginDialog();
         }
 
         private void OnError(object sender, ExceptionEventArgs e) {
