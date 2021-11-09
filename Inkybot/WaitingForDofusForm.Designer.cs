@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Inkybot
 {
@@ -38,6 +40,7 @@ namespace Inkybot
             this.panel1 = new System.Windows.Forms.Panel();
             this.errorMessage = new System.Windows.Forms.Label();
             this.waitingLabel = new System.Windows.Forms.Label();
+            this.processListView = new System.Windows.Forms.ListView();
             this.dofusFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -86,8 +89,9 @@ namespace Inkybot
             // panel1
             // 
             resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.Controls.Add(this.errorMessage);
+            this.panel1.Controls.Add(this.processListView);
             this.panel1.Controls.Add(this.waitingLabel);
+            this.panel1.Controls.Add(this.errorMessage);
             this.panel1.Name = "panel1";
             // 
             // errorMessage
@@ -95,11 +99,31 @@ namespace Inkybot
             resources.ApplyResources(this.errorMessage, "errorMessage");
             this.errorMessage.ForeColor = System.Drawing.Color.Maroon;
             this.errorMessage.Name = "errorMessage";
+            this.errorMessage.Dock = DockStyle.Top;
             // 
             // waitingLabel
             // 
             resources.ApplyResources(this.waitingLabel, "waitingLabel");
             this.waitingLabel.Name = "waitingLabel";
+            this.waitingLabel.Dock = DockStyle.Top;
+            // 
+            // waitingLabel
+            // 
+            resources.ApplyResources(this.waitingLabel, "processListView");
+            this.processListView.Name = "processListView";
+            this.processListView.Size = new Size(172, 56);
+            this.processListView.Location = new Point(23, 150);
+            this.processListView.Dock = DockStyle.Top;
+            this.processListView.FullRowSelect = true;
+            this.processListView.MultiSelect = false;
+            this.processListView.View = View.Details;
+            this.processListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.processListView.GridLines = false;
+            this.processListView.Columns.Add("Process");
+            this.processListView.ItemActivate += OnItemActivated;
+            this.processListView.Visible = false;
+            processListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            processListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             // 
             // dofusFileDialog
             // 
@@ -139,6 +163,7 @@ namespace Inkybot
         private System.Windows.Forms.Label label2;
 
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListView processListView;
 
         private System.Windows.Forms.SplitContainer splitContainer1;
 

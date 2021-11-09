@@ -29,7 +29,8 @@ namespace Inkybot
                 subscriptionCheckTimer.Start();
             } else {
                 subscriptionCheckTimer.Stop();
-                auth.Logout();
+                if (!dontLogoutOnVisibleChanged)
+                    auth.Logout();
             }
         }
 

@@ -195,7 +195,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="panel1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>10, 50, 10, 50</value>
+    <value>10, 25, 10, 25</value>
   </data>
   <data name="&gt;&gt;pathChangeButton.Name" xml:space="preserve">
     <value>pathChangeButton</value>
@@ -307,7 +307,7 @@ Inkybot will automatically attach to the process.</value>
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Inkybot - Select Path</value>
+    <value>Inkybot - Waiting for Dofus</value>
   </data>
   <data name="dofusFileDialog.Filter" xml:space="preserve">
     <value>Dofus|dofus.exe</value>
@@ -2114,7 +2114,10 @@ Inkybot will automatically attach to the process.</value>
     <value>0</value>
   </data>
   <data name="waitingLabel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 0, 0, 30</value>
+    <value>0, 0, 0, 10</value>
+  </data>
+  <data name="processListView.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 10</value>
   </data>
   <data name="errorMessage.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -2183,7 +2186,7 @@ Inkybot will automatically attach to the process.</value>
     <value>Fill</value>
   </data>
   <data name="waitingLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>23, 50</value>
+    <value>23, 10</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>464, 224</value>

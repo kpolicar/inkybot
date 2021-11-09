@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -84,12 +85,15 @@ namespace Inkybot
                 }
             }
         }
-
+        
         private void OnMinimize() {
             magingJob.StopMage();
         }
 
+        private bool dontLogoutOnVisibleChanged = false;
+
         private void MainForm_OnLoad(object sender, EventArgs eventArgs) {
+            dontLogoutOnVisibleChanged = true;
             var success = DoLoginDialog();
             if (!success)
                 return;
@@ -99,6 +103,9 @@ namespace Inkybot
             if (!openedDofusSuccessfully) {
                 Close();
             }
+
+            Show();
+            dontLogoutOnVisibleChanged = false;
         }
 
         private void OnError(object sender, ExceptionEventArgs e) {

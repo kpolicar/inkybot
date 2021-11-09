@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
+using Inkybot.Events;
 using Inkybot.Services;
 using UserSettings = Inkybot.Properties.Settings;
 
@@ -23,37 +24,44 @@ namespace Inkybot
                 pDofus.Kill();
                 hWndDocked = IntPtr.Zero;
             }
-            
-            var result = new WaitingForDofusForm().ShowDialog(this);
-            if (result != DialogResult.OK) {
-                return false;
-            }
 
             var waitingForm = new WaitingForDofusForm();
+            waitingForm.SelectedDofusProcess += OnDofusProcessSelected;
 
             Task.Run(async () => {
-                do {
-                    var processes = Process.GetProcesses();
-                    var dofusProcesses = processes
-                        .Where(process => process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0)
-                        .ToArray();
+                try {
+                    do {
+                        var processes = Process.GetProcesses();
+                        var dofusProcesses = processes
+                            .Where(process =>
+                                process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0
+                                && process.MainWindowTitle != "")
+                            .ToArray();
+
+                        if (dofusProcesses.Length == 1) {
+                            pDofus = dofusProcesses[0];
+                        } else if (dofusProcesses.Length > 1) {
+                            waitingForm.Invoke(new MethodInvoker(() => {
+                                waitingForm.UpdateProcessList(dofusProcesses);
+                            }));
+                        }
+
+                        await Task.Delay(1000);
+                    } while (pDofus == null);
                     
-                    if (dofusProcesses.Length == 1) {
-                        pDofus = dofusProcesses[0];
+                    waitingForm.Invoke(new MethodInvoker(() => {
                         waitingForm.DialogResult = DialogResult.OK;
-                        waitingForm.Close();
-                    } else if(dofusProcesses.Length > 1) {
-                        waitingForm.UpdateProcessList(dofusProcesses);
-                    }
-                    await Task.Delay(1000);
-                } while (pDofus == null);
+                    }));
+                } catch (Exception e) {
+                    Debug.WriteLine(e);
+                }
             });
             
             var resultWaiting = waitingForm.ShowDialog(this);
             if (resultWaiting != DialogResult.OK || pDofus == null) {
                 return false;
             }
-            
+
             parentHandle = WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 
@@ -61,7 +69,11 @@ namespace Inkybot
 
             return true;
         }
-        
+
+        private void OnDofusProcessSelected(object sender, ProcessEventArgs e) {
+            pDofus = e.Process;
+        }
+
 
         private void BindServicesToDockedWindow() {
             var screen = (Win32ScreenCapture) Program.Services.GetService<ScreenCapture>();

@@ -135,6 +135,7 @@
         <Reference Include="System.Threading.Thread" />
         <Reference Include="System.Transactions" />
         <Reference Include="System.Web" />
+        <Reference Include="System.Web.Extensions" />
         <Reference Include="System.Workflow.ComponentModel" />
         <Reference Include="System.Xaml" />
         <Reference Include="System.Xml.Linq" />
@@ -213,6 +214,7 @@
           <DependentUpon>Rectangle.cs</DependentUpon>
         </Compile>
         <Compile Include="Debugging\WelcomeDialogue.cs" />
+        <Compile Include="Events\ProcessEventArgs.cs" />
         <Compile Include="WaitingForDofusForm.cs">
           <SubType>Form</SubType>
         </Compile>
