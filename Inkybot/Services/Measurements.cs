@@ -153,7 +153,7 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement InventorySelectEquipmentCategory = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1074, 100, 1074, 100),
+            Rectangle = Rect.FromCoords(1062, 100, 1062, 100),
             Width = 1269,
             Height = 965
         };
