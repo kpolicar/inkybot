@@ -39,6 +39,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="3% Res then AP.cs" />
         <Compile Include="ImproveDamagesFirstMagingAI.cs" />
         <Compile Include="ResAfterApFalls.cs" />
         <Compile Include="RhinRing.cs" />

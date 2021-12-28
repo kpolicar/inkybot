@@ -8,8 +8,17 @@ namespace Inkybot.Services
 {
     internal class ReduceOversinkItemMageResolve : PrioritizedItemMageResolve
     {
+        private readonly List<Stat> excludedStats = new List<Stat>();
+        
         public ReduceOversinkItemMageResolve(MageConfig config, Item item) : base(config, item) {
         }
+        
+        public ReduceOversinkItemMageResolve ExcludeStats(Stat[]? stats) {
+            if (stats != null && stats.Length > 0)
+                excludedStats.AddRange(stats);
+
+            return this;
+        } 
 
         protected override bool MatchesCriteria(ItemMage itemMage) =>
             !itemMage.WillOvermage;
@@ -20,7 +29,7 @@ namespace Inkybot.Services
         protected override IEnumerable<ItemMage> PotentialMages() {
             return item.Stats
                 .StandardStats
-                .Where(itemStat => !itemStat.Overmaged)
+                .Where(itemStat => !itemStat.Overmaged && !excludedStats.Contains(itemStat.Stat))
                 .Select(itemStat => {
                     var rune = new Rune(itemStat.Stat, Rune.RuneType.Sm);
                 

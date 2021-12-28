@@ -7,12 +7,25 @@ namespace Inkybot.Services
 {
     internal abstract class StandardStatsPrioritizedItemMageResolve : PrioritizedItemMageResolve
     {
+        private readonly List<Stat> excludedStats = new List<Stat>();
+
         public StandardStatsPrioritizedItemMageResolve(MageConfig config, Item item) : base(config, item) {
         }
 
+        public StandardStatsPrioritizedItemMageResolve ExcludeStats(Stat[]? stats) {
+            if (stats != null && stats.Length > 0)
+                excludedStats.AddRange(stats);
+
+            return this;
+        } 
+
         protected override IEnumerable<ItemMage> PotentialMages() {
-            return item.Stats
-                .StandardStats
+            var stats = item.Stats.StandardStats;
+            if (excludedStats.Count > 0) {
+                stats = stats.Where(itemStat => !excludedStats.Contains(itemStat.Stat)).ToArray();
+            }
+            
+            return stats
                 .Where(itemStat => ResolveRuneType(itemStat) != null)
                 .Select(itemStat => {
                     var runeType = ResolveRuneType(itemStat)!.Value;

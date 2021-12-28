@@ -9,13 +9,24 @@ namespace Inkybot.Services
     internal class ExoItemMageResolve : PrioritizedItemMageResolve
     {
         public readonly decimal Sink;
+        private readonly List<Stat> excludedStats = new List<Stat>();
         
         public ExoItemMageResolve(MageConfig config, Item item, decimal sink) : base(config, item) =>
             Sink = sink;
+        
+        public ExoItemMageResolve ExcludeStats(Stat[]? stats) {
+            if (stats != null && stats.Length > 0)
+                excludedStats.AddRange(stats);
+
+            return this;
+        } 
 
         protected override IEnumerable<ItemMage> PotentialMages() {
             return config.Exos
-                .Where(statConfig => statConfig.Key.Mageable && ResolveRuneType(statConfig.Key) != null)
+                .Where(statConfig =>
+                    statConfig.Key.Mageable
+                    && ResolveRuneType(statConfig.Key) != null
+                    && !excludedStats.Contains(statConfig.Key))
                 .Select(statConfig => {
                     var itemMage = new ItemMage(
                         statConfig.Key,

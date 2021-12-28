@@ -20,16 +20,19 @@ namespace Inkybot.Services
             base.BindDependencies(serviceContainer);
         }
 
-        private ItemMage? ResolveItemMage(Item item) {
+        private ItemMage? ResolveItemMage(Item item, Stat[]? excludedStats=null) {
             var proposedMage =
-                new TargetItemMageResolve(config, item).Resolve() ??
-                new TargetItemMageResolve(config, item, 1).Resolve();
+                new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve() ??
+                new TargetItemMageResolve(config, item, 1).ExcludeStats(excludedStats).Resolve();
 
             return proposedMage;
         }
-        
-        protected override IAction Resolve() {
-            var proposedItemMage = ResolveItemMage(Item);
+
+        protected override IAction Resolve() =>
+            ResolveExcludingStats(new Stat[]{});
+
+        protected override IAction ResolveExcludingStats(Stat[] stats) {
+            var proposedItemMage = ResolveItemMage(Item, stats);
 
             if (proposedItemMage == null)
                 return Finish();

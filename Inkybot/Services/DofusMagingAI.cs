@@ -39,29 +39,29 @@ namespace Inkybot.Services
             return proposed;
         }
 
-        private ItemMage? ResolveItemMage(Item item) {
+        private ItemMage? ResolveItemMage(Item item, Stat[] excludedStats) {
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new TargetItemMageResolve(config, item).Resolve() ??
-                new TargetItemMageResolve(config, item, 1).Resolve() ??
-                new OverTargetItemMageResolve(config, item).Resolve(),
+                new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve() ??
+                new TargetItemMageResolve(config, item, 1).ExcludeStats(excludedStats).Resolve() ??
+                new OverTargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve(),
                 OverrideTargetResolve);
 
 
             if (!item.IsOvermaged && !item.HasExo)
                 proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                    new PerfectionItemMageResolve(config, item, Sink).Resolve() ??
-                    new PerfectionItemMageResolve(config, item, Sink, 1).Resolve(),
+                    new PerfectionItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve() ??
+                    new PerfectionItemMageResolve(config, item, Sink, 1).ExcludeStats(excludedStats).Resolve(),
                     OverridePerfectionResolve);
 
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() => {
-                var proposed = new ReachTargetMinimumItemMageResolve(config, item).Resolve();
+                var proposed = new ReachTargetMinimumItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve();
                 
                 if ((proposed?.WillOvermage ?? false) && !proposed!.Value.MageConfig.Exo) {
-                    var proposedWithoutOvermage = new ReachTargetMinimumItemMageResolve(config, item, 1).Resolve();
+                    var proposedWithoutOvermage = new ReachTargetMinimumItemMageResolve(config, item, 1).ExcludeStats(excludedStats).Resolve();
                     proposed = proposedWithoutOvermage ?? proposed;
                 }
 
-                proposed ??= new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).Resolve();
+                proposed ??= new OverMageToReachTargetWithSinkItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve();
 
                 // If a different stat other than the proposed is already overmaged, reduce it first
                 if (proposed != null &&
@@ -76,24 +76,27 @@ namespace Inkybot.Services
             }, OverrideReachMinimumResolve);
 
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new FinishOffRemainingSinkItemMageResolve(config, item, Sink).Resolve(),
+                new FinishOffRemainingSinkItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideFinishSinkOverride);
 
             return proposedMage;
         }
         
-        private ItemMage? ResolveItemMageForExo(Item item) {
+        private ItemMage? ResolveItemMageForExo(Item item, Stat[] excludedStats) {
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
-                new ExoItemMageResolve(config, item, Sink).Resolve(),
+                new ExoItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideExoResolve);
             return proposedMage;
         }
 
-        protected override IAction Resolve() {
-            var proposedItemMage = ResolveItemMage(Item) ?? ResolveItemMageForExo(Item);
+        protected override IAction Resolve() =>
+            ResolveExcludingStats(new Stat[] {});
+
+        protected override IAction ResolveExcludingStats(Stat[] excludedStats) {
+            var proposedItemMage = ResolveItemMage(Item, excludedStats) ?? ResolveItemMageForExo(Item, excludedStats);
             
             if (proposedItemMage != null && !SatisfiesOversinkConstraint(Item, proposedItemMage.Value))
-                proposedItemMage = new ReduceOversinkItemMageResolve(config, Item).Resolve();
+                proposedItemMage = new ReduceOversinkItemMageResolve(config, Item).ExcludeStats(excludedStats).Resolve();
             
             if (proposedItemMage == null)
                 return Finish();

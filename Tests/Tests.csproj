@@ -89,6 +89,7 @@
         <Compile Include="OcrItemTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Services\MagingJobMock.cs" />
+        <Compile Include="temptest.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">

@@ -11,9 +11,21 @@ namespace Inkybot.Dofus.Contracts
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
         protected virtual bool ShouldOvermageToUseRemainingSink => true;
-
+        
         protected IAction ResolveDefault() =>
             Default.ResolveAction(Item);
+
+        protected IAction ResolveDefaultExcludingStats(Stat[] excludedStats) =>
+            ResolveExcludingStats(excludedStats);
+        
+        protected IAction ResolveDefaultExcludingStat(Stat stat) =>
+            ResolveExcludingStat(stat);
+
+        protected override IAction ResolveExcludingStats(Stat[] excludedStats) =>
+            Default.ResolveActionExcludingStats(Item, excludedStats);
+        
+        protected IAction ResolveExcludingStat(Stat stat) =>
+            ResolveExcludingStats(new []{ stat });
 
         public void SetDefaultMagingAI(DofusMagingAI defaultAI) =>
             Default = defaultAI;

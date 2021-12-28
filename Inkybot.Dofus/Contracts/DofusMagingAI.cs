@@ -86,6 +86,10 @@ namespace Inkybot.Dofus.Contracts
          */
         protected abstract IAction Resolve();
 
+        protected virtual IAction ResolveExcludingStats(Stat[] excludedStats) {
+            throw new NotImplementedException();
+        }
+
         
         /**
          * <summary>Return the next action that should be taken for the specified item.</summary>
@@ -93,6 +97,13 @@ namespace Inkybot.Dofus.Contracts
         public IAction ResolveAction(Item item) {
             Item = item;
             var result = Resolve();
+            Item = null!;
+            return result;
+        }
+        
+        public IAction ResolveActionExcludingStats(Item item, Stat[] excludedStats) {
+            Item = item;
+            var result = ResolveExcludingStats(excludedStats);
             Item = null!;
             return result;
         }
