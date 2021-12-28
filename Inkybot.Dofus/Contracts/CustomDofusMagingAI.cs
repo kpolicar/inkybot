@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using System.Security.Policy;
 using Inkybot.Dofus.Domain;
+using Inkybot.Dofus.Repositories;
 
 namespace Inkybot.Dofus.Contracts
 {
     public abstract class CustomDofusMagingAI : DofusMagingAI
     {
-        public string Path { get; private set; }
+        public string Path { get; private set; } = null!;
+        public MageConfig MageConfig { get; private set; } = new MageConfig(new Item(new ItemStatRepository(new ItemStat[] {})));
         private DofusMagingAI Default = null!;
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
@@ -54,6 +56,9 @@ namespace Inkybot.Dofus.Contracts
 
         public void SetPath(string scriptPath) {
             Path = scriptPath;
+        }
+        public void SetMageConfig(MageConfig mageConfig) {
+            MageConfig = mageConfig;
         }
     }
 }

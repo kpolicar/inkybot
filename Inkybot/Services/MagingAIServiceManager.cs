@@ -23,6 +23,7 @@ namespace Inkybot.Services
         private AuthManager authManager = null!;
         private ActionFactory actionFactory = null!;
         private StatConfigProviderContract statConfigProvider = null!;
+        private ConfigManager configManager = null!;
         public event EventHandler<MagingAIChangedEventArgs>? MagingAIChanged;
         private bool UsingCustomScript;
 
@@ -31,6 +32,7 @@ namespace Inkybot.Services
             authManager = serviceContainer.GetService<AuthManager>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
             statConfigProvider = serviceContainer.GetService<StatConfigProviderContract>();
+            configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
             apiClient.UserFetched += OnUserFetched;
             this.serviceContainer = serviceContainer;
         }
@@ -68,6 +70,11 @@ namespace Inkybot.Services
                     dependant.BindDependencies(serviceContainer);
                 if (magus is CustomDofusMagingAI customDofusMagingAI) {
                     customDofusMagingAI.SetPath(scriptPath);
+                    
+                    configManager.ConfigModified += (sender, args) => customDofusMagingAI.SetMageConfig(configManager.Config!);
+                    if (configManager.Config != null)
+                        customDofusMagingAI.SetMageConfig(configManager.Config);
+                    
                     var defaultAI = new DofusMagingAI();
                     defaultAI.BindDependencies(serviceContainer);
                     defaultAI.Init();
