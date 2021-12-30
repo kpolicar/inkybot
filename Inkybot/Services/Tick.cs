@@ -262,7 +262,10 @@ namespace Inkybot.Services
                                     (lastHistoryRecord.ChangeInSinkFromFallen - previousCombine.Rune.Sink));
                 }
 
-                if (sinkChange > 0 && -attemptedSinkChange <= sink) {
+                if (sinkChange > 0
+                    && -attemptedSinkChange <= sink
+                    && lastHistoryRecord.Fell.Any(fallenStat => !(job.state.PreviousItem?.Stats[fallenStat.stat]?.Overmaged ?? false)))
+                {
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkIncorrectException(sinkChange, sink, attemptedSinkChange), "Something had to have gone wrong in sink calculation! Resetting sink!"));
                     sink = 0;
                 } else {
