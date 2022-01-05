@@ -39,7 +39,7 @@ namespace Inkybot.Services
         private Action? onMagingJobConfirmedDelegate;
         private Stopwatch timeMagingStopwatch = new Stopwatch();
         private Timer sendStatisticsTimer = new Timer() {
-            Interval = 20000,
+            Interval = 45000,
             Enabled = false
         };
 

@@ -434,7 +434,7 @@ namespace Inkybot
             // 
             // subscriptionCheckTimer
             // 
-            this.subscriptionCheckTimer.Interval = 25000;
+            this.subscriptionCheckTimer.Interval = 60000;
             this.subscriptionCheckTimer.Tick += new System.EventHandler(this.OnSubscriptionCheckTimer);
             // 
             // autoShutdownTimer

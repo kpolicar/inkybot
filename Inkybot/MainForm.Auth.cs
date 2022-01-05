@@ -67,7 +67,7 @@ namespace Inkybot
             } catch (Exception exception) {
                 if (SubscriptionCheckRequestAttempts < SubscriptionCheckRequestMaxAttempts) {
                     Debug.WriteLine("OnSubscriptionCheckTimer reattempt "+SubscriptionCheckRequestAttempts);
-                    await Task.Delay(2741);
+                    await Task.Delay(15000);
                     await FetchUserAndUpdateForm();
                     return;
                 }
