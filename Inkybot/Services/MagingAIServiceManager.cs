@@ -60,6 +60,7 @@ namespace Inkybot.Services
             script.AddAssembly("Inkybot.Dofus.dll");
             script.AddAssembly("System.Windows.Forms.dll");
             script.AddAssembly("System.Drawing.dll");
+            script.AddAssembly("NLog.dll");
 
             try {
                 DofusMagingAIContract magus = script.CompileClass(code);
@@ -70,6 +71,7 @@ namespace Inkybot.Services
                     dependant.BindDependencies(serviceContainer);
                 if (magus is CustomDofusMagingAI customDofusMagingAI) {
                     customDofusMagingAI.SetPath(scriptPath);
+                    customDofusMagingAI.SetLogger(FileEventLogger.CustomLogger);
                     
                     configManager.ConfigModified += (sender, args) => customDofusMagingAI.SetMageConfig(configManager.Config!);
                     if (configManager.Config != null)

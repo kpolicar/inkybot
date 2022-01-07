@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Policy;
 using Inkybot.Dofus.Domain;
 using Inkybot.Dofus.Repositories;
+using NLog;
 
 namespace Inkybot.Dofus.Contracts
 {
@@ -13,6 +14,8 @@ namespace Inkybot.Dofus.Contracts
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
         protected virtual bool ShouldOvermageToUseRemainingSink => true;
+        protected NLog.Logger Log = null!;
+
         
         protected IAction ResolveDefault() =>
             Default.ResolveAction(Item);
@@ -54,11 +57,14 @@ namespace Inkybot.Dofus.Contracts
         
         protected virtual ItemMage? BeforeExoRune(ItemMage proposedMage) => null;
 
-        public void SetPath(string scriptPath) {
+        
+        public void SetPath(string scriptPath) =>
             Path = scriptPath;
-        }
-        public void SetMageConfig(MageConfig mageConfig) {
+        
+        public void SetMageConfig(MageConfig mageConfig) =>
             MageConfig = mageConfig;
-        }
+
+        public void SetLogger(Logger customLogger) =>
+            Log = customLogger;
     }
 }
