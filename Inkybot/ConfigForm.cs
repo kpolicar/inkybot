@@ -311,10 +311,12 @@ namespace Inkybot
             
                 Invoke(new MethodInvoker(() => {
                     resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValid");
+                    tooltip.SetToolTip(scriptValidPictureBox, "");
                 }));
-            } catch (Exception) {
+            } catch (Exception exception) {
                 Invoke(new MethodInvoker(() => {
                     resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
+                    tooltip.SetToolTip(scriptValidPictureBox, exception.Message);
                     scriptResetButton.Show();
                 }));
             }
