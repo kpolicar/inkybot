@@ -35,26 +35,31 @@ namespace Inkybot
         }
 
         private void OnWebBrowserNavigating(object sender, WebBrowserNavigatingEventArgs e) {
-            var headers = "headers=1";
-            if (e.Url.ToString().Contains(headers))
-                return;
+            try {
 
-            var url = e.Url;
-            var newUrl = url + (url.ToString().Contains("?") ? "&" : "?") + headers;
-            if (!newUrl.Contains("locale"))
-                newUrl += "&locale=" + Program.Lang.TwoLetterISOLanguageName;
+                var headers = "headers=1";
+                if (e.Url.ToString().Contains(headers))
+                    return;
 
-            if (url.ToString().StartsWith(Server.StatisticsNewSessionUrl)) {
-                System.Text.Encoding encoding = System.Text.Encoding.UTF8;
-                var bytes = encoding.GetBytes("_method=POST");
+                var url = e.Url;
+                var newUrl = url + (url.ToString().Contains("?") ? "&" : "?") + headers;
+                if (!newUrl.Contains("locale"))
+                    newUrl += "&locale=" + Program.Lang.TwoLetterISOLanguageName;
+
+                if (url.ToString().StartsWith(Server.StatisticsNewSessionUrl)) {
+                    System.Text.Encoding encoding = System.Text.Encoding.UTF8;
+                    var bytes = encoding.GetBytes("_method=POST");
 
 
-                webBrowser.Navigate(newUrl, null, bytes, Header);
-            } else {
-                webBrowser.Navigate(newUrl, null, new byte[] { }, Header);
+                    webBrowser.Navigate(newUrl, null, bytes, Header);
+                } else {
+                    webBrowser.Navigate(newUrl, null, new byte[] { }, Header);
+                }
+
+                e.Cancel = true;
+            } catch (Exception) {
+                
             }
-
-            e.Cancel = true;
         }
 
         private void OnVisibleChanged(object sender, EventArgs e) {
