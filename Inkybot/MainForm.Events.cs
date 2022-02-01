@@ -293,5 +293,42 @@ namespace Inkybot
             var mageQueueItem =  mageQueue.Queue.Find(item => item.Control.Equals(rectangle));
             _ = mageQueueForm.Highlight(mageQueueItem);
         }
+
+        private void kamasSpentValueResetButton_Click(object sender, EventArgs e) {
+            (magingJob as ScreenReaderDofusMagingJob)?.ResetBalance();
+        }
+
+        private void exoAttemptsValueResetButton_Click(object sender, EventArgs e) {
+            BeginInvoke(new MethodInvoker(() => {
+                exoAttemptsValueLabel.Text = "0";
+            }));
+        }
+        
+        private void OnKamasSpentValueResetButtonPaint(object sender, PaintEventArgs e) {
+            base.OnPaint(e);
+            var format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+
+            e.Graphics.DrawString(
+                "⟲",
+                kamasSpentValueResetButton.Font,
+                new SolidBrush(kamasSpentValueResetButton.ForeColor),
+                kamasSpentValueResetButton.ClientRectangle,
+                format);
+        }
+        private void OnExoAttemptsValueResetButtonPaint(object sender, PaintEventArgs e) {
+            base.OnPaint(e);
+            var format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+
+            e.Graphics.DrawString(
+                "⟲",
+                kamasSpentValueResetButton.Font,
+                new SolidBrush(kamasSpentValueResetButton.ForeColor),
+                kamasSpentValueResetButton.ClientRectangle,
+                format);
+        }
     }
 }

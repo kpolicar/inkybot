@@ -184,6 +184,12 @@
   <data name="shutdownToastPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>300, 300</value>
   </data>
+  <data name="kamasSpentValueResetButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 2</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 2</value>
+  </data>
   <data name="toggleMageButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -195,6 +201,12 @@
   </data>
   <data name="queuePanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 200</value>
+  </data>
+  <data name="exoAttemptsValuePanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 40</value>
+  </data>
+  <data name="kamasSpentValuePanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 40</value>
   </data>
   <data name="usernameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -273,6 +285,12 @@
   </data>
   <data name="&gt;&gt;buttonsPanel.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="kamasSpentValueResetButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>17, 17</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>17, 17</value>
   </data>
   <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
@@ -385,6 +403,12 @@
   <data name="kamasSpentLabel.Text" xml:space="preserve">
         <value>KAMAS SPENT</value>
     </data>
+  <data name="kamasSpentValueResetButton.TooltipText" xml:space="preserve">
+        <value>Reset</value>
+    </data>
+  <data name="exoAttemptsValueResetButton.TooltipText" xml:space="preserve">
+        <value>Reset</value>
+    </data>
   <data name="subscribedInfoLabel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 3, 0, 0</value>
   </data>
@@ -432,6 +456,12 @@
   </data>
   <data name="&gt;&gt;subscribedInfoLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="kamasSpentValueResetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
   </data>
   <data name="toggleMageButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -483,6 +513,12 @@
   </data>
   <data name="toggleMageButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 9.75pt</value>
+  </data>
+  <data name="kamasSpentValueResetButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 11pt</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 11pt</value>
   </data>
   <data name="showMageQueueButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
@@ -567,6 +603,12 @@
   </data>
   <data name="hallOfFameButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 180</value>
+  </data>
+  <data name="exoAttemptsValuePanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="kamasSpentValuePanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
   </data>
   <data name="exoAttemptsValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -678,6 +720,9 @@
   </data>
   <data name="debugButton.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="toggleMageButton.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>

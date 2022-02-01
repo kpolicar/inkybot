@@ -131,6 +131,10 @@ namespace Inkybot.Services
             }
         }
 
+        public void ResetBalance() {
+            Balance = 0;
+        }
+
         public void StopMage() {
             if (!state.IsMaging) return;
             
