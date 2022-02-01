@@ -315,6 +315,7 @@ namespace Inkybot
             } catch (Exception) {
                 Invoke(new MethodInvoker(() => {
                     resources.ApplyResources(scriptValidPictureBox, "scriptValidPictureBoxValidInvalid");
+                    scriptResetButton.Show();
                 }));
             }
         }
