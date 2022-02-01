@@ -215,6 +215,7 @@
         </Compile>
         <Compile Include="Debugging\WelcomeDialogue.cs" />
         <Compile Include="Events\ProcessEventArgs.cs" />
+        <Compile Include="Exceptions\SinkTooHighException.cs" />
         <Compile Include="WaitingForDofusForm.cs">
           <SubType>Form</SubType>
         </Compile>

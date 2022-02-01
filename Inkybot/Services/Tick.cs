@@ -275,6 +275,10 @@ namespace Inkybot.Services
                 if (sink < 0) {
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkNegativeException(sink), ""));
                 }
+                if (sink > 101) {
+                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(new SinkTooHighException(sink), ""));
+                    sink = 0m;
+                }
 
                 job.dSink = Math.Max(0m, sink);
             }
