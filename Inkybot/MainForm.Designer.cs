@@ -246,6 +246,7 @@ namespace Inkybot
             this.kamasSpentValueResetButton.FlatAppearance.BorderSize = 0;
             this.kamasSpentValueResetButton.ForeColor = System.Drawing.SystemColors.Control;
             this.kamasSpentValueResetButton.UseVisualStyleBackColor = false;
+            this.kamasSpentValueResetButton.Dock = DockStyle.Right;
             this.kamasSpentValueResetButton.Padding = System.Windows.Forms.Padding.Empty;
             this.kamasSpentValueResetButton.Margin = System.Windows.Forms.Padding.Empty;
             this.kamasSpentValueResetButton.Click += new System.EventHandler(this.kamasSpentValueResetButton_Click);
@@ -257,6 +258,9 @@ namespace Inkybot
             this.exoAttemptsValueResetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.exoAttemptsValueResetButton.FlatAppearance.BorderSize = 0;
             this.exoAttemptsValueResetButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.exoAttemptsValueResetButton.Dock = DockStyle.Right;
+            this.kamasSpentValueResetButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.kamasSpentValueResetButton.Margin = System.Windows.Forms.Padding.Empty;
             this.exoAttemptsValueResetButton.Name = "exoAttemptsValueResetButton";
             this.exoAttemptsValueResetButton.UseVisualStyleBackColor = false;
             this.exoAttemptsValueResetButton.Click += new System.EventHandler(this.exoAttemptsValueResetButton_Click);

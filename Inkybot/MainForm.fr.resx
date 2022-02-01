@@ -138,4 +138,10 @@ abonnement</value>
     <data name="enqueueRectangle.Tooltip" xml:space="preserve">
     <value>Afficher les options</value>
   </data>
+  <data name="kamasSpentValueResetButton.TooltipText" xml:space="preserve">
+        <value>Réinitialiser</value>
+    </data>
+  <data name="exoAttemptsValueResetButton.TooltipText" xml:space="preserve">
+        <value>Réinitialiser</value>
+    </data>
 </root>

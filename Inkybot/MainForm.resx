@@ -185,10 +185,10 @@
     <value>300, 300</value>
   </data>
   <data name="kamasSpentValueResetButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 2</value>
+    <value>0, 0</value>
   </data>
   <data name="exoAttemptsValueResetButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 2</value>
+    <value>0, 0</value>
   </data>
   <data name="toggleMageButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -203,10 +203,10 @@
     <value>113, 200</value>
   </data>
   <data name="exoAttemptsValuePanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 40</value>
+    <value>113, 35</value>
   </data>
   <data name="kamasSpentValuePanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 40</value>
+    <value>113, 35</value>
   </data>
   <data name="usernameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -287,10 +287,16 @@
     <value>0</value>
   </data>
   <data name="kamasSpentValueResetButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>17, 17</value>
+    <value>17, 21</value>
   </data>
   <data name="exoAttemptsValueResetButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>17, 17</value>
+    <value>17, 21</value>
+  </data>
+  <data name="kamasSpentValueResetButton.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>17, 21</value>
+  </data>
+  <data name="exoAttemptsValueResetButton.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>17, 21</value>
   </data>
   <data name="toggleMageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 61</value>
@@ -611,10 +617,10 @@
     <value>Top</value>
   </data>
   <data name="exoAttemptsValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Top</value>
+    <value>Fill</value>
   </data>
   <data name="kamasSpentValueLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Top</value>
+    <value>Fill</value>
   </data>
   <data name="&gt;&gt;setupButton.ZOrder" xml:space="preserve">
     <value>1</value>
