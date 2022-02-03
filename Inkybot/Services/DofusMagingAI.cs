@@ -40,6 +40,12 @@ namespace Inkybot.Services
         }
 
         private ItemMage? ResolveItemMage(Item item, Stat[] excludedStats) {
+            var originalExcludedStats = excludedStats;
+            if (!config.RestoreHighSinkStatsImmediately) {
+                excludedStats = excludedStats.Concat(config.StatsConfig.HighSinkStats)
+                    .ToArray();
+            }
+            
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve() ??
                 new TargetItemMageResolve(config, item, 1).ExcludeStats(excludedStats).Resolve() ??
@@ -69,7 +75,7 @@ namespace Inkybot.Services
                     proposed.Value.Rune.Sink >= 3 && // Whether or not this mage is likely to really ruin the current overmage
                     (!item.Stats[proposed.Value.Stat]?.Overmaged ?? false))
                 {
-                    proposed = new ReduceOversinkItemMageResolve(config, item).Resolve();
+                    proposed = new ReduceOversinkItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve();
                 }
                 
                 return proposed;
@@ -78,6 +84,10 @@ namespace Inkybot.Services
             proposedMage ??= ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new FinishOffRemainingSinkItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideFinishSinkOverride);
+
+            if (!config.RestoreHighSinkStatsImmediately) {
+                proposedMage ??= new TargetItemMageResolve(config, item).ExcludeStats(originalExcludedStats).Resolve();
+            }
 
             return proposedMage;
         }

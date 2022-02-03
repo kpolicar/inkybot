@@ -210,7 +210,6 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.ForeColor = System.Drawing.SystemColors.Control;
             this.restoreHighSinkStatsCheckbox.Name = "restoreHighSinkStatsCheckbox";
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
-            this.restoreHighSinkStatsCheckbox.AutoCheck = false;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
             this.restoreHighSinkStatsCheckbox.Dock = DockStyle.Fill;
             // 
@@ -222,6 +221,7 @@ namespace Inkybot
             this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
             this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
             this.autoRestartBotCheckbox.Dock = DockStyle.Fill;
+            this.autoRestartBotCheckbox.Visible = false;
             // 
             // showWarningsCheckbox
             // 
@@ -272,6 +272,7 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
             this.enableRuneCheckingCheckbox.Name = "enableRuneCheckingCheckbox";
             this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
+            this.enableRuneCheckingCheckbox.Visible = false;
             this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
             this.enableRuneCheckingCheckbox.Dock = DockStyle.Fill;
 

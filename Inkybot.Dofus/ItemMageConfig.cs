@@ -16,6 +16,10 @@ namespace Inkybot.Dofus
             this.Where(pair => !pair.Value.Exo)
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
 
+        public IEnumerable<Stat> HighSinkStats =>
+            this.Where(statConfig => statConfig.Value.HighSinkStat)
+                .Select(pair => pair.Key);
+
         public bool HasPriorities => this.Any(config => config.Value.Priority != 0);
         
         /**
