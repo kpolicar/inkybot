@@ -59,6 +59,8 @@ namespace Inkybot
             await FetchUserAndUpdateForm();
 
         private async Task FetchUserAndUpdateForm() {
+            if (!Visible)
+                return;
             SubscriptionCheckRequestAttempts++;
             try {
                 var user = await api.User();
