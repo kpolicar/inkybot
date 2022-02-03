@@ -353,10 +353,10 @@
     <value>BottomUp</value>
   </data>
   <data name="exoAttemptsValueLabel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+    <value>Trebuchet MS, 13.25pt, style=Bold</value>
   </data>
   <data name="kamasSpentValueLabel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+    <value>Trebuchet MS, 13.25pt, style=Bold</value>
   </data>
   <data name="toastLabel.Text" xml:space="preserve">
     <value>There has been an error processing the image</value>
@@ -3204,7 +3204,7 @@
     <value>1</value>
   </data>
   <data name="sinkValueLabel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Trebuchet MS, 14.25pt, style=Bold</value>
+    <value>Trebuchet MS, 13.25pt, style=Bold</value>
   </data>
   <data name="&gt;&gt;toggleMageButton.Name" xml:space="preserve">
     <value>toggleMageButton</value>
