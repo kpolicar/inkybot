@@ -151,8 +151,11 @@ namespace Inkybot.Services
                 return;
             lock (imageChangeMutex) {
                 api.Publish(previousImage, config.UserSettings.PublishExos).Wait();
+                startNewSession = config.UserSettings.AutoStartNewSession;
             }
         }
+
+        private bool startNewSession = false;
 
         private void Send() {
             Dictionary<string, string> data;
@@ -185,7 +188,9 @@ namespace Inkybot.Services
                     {"attempts", JsonConvert.SerializeObject(attemptsByIdentifier) },
                     {"attempts_exo", JsonConvert.SerializeObject(exoAttemptsByIdentifier) },
                     {"successes_exo", JsonConvert.SerializeObject(exoSuccessesByIdentifier) },
+                    {"start_new_session", startNewSession ? "1" : "0" },
                 };
+                startNewSession = false;
                 state = new ApiAnalyticsReporterState();
             }
             

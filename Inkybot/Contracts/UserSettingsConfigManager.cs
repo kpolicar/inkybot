@@ -14,6 +14,7 @@ namespace Inkybot.Contracts
         public bool AutoRestartBot { get; set; }
         public bool ShowUserWarnings { get; set; }
         public bool PublishExos { get; set; }
+        public bool AutoStartNewSession { get; set; }
         public bool EnableKamasCalculation { get; set; }
         public bool EnableRuneChecking { get; set; }
         public bool EnableSafeMageQueueing { get; set; }

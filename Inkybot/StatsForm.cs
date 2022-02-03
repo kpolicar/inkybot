@@ -374,11 +374,22 @@ namespace Inkybot
             }
             
             var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
-            var exoConfig = MageConfig.ItemStatMageConfig.MakeExo(
-                stat, 
-                stat.StrongestRune.IncreaseInValue, 
-                stat.StrongestRune.IncreaseInValue,
-                0);
+            
+            var perResStats = new [] {
+                Stat.PerAirResistance, Stat.PerEarthResistance, Stat.PerFireResistance,
+                Stat.PerNeutralResistance, Stat.PerWaterResistance
+            };
+            var exoConfig = !perResStats.Contains(stat)
+                ? MageConfig.ItemStatMageConfig.MakeExo(
+                    stat, 
+                    stat.StrongestRune.IncreaseInValue, 
+                    stat.StrongestRune.IncreaseInValue,
+                    0)
+                : MageConfig.ItemStatMageConfig.MakeExo(
+                    stat, 
+                    4,
+                    2,
+                    0);
             
             configManager.ChangeStatConfig(stat, exoConfig);
         }

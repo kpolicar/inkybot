@@ -2195,6 +2195,9 @@ recognized correctly)</value>
   <data name="autoRestartBotCheckbox.Font" type="System.Drawing.Font, System.Drawing">
     <value>Calibri, 8.25pt</value>
   </data>
+  <data name="autoStartNewSessionCheckbox.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Calibri, 8.25pt</value>
+  </data>
     <data name="showWarningsCheckbox.Font" type="System.Drawing.Font, System.Drawing">
         <value>Calibri, 8.25pt</value>
     </data>
@@ -2269,6 +2272,9 @@ recognized correctly)</value>
   <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
     <value>Automatically restart bot (abnormalities can interrupt the bot)</value>
   </data>
+  <data name="autoStartNewSessionCheckbox.Text" xml:space="preserve">
+    <value>Automatically start new statistics session on successful exo</value>
+  </data>
   <data name="enableSafeMageQueueingCheckbox.Text" xml:space="preserve">
     <value>Mage Queueing Safe Mode</value>
   </data>
@@ -2282,6 +2288,18 @@ recognized correctly)</value>
     <value>230, 21</value>
     </data>
     <data name="autoRestartBotCheckbox.AutoSize" type="System.Boolean, mscorlib">
+        <value>true</value>
+    </data>
+  <data name="autoStartNewSessionCheckbox.AutoSize" xml:space="preserve">
+    <value>true</value>
+  </data>
+    <data name="autoStartNewSessionCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>194, 21</value>
+    </data>
+    <data name="autoStartNewSessionCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+        <value>15, 10</value>
+    </data>
+    <data name="autoStartNewSessionCheckbox.AutoSize" type="System.Boolean, mscorlib">
         <value>true</value>
     </data>
   <data name="showWarningsCheckbox.Text" xml:space="preserve">

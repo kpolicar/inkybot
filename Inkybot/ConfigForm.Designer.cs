@@ -90,6 +90,7 @@ namespace Inkybot
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
+            this.autoStartNewSessionCheckbox = new System.Windows.Forms.CheckBox();
             this.userSettingsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.customMagingAIPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.presetPanel = new System.Windows.Forms.Panel();
@@ -212,6 +213,7 @@ namespace Inkybot
             this.restoreHighSinkStatsCheckbox.UseVisualStyleBackColor = true;
             this.restoreHighSinkStatsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged);
             this.restoreHighSinkStatsCheckbox.Dock = DockStyle.Fill;
+            this.restoreHighSinkStatsCheckbox.AutoEllipsis = true;
             // 
             // autoRestartBotCheckbox
             // 
@@ -221,7 +223,18 @@ namespace Inkybot
             this.autoRestartBotCheckbox.UseVisualStyleBackColor = true;
             this.autoRestartBotCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoRestartBotCheckboxCheckedChanged);
             this.autoRestartBotCheckbox.Dock = DockStyle.Fill;
+            this.autoRestartBotCheckbox.AutoEllipsis = true;
             this.autoRestartBotCheckbox.Visible = false;
+            // 
+            // autoStartNewSessionCheckbox
+            // 
+            resources.ApplyResources(this.autoStartNewSessionCheckbox, "autoStartNewSessionCheckbox");
+            this.autoStartNewSessionCheckbox.ForeColor = System.Drawing.SystemColors.Control;
+            this.autoStartNewSessionCheckbox.Name = "autoStartNewSessionCheckbox";
+            this.autoStartNewSessionCheckbox.UseVisualStyleBackColor = true;
+            this.autoStartNewSessionCheckbox.AutoEllipsis = true;
+            this.autoStartNewSessionCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnAutoStartNewSessionCheckboxCheckedChanged);
+            this.autoStartNewSessionCheckbox.Dock = DockStyle.Fill;
             // 
             // showWarningsCheckbox
             // 
@@ -231,6 +244,7 @@ namespace Inkybot
             this.showWarningsCheckbox.UseVisualStyleBackColor = true;
             this.showWarningsCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged);
             this.showWarningsCheckbox.Dock = DockStyle.Fill;
+            this.showWarningsCheckbox.AutoEllipsis = true;
             // 
             // publishExosCheckbox
             // 
@@ -240,6 +254,7 @@ namespace Inkybot
             this.publishExosCheckbox.UseVisualStyleBackColor = true;
             this.publishExosCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnPublishExosCheckboxCheckedChanged);
             this.publishExosCheckbox.Dock = DockStyle.Fill;
+            this.publishExosCheckbox.AutoEllipsis = true;
             // 
             // autoShutdownComboBox
             // 
@@ -275,6 +290,7 @@ namespace Inkybot
             this.enableRuneCheckingCheckbox.Visible = false;
             this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
             this.enableRuneCheckingCheckbox.Dock = DockStyle.Fill;
+            this.enableRuneCheckingCheckbox.AutoEllipsis = true;
 
             // 
             // enableKamasCalculationCheckbox
@@ -285,6 +301,7 @@ namespace Inkybot
             this.enableKamasCalculationCheckbox.UseVisualStyleBackColor = true;
             this.enableKamasCalculationCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged);
             this.enableKamasCalculationCheckbox.Dock = DockStyle.Fill;
+            this.enableKamasCalculationCheckbox.AutoEllipsis = true;
             // 
             // enableMageQueueingCheckbox
             // 
@@ -294,6 +311,7 @@ namespace Inkybot
             this.enableSafeMageQueueingCheckbox.UseVisualStyleBackColor = true;
             this.enableSafeMageQueueingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged);
             this.enableSafeMageQueueingCheckbox.Dock = DockStyle.Fill;
+            this.enableSafeMageQueueingCheckbox.AutoEllipsis = true;
 
             // 
             // exampleScriptsLinkLabel
@@ -379,12 +397,12 @@ namespace Inkybot
             this.userSettingsPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             this.userSettingsPanel.Controls.Add(this.restoreHighSinkStatsCheckbox);
             this.userSettingsPanel.Controls.Add(this.publishExosCheckbox);
+            this.userSettingsPanel.Controls.Add(this.autoStartNewSessionCheckbox);
             this.userSettingsPanel.Controls.Add(this.showWarningsCheckbox);
             this.userSettingsPanel.Controls.Add(this.enableKamasCalculationCheckbox);
-            this.userSettingsPanel.Controls.Add(this.autoRestartBotCheckbox);
-            this.userSettingsPanel.Controls.Add(this.enableRuneCheckingCheckbox);
+            //this.userSettingsPanel.Controls.Add(this.autoRestartBotCheckbox);
+            //this.userSettingsPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.userSettingsPanel.Controls.Add(this.enableSafeMageQueueingCheckbox);
-            this.userSettingsPanel.Controls.Add(new Panel() {Size = Size.Empty });
             this.userSettingsPanel.Controls.Add(this.automaticShutdownPanel);
             this.userSettingsPanel.Controls.Add(this.customResizeRatioPanel);
 
@@ -587,6 +605,7 @@ namespace Inkybot
         private Inkybot.Controls.ComboBox presetsComboBox;
 
         private System.Windows.Forms.CheckBox autoRestartBotCheckbox;
+        private System.Windows.Forms.CheckBox autoStartNewSessionCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
         private System.Windows.Forms.CheckBox publishExosCheckbox;
         private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;

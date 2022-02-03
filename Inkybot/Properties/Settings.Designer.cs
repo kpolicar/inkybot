@@ -86,6 +86,18 @@ namespace Inkybot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoStartNewSession {
+            get {
+                return ((bool)(this["autoStartNewSession"]));
+            }
+            set {
+                this["autoStartNewSession"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool showUserWarnings {
             get {
                 return ((bool)(this["showUserWarnings"]));

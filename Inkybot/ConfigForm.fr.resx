@@ -17,6 +17,9 @@
   <data name="addPresetButton.Text" xml:space="preserve">
     <value>ENREGISTRER LE PRÉRÉGLAGE</value>
   </data>
+  <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
+    <value>Automatically start new statistics session on successful exo</value>
+  </data>
     <data name="UseSmRunesColumn.HeaderText" xml:space="preserve">
     <value>Utiliser des runes SM</value>
   </data>
@@ -69,8 +72,7 @@
         <value>RA Rune Seuil</value>
     </data>
     <data name="restoreHighSinkStatsCheckbox.Text" xml:space="preserve">
-        <value>Restaurez immédiatement les caractéristiques de chute élevée
-(PA, PM, Portée, Invocations)</value>
+        <value>Restaurez immédiatement les caractéristiques de chute élevée (PA, PM, Portée, Invocations)</value>
     </data>
     <data name="StatColumn.HeaderText" xml:space="preserve">
         <value>Caractéristique</value>
@@ -88,8 +90,7 @@
     <value>La valeur maximale à laquelle les runes PA doivent encore être utilisées</value>
   </data>
     <data name="autoRestartBotCheckbox.Text" xml:space="preserve">
-    <value>Relancer automatiquement le bot
-(des anomalies peuvent interrompre le bot)</value>
+    <value>Relancer automatiquement le bot (des anomalies peuvent interrompre le bot)</value>
   </data>
   <data name="config.neverchange" xml:space="preserve">
     <value>Ne jamais passer à :rune</value>
@@ -116,8 +117,7 @@
     <value>Arrêt automatique lorsque le bot s'arrête</value>
   </data>
     <data name="enableRuneCheckingCheckbox.Text" xml:space="preserve">
-    <value>Arrêter de forgermager si la quantité de runes détectées est à 0
-(uniquement à haute résolution)</value>
+    <value>Arrêter de forgermager si la quantité de runes détectées est à 0 (uniquement à haute résolution)</value>
   </data>
     <data name="customScriptLabel.Text" xml:space="preserve">
     <value>Script de forgemagie personnalisé</value>
@@ -162,5 +162,8 @@
     <value>Rapport de redimensionnement d'image ROC personnalisé
 (laisser à "1" sauf si les caractéristiques ne le sont pas
 reconnu correctement)</value>
+  </data>
+  <data name="autoStartNewSessionCheckbox.Text" xml:space="preserve">
+    <value>Démarrer automatiquement une nouvelle session de statistiques après un passage d'exo</value>
   </data>
 </root>

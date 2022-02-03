@@ -44,6 +44,14 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.autoRestartBot;
         }
 
+        public bool AutoStartNewSession {
+            set {
+                Properties.Settings.Default.autoStartNewSession = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.autoStartNewSession;
+        }
+
         public bool ShowUserWarnings {
             set {
                 Properties.Settings.Default.showUserWarnings = value;
