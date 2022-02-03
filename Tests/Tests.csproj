@@ -71,6 +71,7 @@
         </Compile>
         <Compile Include="DofusHistoryOcrResultTests.cs" />
         <Compile Include="ItemStatMageConfigTests.cs" />
+        <Compile Include="MagingAIDontImmediatelyFixHighSinkStatTests.cs" />
         <Compile Include="MagingAIOverMageTest.cs" />
         <Compile Include="MagingAIOversinkTests.cs" />
         <Compile Include="MagingAIPreserveSinkForOvermage.cs" />
@@ -88,6 +89,7 @@
         <Compile Include="Services\FileScreenCapture.cs" />
         <Compile Include="OcrItemTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Services\MageConfigProviderMock.cs" />
         <Compile Include="Services\MagingJobMock.cs" />
         <Compile Include="temptest.cs" />
     </ItemGroup>

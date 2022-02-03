@@ -13,6 +13,7 @@ using Tests.Services;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
+using MageConfigProvider = Inkybot.Dofus.Contracts.MageConfigProvider;
 using StatConfigProvider = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Tests.Design
@@ -25,6 +26,9 @@ namespace Tests.Design
             (DofusMagingAI) ServiceContainer.GetService<DofusMagingAIContract>();
         protected MagingJobMock Job =>
             (MagingJobMock) ServiceContainer.GetService<DofusMagingJobContract>();
+        
+        protected MageConfigProviderMock MageConfigProvider =>
+            (Config.MageConfig as MageConfigProviderMock)!;
 
         protected override Dictionary<Type, object> Services() {
             Stat.Dictionary = new ResourceManager("Tests.Resources.StatDictionary", Assembly.GetExecutingAssembly())
@@ -38,6 +42,7 @@ namespace Tests.Design
                 { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
                 { typeof(ScreenCapture), new Win32ScreenCapture() },
                 { typeof(MageConfigManager), new ConfigManager() },
+                { typeof(MageConfigProvider), new MageConfigProviderMock() },
                 { typeof(DofusMagingJobContract), magingJob },
                 { typeof(DofusSinkProvider), magingJob },
                 { typeof(DofusMagingAIContract), new DofusMagingAI() },

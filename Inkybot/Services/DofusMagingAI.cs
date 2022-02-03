@@ -45,7 +45,7 @@ namespace Inkybot.Services
                 excludedStats = excludedStats.Concat(config.StatsConfig.HighSinkStats)
                     .ToArray();
             }
-            
+
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve() ??
                 new TargetItemMageResolve(config, item, 1).ExcludeStats(excludedStats).Resolve() ??

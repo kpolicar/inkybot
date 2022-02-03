@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Inkybot.Design;
+using Inkybot.Dofus;
+using Inkybot.Dofus.Contracts;
 using NUnit.Framework;
 
 namespace Tests.Design
@@ -16,6 +18,7 @@ namespace Tests.Design
             ServiceContainer = new ServiceContainer();
             _services = Services();
             BindServices();
+            MageConfig.ConfigManager = (MageConfigProvider) _services[typeof(MageConfigProvider)];
         }
 
         protected abstract Dictionary<Type, object> Services();
