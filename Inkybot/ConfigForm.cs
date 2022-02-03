@@ -92,6 +92,7 @@ namespace Inkybot
             enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
             enableSafeMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableSafeMageQueueing;
+            autoStartNewSessionCheckbox.Checked = userSettingsConfigManager.AutoStartNewSession;
             customResizeRatioNumericUpDown.Value = userSettingsConfigManager.CustomResizeMultiplier;
             magingAiManager.MagingAIChanged += OnMagingAIChanged;
             userSettingsConfigManager.AppliedPreset += OnApplyPreset;

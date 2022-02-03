@@ -63,9 +63,9 @@ namespace Inkybot
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
                 return;
-            } catch (HttpRequestException) {
+            } catch (HttpRequestException ex) {
                 button1.Enabled = true;
-                errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
+                errorMessage.Text = resources.GetString("errorMessage.TextConnectionError")+"\nMessage: "+ex.Message;
                 return;
             } catch (Exception ex) {
                 button1.Enabled = true;
