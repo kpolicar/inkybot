@@ -40,7 +40,6 @@ namespace Inkybot.Services
         }
 
         private ItemMage? ResolveItemMage(Item item, Stat[] excludedStats) {
-            var originalExcludedStats = excludedStats;
             if (!config.RestoreHighSinkStatsImmediately) {
                 excludedStats = excludedStats.Concat(config.StatsConfig.HighSinkStats)
                     .ToArray();
@@ -85,10 +84,6 @@ namespace Inkybot.Services
                 new FinishOffRemainingSinkItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideFinishSinkOverride);
 
-            if (!config.RestoreHighSinkStatsImmediately) {
-                proposedMage ??= new TargetItemMageResolve(config, item).ExcludeStats(originalExcludedStats).Resolve();
-            }
-
             return proposedMage;
         }
         
@@ -96,6 +91,16 @@ namespace Inkybot.Services
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new ExoItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideExoResolve);
+                
+                
+            if (!config.RestoreHighSinkStatsImmediately) {
+                if (Sink < proposedMage?.Rune.Sink || proposedMage == null) {
+                    var targetMageResolve = new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve();
+                    if (targetMageResolve != null)
+                        proposedMage = targetMageResolve;
+                }
+            }
+            
             return proposedMage;
         }
 
