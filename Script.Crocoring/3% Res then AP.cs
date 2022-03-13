@@ -24,7 +24,7 @@ namespace Script.Exo3Percent
         protected Stat HighSinkStatToUseForExo = Stat.Ap;
         protected Stat StatToExo = Stat.PerAirResistance; // Change this to the res you want to exo
 
-
+        
         protected override IAction Resolve() {
             if (Item.Stats[HighSinkStatToUseForExo]?.Value == 0) { // if the AP has fallen off
                 return Sink >= StatToExo.SinkValue // is there enough sink for another % air res?

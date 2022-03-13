@@ -296,6 +296,7 @@ namespace Inkybot
 
         private void kamasSpentValueResetButton_Click(object sender, EventArgs e) {
             (magingJob as ScreenReaderDofusMagingJob)?.ResetBalance();
+            kamasSpentValueLabel.Text = resources.GetString("kamasSpentValueLabel.Text");
         }
 
         private void exoAttemptsValueResetButton_Click(object sender, EventArgs e) {

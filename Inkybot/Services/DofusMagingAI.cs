@@ -72,11 +72,13 @@ namespace Inkybot.Services
                 if (proposed != null &&
                     item.IsOvermaged &&
                     proposed.Value.Rune.Sink >= 3 && // Whether or not this mage is likely to really ruin the current overmage
+                    !item.Stats.Where(stat => stat.Overmaged).Any(
+                        itemStat => config[itemStat]?.Target > itemStat.Max || config[itemStat]?.TargetMinimum > itemStat.Max) && // none of the overmaged stats (that need to be overmaged) are already overmaged
                     (!item.Stats[proposed.Value.Stat]?.Overmaged ?? false))
                 {
                     proposed = new ReduceOversinkItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve();
                 }
-                
+
                 return proposed;
             }, OverrideReachMinimumResolve);
 
@@ -88,20 +90,9 @@ namespace Inkybot.Services
         }
         
         private ItemMage? ResolveItemMageForExo(Item item, Stat[] excludedStats) {
-            var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
+            return ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>
                 new ExoItemMageResolve(config, item, Sink).ExcludeStats(excludedStats).Resolve(),
                 OverrideExoResolve);
-                
-                
-            if (!config.RestoreHighSinkStatsImmediately) {
-                if (Sink < proposedMage?.Rune.Sink || proposedMage == null) {
-                    var targetMageResolve = new TargetItemMageResolve(config, item).ExcludeStats(excludedStats).Resolve();
-                    if (targetMageResolve != null)
-                        proposedMage = targetMageResolve;
-                }
-            }
-            
-            return proposedMage;
         }
 
         protected override IAction Resolve() =>
@@ -109,6 +100,14 @@ namespace Inkybot.Services
 
         protected override IAction ResolveExcludingStats(Stat[] excludedStats) {
             var proposedItemMage = ResolveItemMage(Item, excludedStats) ?? ResolveItemMageForExo(Item, excludedStats);
+            
+            if (!config.RestoreHighSinkStatsImmediately) {
+                if (Sink < proposedItemMage?.Rune.Sink || proposedItemMage == null) {
+                    var targetMageResolve = new TargetItemMageResolve(config, Item).ExcludeStats(excludedStats).Resolve();
+                    if (targetMageResolve != null)
+                        proposedItemMage = targetMageResolve;
+                }
+            }
             
             if (proposedItemMage != null && !SatisfiesOversinkConstraint(Item, proposedItemMage.Value))
                 proposedItemMage = new ReduceOversinkItemMageResolve(config, Item).ExcludeStats(excludedStats).Resolve();

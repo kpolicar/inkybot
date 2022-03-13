@@ -24,6 +24,7 @@ namespace Inkybot.Services
         protected override bool MatchesCriteria(ItemMage itemMage) =>
             itemMage.Rune.Sink <= Sink &&
             !itemMage.HasReachedTarget &&
+            !item.Stats.Any(itemStat => itemStat.Overmaged && itemStat.Stat != itemMage.Stat) &&
             (!ShouldSaveSink || (itemMage.WithLowerRuneStrength == null || (
                 itemMage.WithLowerRuneStrength.Value.NumberOfRunesNeededToReachTarget >= 2 && !itemMage.WillOvermage ||
                 itemMage.WithLowerRuneStrength.Value.NumberOfRunesNeededToReachTarget >= 3 && itemMage.WillOvermage

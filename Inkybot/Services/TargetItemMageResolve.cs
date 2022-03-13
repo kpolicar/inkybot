@@ -18,7 +18,7 @@ namespace Inkybot.Services
             !itemMage.WillOvermage && !itemMage.WillOvertarget;
 
         protected override int Priority(ItemMage itemMage) {
-            if (IsHighSinkItemMage(itemMage) && config.RestoreHighSinkStatsImmediately) {
+            if (IsHighSinkItemMage(itemMage)) {
                 return (int) itemMage.Rune.Sink * 10000;
             }
             return base.Priority(itemMage);

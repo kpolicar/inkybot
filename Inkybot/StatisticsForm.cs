@@ -8,7 +8,6 @@ using Inkybot.Api;
 using Inkybot.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
-using SHDocVw;
 
 namespace Inkybot
 {
