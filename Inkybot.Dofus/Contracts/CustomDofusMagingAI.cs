@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Policy;
 using Inkybot.Dofus.Domain;
 using Inkybot.Dofus.Repositories;
@@ -14,9 +15,10 @@ namespace Inkybot.Dofus.Contracts
         protected virtual bool ShouldPerfectStats => true;
         protected virtual bool ShouldOvermageToReachMinimum => true;
         protected virtual bool ShouldOvermageToUseRemainingSink => true;
+        public virtual bool FinishAfterExoLandedButIsNotVisibleOnItem => true;
         protected NLog.Logger Log = null!;
 
-        
+
         protected IAction ResolveDefault() =>
             Default.ResolveAction(Item);
 

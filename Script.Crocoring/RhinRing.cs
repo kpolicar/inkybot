@@ -8,6 +8,8 @@ namespace Script.Crocoring
 {
     public class RhinRing : CustomDofusMagingAI
     {
+        public override bool FinishAfterExoLandedButIsNotVisibleOnItem => false;
+
         protected override IAction Resolve() {
             return ResolveDefault();
         }

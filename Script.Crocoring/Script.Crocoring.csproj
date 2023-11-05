@@ -55,6 +55,8 @@
         <Compile Include="RhinRing.cs" />
         <Compile Include="Script.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="StopAfterApFalls.cs" />
+        <Compile Include="StopAfterMpFalls.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">

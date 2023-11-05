@@ -20,7 +20,7 @@ namespace Inkybot.Services
         } 
 
         protected override IEnumerable<ItemMage> PotentialMages() {
-            var stats = item.Stats.StandardStats;
+            var stats = item.Stats.StandardStats.Where(itemStat => itemStat.Stat.Mageable);
             if (excludedStats.Count > 0) {
                 stats = stats.Where(itemStat => !excludedStats.Contains(itemStat.Stat)).ToArray();
             }

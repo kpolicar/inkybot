@@ -72,7 +72,7 @@ namespace Inkybot.Services
                 if (proposed != null &&
                     item.IsOvermaged &&
                     proposed.Value.Rune.Sink >= 3 && // Whether or not this mage is likely to really ruin the current overmage
-                    !item.Stats.Where(stat => stat.Overmaged).Any(
+                    !item.Stats.MageableStats.Where(stat => stat.Overmaged).Any(
                         itemStat => config[itemStat]?.Target > itemStat.Max || config[itemStat]?.TargetMinimum > itemStat.Max) && // none of the overmaged stats (that need to be overmaged) are already overmaged
                     (!item.Stats[proposed.Value.Stat]?.Overmaged ?? false))
                 {

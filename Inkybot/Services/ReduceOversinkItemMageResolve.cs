@@ -29,7 +29,7 @@ namespace Inkybot.Services
         protected override IEnumerable<ItemMage> PotentialMages() {
             return item.Stats
                 .StandardStats
-                .Where(itemStat => !itemStat.Overmaged && !excludedStats.Contains(itemStat.Stat))
+                .Where(itemStat => !itemStat.Overmaged && !excludedStats.Contains(itemStat.Stat) && itemStat.Stat.Mageable)
                 .Select(itemStat => {
                     var rune = new Rune(itemStat.Stat, Rune.RuneType.Sm);
                 

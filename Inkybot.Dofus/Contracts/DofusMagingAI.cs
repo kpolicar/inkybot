@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -38,6 +39,8 @@ namespace Inkybot.Dofus.Contracts
          * </summary>
          */
         protected Item Item = null!;
+
+        protected IEnumerable<MageHistoryRecord> MagingHistory;
 
         public virtual void BindDependencies(ServiceContainer serviceContainer) =>
             (Action, ConfigProvider, SinkProvider, MageConfigManager) = 
@@ -134,5 +137,8 @@ namespace Inkybot.Dofus.Contracts
                 ? Rune.RuneType.Sm
                 : (Rune.RuneType?) null;
         }
+
+        public void SetHistory(IEnumerable<MageHistoryRecord> magingHistory) =>
+            MagingHistory = magingHistory;
     }
 }

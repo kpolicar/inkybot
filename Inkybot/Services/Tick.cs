@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -36,6 +37,7 @@ namespace Inkybot.Services
 
             public void Execute() {
                 var currentStep = job.state.Step;
+                job.magus.SetHistory(job.state.PreviousHistory?.history ?? new List<MageHistoryRecord>());
                 switch (job.state.Step) {
                     case State.JobStep.STANDARD:
                         DoMainMageAction();
@@ -300,7 +302,8 @@ namespace Inkybot.Services
 
                 if (action is CombineRune combine) {
                     if (job.state.PreviousAction is CombineRune previousCombine && 
-                        PreviousCombineWasExoThatLandedButIsNotVisibleOnItem(item, combine, previousCombine))
+                        PreviousCombineWasExoThatLandedButIsNotVisibleOnItem(item, combine, previousCombine)
+                        && (job.magus is not CustomDofusMagingAI customDofusMagingAI || customDofusMagingAI.FinishAfterExoLandedButIsNotVisibleOnItem))
                     {
                         action = actions.Finish(item);
                     } else {

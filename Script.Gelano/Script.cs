@@ -171,6 +171,9 @@ namespace Script.Gelano
         }
         
         protected override IAction Resolve() {
+            if (Item.Stats[Stat.RangedDamage]?.Value == 1 && MagingHistory.First().Landed?.stat == Stat.RangedDamage) {
+                return Combine(Stat.RangedDamage);
+            }
             if (!Item.HasStat(Stat.Mp))
                 return CombineExo(Item);
 
