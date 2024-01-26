@@ -9,6 +9,7 @@ using Inkybot.Api.Resources;
 using Inkybot.Contracts;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Inkybot.Properties;
 
 namespace Inkybot
 {
@@ -72,6 +73,15 @@ namespace Inkybot
                     await Task.Delay(15000);
                     await FetchUserAndUpdateForm();
                     return;
+                }
+
+                try {
+                    var connection = await auth.Login(ApiAuthManager.activeUsername, ApiAuthManager.activePassword);
+                    if (connection != null) {
+                        await FetchUserAndUpdateForm();
+                        return;
+                    }
+                } catch (Exception exception1) {
                 }
                 
                 var message = exception switch {

@@ -16,7 +16,7 @@ namespace Inkybot
         private ApiClient apiClient;
         private bool init = false;
 
-        private string Header => "Authorization: Bearer " + apiClient.Connection?.AuthDetails.access_token ?? "";
+        private string Header => "Authorization: Bearer " + ApiConnection.AuthDetails.access_token ?? "";
         private string LocalizedUrl => Server.StatisticsViewUrl + "?locale=" + Program.Lang.TwoLetterISOLanguageName;
         
         public StatisticsForm() {

@@ -50,7 +50,7 @@
         <value>pow</value>
     </data>
     <data name="critical" xml:space="preserve">
-        <value>crit</value>
+        <value>cri</value>
     </data>
     <data name="wisdom" xml:space="preserve">
         <value>wis</value>
@@ -81,10 +81,10 @@
         <value>ini</value>
     </data>
     <data name="summons" xml:space="preserve">
-        <value>summo</value>
+        <value>sum</value>
     </data>
     <data name="prospecting" xml:space="preserve">
-        <value>prospe</value>
+        <value>pp</value>
     </data>
     <data name="pods" xml:space="preserve">
         <value>pod</value>

@@ -16,13 +16,14 @@ namespace Inkybot.Api
         private const int AuthCheckRequestMaxAttempts = 3;
         private int AuthCheckRequestAttempts = 0;
         
-        public AuthDetails AuthDetails {
+        public static AuthDetails AuthDetails {
             get; private set;
         }
-        private readonly Timer refreshTokenTimer;
+        private static Timer? refreshTokenTimer;
 
         public ApiConnection(AuthDetails authDetails) {
-            this.AuthDetails = authDetails;
+            AuthDetails = authDetails;
+            refreshTokenTimer?.Dispose();
             refreshTokenTimer = new Timer();
             refreshTokenTimer.Interval = 53000;
             refreshTokenTimer.Tick += OnRefreshTokenTimer;
@@ -30,7 +31,7 @@ namespace Inkybot.Api
         }
 
         public void Terminate() {
-            refreshTokenTimer.Dispose();
+            //refreshTokenTimer?.Dispose();
         }
 
         public Task? RefreshTask { private set; get; }
