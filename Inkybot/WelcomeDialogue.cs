@@ -45,8 +45,6 @@ namespace Inkybot
             button1.Enabled = false;
             try {
                 var connection = await auth.Login(usernameTextBox.Text, passwordTextBox.Text);
-                ApiAuthManager.activeUsername = usernameTextBox.Text;
-                ApiAuthManager.activePassword = passwordTextBox.Text;
                 button1.Enabled = true;
 
                 if (connection == null) {

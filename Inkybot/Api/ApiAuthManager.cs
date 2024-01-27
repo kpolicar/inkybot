@@ -22,8 +22,6 @@ namespace Inkybot.Api
 
         private DofusMagingJob magingJob = null!;
         private MageConfigManager configManager = null!;
-        public static string activeUsername="";
-        public static string activePassword="";
 
         public User? User {
             private set; get;

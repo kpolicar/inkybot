@@ -75,15 +75,6 @@ namespace Inkybot
                     return;
                 }
 
-                try {
-                    var connection = await auth.Login(ApiAuthManager.activeUsername, ApiAuthManager.activePassword);
-                    if (connection != null) {
-                        await FetchUserAndUpdateForm();
-                        return;
-                    }
-                } catch (Exception exception1) {
-                }
-                
                 var message = exception switch {
                     HttpRequestException e => resources.GetString("subscriptiontimer.httpexception")+"\nMessage: "+e.Message,
                     UserNotSubscribedException =>
