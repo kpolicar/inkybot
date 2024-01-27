@@ -54,6 +54,7 @@ namespace Inkybot.Api
             await WaitForStableConnection();
 
             var client = Connection!.Request();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
             response.EnsureSuccessStatusCode();
             var result = await GetResultFromEncryptedResponse(response);

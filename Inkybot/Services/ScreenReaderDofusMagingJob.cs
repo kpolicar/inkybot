@@ -133,6 +133,7 @@ namespace Inkybot.Services
 
         public void ResetBalance() {
             state.Balance = 0;
+            BalanceSpending = 0;
         }
 
         public void StopMage() {

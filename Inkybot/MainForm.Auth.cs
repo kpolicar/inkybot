@@ -15,7 +15,7 @@ namespace Inkybot
 {
     public partial class MainForm
     {
-        private const int SubscriptionCheckRequestMaxAttempts = 3;
+        private const int SubscriptionCheckRequestMaxAttempts = 5;
         private int SubscriptionCheckRequestAttempts = 0;
 
         private void InitAuth() {

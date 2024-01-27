@@ -76,7 +76,7 @@ namespace Inkybot.Api
             } catch (Exception) {
                 if (AuthCheckRequestAttempts < AuthCheckRequestMaxAttempts) {
                     Debug.WriteLine("RefreshToken reattempt "+AuthCheckRequestAttempts);
-                    await Task.Delay(1741);
+                    await Task.Delay(1741 * (AuthCheckRequestAttempts+1));
                     return await RefreshToken();
                 }
                 return false;
