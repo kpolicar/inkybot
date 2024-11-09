@@ -28,15 +28,15 @@ namespace Inkybot.Services
         }
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
-            var x1 = 1100 + column * 51;
-            var y1 = 306 + (int) (row * 38.7);
-            var x2 = 1140 + column * 51;
-            var y2 = 336 + (int) (row * 38.7);
+            var x1 = 1021 + column * 44;
+            var y1 = 327 + (int) (row * 44);
+            var x2 = 1051 + column * 44;
+            var y2 = 357 + (int) (row * 44);
 
             return new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x1, y1, x2, y2),
-                Width = 1920,
-                Height = 1017
+                Width = 1694,
+                Height = 1009
             };
         }
 
@@ -98,115 +98,115 @@ namespace Inkybot.Services
         public static Responsive.Measurement[] StatMaxBoundsIndividualLines =>
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBounds);
         
-        public static readonly Responsive.Measurement MagingTable = new Responsive.Measurement {
+        public static Responsive.Measurement MagingTable => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(230, 56, 1386, 1013),
             Width = 2050,
             Height = 1212
         };
         
-        public static readonly Responsive.Measurement RemoveItemBounds = new Responsive.Measurement {
+        public static Responsive.Measurement RemoveItemBounds => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(885, 165, 885, 165),
             Width = 1920,
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement HistoryBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(346, 127, 628, 844),
-            Width = 1920,
-            Height = 1017
+        public static Responsive.Measurement HistoryBounds => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(288, 278, 509, 927),
+            Width = 1694,
+            Height = 1009
         };
         
-        public static readonly Responsive.Measurement ShortHistoryBounds = new Responsive.Measurement {
+        public static Responsive.Measurement ShortHistoryBounds => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(346, 127, 628, 322),
             Width = 1920,
             Height = 1017
         };
 
-        public static readonly Responsive.Measurement StatValuesBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(800, 307, 1030, 805),
-            Width = 1920,
-            Height = 1017
+        public static Responsive.Measurement StatValuesBounds => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(701, 328, 917, 927),
+            Width = 1694,
+            Height = 1009
         };
 
-        public static readonly Responsive.Measurement StatMinBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(695, 307, 745, 805),
-            Width = 1920,
-            Height = 1017
+        public static Responsive.Measurement StatMinBounds => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(543, 328, 591, 927),
+            Width = 1694,
+            Height = 1009
         };
         
-        public static readonly Responsive.Measurement StatMaxBounds = new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(745, 307, 800, 805),
-            Width = 1920,
-            Height = 1017
+        public static Responsive.Measurement StatMaxBounds => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(609, 328, 660, 927),
+            Width = 1694,
+            Height = 1009
         };
         
-        public static readonly Responsive.Measurement InventoryAverageItemValueBounds = new Responsive.Measurement {
+        public static Responsive.Measurement InventoryAverageItemValueBounds => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1435, 802, 1565, 825),
             Width = 1940,
             Height = 1110
         };
 
-        public static Responsive.Measurement InventorySelectResourcesCategory = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySelectResourcesCategory => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1512, 103, 1512, 103),
             Width = 1920,
             Height = 1017
         };
 
-        public static Responsive.Measurement InventorySelectEquipmentCategory = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySelectEquipmentCategory => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1062, 100, 1062, 100),
             Width = 1269,
             Height = 965
         };
 
-        public static Responsive.Measurement InventorySelectAllCategory = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySelectAllCategory => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1021, 100, 1021, 100),
             Width = 1269,
             Height = 965
         };
 
-        public static Responsive.Measurement InventorySelectResourcesCategoryBox = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySelectResourcesCategoryBox => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1475, 90, 1550, 115),
             Width = 1925,
             Height = 1014
         };
         
-        public static readonly Responsive.Measurement InventoryFirstItemMeasurement = new Responsive.Measurement {
+        public static Responsive.Measurement InventoryFirstItemMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1315, 186, 1315, 186),
             Width = 1920,
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement InventoryFirstItemBoxMeasurement = new Responsive.Measurement {
+        public static Responsive.Measurement InventoryFirstItemBoxMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1392, 177, 1452, 238),
             Width = 2035,
             Height = 1150
         };
         
-        public static readonly Responsive.Measurement InventorySearchTextBoxSelectMeasurement = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySearchTextBoxSelectMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1360, 775, 1360, 775),
             Width = 1920,
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement InventorySearchTextBox= new Responsive.Measurement {
+        public static Responsive.Measurement InventorySearchTextBox=> new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1425, 859, 1739, 887),
             Width = 2033,
             Height = 1148
         };
         
-        public static readonly Responsive.Measurement InventorySearchTextBoxErase = new Responsive.Measurement {
+        public static Responsive.Measurement InventorySearchTextBoxErase => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(2100, 1165, 2100, 1165),
             Width = 2310,
             Height = 1530
         };
         
-        public static readonly Responsive.Measurement CombineButtonMeasurement = new Responsive.Measurement {
+        public static Responsive.Measurement CombineButtonMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1050, 225, 1050, 225),
             Width = 1920,
             Height = 1017
         };
         
-        public static readonly Responsive.Measurement CombineButtonBoxMeasurement = new Responsive.Measurement {
+        public static Responsive.Measurement CombineButtonBoxMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(957, 209, 1150, 235),
             Width = 1925,
             Height = 1014
