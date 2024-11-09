@@ -90,6 +90,10 @@ namespace Inkybot
             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
             
+            
+            Properties.Settings.Default.dofusProcessName = Properties.Settings.Default.dofusProcessName != "" ?
+                Properties.Settings.Default.dofusProcessName : "dofus";
+            
             ApplyAdditionalUserSettings();
             SetAppLocale();
             InitDependencies();
