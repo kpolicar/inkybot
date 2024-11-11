@@ -33,6 +33,9 @@ namespace Inkybot
             Closing += (sender, args) => {
                 magingJob.StopMage();
                 StopDebugging();
+                if (pDofus != null) {
+                    WindowHelpers.UndockProcess(pDofus.MainWindowHandle, parentHandle);
+                }
             };
 
             ResizeEnd += OnWindowResize_FitQueueControls;
