@@ -155,30 +155,32 @@ namespace Inkybot
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void TakeScreenshotsAndOpenFolder() {
-            using var scan = new ScreenReaderDataProvider.DofusScreenScan(Program.Services, Measurements.HistoryBounds, true, true);
-            var files = new List<string>();
-            scan.Saved += (_, fileEvent) => files.Add(fileEvent.FullPath);
-            scan.CaptureScreenshot();
-
-            for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
-                try {
-                    scan.MinMaxStats().Wait();
-                    scan.History().Wait();
-                    scan.Stats().Wait();
-                    break;
-                } catch (OcrEngineNotReadyYetException) {
-                }
-                numOfTries++;
-            }
-
-            Invoke(new MethodInvoker(delegate {
-                debugScreenshotButton.Enabled = true;
-            }));
-                
-            var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
-            folderPath = folderPath.Replace("/", "\\");
             try {
-                WindowHelpers.OpenFolderAndSelectFiles(folderPath, files.Select(fullPath => fullPath.Replace("/", "\\")).ToArray());
+                using var scan =
+                    new ScreenReaderDataProvider.DofusScreenScan(Program.Services, Measurements.HistoryBounds, true,
+                        true);
+                var files = new List<string>();
+                scan.Saved += (_, fileEvent) => files.Add(fileEvent.FullPath);
+                scan.CaptureScreenshot();
+
+                for (var numOfTries = 0; numOfTries < 3; numOfTries++) {
+                    try {
+                        scan.MinMaxStats().Wait();
+                        scan.History().Wait();
+                        scan.Stats().Wait();
+                        break;
+                    } catch (OcrEngineNotReadyYetException) {
+                    }
+
+                    numOfTries++;
+                }
+
+                Invoke(new MethodInvoker(delegate { debugScreenshotButton.Enabled = true; }));
+
+                var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
+                folderPath = folderPath.Replace("/", "\\");
+                WindowHelpers.OpenFolderAndSelectFiles(folderPath,
+                    files.Select(fullPath => fullPath.Replace("/", "\\")).ToArray());
             } catch (Exception e) {
                 Debug.WriteLine(e);
             }

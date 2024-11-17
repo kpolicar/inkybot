@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,8 +79,13 @@ namespace Inkybot
 
 
         private void BindServicesToDockedWindow() {
+            ScreenReaderDataProvider.ImagePreprocessor.xOffset = dofusClientPanel.Location.X;
+            ScreenReaderDataProvider.ImagePreprocessor.yOffset = SystemInformation.CaptionHeight;
+            Debug.WriteLine(SystemInformation.CaptionHeight);
+            Debug.WriteLine(dofusClientPanel.Location.X);
+            
             var screen = (Win32ScreenCapture) Program.Services.GetService<ScreenCapture>();
-            screen.BindTo(this.Handle);
+            screen.BindTo(this.Handle, dofusClientPanel);
             
             var mouse = (Win32Input) Program.Services.GetService<Input>();
             mouse.SetRelativeToHandle(hWndDocked);

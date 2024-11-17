@@ -93,6 +93,8 @@ namespace Inkybot.Services
 
         public class ImagePreprocessor
         {
+            public static int xOffset;
+            public static int yOffset;
             protected uint originalImageHeight;
             protected virtual int thresholdPercentage => 27;
 

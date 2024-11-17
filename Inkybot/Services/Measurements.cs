@@ -28,10 +28,10 @@ namespace Inkybot.Services
         }
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
-            var x1 = 1021 + column * 44;
-            var y1 = 327 + (int) (row * 45);
-            var x2 = 1051 + column * 44;
-            var y2 = 357 + (int) (row * 45);
+            var x1 = 900 + column * 41;
+            var y1 = 316 + (int) (row * 40);
+            var x2 = 927 + column * 41;
+            var y2 = 342 + (int) (row * 40);
 
             return new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x1, y1, x2, y2),
@@ -111,7 +111,7 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement HistoryBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(325, 278, 499, 889),
+            Rectangle = Rect.FromCoords(285, 275, 284, 812),
             Width = 1694,
             Height = 1009
         };
@@ -123,25 +123,25 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement StatValuesBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(704, 328, 917, 894),
+            Rectangle = Rect.FromCoords(622, 320, 814, 818),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement StatMinBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(543, 328, 591, 894),
+            Rectangle = Rect.FromCoords(486, 320, 514, 818),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement StatMaxBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(609, 328, 660, 894),
+            Rectangle = Rect.FromCoords(544, 320, 571, 818),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement InventoryAverageItemValueBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1494, 866, 1562, 884),
+            Rectangle = Rect.FromCoords(1310, 796, 1380, 808),
             Width = 1694,
             Height = 1009
         };
@@ -189,7 +189,7 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement InventorySearchTextBox=> new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1282, 194, 1442, 221),
+            Rectangle = Rect.FromCoords(1131, 200, 1274, 222),
             Width = 1694,
             Height = 1009
         };

@@ -6,6 +6,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
+using ImageMagick;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
 using ScreenRecorderLib;
@@ -20,12 +22,14 @@ namespace Inkybot
     {
         private Recorder recorder;
         private IntPtr handle;
+        private Panel dofusClientPanel;
         private Semaphore waitUntilFrameRecorded;
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
         
         
-        public void BindTo(IntPtr handle) {
+        public void BindTo(IntPtr handle, Panel dofusClientPanel) {
+            this.dofusClientPanel = dofusClientPanel;
             var source = new WindowRecordingSource(handle);
             
             var opts = new RecorderOptions
@@ -38,11 +42,11 @@ namespace Inkybot
                 AudioOptions = new AudioOptions { IsInputDeviceEnabled = false, IsOutputDeviceEnabled = false, IsAudioEnabled=false },
                 SnapshotOptions = new SnapshotOptions() {SnapshotFormat = ImageFormat.PNG},
                 OutputOptions = new OutputOptions() {
-                    RecorderMode = RecorderMode.Screenshot
+                    RecorderMode = RecorderMode.Screenshot,
                 },
                 MouseOptions = new MouseOptions() {
                     IsMousePointerEnabled = false,
-                }
+                },
             };  
             this.recorder = Recorder.CreateRecorder(opts);
             this.handle = handle;
@@ -70,20 +74,28 @@ namespace Inkybot
             };
             recorder.OnRecordingComplete += (sender, args) => {
                 Console.WriteLine("finished");
+                waitUntilFrameRecorded.Release();
             };
             recorder.OnFrameRecorded += (sender, eventArgs) => {
                 Console.WriteLine("frame recorded");
-                waitUntilFrameRecorded.Release();
             };
             
             recorder.Record(mstream);
             waitUntilFrameRecorded.WaitOne();
             recorder.Stop();
             
-            EndScreenshot?.Invoke(this, EventArgs.Empty);
 
             mstream.Position = 0;
-            return Image.FromStream(mstream);
+            using var newImage = new MagickImage(mstream);
+            newImage.Crop((uint)dofusClientPanel.Width, (uint)dofusClientPanel.Height, Gravity.South);
+            
+            using var mmstream = new MemoryStream();
+            newImage.Write(mmstream);
+            mmstream.Position = 0;
+            
+            EndScreenshot?.Invoke(this, EventArgs.Empty);
+                
+            return Image.FromStream(mmstream);
         }
     }
 }
