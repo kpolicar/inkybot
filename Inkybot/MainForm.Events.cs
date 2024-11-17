@@ -182,6 +182,7 @@ namespace Inkybot
                 WindowHelpers.OpenFolderAndSelectFiles(folderPath,
                     files.Select(fullPath => fullPath.Replace("/", "\\")).ToArray());
             } catch (Exception e) {
+                Invoke(new MethodInvoker(delegate { debugScreenshotButton.Enabled = true; }));
                 Debug.WriteLine(e);
             }
         }

@@ -18,7 +18,7 @@ namespace Inkybot
     /// <summary>
     ///     Provides functions to capture the entire screen, or a particular window, and save it to a file.
     /// </summary>
-    public class Win32ScreenCapture : ScreenCapture
+    public class Win32ScreenCapture : ScreenCapture, IDisposable
     {
         private Recorder recorder;
         private IntPtr handle;
@@ -49,6 +49,18 @@ namespace Inkybot
                 },
             };  
             this.recorder = Recorder.CreateRecorder(opts);
+            
+            recorder.OnRecordingFailed += (sender, args) => {
+                Console.WriteLine(args.Error);
+            };
+            recorder.OnRecordingComplete += (sender, args) => {
+                Console.WriteLine("finished");
+                waitUntilFrameRecorded.Release();
+            };
+            recorder.OnFrameRecorded += (sender, eventArgs) => {
+                Console.WriteLine("frame recorded");
+            };
+            
             this.handle = handle;
             this.waitUntilFrameRecorded = new Semaphore(1, 1);
             waitUntilFrameRecorded.WaitOne();
@@ -69,21 +81,14 @@ namespace Inkybot
             
             using var mstream = new MemoryStream();
             
-            recorder.OnRecordingFailed += (sender, args) => {
-                Console.WriteLine(args.Error);
-            };
-            recorder.OnRecordingComplete += (sender, args) => {
-                Console.WriteLine("finished");
-                waitUntilFrameRecorded.Release();
-            };
-            recorder.OnFrameRecorded += (sender, eventArgs) => {
-                Console.WriteLine("frame recorded");
-            };
-            
             recorder.Record(mstream);
             waitUntilFrameRecorded.WaitOne();
             recorder.Stop();
-            
+
+            while (mstream.Length == 0) {
+                Debug.WriteLine("sleeping because screenshot wasn't created");
+                Thread.Sleep(50);
+            }
 
             mstream.Position = 0;
             using var newImage = new MagickImage(mstream);
@@ -96,6 +101,11 @@ namespace Inkybot
             EndScreenshot?.Invoke(this, EventArgs.Empty);
                 
             return Image.FromStream(mmstream);
+        }
+
+        public void Dispose() {
+            if (recorder!=null)
+                recorder.Dispose();
         }
     }
 }

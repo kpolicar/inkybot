@@ -11,6 +11,7 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Helpers;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inkybot.Services
 {
@@ -98,6 +99,11 @@ namespace Inkybot.Services
                 if (screenshot != null)
                     throw new ApplicationException("Screenshot has already been taken!");
                 screenshot = TakeScreenshot();
+
+                foreach (var minmax in Stats().Result) {
+                    Debug.WriteLine(minmax);
+                }
+
                 if (saveToDisk)
                     Save();
             }
@@ -267,8 +273,10 @@ namespace Inkybot.Services
             }
 
             public void Dispose() {
-                lock (screenshot) {
-                    screenshot.Dispose();
+                if (screenshot != null) {
+                    lock (screenshot) {
+                        screenshot.Dispose();
+                    }
                 }
 
                 if (saveToDisk) {
