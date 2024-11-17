@@ -96,7 +96,6 @@ namespace Inkybot
             OnResizeEnd(EventArgs.Empty);
 
             #if DEBUG
-            m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
             m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
             #endif
         }

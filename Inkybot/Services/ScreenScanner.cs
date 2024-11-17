@@ -94,7 +94,8 @@ namespace Inkybot.Services
                 using (var ocrPage = ProcessImage(engine, image)) {
                     var scanned = ocrPage.GetText();
                     PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
-                    
+
+                    Debug.WriteLine(scanned);
                     var textLines = split?.Invoke(scanned) ?? new[] {scanned};
 
                     return textLines

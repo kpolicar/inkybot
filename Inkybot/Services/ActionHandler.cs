@@ -39,6 +39,7 @@ namespace Inkybot.Services
 
                 try {
                     inputAction.Execute(cancel);
+                    System.Diagnostics.Debug.WriteLine(inputAction.GetType());
                     ActionExecuted?.Invoke(this, new ActionExecutedEventArgs(action));
                 } catch (OperationCanceledException) {
                 }

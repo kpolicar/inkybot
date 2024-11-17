@@ -54,11 +54,7 @@ namespace Inkybot
                 Console.WriteLine(args.Error);
             };
             recorder.OnRecordingComplete += (sender, args) => {
-                Console.WriteLine("finished");
                 waitUntilFrameRecorded.Release();
-            };
-            recorder.OnFrameRecorded += (sender, eventArgs) => {
-                Console.WriteLine("frame recorded");
             };
             
             this.handle = handle;

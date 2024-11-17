@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
@@ -7,9 +9,30 @@ namespace Inkybot.Services
 {
     public class Win32Input : Input
     {
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+        }
+        
         private IntPtr relativeToControl;
 
         public void Click(int x, int y) {
+            x += 114;
+            y += 23;
+            var r = new RECT();
+            // GetWindowRect(relativeToControl, out r);
+            SetForegroundWindow(relativeToControl);
+            Cursor.Position = new Point(x, y);
+            
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x, y));
         }
@@ -48,6 +71,12 @@ namespace Inkybot.Services
         }
 
         public void Move(int x, int y) {
+            x += 114;
+            y += 23;
+            var r = new RECT();
+            // GetWindowRect(relativeToControl, out r);
+            SetForegroundWindow(relativeToControl);
+            Cursor.Position = new Point(x, y);
             Win32.SendMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
         }
 

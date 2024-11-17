@@ -71,6 +71,7 @@ namespace Inkybot.Services
                 }
 
                 this.saveToDisk = saveToDisk;
+                this.saveToDisk = true; // todo temp
             }
 
             public DofusScreenScan(

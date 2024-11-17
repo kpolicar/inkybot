@@ -69,8 +69,27 @@ namespace Inkybot
             WindowHelpers.RemoveWindowBorders(hWndDocked);
 
             BindServicesToDockedWindow();
+            
+            
+            m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
+            m_GlobalHook.KeyDown += (sender, args) => {
+                if (args.KeyCode == Keys.Escape) {
+                    if (magingJob.IsMaging)
+                        magingJob.StopMage();
+                }
+                if (args.KeyCode == Keys.F6)
+                    OnClickInsert();
+            };
 
             return true;
+        }
+
+        private void OnClickInsert() {
+            var inp = new Win32Input();
+            inp.SetRelativeToHandle(pDofus!.MainWindowHandle);
+            var x=1088;
+            var y=344;
+            inp.Click(x,y);
         }
 
         private void OnDofusProcessSelected(object sender, ProcessEventArgs e) {
@@ -79,11 +98,6 @@ namespace Inkybot
 
 
         private void BindServicesToDockedWindow() {
-            ScreenReaderDataProvider.ImagePreprocessor.xOffset = dofusClientPanel.Location.X;
-            ScreenReaderDataProvider.ImagePreprocessor.yOffset = SystemInformation.CaptionHeight;
-            Debug.WriteLine(SystemInformation.CaptionHeight);
-            Debug.WriteLine(dofusClientPanel.Location.X);
-            
             var screen = (Win32ScreenCapture) Program.Services.GetService<ScreenCapture>();
             screen.BindTo(this.Handle, dofusClientPanel);
             

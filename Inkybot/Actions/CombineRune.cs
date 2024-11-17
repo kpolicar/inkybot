@@ -34,7 +34,7 @@ namespace Inkybot.Actions
                 
                 Input.Click(pos.X, pos.Y);
                 Thread.Sleep(5);
-                Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
+                // Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
                 return;
             }
 
@@ -69,13 +69,13 @@ namespace Inkybot.Actions
         }
         
         private Point RunePosition(int column, int row) {
-            var x = 1110 + column * 51;
-            var y = 318 + (int)(row * 38.7);
+            var x1 = 910 + column * 41;
+            var y1 = 326 + (int) (row * 40);
             
             var measurement = new Responsive.Measurement {
-                Rectangle = Rect.FromCoords(x, y, x, y),
-                Width = 1920,
-                Height = 1017
+                Rectangle = Rect.FromCoords(x1,y1,x1,y1),
+                Width = 1694,
+                Height = 1009
             };
             
             return GetCursorTarget(measurement);
