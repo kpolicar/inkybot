@@ -3,7 +3,7 @@
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
         <ProjectGuid>{A3D66FB2-1B40-45BD-9B0D-98947FBA69BD}</ProjectGuid>
         <OutputType>WinExe</OutputType>
         <RootNamespace>Inkybot</RootNamespace>
@@ -15,9 +15,10 @@
         <Deterministic>true</Deterministic>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+        <PlatformTarget>x64</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
@@ -26,9 +27,9 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
         <Obfuscate>True</Obfuscate>
-        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
         <OutputPath>bin\Release\</OutputPath>
@@ -38,17 +39,15 @@
         <ApplicationIcon>../icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' " Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Magick.NET-Q8-AnyCPU, Version=7.23.2.0, Culture=neutral, PublicKeyToken=2004825badfa91ec">
-          <HintPath>..\packages\Magick.NET-Q8-AnyCPU.7.23.2.1\lib\net40\Magick.NET-Q8-AnyCPU.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="Magick.NET-Q8-x64, Version=14.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=Amd64">
+          <HintPath>..\packages\Magick.NET-Q8-x64.14.1.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
         </Reference>
-        <Reference Include="Magick.NET.Core, Version=6.1.2.0, Culture=neutral, PublicKeyToken=2004825badfa91ec">
-          <HintPath>..\packages\Magick.NET.Core.6.1.2\lib\net40\Magick.NET.Core.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="Magick.NET.Core, Version=14.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+          <HintPath>..\packages\Magick.NET.Core.14.1.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
           <HintPath>..\packages\Microsoft.Build.Framework.15.7.179\lib\net46\Microsoft.Build.Framework.dll</HintPath>
@@ -78,6 +77,9 @@
         <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
           <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
           <Private>True</Private>
+        </Reference>
+        <Reference Include="ScreenRecorderLib">
+          <HintPath>..\..\ConsoleApp2recorder\ConsoleApp2recorder\bin\x64\Debug\net7.0\ScreenRecorderLib.dll</HintPath>
         </Reference>
         <Reference Include="SymSpell, Version=6.5.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\SymSpell.6.5.0\lib\net472\SymSpell.dll</HintPath>
@@ -596,9 +598,11 @@
       <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
       <Error Condition="!Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.1\build\Tesseract.targets'))" />
       <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
+      <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
     </Target>
     <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
     <Import Project="..\packages\Tesseract.4.1.1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets')" />
+    <Import Project="..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
 </Project>

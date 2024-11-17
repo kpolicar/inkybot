@@ -79,7 +79,7 @@ namespace Inkybot
 
         private void BindServicesToDockedWindow() {
             var screen = (Win32ScreenCapture) Program.Services.GetService<ScreenCapture>();
-            screen.BindTo(hWndDocked);
+            screen.BindTo(this.Handle);
             
             var mouse = (Win32Input) Program.Services.GetService<Input>();
             mouse.SetRelativeToHandle(hWndDocked);

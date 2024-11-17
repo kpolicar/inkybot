@@ -21,6 +21,7 @@ using Inkybot.Properties;
 using Inkybot.Services;
 using Microsoft.CSharp;
 using Newtonsoft.Json;
+using ScreenRecorderLib;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using ServiceContainer = Inkybot.Design.ServiceContainer;

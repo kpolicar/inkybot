@@ -93,7 +93,7 @@ namespace Inkybot.Services
 
         public class ImagePreprocessor
         {
-            protected int originalImageHeight;
+            protected uint originalImageHeight;
             protected virtual int thresholdPercentage => 27;
 
             public Image PreprocessImage(Image image, Rectangle bounds) {
@@ -120,7 +120,7 @@ namespace Inkybot.Services
 
                         // Resize each image in the collection to a width of 200. When zero is specified for the height
                         // the height will be calculated with the aspect ratio.
-                        newImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
+                        newImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
                         newImage.ColorSpace = ColorSpace.Gray;
 
                         steps(newImage);

@@ -111,7 +111,7 @@ namespace Inkybot.Api
                 Responsive.ResponsiveRectangle(Measurements.MagingTable, image.Width, image.Height);
             var optimizer = new ImageOptimizer();
             using var compressedImage = new MagickImage(ms);
-            compressedImage.Crop(new MagickGeometry(b.X, b.Y, b.Width, b.Height));
+            compressedImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
             compressedImage.SetCompression(CompressionMethod.JPEG);
             compressedImage.Resize(908,750);
             compressedImage.Extent(908,750, Gravity.Center, new MagickColor("#000000"));

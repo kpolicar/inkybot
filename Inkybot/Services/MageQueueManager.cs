@@ -149,7 +149,7 @@ namespace Inkybot.Services
             // Resize each image in the collection to a width of 200. When zero is specified for the height
             // the height will be calculated with the aspect ratio.
             var target = Responsive.ResponsiveRectangle(shrunkenItemBoundingBox, image.Width, image.Height);
-            newImage.Crop(new MagickGeometry(target.X, target.Y, target.Width, target.Height));
+            newImage.Crop(new MagickGeometry(target.X, target.Y, (uint)target.Width, (uint)target.Height));
             newImage.Write(ms);
 
             return Image.FromStream(ms);
