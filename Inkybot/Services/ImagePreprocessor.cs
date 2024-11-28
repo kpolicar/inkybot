@@ -75,19 +75,25 @@ namespace Inkybot.Services
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(30));
                 image.Negate();
+                image.BlackThreshold(new Percentage(60));
             }
         }
 
         public class StatValuesImagePreprocessor : ResizeImagePreprocessor
         {
             protected UserSettingsConfigManager UserSettings;
-            protected override int thresholdPercentage => originalImageHeight >= 1010
-                ? 27//29
-                : 27;
             
             public StatValuesImagePreprocessor(UserSettingsConfigManager userSettings,
                 int resizePercentage) : base(resizePercentage) {
                 UserSettings = userSettings;
+            }
+            
+            protected virtual void PreprocessingSteps(MagickImage image) {
+                image.Resize(new Percentage(150));
+                image.BlackThreshold(new Percentage(50));
+                image.Sharpen(1, 1);
+                image.Alpha(AlphaOption.Remove);
+                image.Negate();
             }
         }
 

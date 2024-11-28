@@ -100,7 +100,7 @@ namespace Inkybot.Services
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
                 (finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat)
-                 || finish.LastHistoryRecord?.Landed?.stat == previousCombine.Rune.Stat)
+                 || finish.LastHistoryRecord?.Landed?.stat == previousCombine.Rune.Stat) // Todo: this probably wont work
                 )
             {
                 
