@@ -225,19 +225,7 @@ namespace Inkybot
 
             statsDataGridView.Rows.Clear();
             // Build table first for non exos
-            foreach (var statConfig in config.StatsConfig.Where(pair => !pair.Value.Exo)) {
-                var stat = statConfig.Key;
-                var cfg = statConfig.Value;
-                var mageStatConfig = config.StatsConfig[stat];
-                
-                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.Priority, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
-                row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
-                row.Cells[0].ToolTipText = mageStatConfig.Exo
-                    ? "Min: -\nMax: -"
-                    : $"Min: {statConfig.Value.Minimum}\nMax: {statConfig.Value.Maximum}";
-            }
-            // Then for exos in reverse order so as not to break the order of stats
-            foreach (var statConfig in config.StatsConfig.Where(pair => pair.Value.Exo).Reverse()) {
+            foreach (var statConfig in config.StatsConfig) {
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
                 var mageStatConfig = config.StatsConfig[stat];
@@ -254,16 +242,7 @@ namespace Inkybot
             statsDataGridView.Rows.Clear();
 
             // Build table first for non exos
-            foreach (var itemStat in item.Stats.Where(stat => !stat.Exo)) {
-                var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  0, 0, itemStat.Exo, itemStat.Stat.Mageable);
-                row.Tag = new ItemStatRow(itemStat);
-                var (min, max) = itemStat.Exo
-                    ? ("-", "-")
-                    : (itemStat.Min.ToString(), itemStat.Max.ToString());
-                row.Cells[0].ToolTipText = $"Min: {min}\nMax: {max}";
-            }
-            // Then for exos in reverse order so as not to break the order of stats
-            foreach (var itemStat in item.Stats.Where(stat => stat.Exo).Reverse()) {
+            foreach (var itemStat in item.Stats) {
                 var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  0, 0, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
                 var (min, max) = itemStat.Exo
@@ -457,13 +436,17 @@ namespace Inkybot
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
             
-            var config = configManager.Config!.StatsConfig
+            var config1 = configManager.Config!.StatsConfig.StandardStatsConfigs
+                .Select(statConfig =>
+                    new ItemStatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
+                .ToArray();
+            var config2 = configManager.Config!.StatsConfig.ExoStatsConfigs.Reverse()
                 .Select(statConfig =>
                     new ItemStatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
                 .ToArray();
             var preset = new ItemPreset {
                 Name = presetsComboBox.Text,
-                Stats = config
+                Stats = config1.Concat(config2).ToArray()
             };
             
             var existingPresets = configManager.UserSettings.Presets.Presets;

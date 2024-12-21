@@ -51,11 +51,12 @@ namespace Inkybot.Services
                 return;
             var fallenUnconfiguredStats =
                 Config.StatsConfig
-                    .Where(statConfig => statConfig.Value.Target == 0 && !item.HasStat(statConfig.Key))
+                    .Where(statConfig => statConfig.Value.Target == 0 && (!item.HasStat(statConfig.Key) || item.Stats[statConfig.Key]!.Exo))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
             foreach (var stat in fallenUnconfiguredStats) {
+                Debug.WriteLine("Removing fallen unconfigured stat: "+stat);
                 Config.StatsConfig.Remove(stat);
             }
             if (fallenUnconfiguredStats.Length > 0)
@@ -76,6 +77,7 @@ namespace Inkybot.Services
         }
 
         public void ResetUserSettings(Item item) {
+            Debug.WriteLine("Resetting user settings");
             var previousConfig = Config;
             Config = new MageConfig(item);
             ConfigModified?.Invoke(this, 
@@ -102,6 +104,7 @@ namespace Inkybot.Services
                     !itemStat.Exo
                         ? Dofus.MageConfig.ItemStatMageConfig.Default(itemStat.Stat)
                         : new MageConfig.ItemStatMageConfig(itemStat.Stat, default, default, Math.Min(0, itemStat.Value), Math.Min(0, itemStat.Value), default));
+                Debug.WriteLine("Added stat: "+itemStat.Stat);
             }
             return true;
         }

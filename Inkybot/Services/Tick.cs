@@ -120,6 +120,7 @@ namespace Inkybot.Services
                 }
 
                 if (newUserRune.Quantity != userRune.Quantity) {
+                    Debug.WriteLine("rune quantity changed: "+newUserRune.Quantity+", previous: "+userRune.Quantity);
                     job.state.Step = State.JobStep.CALCULATING_SINK_CHANGE;
                     job.changeTimeout.Stop();
 
@@ -136,11 +137,15 @@ namespace Inkybot.Services
             }
             
             private void DoHistoryCheckForChanges() {
+                Debug.WriteLine("checking history for changes");
                 previousTickDeferredExecutionTask?.Wait();
                 EnforceChangeTimeoutRunningAndNotFinished();
 
+                Debug.WriteLine("fetching history for changes");
                 job.dataProvider.FetchData();
+                Debug.WriteLine("fetched history for changes");
                 var itemHistory = job.dataProvider.History();
+                Debug.WriteLine("parsed history for changes");
 
                 var historyHasChanged = itemHistory != job.state.PreviousHistory;
                                         ;
@@ -438,7 +443,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 7500)
+                if (job.changeTimeout.ElapsedMilliseconds > 17500)
                     HandleChangeCheckTimeout();
             }
         }

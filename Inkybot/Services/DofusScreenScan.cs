@@ -259,7 +259,7 @@ namespace Inkybot.Services
                 var result = scanned.First().ToLower();
 
                 var sinkText = GetStringAfterSequence(result, "sink").Replace(":", "");
-                var succ = decimal.TryParse(sinkText, out var sink);
+                var succ = decimal.TryParse(sinkText, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
                 return succ ? sink : null;
             }
             

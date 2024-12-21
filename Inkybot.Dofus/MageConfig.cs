@@ -82,7 +82,7 @@ namespace Inkybot.Dofus
                     null,
                     0);
             }
-            // In reverse order to fix for dofus exo on top now
+            // In reverse order to fix for current
             foreach (var itemStat in item.Stats.ExoStats.Reverse()) {
                 var stat = itemStat.Stat;
                 StatsConfig[stat] = new ItemStatMageConfig(

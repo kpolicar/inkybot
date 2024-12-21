@@ -12,7 +12,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="OcrCharWhitelist" xml:space="preserve">
-        <value>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,+()ÉÀÈÙÂÊÎÔÛÇËÏÜéàèùâêîôûçëïü' </value>
+        <value>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%-,.+()ÉÀÈÙÂÊÎÔÛÇËÏÜéàèùâêîôûçëïü' </value>
     </data>
     <data name="EnglishLocaleCode" xml:space="preserve">
         <value>en</value>

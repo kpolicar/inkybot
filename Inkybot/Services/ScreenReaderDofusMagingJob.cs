@@ -169,6 +169,7 @@ namespace Inkybot.Services
                 
                 dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
+                dSink = dataProvider.Sink() ?? 0;
                 item = dataProvider.Item();
                 try {
                     state.PreviousHistory = dataProvider.History();
@@ -190,11 +191,9 @@ namespace Inkybot.Services
                 };
                 // Persist item info
                 if (previousItem != null && item.Equals(previousItem)) {
-                    state.Sink = previousSink;
                     state.PreviousItem = previousItem;
                 } else {
                     state.PreviousItem = null;
-                    state.Sink = 0;
                 }
             } catch (Exception) {
                 state.IsMaging = false;

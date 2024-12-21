@@ -70,7 +70,7 @@ namespace Inkybot
 
         private void OnMagingSinkChanged(object sender, SinkChangedEventArgs e) {
             BeginInvoke(new MethodInvoker(delegate {
-                sinkValueLabel.Text = Convert.ToInt32(Math.Floor(e.Sink)).ToString();
+                sinkValueLabel.Text = e.Sink.ToString(CultureInfo.InvariantCulture);
             }));
         }
 
