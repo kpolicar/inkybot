@@ -89,7 +89,7 @@ namespace Inkybot.Services
                 }
 
                 StatsChangedChecksCount = 0;
-                Thread.Sleep(100);
+                Thread.Sleep(250);
             }
 
             private void DoRuneCheckForChanges() {
@@ -152,7 +152,7 @@ namespace Inkybot.Services
                     //EnforceValidPreviousActionResult(historyRecord);
                     
                     //ChangeSinkFromLastAction(historyRecord);
-                    job.state.Step = State.JobStep.STANDARD;
+                    job.state.Step = State.JobStep.CALCULATING_SINK_CHANGE;
                     job.state.PreviousHistory = itemHistory;
                     job.changeTimeout.Stop();
                 }
@@ -163,10 +163,12 @@ namespace Inkybot.Services
                 HistoryChangedChecksCount++;
 
                 try {
-                    job.dataProvider.FetchData();
                     var sink = job.dataProvider.Sink();
-                    if (sink == null)
+                    if (sink == null) {
+                        job.dataProvider.FetchData();
                         return;
+                    }
+                    Debug.WriteLine("CHANGED SINK TO "+sink.Value);
                     job.dSink = sink.Value;
                     job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
                 } catch (Exception ex) {
@@ -301,7 +303,8 @@ namespace Inkybot.Services
 
 
             private IAction DoAction() {
-                if (((job.state.PreviousAction as CombineRune)?.Exo ?? false) || (job.state.PreviousItem?.HasExo ?? false)) {
+                if (((job.state.PreviousAction as CombineRune)?.Exo ?? false) ||
+                    ((job.state.PreviousItem?.HasExo ?? false) && !job.state.PreviousItem.Stats.ExoStats.All(stat => stat.Value < 0))) { // Refresh minmax if item has exo that isn't negative
                     job.dataProvider.ResetMinMaxScan();
                 }
                 

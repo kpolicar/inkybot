@@ -162,7 +162,8 @@ namespace Inkybot.Services
                     Thread.Sleep(1000);
                 }
                 
-                if (((state.PreviousAction as CombineRune)?.Exo ?? false) || (state.PreviousItem?.HasExo ?? false)) {
+                if (((state.PreviousAction as CombineRune)?.Exo ?? false) ||
+                    ((state.PreviousItem?.HasExo ?? false) && !state.PreviousItem.Stats.ExoStats.All(stat => stat.Value < 0))) { // Refresh minmax if item has exo that isn't negative
                     dataProvider.ResetMinMaxScan();
                 }
                 
