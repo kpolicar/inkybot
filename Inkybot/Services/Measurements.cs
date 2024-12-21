@@ -30,7 +30,7 @@ namespace Inkybot.Services
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
             var x1 = 900 + column * 41;
             var y1 = 316 + (int) (row * 40);
-            var x2 = 927 + column * 41;
+            var x2 = 928 + column * 41;
             var y2 = 342 + (int) (row * 40);
 
             return new Responsive.Measurement {
@@ -184,6 +184,12 @@ namespace Inkybot.Services
         
         public static Responsive.Measurement InventorySearchTextBoxSelectMeasurement => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1195, 212, 1195, 212),
+            Width = 1694,
+            Height = 1009
+        };
+        
+        public static Responsive.Measurement SinkMeasurement => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(575, 202, 622, 222),
             Width = 1694,
             Height = 1009
         };

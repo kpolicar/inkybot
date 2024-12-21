@@ -27,6 +27,7 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatValuesBounds);
             RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             RegisterOcrIndicator(Measurements.InventorySearchTextBox);
+            RegisterOcrIndicator(Measurements.SinkMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);

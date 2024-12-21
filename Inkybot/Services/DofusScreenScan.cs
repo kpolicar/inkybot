@@ -31,6 +31,7 @@ namespace Inkybot.Services
             private static ScreenScanner? statValuesScanner;
             private static ScreenScanner? statMinsScanner;
             private static ScreenScanner? statMaxesScanner;
+            private static ScreenScanner? sinkScanner;
             private static ScreenScanner? runeScanner;
             private static ScreenScanner? averageItemPriceScanner;
 
@@ -138,6 +139,8 @@ namespace Inkybot.Services
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
                             new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
+                    sinkScanner = new TextScreenScanner(Measurements.SinkMeasurement, SplitStatTextLines,
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleWord);
                 }
                 
                 latestHistoryScanner!.PageProcessed += OnLatestHistoryPageProcessed;
