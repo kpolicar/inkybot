@@ -76,7 +76,24 @@ namespace Inkybot.Services
                 image.BlackThreshold(new Percentage(30));
                 image.Negate();
                 image.BlackThreshold(new Percentage(60));
+            }
+        }
 
+        public class SinkScannerImagePreprocessor : ResizeImagePreprocessor
+        {
+            protected UserSettingsConfigManager UserSettings;
+            
+            public SinkScannerImagePreprocessor(UserSettingsConfigManager userSettings,
+                int resizePercentage) : base(resizePercentage) {
+                UserSettings = userSettings;
+            }
+            
+            protected override void PreprocessingSteps(MagickImage image) {
+                image.Resize(new Percentage(resizePercentage));
+                image.ColorSpace = ColorSpace.Gray;
+                image.Alpha(AlphaOption.Remove);
+                image.BlackThreshold(new Percentage(40));
+                image.Negate();
             }
         }
 
@@ -90,12 +107,12 @@ namespace Inkybot.Services
             }
             
             protected override void PreprocessingSteps(MagickImage image) {
-                image.Resize(new Percentage(300));
+                image.Resize(new Percentage(resizePercentage));
                 image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(40));
                 image.Negate();
-                //image.BlackThreshold(new Percentage(60));
+                image.BlackThreshold(new Percentage(60));
                 //image.BlackThreshold(new Percentage(55));
             }
         }

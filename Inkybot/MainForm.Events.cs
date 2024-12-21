@@ -169,6 +169,7 @@ namespace Inkybot
                         scan.MinMaxStats().Wait();
                         scan.History().Wait();
                         scan.Stats().Wait();
+                        scan.Sink().Wait();
                         break;
                     } catch (OcrEngineNotReadyYetException) {
                     }

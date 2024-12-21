@@ -73,7 +73,6 @@ namespace Inkybot.Services
                 }
 
                 this.saveToDisk = saveToDisk;
-                this.saveToDisk = true; // todo temp
             }
 
             public DofusScreenScan(
@@ -131,16 +130,16 @@ namespace Inkybot.Services
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                         new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
                     statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleBlock);
+                        new StatValuesImagePreprocessor(userSettings, 600), PageSegMode.SingleBlock);
                     statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleBlock);
+                        new StatValuesImagePreprocessor(userSettings, 600), PageSegMode.SingleBlock);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
                             new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
                     sinkScanner = new TextScreenScanner(Measurements.SinkMeasurement, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleWord);
+                        new SinkScannerImagePreprocessor(userSettings, 600), PageSegMode.SingleWord);
                 }
                 
                 latestHistoryScanner!.PageProcessed += OnLatestHistoryPageProcessed;
@@ -175,6 +174,11 @@ namespace Inkybot.Services
                 var mins = await minstask;
                 var maxes = await maxesTask;
                 var values = await valuesTask;
+                for (int i = 0; i < Math.Min(mins.Length, maxes.Length); i++) {
+                    Debug.Write(mins[i] + " ");
+                    Debug.Write(maxes[i] + " ");
+                    Debug.WriteLine(values[i]);
+                }
 
                 mins = ResizeArrayLeft(mins, values.Length, "-");
                 maxes = ResizeArrayLeft(maxes, values.Length, "-");
@@ -182,11 +186,25 @@ namespace Inkybot.Services
                 // Postprocess OCR result, fix OCR % misread
                 for (int i = 0; i < Math.Min(mins.Length, maxes.Length); i++) {
                     if (mins[i].Contains('%') || maxes[i].Contains('%') || values[i].Contains('%')) {
-                        if (!mins[i].EndsWith("4") && !mins[i].Contains('%')) mins[i] += "%";
-                        if (!maxes[i].EndsWith("4") && !maxes[i].Contains('%')) maxes[i] += "%";
-                        if (mins[i].EndsWith("4") && mins[i] != "4") mins[i] = mins[i].Remove(mins[i].Length -1, 1) + "%";
-                        if (maxes[i].EndsWith("4") && maxes[i] != "4") maxes[i] = maxes[i].Remove(maxes[i].Length -1, 1) + "%";
+                        var suc1 = int.TryParse(mins[i], NumberStyles.Any, CultureInfo.InvariantCulture, out var min);
+                        var suc2 = int.TryParse(maxes[i], NumberStyles.Any, CultureInfo.InvariantCulture, out var max);
+                        
+                        if (suc1 && suc2) {
+                            if (min > max || min > 20) {
+                                // min must've interpreted the % as a number
+                                mins[i] = mins[i][0] + "%";
+                            }
+                            if (max > 20) {
+                                // max must've interpreted the % as a number
+                                maxes[i] = maxes[i][0] + "%";
+                            }
+                            if (!mins[i].Contains("%")) mins[i] += "%";
+                            if (!maxes[i].Contains("%")) maxes[i] += "%";
+                        }
                     }
+                    Debug.Write(mins[i] + " ");
+                    Debug.Write(maxes[i] + " ");
+                    Debug.WriteLine(values[i]);
                 }
                 
                 var result = mins.ZipWithDefault(maxes, (min, valuemax) => (min ?? "-") + " " + valuemax)
@@ -206,7 +224,13 @@ namespace Inkybot.Services
 
             public async Task<string[]> Stats() {
                 var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
-                return await statValuesScanTask;
+                return (await statValuesScanTask).Select(s => {
+                    if (s.StartsWith("O ") || s.StartsWith("o ")) {
+                        return "0" + s.TrimStart(new[] { 'O', 'o' }); // fix misreads of 0 with an O
+                    }
+
+                    return s;
+                }).ToArray();
             }
 
             public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
@@ -256,7 +280,8 @@ namespace Inkybot.Services
 
             public async Task<decimal?> Sink() {
                 var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight);
-                var result = scanned.First().ToLower();
+                var result = scanned.FirstOrDefault()?.ToLower() ?? "";
+                Debug.WriteLine(">>>>>>>>>>>>> SINK:"+result);
 
                 var sinkText = GetStringAfterSequence(result, "sink").Replace(":", "");
                 var succ = decimal.TryParse(sinkText, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,10 +97,11 @@ namespace Inkybot.Services
                 }
 
                 StatsChangedChecksCount = 0;
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
 
             private void DoRuneCheckForChanges() {
+                Debug.WriteLine("checking for rune changes");
                 try {
                     EnforceChangeTimeoutRunningAndNotFinished();
                 } catch (ChangeCheckTimeoutException exception) {
@@ -171,6 +173,7 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
+                Debug.WriteLine("calculating sink change");
                 EnforceChangeTimeoutRunningAndNotFinished();
                 HistoryChangedChecksCount++;
 
@@ -178,10 +181,10 @@ namespace Inkybot.Services
                     var sink = job.dataProvider.Sink();
                     if (sink == null) {
                         job.dataProvider.FetchData();
-                        return;
+                        sink = job.dataProvider.Sink();
                     }
-                    Debug.WriteLine("CHANGED SINK TO "+sink.Value);
-                    job.dSink = sink.Value;
+                    Debug.WriteLine("CHANGED SINK TO "+(sink ?? 0).ToString(CultureInfo.InvariantCulture));
+                    job.dSink = sink ?? 0;
                     job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
                 } catch (Exception ex) {
                     Debug.WriteLine(ex.Message);
@@ -442,7 +445,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 17500)
+                if (job.changeTimeout.ElapsedMilliseconds > 6000)
                     HandleChangeCheckTimeout();
             }
         }

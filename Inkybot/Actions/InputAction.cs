@@ -33,7 +33,7 @@ namespace Inkybot.Actions
         protected Point GetCursorTarget(Responsive.Measurement measurement) {
            var target = Responsive.ResponsiveRectangle(measurement, targetControl.Width, targetControl.Height);
            
-           return new Point(target.X, target.Y);
+           return new Point(target.X+target.Width/2, target.Y+target.Height/2);
         }
     }
 }

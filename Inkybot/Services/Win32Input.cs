@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -26,10 +27,11 @@ namespace Inkybot.Services
         private IntPtr relativeToControl;
 
         public void Click(int x, int y) {
-            x += 114;
-            y += 23;
             var r = new RECT();
-            // GetWindowRect(relativeToControl, out r);
+            GetWindowRect(relativeToControl, out r);
+            x += r.Left;
+            y += r.Top;
+            Debug.WriteLine(r.Left + ", " + r.Top + ", " + r.Right + ", " + r.Bottom);
             SetForegroundWindow(relativeToControl);
             Cursor.Position = new Point(x, y);
             
