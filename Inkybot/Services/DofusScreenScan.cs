@@ -12,6 +12,7 @@ using Inkybot.Design;
 using Inkybot.Helpers;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
+using Enumerable = System.Linq.Enumerable;
 
 namespace Inkybot.Services
 {
@@ -123,15 +124,15 @@ namespace Inkybot.Services
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(200));
+                        new ResizeImagePreprocessor(300));
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(200));
+                        new ResizeImagePreprocessor(300));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 150));
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
                     statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new ResizeAndBinarizationImagePreprocessor(userSettings, 300));
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleBlock);
                     statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new ResizeAndBinarizationImagePreprocessor(userSettings, 300));
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleBlock);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
@@ -157,20 +158,34 @@ namespace Inkybot.Services
             }
 
             private string[] SplitStatTextLines(string text) {
-                return text.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+                return Regex.Split(text, "[\r\n]+").Where(s => s!=String.Empty).ToArray();
             }
 
             public async Task<string[]> MinMaxStats() {
 
                 var minstask = statMinsScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 var maxesTask = statMaxesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
+                var valuesTask = Stats();
 
-                Task.WaitAll(minstask, maxesTask);
+                Task.WaitAll(minstask, maxesTask, valuesTask);
 
                 var mins = await minstask;
                 var maxes = await maxesTask;
+                var values = await valuesTask;
+
+                mins = ResizeArrayLeft(mins, values.Length, "-");
+                maxes = ResizeArrayLeft(maxes, values.Length, "-");
 
                 return mins.ZipWithDefault(maxes, (min, valuemax) => (min ?? "-") + " " + valuemax)
+                    .ToArray();
+            }
+            
+            
+            static string[] ResizeArrayLeft(string[] originalArray, int targetLength, string defaultValue)
+            {
+                return Enumerable
+                    .Repeat(defaultValue, Math.Max(0, targetLength - originalArray.Length)) // Padding on the left
+                    .Concat(originalArray.Take(targetLength))                              // Add original elements, truncate if needed
                     .ToArray();
             }
 

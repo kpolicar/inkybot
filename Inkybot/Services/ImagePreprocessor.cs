@@ -76,6 +76,7 @@ namespace Inkybot.Services
                 image.BlackThreshold(new Percentage(30));
                 image.Negate();
                 image.BlackThreshold(new Percentage(60));
+
             }
         }
 
@@ -88,11 +89,11 @@ namespace Inkybot.Services
                 UserSettings = userSettings;
             }
             
-            protected virtual void PreprocessingSteps(MagickImage image) {
-                image.Resize(new Percentage(150));
-                image.BlackThreshold(new Percentage(50));
-                image.Sharpen(1, 1);
+            protected override void PreprocessingSteps(MagickImage image) {
+                image.Resize(new Percentage(300));
+                image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
+                image.BlackThreshold(new Percentage(30));
                 image.Negate();
             }
         }
