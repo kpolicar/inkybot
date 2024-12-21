@@ -10,6 +10,7 @@ using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Extensions;
 using Inkybot.Helpers;
+using Debug = System.Diagnostics.Debug;
 using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
@@ -34,6 +35,10 @@ namespace Inkybot.Services
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             this.serviceContainer = serviceContainer;
             magingJob.Finished += (sender, args) => Reset();
+        }
+
+        public void ResetMinMaxScan() {
+            previousMinMaxScan = new string[] {};
         }
 
         public void Reset(bool resetMinMaxScan=true) {
@@ -62,16 +67,16 @@ namespace Inkybot.Services
             return scanResults;
         }
 
-        public IEnumerable<MageHistoryRecord> LatestHistory() {
+        public string[] LatestHistory() {
             var scanResults = Scan!.LatestHistory()
-                .Result
-                .Select(line => line.Replace("\n", " "))
-                .ToArray();
+                .Result;
             ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
-            
-            var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
-
-            return historyResults;
+            return scanResults;
+            // We're not gonna process it
+            //
+            //var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
+            //
+            //return historyResults;
         }
         
         public void ApproveLatestHistoryContinueToNextScanBounds() {
@@ -79,16 +84,16 @@ namespace Inkybot.Services
             LatestHistoryBoundsChanged?.Invoke(this, new ScanBoundsChanged(LatestHistoryBounds));
         }
 
-        public IEnumerable<MageHistoryRecord> History() {
+        public string[] History() {
             var scanResults = Scan!.History()
-                .Result
-                .Select(line => line.Replace("\n", " "))
-                .ToArray();
-            ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
-            
-            var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
-
-            return historyResults;
+                .Result;
+            return scanResults;
+            // We're not gonna process it
+            //ScannedHistory?.Invoke(this, new ScannedRegionEventArgs(scanResults));
+            //
+            //var historyResults = new DofusHistoryOcrResultAdapter(scanResults).ToMageHistoryRecords();
+            //
+            //return historyResults;
         }
 
         public Item Item() {

@@ -37,7 +37,7 @@ namespace Inkybot.Services
 
             public void Execute() {
                 var currentStep = job.state.Step;
-                job.magus.SetHistory(job.state.PreviousHistory?.history ?? new List<MageHistoryRecord>());
+                //job.magus.SetHistory(job.state.PreviousHistory ?? new List<MageHistoryRecord>());
                 switch (job.state.Step) {
                     case State.JobStep.STANDARD:
                         DoMainMageAction();
@@ -139,19 +139,19 @@ namespace Inkybot.Services
                 EnforceChangeTimeoutRunningAndNotFinished();
 
                 job.dataProvider.FetchData();
-                var itemHistory = job.history.Analyse(job.dataProvider.History());
+                var itemHistory = job.dataProvider.History();
 
-                var historyHasChanged = itemHistory.IsDifferentFrom(job.state.PreviousHistory);
+                var historyHasChanged = itemHistory != job.state.PreviousHistory;
                                         ;
                 Debug.WriteLine("history has changed: "+ historyHasChanged);
 
                 if (!historyHasChanged) {
                     Thread.Sleep(100);
                 } else {
-                    var historyRecord = itemHistory.history.First();
-                    EnforceValidPreviousActionResult(historyRecord);
+                    var historyRecord = itemHistory;
+                    //EnforceValidPreviousActionResult(historyRecord);
                     
-                    ChangeSinkFromLastAction(historyRecord);
+                    //ChangeSinkFromLastAction(historyRecord);
                     job.state.Step = State.JobStep.STANDARD;
                     job.state.PreviousHistory = itemHistory;
                     job.changeTimeout.Stop();
@@ -159,46 +159,47 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
-                EnforceChangeTimeoutRunningAndNotFinished();
-                HistoryChangedChecksCount++;
-                
-                // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
-                var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);
-                var latestChange = itemLatestHistory.history.FirstOrDefault();
-
-                if (latestChange == null) {
-                    job.dataProvider.FetchData();
-                    return;
-                }
-                
-                job.changeTimeout.Stop();
-                try {
-                    EnforceValidPreviousActionResult(latestChange);
-                    EnforceDifferentHistory(itemLatestHistory);
-                } catch (UnexpectedMageResultException exception) {
-                    if (HistoryChangedChecksCount >= MaxHistoryChangedChecks)
-                        throw;
-                    
-                    job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{HistoryChangedChecksCount} out of ${MaxHistoryChangedChecks}"));
-                    Thread.Sleep(50);
-                    job.dataProvider.FetchData();
-                    return;
-                }
-
-                ChangeSinkFromLastAction(latestChange);
-                job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
                 job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
-                job.state.PreviousHistory = itemLatestHistory;
-                HistoryChangedChecksCount = 0;
+                // EnforceChangeTimeoutRunningAndNotFinished();
+                // HistoryChangedChecksCount++;
+                //
+                // // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
+                // var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);
+                // var latestChange = itemLatestHistory.history.FirstOrDefault();
+                //
+                // if (latestChange == null) {
+                //     job.dataProvider.FetchData();
+                //     return;
+                // }
+                //
+                // job.changeTimeout.Stop();
+                // try {
+                //     EnforceValidPreviousActionResult(latestChange);
+                //     EnforceDifferentHistory(itemLatestHistory);
+                // } catch (UnexpectedMageResultException exception) {
+                //     if (HistoryChangedChecksCount >= MaxHistoryChangedChecks)
+                //         throw;
+                //     
+                //     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{HistoryChangedChecksCount} out of ${MaxHistoryChangedChecks}"));
+                //     Thread.Sleep(50);
+                //     job.dataProvider.FetchData();
+                //     return;
+                // }
+                //
+                // ChangeSinkFromLastAction(latestChange);
+                // job.dataProvider.ApproveLatestHistoryContinueToNextScanBounds();
+                // job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
+                // job.state.PreviousHistory = itemLatestHistory;
+                // HistoryChangedChecksCount = 0;
             }
             
             private void CalculatePriceChange() {
-                Task.Run(() => {
-                    var balance = job.dataProvider.AverageItemBalance();
-                    if (balance == null) return;
-
-                    job.Balance = (int) balance;
-                });
+                // Task.Run(() => {
+                //     var balance = job.dataProvider.AverageItemBalance();
+                //     if (balance == null) return;
+                //
+                //     job.Balance = (int) balance;
+                // });
                 job.state.Step = State.JobStep.STANDARD;
             }
 
@@ -233,8 +234,8 @@ namespace Inkybot.Services
             private void EnforceDifferentHistory(ItemHistoryAnalysis itemHistory) {
                 if (!itemHistory.SuitableForCompare)
                     return;
-                if (job.state.PreviousHistory != null && !itemHistory.IsDifferentFrom(job.state.PreviousHistory))
-                    throw new HistoryHasntChangedException(itemHistory, job.state.PreviousHistory);
+                //if (job.state.PreviousHistory != null && !itemHistory.IsDifferentFrom(job.state.PreviousHistory))
+                //    throw new HistoryHasntChangedException(itemHistory, job.state.PreviousHistory);
             }
 
 
@@ -287,6 +288,10 @@ namespace Inkybot.Services
 
 
             private IAction DoAction() {
+                if ((job.state.PreviousAction as CombineRune)?.Exo ?? false) {
+                    job.dataProvider.ResetMinMaxScan();
+                }
+                
                 var item = job.dataProvider.Item();
                 if (item.IsInvalid)
                     throw new NoItemToMageFoundException("Could not gather item stats from screen");
@@ -315,7 +320,8 @@ namespace Inkybot.Services
                         EnforceHasRunesForCombine(combine);
 
                         if (combine.Exo) {
-                            job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
+                            job.state.PreviousHistory = job.dataProvider.History();
+                            //job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
                         }
                         RaiseEventIfMagingItemWithHighSinkExo(item);
                     }
@@ -332,7 +338,7 @@ namespace Inkybot.Services
                 return previousAction.Exo
                        && currentAction.Exo
                        && currentAction.Rune == previousAction.Rune
-                       && job.LastHistoryRecord?.Landed?.stat == previousAction.Rune.Stat
+                       //&& job.LastHistoryRecord?.Landed?.stat == previousAction.Rune.Stat
                        && ReferenceEquals(item.Stats[previousAction.Rune.Stat], null);
             }
 
@@ -379,19 +385,19 @@ namespace Inkybot.Services
             }
 
             private void EnforceStatsChanged(Item item) {
-                if (job.state.PreviousItem != null) {
-                    var lastHistoryRecord = job.state.PreviousHistory?.history.FirstOrDefault();
-                    
-                    var shouldBeDifferent = lastHistoryRecord?.Changed.Any() ?? true;
-                    if (shouldBeDifferent) {
-                        MarkTickAsShouldBeDifferent(item);
-                    } else {
-                        MarkTickAsShouldNotBeDifferent(item, lastHistoryRecord!);
-                    }
-                    
-                    if (shouldveBeenDifferentCount >= MaxStatsShouldHaveChangedChecks)
-                        throw new ItemHasNotChangedException(item);
-                }
+                // if (job.state.PreviousItem != null) {
+                //     var lastHistoryRecord = job.state.PreviousHistory?.history.FirstOrDefault();
+                //     
+                //     var shouldBeDifferent = lastHistoryRecord?.Changed.Any() ?? true;
+                //     if (shouldBeDifferent) {
+                //         MarkTickAsShouldBeDifferent(item);
+                //     } else {
+                //         MarkTickAsShouldNotBeDifferent(item, lastHistoryRecord!);
+                //     }
+                //     
+                //     if (shouldveBeenDifferentCount >= MaxStatsShouldHaveChangedChecks)
+                //         throw new ItemHasNotChangedException(item);
+                // }
             }
 
             private void MarkTickAsShouldBeDifferent(Item item) {

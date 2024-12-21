@@ -111,13 +111,13 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement HistoryBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(285, 275, 440, 848),
+            Rectangle = Rect.FromCoords(285, 275, 440, 810),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement ShortHistoryBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(285, 275, 440, 848),
+            Rectangle = Rect.FromCoords(285, 275, 440, 810),
             Width = 1694,
             Height = 1009
         };
@@ -147,7 +147,7 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement InventorySelectResourcesCategory => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1237, 354, 1237, 354),
+            Rectangle = Rect.FromCoords(1091, 342, 1091, 342),
             Width = 1694,
             Height = 1009
         };

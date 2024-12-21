@@ -25,7 +25,7 @@ namespace Inkybot.Services
             public decimal Sink;
             public int Balance;
             public IAction? PreviousAction;
-            public ItemHistoryAnalysis? PreviousHistory;
+            public string[] PreviousHistory;
             public Item? PreviousItem;
             public bool PreviousCombineWasExoAttempt;
             public Rune? PreviousCheckHadRunOutOfRunes;

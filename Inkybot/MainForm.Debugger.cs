@@ -18,9 +18,7 @@ namespace Inkybot
         private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
         
         private bool debugging;
-        #if DEBUG
         private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
-        #endif
         private Control latestHistoryOcrIndicatorControl = null!;
 
         private void InitOcrIndicators() {
@@ -140,9 +138,6 @@ namespace Inkybot
             debugButton.Text = resources.GetString("debugButton.Text");
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
-            #if DEBUG
-            m_GlobalHook?.Dispose();
-            #endif
             ResizeEnd -= onWindowResize;
             
             HideOcrIndicators();

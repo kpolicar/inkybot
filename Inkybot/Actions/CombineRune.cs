@@ -41,7 +41,7 @@ namespace Inkybot.Actions
             var resourceCategoryPosition = GetCursorTarget(Measurements.InventorySelectResourcesCategory);
             Input.Click(resourceCategoryPosition.X, resourceCategoryPosition.Y);
 
-            Thread.Sleep(50);
+            Thread.Sleep(300);
             
             
             var searchTextBoxPosition = GetCursorTarget(Measurements.InventorySearchTextBoxSelectMeasurement);

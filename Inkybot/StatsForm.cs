@@ -224,7 +224,20 @@ namespace Inkybot
             }
 
             statsDataGridView.Rows.Clear();
-            foreach (var statConfig in config.StatsConfig) {
+            // Build table first for non exos
+            foreach (var statConfig in config.StatsConfig.Where(pair => !pair.Value.Exo)) {
+                var stat = statConfig.Key;
+                var cfg = statConfig.Value;
+                var mageStatConfig = config.StatsConfig[stat];
+                
+                var row = AddNewStatRow(stat.DisplayName, 0, cfg.Target, cfg.Priority, cfg.TargetMinimum, mageStatConfig.Exo, stat.Mageable);
+                row.Tag = new ItemStatRow(stat, mageStatConfig.Exo);
+                row.Cells[0].ToolTipText = mageStatConfig.Exo
+                    ? "Min: -\nMax: -"
+                    : $"Min: {statConfig.Value.Minimum}\nMax: {statConfig.Value.Maximum}";
+            }
+            // Then for exos in reverse order so as not to break the order of stats
+            foreach (var statConfig in config.StatsConfig.Where(pair => pair.Value.Exo).Reverse()) {
                 var stat = statConfig.Key;
                 var cfg = statConfig.Value;
                 var mageStatConfig = config.StatsConfig[stat];
@@ -240,7 +253,17 @@ namespace Inkybot
         private void RebuildDataGridView(Item item) {
             statsDataGridView.Rows.Clear();
 
-            foreach (var itemStat in item.Stats) {
+            // Build table first for non exos
+            foreach (var itemStat in item.Stats.Where(stat => !stat.Exo)) {
+                var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  0, 0, itemStat.Exo, itemStat.Stat.Mageable);
+                row.Tag = new ItemStatRow(itemStat);
+                var (min, max) = itemStat.Exo
+                    ? ("-", "-")
+                    : (itemStat.Min.ToString(), itemStat.Max.ToString());
+                row.Cells[0].ToolTipText = $"Min: {min}\nMax: {max}";
+            }
+            // Then for exos in reverse order so as not to break the order of stats
+            foreach (var itemStat in item.Stats.Where(stat => stat.Exo).Reverse()) {
                 var row = AddNewStatRow(itemStat.Stat.DisplayName, itemStat.Value, itemStat.Max,  0, 0, itemStat.Exo, itemStat.Stat.Mageable);
                 row.Tag = new ItemStatRow(itemStat);
                 var (min, max) = itemStat.Exo
@@ -252,11 +275,19 @@ namespace Inkybot
 
         private DataGridViewRow AddNewStatRow(string displayName, int value, int? target, int priority, int? targetMinimum, bool exo, bool mageable) {
             if (mageable) {
-                statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", priority);
+                if (exo) {
+                    statsDataGridView.Rows.Insert(0, displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", priority);
+                } else {
+                    statsDataGridView.Rows.Add(displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", priority);
+                }
             } else {
-                statsDataGridView.Rows.Add(displayName, "-", "-", "-", priority);
+                if (exo) {
+                    statsDataGridView.Rows.Insert(0, displayName, value, target?.ToString() ?? "-", targetMinimum?.ToString() ?? "-", priority);
+                } else {
+                    statsDataGridView.Rows.Add(displayName, "-", "-", "-", priority);
+                }
             }
-            var index = statsDataGridView.Rows.Count-1;
+            var index = exo ? 0 : statsDataGridView.Rows.Count-1;
             var row = statsDataGridView.Rows[index];
             if (exo)
                 row.DefaultCellStyle = exoCellStyle;

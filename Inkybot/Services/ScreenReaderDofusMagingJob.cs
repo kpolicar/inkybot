@@ -52,7 +52,7 @@ namespace Inkybot.Services
         private Stopwatch changeTimeout = new Stopwatch();
         private int unsuccessfulCombineTicks;
         private int ticks;
-        public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
+        //public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
         private const int MaxReasonableBalanceDifference = 300000;
 
 
@@ -162,11 +162,15 @@ namespace Inkybot.Services
                     Thread.Sleep(1000);
                 }
                 
+                if ((state.PreviousAction as CombineRune)?.Exo ?? false) {
+                    dataProvider.ResetMinMaxScan();
+                }
+                
                 dataProvider.Reset(resetMinMaxScan);
                 dataProvider.FetchData();
                 item = dataProvider.Item();
                 try {
-                    state.PreviousHistory = history.Analyse(dataProvider.History());
+                    state.PreviousHistory = dataProvider.History();
                 } catch (Exception) {
                     // if we couldn't resolve previous history, no worries.
                 }

@@ -24,6 +24,6 @@ namespace Inkybot.Contracts
         public void StopMage();
         
         public bool IsMaging { get; }
-        MageHistoryRecord? LastHistoryRecord { get; }
+        //MageHistoryRecord? LastHistoryRecord { get; }
     }
 }

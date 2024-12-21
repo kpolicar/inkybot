@@ -43,6 +43,7 @@ namespace Inkybot.Services
             if (!config.RestoreHighSinkStatsImmediately) {
                 excludedStats = excludedStats.Concat(config.StatsConfig.HighSinkStats)
                     .ToArray();
+                
             }
 
             var proposedMage = ResolveItemMageAndOverrideIfSuccessfullyResolved(() =>

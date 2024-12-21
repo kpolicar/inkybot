@@ -24,7 +24,7 @@ namespace Inkybot.Services
         }
         
         public IAction Finish(Item item) {
-            return new Finish(targetControl, item, magingJob.LastHistoryRecord);
+            return new Finish(targetControl, item);
         }
         
         public IAction SelectItemFromQueue() {

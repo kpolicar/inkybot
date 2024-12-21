@@ -99,8 +99,7 @@ namespace Inkybot.Services
             if (e.action is Finish finish &&
                 previousAction is CombineRune previousCombine &&
                 previousCombine.Exo &&
-                (finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat)
-                 || finish.LastHistoryRecord?.Landed?.stat == previousCombine.Rune.Stat) // Todo: this probably wont work
+                (finish.Item.Stats.ExoStats.Any(itemStat => itemStat.Stat == previousCombine.Rune.Stat))
                 )
             {
                 
