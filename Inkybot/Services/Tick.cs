@@ -35,6 +35,8 @@ namespace Inkybot.Services
                 actions = Program.Services.GetService<ActionFactory>();
             }
 
+            private bool hasDoneRuneCheck = false;
+
             public void Execute() {
                 var currentStep = job.state.Step;
                 //job.magus.SetHistory(job.state.PreviousHistory ?? new List<MageHistoryRecord>());
@@ -45,8 +47,12 @@ namespace Inkybot.Services
                     case State.JobStep.EXECUTING_COMBINE:
                         if (job.state.PreviousCombineWasExoAttempt
                             || job.changeTimeout.ElapsedMilliseconds >= 1500
-                            || job.dataProvider.Scan!.screenshot.Height <= 750)
+                            || job.dataProvider.Scan!.screenshot.Height <= 750) {
+                            if (!hasDoneRuneCheck) { // we've entered this immediately, without first doing rune check
+                                job.dataProvider.FetchData();
+                            }
                             DoHistoryCheckForChanges();
+                        }
                         else
                             DoRuneCheckForChanges();
                         break;
@@ -90,7 +96,7 @@ namespace Inkybot.Services
                 }
 
                 StatsChangedChecksCount = 0;
-                Thread.Sleep(250);
+                Thread.Sleep(100);
             }
 
             private void DoRuneCheckForChanges() {
@@ -108,6 +114,7 @@ namespace Inkybot.Services
                     throw new SystemException("Cannot check for changes (previous action has no information about rune)");
                 
                 job.dataProvider.FetchData();
+                hasDoneRuneCheck = true;
 
                 var newUserRune = job.dataProvider.RuneQuantity(previousAction.Rune);
                 var userRune = job
@@ -141,9 +148,6 @@ namespace Inkybot.Services
                 previousTickDeferredExecutionTask?.Wait();
                 EnforceChangeTimeoutRunningAndNotFinished();
 
-                Debug.WriteLine("fetching history for changes");
-                job.dataProvider.FetchData();
-                Debug.WriteLine("fetched history for changes");
                 var itemHistory = job.dataProvider.History();
                 Debug.WriteLine("parsed history for changes");
 
@@ -152,7 +156,9 @@ namespace Inkybot.Services
                 Debug.WriteLine("history has changed: "+ historyHasChanged);
 
                 if (!historyHasChanged) {
-                    Thread.Sleep(100);
+                    Debug.WriteLine("fetching history for changes");
+                    job.dataProvider.FetchData();
+                    Debug.WriteLine("fetched history for changes");
                 } else {
                     var historyRecord = itemHistory;
                     //EnforceValidPreviousActionResult(historyRecord);
@@ -221,6 +227,7 @@ namespace Inkybot.Services
                 
                      job.Balance = (int) balance;
                  });
+                hasDoneRuneCheck = false; // reset
                 job.state.Step = State.JobStep.STANDARD;
             }
 
@@ -328,25 +335,17 @@ namespace Inkybot.Services
                 var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine) {
-                    if (job.state.PreviousAction is CombineRune previousCombine && 
-                        PreviousCombineWasExoThatLandedButIsNotVisibleOnItem(item, combine, previousCombine)
-                        && (job.magus is not CustomDofusMagingAI customDofusMagingAI || customDofusMagingAI.FinishAfterExoLandedButIsNotVisibleOnItem))
-                    {
-                        action = actions.Finish(item);
-                    } else {
-                        
-                        if (job.unsuccessfulCombineTicks >= 5) {
-                            throw new OutOfRunesException(combine.Rune);
-                        }
-                    
-                        EnforceHasRunesForCombine(combine);
-
-                        if (combine.Exo) {
-                            job.state.PreviousHistory = job.dataProvider.History();
-                            //job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
-                        }
-                        RaiseEventIfMagingItemWithHighSinkExo(item);
+                    if (job.unsuccessfulCombineTicks >= 5) {
+                        throw new OutOfRunesException(combine.Rune);
                     }
+                
+                    EnforceHasRunesForCombine(combine);
+
+                    if (combine.Exo) {
+                        job.state.PreviousHistory = job.dataProvider.History();
+                        //job.state.PreviousHistory = job.history.Analyse(job.dataProvider.History());
+                    }
+                    RaiseEventIfMagingItemWithHighSinkExo(item);
                 }
 
                 
