@@ -145,9 +145,8 @@
         <Reference Include="System.Drawing" />
         <Reference Include="System.Windows.Forms" />
         <Reference Include="System.Xml" />
-        <Reference Include="Tesseract, Version=4.1.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\Tesseract.4.1.1\lib\net45\Tesseract.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="Tesseract, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\Tesseract.5.2.0\lib\net48\Tesseract.dll</HintPath>
         </Reference>
         <Reference Include="Westwind.Scripting, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\Westwind.Scripting.0.3.0\lib\net472\Westwind.Scripting.dll</HintPath>
@@ -596,13 +595,13 @@
         <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
       </PropertyGroup>
       <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
-      <Error Condition="!Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.1\build\Tesseract.targets'))" />
       <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
       <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
+      <Error Condition="!Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.5.2.0\build\Tesseract.targets'))" />
     </Target>
     <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
-    <Import Project="..\packages\Tesseract.4.1.1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets')" />
     <Import Project="..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
+    <Import Project="..\packages\Tesseract.5.2.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" />
 </Project>

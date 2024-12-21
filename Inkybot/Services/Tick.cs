@@ -159,9 +159,22 @@ namespace Inkybot.Services
             }
 
             private void CalculateSinkChange() {
-                job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
-                // EnforceChangeTimeoutRunningAndNotFinished();
-                // HistoryChangedChecksCount++;
+                EnforceChangeTimeoutRunningAndNotFinished();
+                HistoryChangedChecksCount++;
+
+                try {
+                    job.dataProvider.FetchData();
+                    var sink = job.dataProvider.Sink();
+                    if (sink == null)
+                        return;
+                    job.dSink = sink.Value;
+                    job.state.Step = State.JobStep.CALCULATING_PRICE_CHANGE;
+                } catch (Exception ex) {
+                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
+                    Debug.WriteLine(ex.StackTrace);
+                }
+                
                 //
                 // // Todo: continue with standard job (calculate sink change async) then wait before AI resolving action for calculation to complete
                 // var itemLatestHistory = job.history.Analyse(job.dataProvider.LatestHistory(), false);

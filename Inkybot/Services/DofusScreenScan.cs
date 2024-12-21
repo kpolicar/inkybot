@@ -121,7 +121,7 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
+                if (true || lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
@@ -179,8 +179,20 @@ namespace Inkybot.Services
                 mins = ResizeArrayLeft(mins, values.Length, "-");
                 maxes = ResizeArrayLeft(maxes, values.Length, "-");
 
-                return mins.ZipWithDefault(maxes, (min, valuemax) => (min ?? "-") + " " + valuemax)
+                // Postprocess OCR result, fix OCR % misread
+                for (int i = 0; i < Math.Min(mins.Length, maxes.Length); i++) {
+                    if (mins[i].Contains('%') || maxes[i].Contains('%') || values[i].Contains('%')) {
+                        if (!mins[i].EndsWith("4") && !mins[i].Contains('%')) mins[i] += "%";
+                        if (!maxes[i].EndsWith("4") && !maxes[i].Contains('%')) maxes[i] += "%";
+                        if (mins[i].EndsWith("4")) mins[i] = mins[i].Remove(mins[i].Length -1, 1) + "%";
+                        if (maxes[i].EndsWith("4")) maxes[i] = maxes[i].Remove(maxes[i].Length -1, 1) + "%";
+                    }
+                }
+                
+                var result = mins.ZipWithDefault(maxes, (min, valuemax) => (min ?? "-") + " " + valuemax)
                     .ToArray();
+                
+                return result;
             }
             
             
@@ -240,6 +252,25 @@ namespace Inkybot.Services
 
             public async Task<string[]> History() {
                 return await historyScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
+            }
+
+            public async Task<decimal?> Sink() {
+                var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight);
+                var result = scanned.First().ToLower();
+
+                var sinkText = GetStringAfterSequence(result, "sink");
+                var succ = decimal.TryParse(sinkText, out var sink);
+                return succ ? sink : null;
+            }
+            
+            static string GetStringAfterSequence(string input, string sequence)
+            {
+                int index = input.IndexOf(sequence);
+                if (index != -1)
+                {
+                    return input.Substring(index + sequence.Length);
+                }
+                return string.Empty; // Return empty string if sequence not found
             }
 
             public async Task<int?> AverageItemBalance() {

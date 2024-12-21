@@ -93,8 +93,10 @@ namespace Inkybot.Services
                 image.Resize(new Percentage(300));
                 image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(30));
+                image.BlackThreshold(new Percentage(40));
                 image.Negate();
+                //image.BlackThreshold(new Percentage(60));
+                //image.BlackThreshold(new Percentage(55));
             }
         }
 

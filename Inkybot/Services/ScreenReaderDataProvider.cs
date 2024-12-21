@@ -67,6 +67,12 @@ namespace Inkybot.Services
             return scanResults;
         }
 
+        public decimal? Sink() {
+            var scanResults = Scan!.Sink().Result;
+
+            return scanResults;
+        }
+
         public string[] LatestHistory() {
             var scanResults = Scan!.LatestHistory()
                 .Result;
@@ -104,6 +110,7 @@ namespace Inkybot.Services
             var relevantMinMaxes = previousMinMaxScan.Take(statResults.Length);
             
             var statsResult = statResults
+                .Select(result => result.Replace("0O", "0").Replace("O0", "0")) // Fix some poor OCR readings
                 .ZipWithDefault(
                     relevantMinMaxes,
                     (value, minmax) => (minmax ?? "- -") + " " + value)
