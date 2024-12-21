@@ -184,8 +184,8 @@ namespace Inkybot.Services
                     if (mins[i].Contains('%') || maxes[i].Contains('%') || values[i].Contains('%')) {
                         if (!mins[i].EndsWith("4") && !mins[i].Contains('%')) mins[i] += "%";
                         if (!maxes[i].EndsWith("4") && !maxes[i].Contains('%')) maxes[i] += "%";
-                        if (mins[i].EndsWith("4")) mins[i] = mins[i].Remove(mins[i].Length -1, 1) + "%";
-                        if (maxes[i].EndsWith("4")) maxes[i] = maxes[i].Remove(maxes[i].Length -1, 1) + "%";
+                        if (mins[i].EndsWith("4") && mins[i] != "4") mins[i] = mins[i].Remove(mins[i].Length -1, 1) + "%";
+                        if (maxes[i].EndsWith("4") && maxes[i] != "4") maxes[i] = maxes[i].Remove(maxes[i].Length -1, 1) + "%";
                     }
                 }
                 
