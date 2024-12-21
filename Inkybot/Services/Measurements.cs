@@ -104,6 +104,12 @@ namespace Inkybot.Services
             Height = 1009
         };
         
+        public static Responsive.Measurement MagingTableCharacterDetails => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(258, 194, 557, 268),
+            Width = 1694,
+            Height = 1009
+        };
+        
         public static Responsive.Measurement RemoveItemBounds => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(643, 218, 643, 218),
             Width = 1694,
@@ -111,13 +117,13 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement HistoryBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(285, 275, 440, 810),
+            Rectangle = Rect.FromCoords(285, 277, 440, 810),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement ShortHistoryBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(285, 275, 440, 810),
+            Rectangle = Rect.FromCoords(285, 277, 440, 810),
             Width = 1694,
             Height = 1009
         };
@@ -141,7 +147,7 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement InventoryAverageItemValueBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1310, 796, 1380, 808),
+            Rectangle = Rect.FromCoords(1292, 796, 1380, 808),
             Width = 1694,
             Height = 1009
         };
@@ -189,7 +195,7 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement SinkMeasurement => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(575, 202, 622, 222),
+            Rectangle = Rect.FromCoords(565, 202, 622, 222),
             Width = 1694,
             Height = 1009
         };

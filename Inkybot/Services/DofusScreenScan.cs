@@ -258,7 +258,7 @@ namespace Inkybot.Services
                 var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight);
                 var result = scanned.First().ToLower();
 
-                var sinkText = GetStringAfterSequence(result, "sink");
+                var sinkText = GetStringAfterSequence(result, "sink").Replace(":", "");
                 var succ = decimal.TryParse(sinkText, out var sink);
                 return succ ? sink : null;
             }

@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ImageMagick;
+using ImageMagick.Drawing;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Api.Resources;
@@ -109,12 +110,19 @@ namespace Inkybot.Api
             
             var b =
                 Responsive.ResponsiveRectangle(Measurements.MagingTable, image.Width, image.Height);
+            var characterDetails =
+                Responsive.ResponsiveRectangle(Measurements.MagingTableCharacterDetails, image.Width, image.Height);
             var optimizer = new ImageOptimizer();
             using var compressedImage = new MagickImage(ms);
+            var fillerColor = compressedImage.GetPixels().GetPixel(characterDetails.X, characterDetails.Y).ToColor() ?? new MagickColor("#393D58");
+            var drawables = new Drawables()
+                .FillColor(fillerColor) // Set the fill color
+                .Rectangle(characterDetails.X, characterDetails.Y, characterDetails.X+characterDetails.Width, characterDetails.Y+characterDetails.Height); // Draw a rectangle (top-left: 50, 50; bottom-right: 200, 200)
+            drawables.Draw(compressedImage);
             compressedImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
             compressedImage.SetCompression(CompressionMethod.JPEG);
-            compressedImage.Resize(908,750);
-            compressedImage.Extent(908,750, Gravity.Center, new MagickColor("#000000"));
+            compressedImage.Resize(849,750);
+            compressedImage.Extent(849,750, Gravity.Center, new MagickColor("#000000"));
             compressedImage.Write(ms, MagickFormat.Jpeg);
             ms.Position = 0;
             optimizer.LosslessCompress(ms);

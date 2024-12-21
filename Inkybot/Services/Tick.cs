@@ -75,6 +75,7 @@ namespace Inkybot.Services
                         job.state.Step = State.JobStep.EXECUTING_COMBINE;
                         job.state.PreviousCombineWasExoAttempt = combineRune.Exo;
                         if (combineRune.Exo || combineRune.Rune.Stat.Config.HighSinkStat) {
+                            job.dataProvider.ResetMinMaxScan();
                             Thread.Sleep(800);
                         }
                     }
@@ -437,7 +438,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 5000)
+                if (job.changeTimeout.ElapsedMilliseconds > 7500)
                     HandleChangeCheckTimeout();
             }
         }
