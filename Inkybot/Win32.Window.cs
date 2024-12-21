@@ -8,5 +8,9 @@
         public static int WS_BORDER = 0x00800000;
         public static int WS_DLGFRAME = 0x00400000;
         public static int WS_CAPTION = WS_BORDER | WS_DLGFRAME | WS_SIZEBOX; //window with a title bar
+        public const int SWP_FRAMECHANGED = 0x0020;
+        public const int SWP_NOMOVE = 0x0002;
+        public const int SWP_NOSIZE = 0x0001;
+        public const int SWP_NOZORDER = 0x0004;
     }
 }
