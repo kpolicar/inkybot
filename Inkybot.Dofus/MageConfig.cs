@@ -70,7 +70,20 @@ namespace Inkybot.Dofus
         public MageConfig(Item item) {
             StatsConfig = new ItemMageConfig();
             
-            foreach (var itemStat in item.Stats) {
+            foreach (var itemStat in item.Stats.StandardStats) {
+                var stat = itemStat.Stat;
+                StatsConfig[stat] = new ItemStatMageConfig(
+                    itemStat.Stat,
+                    itemStat.Min,
+                    itemStat.Max,
+                    !itemStat.Exo
+                            ? (itemStat.Stat.Mageable ? itemStat.Max : (int?) null)
+                            : Math.Min(0, itemStat.Value),
+                    null,
+                    0);
+            }
+            // In reverse order to fix for dofus exo on top now
+            foreach (var itemStat in item.Stats.ExoStats.Reverse()) {
                 var stat = itemStat.Stat;
                 StatsConfig[stat] = new ItemStatMageConfig(
                     itemStat.Stat,

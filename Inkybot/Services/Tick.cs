@@ -209,12 +209,12 @@ namespace Inkybot.Services
             }
             
             private void CalculatePriceChange() {
-                // Task.Run(() => {
-                //     var balance = job.dataProvider.AverageItemBalance();
-                //     if (balance == null) return;
-                //
-                //     job.Balance = (int) balance;
-                // });
+                 Task.Run(() => {
+                     var balance = job.dataProvider.AverageItemBalance();
+                     if (balance == null) return;
+                
+                     job.Balance = (int) balance;
+                 });
                 job.state.Step = State.JobStep.STANDARD;
             }
 
@@ -354,7 +354,8 @@ namespace Inkybot.Services
                 return previousAction.Exo
                        && currentAction.Exo
                        && currentAction.Rune == previousAction.Rune
-                       //&& job.LastHistoryRecord?.Landed?.stat == previousAction.Rune.Stat
+                       && (job.state.PreviousHistory.LastOrDefault()?.Contains(previousAction.Rune.Stat.DisplayName) ?? false) // the last raw line is an exo
+                       && (!job.state.PreviousHistory.LastOrDefault()?.StartsWith("-") ?? false) // didn't fall, it landed
                        && ReferenceEquals(item.Stats[previousAction.Rune.Stat], null);
             }
 

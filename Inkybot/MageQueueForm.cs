@@ -102,6 +102,8 @@ namespace Inkybot
         
         private void OnMageQueueStatPresetSelectedIndexChanged(object sender, MageQueueEventArgs e, int selectedIndex) {
             var mage = mageQueue.Queue.Find(item => item == e.QueueItem);
+            if (mage == null)
+                return;
             mage.Config.PresetIndex = selectedIndex != 0 ? selectedIndex-1 : null;
             
             if (mageQueue.Peek() == e.QueueItem)
@@ -110,6 +112,8 @@ namespace Inkybot
 
         private void OnMageQueueConfigPresetSelectedIndexChanged(object sender, MageQueueEventArgs e, int selectedIndex) {
             var mage = mageQueue.Queue.Find(item => item == e.QueueItem);
+            if (mage == null)
+                return;
             mage.Config.ConfigPresetIndex = selectedIndex != 0 ? selectedIndex-1 : null;
             
             if (mageQueue.Peek() == e.QueueItem)
