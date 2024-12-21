@@ -288,7 +288,7 @@ namespace Inkybot.Services
 
 
             private IAction DoAction() {
-                if ((job.state.PreviousAction as CombineRune)?.Exo ?? false) {
+                if (((job.state.PreviousAction as CombineRune)?.Exo ?? false) || (job.state.PreviousItem?.HasExo ?? false)) {
                     job.dataProvider.ResetMinMaxScan();
                 }
                 

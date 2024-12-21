@@ -162,7 +162,7 @@ namespace Inkybot.Services
                     Thread.Sleep(1000);
                 }
                 
-                if ((state.PreviousAction as CombineRune)?.Exo ?? false) {
+                if (((state.PreviousAction as CombineRune)?.Exo ?? false) || (state.PreviousItem?.HasExo ?? false)) {
                     dataProvider.ResetMinMaxScan();
                 }
                 

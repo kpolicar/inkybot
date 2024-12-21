@@ -14,6 +14,7 @@ using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Inkybot.Resources;
 using Tesseract;
+using Debug = System.Diagnostics.Debug;
 using MageConfig = Inkybot.Dofus.MageConfig;
 using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
@@ -97,7 +98,10 @@ namespace Inkybot.Services
                 return false;
 
             foreach (var itemStat in unconfigured) {
-                ChangeStatConfig(itemStat.Stat, Dofus.MageConfig.ItemStatMageConfig.Default(itemStat.Stat));
+                ChangeStatConfig(itemStat.Stat,
+                    !itemStat.Exo
+                        ? Dofus.MageConfig.ItemStatMageConfig.Default(itemStat.Stat)
+                        : new MageConfig.ItemStatMageConfig(itemStat.Stat, default, default, Math.Min(0, itemStat.Value), Math.Min(0, itemStat.Value), default));
             }
             return true;
         }
