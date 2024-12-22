@@ -36,7 +36,7 @@ namespace Inkybot.Services
                 actions = Program.Services.GetService<ActionFactory>();
             }
 
-            private bool hasDoneRuneCheck = false;
+            private static bool hasDoneRuneCheck = false;
 
             public void Execute() {
                 var currentStep = job.state.Step;
@@ -48,7 +48,7 @@ namespace Inkybot.Services
                     case State.JobStep.EXECUTING_COMBINE:
                         if (job.state.PreviousCombineWasExoAttempt
                             || job.changeTimeout.ElapsedMilliseconds >= 1500
-                            || job.dataProvider.Scan!.screenshot.Height <= 750) {
+                            || job.dataProvider.Scan!.screenshot.Height <= 750 || hasDoneRuneCheck) {
                             if (!hasDoneRuneCheck) { // we've entered this immediately, without first doing rune check
                                 job.dataProvider.FetchData();
                             }
@@ -97,7 +97,7 @@ namespace Inkybot.Services
                 }
 
                 StatsChangedChecksCount = 0;
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
 
             private void DoRuneCheckForChanges() {

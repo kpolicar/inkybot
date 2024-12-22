@@ -171,6 +171,25 @@ namespace Inkybot.Services
                     EngineMode.Default);
         }
 
+        public class SinkScanner : ScreenScanner
+        {
+            public SinkScanner(Responsive.Measurement regionOfInterest,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleWord) : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => { 
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789.");
+                    //engine.SetVariable("classify_bln_numeric_mode", 1);
+                });
+            }
+            
+            protected override TesseractEngine CreateEngine() =>
+                new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    "digits",
+                    EngineMode.Default);
+        }
+
         public class KamasScanner : ScreenScanner
         {
             public KamasScanner(Responsive.Measurement regionOfInterest,

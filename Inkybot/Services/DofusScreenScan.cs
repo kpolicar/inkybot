@@ -70,6 +70,7 @@ namespace Inkybot.Services
                     statMaxesScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     runeScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     averageItemPriceScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
+                    sinkScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                 }
 
                 this.saveToDisk = saveToDisk;
@@ -102,10 +103,6 @@ namespace Inkybot.Services
                     throw new ApplicationException("Screenshot has already been taken!");
                 screenshot = TakeScreenshot();
 
-                foreach (var minmax in Stats().Result) {
-                    Debug.WriteLine(minmax);
-                }
-
                 if (saveToDisk)
                     Save();
             }
@@ -120,26 +117,26 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (true || lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
+                if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(300));
+                        new ResizeImagePreprocessor(350));
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(300));
+                        new ResizeImagePreprocessor(350));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
+                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SparseText);
                     statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 600), PageSegMode.SingleBlock);
+                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SingleBlock);
                     statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 600), PageSegMode.SingleBlock);
+                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SingleBlock);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
-                            new ResizeImagePreprocessor(300), PageSegMode.SingleWord);
-                    sinkScanner = new TextScreenScanner(Measurements.SinkMeasurement, SplitStatTextLines,
-                        new SinkScannerImagePreprocessor(userSettings, 600), PageSegMode.SingleWord);
+                            new ResizeImagePreprocessor(350), PageSegMode.SingleWord);
+                    sinkScanner = new SinkScanner(Measurements.SinkMeasurement, SplitStatTextLines,
+                        new SinkScannerImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                 }
                 
                 latestHistoryScanner!.PageProcessed += OnLatestHistoryPageProcessed;
@@ -279,23 +276,12 @@ namespace Inkybot.Services
             }
 
             public async Task<decimal?> Sink() {
-                var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight);
-                var result = scanned.FirstOrDefault()?.ToLower() ?? "";
-                Debug.WriteLine(">>>>>>>>>>>>> SINK:"+result);
+                var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
+                var result = scanned.FirstOrDefault() ?? "";
+                result = Regex.Match(result, @"(\d*\.?\d+)", RegexOptions.RightToLeft).Groups[1].Value;
 
-                var sinkText = GetStringAfterSequence(result, "sink").Replace(":", "");
-                var succ = decimal.TryParse(sinkText, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
+                var succ = decimal.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
                 return succ ? sink : null;
-            }
-            
-            static string GetStringAfterSequence(string input, string sequence)
-            {
-                int index = input.IndexOf(sequence);
-                if (index != -1)
-                {
-                    return input.Substring(index + sequence.Length);
-                }
-                return string.Empty; // Return empty string if sequence not found
             }
 
             public async Task<int?> AverageItemBalance() {

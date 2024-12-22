@@ -94,6 +94,7 @@ namespace Inkybot.Services
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(40));
                 image.Negate();
+                image.BlackThreshold(new Percentage(60));
             }
         }
 
