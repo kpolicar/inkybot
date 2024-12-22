@@ -14,6 +14,7 @@ using Inkybot.Dofus.Exceptions;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using Enumerable = Inkybot.Helpers.Enumerable;
 
 namespace Inkybot.Services
 {
@@ -46,16 +47,7 @@ namespace Inkybot.Services
                         DoMainMageAction();
                         break;
                     case State.JobStep.EXECUTING_COMBINE:
-                        if (job.state.PreviousCombineWasExoAttempt
-                            || job.changeTimeout.ElapsedMilliseconds >= 1500
-                            || job.dataProvider.Scan!.screenshot.Height <= 750 || hasDoneRuneCheck) {
-                            if (!hasDoneRuneCheck) { // we've entered this immediately, without first doing rune check
-                                job.dataProvider.FetchData();
-                            }
-                            DoHistoryCheckForChanges();
-                        }
-                        else
-                            DoRuneCheckForChanges();
+                        DoHistoryCheckForChanges();
                         break;
                     case State.JobStep.CALCULATING_SINK_CHANGE:
                         CalculateSinkChange();
@@ -97,7 +89,7 @@ namespace Inkybot.Services
                 }
 
                 StatsChangedChecksCount = 0;
-                Thread.Sleep(100);
+                //Thread.Sleep(500);
             }
 
             private void DoRuneCheckForChanges() {
@@ -151,10 +143,10 @@ namespace Inkybot.Services
                 EnforceChangeTimeoutRunningAndNotFinished();
 
                 var itemHistory = job.dataProvider.History();
-                Debug.WriteLine("parsed history for changes");
 
-                var historyHasChanged = itemHistory != job.state.PreviousHistory;
-                                        ;
+                var historyHasChanged = Enumerable.ZipWithDefault(itemHistory, job.state.PreviousHistory, (s, s1) => {
+                    return s != s1;
+                }).Any(b => b);
                 Debug.WriteLine("history has changed: "+ historyHasChanged);
 
                 if (!historyHasChanged) {
@@ -445,7 +437,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 6000)
+                if (job.changeTimeout.ElapsedMilliseconds > 60000)
                     HandleChangeCheckTimeout();
             }
         }

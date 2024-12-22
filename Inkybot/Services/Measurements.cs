@@ -29,9 +29,9 @@ namespace Inkybot.Services
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
             var x1 = 900 + column * 41;
-            var y1 = 316 + (int) (row * 41);
+            var y1 = 316 + (int) (row * 40);
             var x2 = 928 + column * 41;
-            var y2 = 342 + (int) (row * 41);
+            var y2 = 342 + (int) (row * 40);
 
             return new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x1, y1, x2, y2),

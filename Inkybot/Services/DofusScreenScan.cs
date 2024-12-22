@@ -278,9 +278,11 @@ namespace Inkybot.Services
             public async Task<decimal?> Sink() {
                 var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 var result = scanned.FirstOrDefault() ?? "";
-                result = Regex.Match(result, @"(\d*\.?\d+)", RegexOptions.RightToLeft).Groups[1].Value;
-
-                var succ = decimal.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
+                var sinkResult = Regex.Match(result, @"(\d*\.?\d+)", RegexOptions.RightToLeft).Groups[1].Value;
+                if (sinkResult.StartsWith("."))
+                    sinkResult = Regex.Match(result, @"(\d+)", RegexOptions.RightToLeft).Groups[1].Value;
+                
+                var succ = decimal.TryParse(sinkResult, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
                 return succ ? sink : null;
             }
 

@@ -44,10 +44,12 @@ namespace Inkybot.Services
             }
 
             protected virtual TesseractEngine CreateEngine() {
-                return new TesseractEngine(
+                var eng = new TesseractEngine(
                     Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
                     CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
                     EngineMode.Default);
+                eng.SetVariable("debug", "0");
+                return eng;
             }
 
             public void SetVariables(Action<TesseractEngine> callback) {
@@ -142,6 +144,7 @@ namespace Inkybot.Services
                 SetVariables(engine => {
                     engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
                     engine.SetVariable("classify_bln_numeric_mode", 1);
+                    engine.SetVariable("debug", 0);
                 });
             }
 
@@ -161,6 +164,7 @@ namespace Inkybot.Services
                 SetVariables(engine => { 
                     engine.SetVariable("tessedit_char_whitelist", "0123456789");
                     engine.SetVariable("classify_bln_numeric_mode", 1);
+                    engine.SetVariable("debug", 0);
                 });
             }
             
@@ -179,6 +183,7 @@ namespace Inkybot.Services
                 PageSegMode segMode = PageSegMode.SingleWord) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => { 
                     engine.SetVariable("tessedit_char_whitelist", "0123456789.");
+                    engine.SetVariable("debug", "0");
                     //engine.SetVariable("classify_bln_numeric_mode", 1);
                 });
             }
