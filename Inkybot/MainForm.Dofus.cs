@@ -71,15 +71,15 @@ namespace Inkybot
             BindServicesToDockedWindow();
             
             
-            m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
-            m_GlobalHook.KeyDown += (sender, args) => {
-                if (args.KeyCode == Keys.Escape) {
-                    if (magingJob.IsMaging)
-                        magingJob.StopMage();
-                }
-                if (args.KeyCode == Keys.F6)
-                    OnClickInsert();
-            };
+            // m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
+            // m_GlobalHook.KeyDown += (sender, args) => {
+            //     if (args.KeyCode == Keys.Escape) {
+            //         if (magingJob.IsMaging)
+            //             magingJob.StopMage();
+            //     }
+            //     if (args.KeyCode == Keys.F6)
+            //         OnClickInsert();
+            // };
 
             return true;
         }

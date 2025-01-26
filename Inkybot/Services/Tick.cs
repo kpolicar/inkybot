@@ -437,7 +437,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 60000)
+                if (job.changeTimeout.ElapsedMilliseconds > 15000)
                     HandleChangeCheckTimeout();
             }
         }

@@ -18,7 +18,7 @@ namespace Inkybot
         private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
         
         private bool debugging;
-        private Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
+        //private static Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         private Control latestHistoryOcrIndicatorControl = null!;
 
         private void InitOcrIndicators() {
@@ -95,7 +95,7 @@ namespace Inkybot
             OnResizeEnd(EventArgs.Empty);
 
             #if DEBUG
-            m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
+            //m_GlobalHook.MouseMove += GlobalHookMouseMoveExt;
             #endif
         }
 
