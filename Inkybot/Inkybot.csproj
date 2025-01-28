@@ -39,6 +39,9 @@
         <ApplicationIcon>../icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="EasyHook, Version=2.7.7097.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+          <HintPath>..\packages\EasyHook.2.7.7097\lib\net40\EasyHook.dll</HintPath>
+        </Reference>
         <Reference Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' " Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
           <Private>True</Private>
@@ -114,6 +117,7 @@
           <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="System.Runtime.Remoting" />
         <Reference Include="System.Runtime.Serialization" />
         <Reference Include="System.Runtime.WindowsRuntime" />
         <Reference Include="System.Security" />
@@ -548,6 +552,24 @@
     <ItemGroup>
       <Content Include="afterbuild.sh" />
       <Content Include="app.manifest" />
+      <Content Include="EasyHook32.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="EasyHook32Svc.exe">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="EasyHook64.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="EasyHook64Svc.exe">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="EasyLoad32.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="EasyLoad64.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Include="inkybot.certificate.pfx" />
       <Content Include="Inkybot.crproj" />
       <Content Include="Resources\Tesseract\digits.traineddata">
@@ -568,6 +590,10 @@
       <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
         <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
         <Name>Inkybot.Dofus</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\InkybotHook\InkybotHook.csproj">
+        <Project>{0ac8e0fe-afdd-4681-9501-88bda7f7f01d}</Project>
+        <Name>InkybotHook</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

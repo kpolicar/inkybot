@@ -67,6 +67,8 @@ namespace Inkybot
 
             parentHandle = WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
+            
+            Win32Input.SetTargetProcessId(pDofus.Id);
 
             BindServicesToDockedWindow();
             

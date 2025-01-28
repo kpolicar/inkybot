@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Design;
+using Inkybot.Events;
+using InkybotHook;
 
 namespace Inkybot.Services
 {
-    public class Win32Input : Input
+    public class Win32Input : Input, HasDependencies
     {
+        private static ServerInterface _server;
+        private static Int32 targetPID = 0;
+        public static bool isInitialized = false;
+        
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
@@ -26,24 +35,101 @@ namespace Inkybot.Services
         
         private IntPtr relativeToControl;
 
+
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var magingJob = serviceContainer.GetService<DofusMagingJob>();
+            magingJob.Starting += OnMagingJobStart;
+            magingJob.Started += OnMagingJobStarted;
+            magingJob.Stopped += OnMagingJobStopped;
+        }
+        private void SetCursorPosition(int x, int y) {
+            if (x != -1 || y != -1) {
+                var r = new RECT();
+                GetWindowRect(relativeToControl, out r);
+                x += r.Left;
+                y += r.Top;
+                //x += 114;
+                //y += 23;
+            }
+            Debug.WriteLine(x+", "+y);
+            _server.SetCursorFixedPosition(new ServerInterface.POINT{X = x, Y = y});
+        }
+
+        private void OnMagingJobStopped(object sender, EventArgs e) {
+            SetCursorPosition(-1, -1);
+        }
+
+        private void OnMagingJobStarted(object sender, MagingJobStartedEventArgs e) {
+            SetCursorPosition(0, 0);
+        }
+
+        private void OnMagingJobStart(object sender, EventArgs e) {
+            Init();
+        }
+        
+        public static void SetTargetProcessId(int processId) => targetPID = processId;
+        public static void Init() {
+            if (isInitialized) return;
+            
+            // Will contain the name of the IPC server channel
+            string channelName = null;
+            _server = new ServerInterface();
+
+            if (targetPID <= 0)
+                throw new Exception("Could not initialize input handler");
+
+
+            // Create the IPC server using the FileMonitorIPC.ServiceInterface class as a singleton
+            EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
+
+            // Get the full path to the assembly we want to inject into the target process
+            string injectionLibrary = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "InkybotHook.dll");
+
+            try
+            {
+                // Injecting into existing process by Id
+                if (targetPID > 0)
+                {
+                    Console.WriteLine("Attempting to inject into process {0}", targetPID);
+
+                    // inject into existing process
+                    EasyHook.RemoteHooking.Inject(
+                        targetPID,          // ID of process to inject into
+                        injectionLibrary,   // 32-bit library to inject (if target is 32-bit)
+                        injectionLibrary,   // 64-bit library to inject (if target is 64-bit)
+                        channelName         // the parameters to pass into injected library
+                                            // ...
+                    );
+                    isInitialized = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("There was an error while injecting into target:");
+                Console.ResetColor();
+                Console.WriteLine(e.ToString());
+            }
+        }
+
         public void Click(int x, int y) {
-            var r = new RECT();
-            GetWindowRect(relativeToControl, out r);
-            x += r.Left;
-            y += r.Top;
-            Debug.WriteLine(r.Left + ", " + r.Top + ", " + r.Right + ", " + r.Bottom);
-            SetForegroundWindow(relativeToControl);
-            Cursor.Position = new Point(x, y);
+            SetCursorPosition(x, y);
+            Thread.Sleep(10);
+            
+            SetForegroundWindow(relativeToControl); // todo, neccessary?
             
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x, y));
         }
 
         public void Drag(int x, int y, int tX, int tY) {
+            SetForegroundWindow(relativeToControl);
+            SetCursorPosition(x, y);
+            Thread.Sleep(10);
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             
-            Win32.SendMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(tX, tY));
-            Win32.SendMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(tX, tY));
+            SetCursorPosition(tX, tY);
+            Thread.Sleep(10);
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(tX, tY));
         }
 
@@ -73,16 +159,12 @@ namespace Inkybot.Services
         }
 
         public void Move(int x, int y) {
-            x += 114;
-            y += 23;
-            var r = new RECT();
-            // GetWindowRect(relativeToControl, out r);
-            SetForegroundWindow(relativeToControl);
-            Cursor.Position = new Point(x, y);
-            Win32.SendMessage(relativeToControl, Win32.WM_MOUSEMOVE, 1, Win32.MakeLParam(x, y));
+            SetCursorPosition(x, y);
         }
 
         public void CtrlDoubleClick(int x, int y) {
+            SetForegroundWindow(relativeToControl);
+            Move(x, y);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
             DoubleClick(x, y);
