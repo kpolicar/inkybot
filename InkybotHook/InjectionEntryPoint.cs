@@ -45,9 +45,9 @@ namespace InkybotHook
             try
             {
                 // Loop until IPC fails
-                while (true)
+                while (!_server.ShutdownFlag)
                 {
-                    System.Threading.Thread.Sleep(500);
+                    System.Threading.Thread.Sleep(50);
 
                     string[] queued = null;
 
@@ -98,10 +98,6 @@ namespace InkybotHook
 
             lpPoint.X = _server.point.X;
             lpPoint.Y = _server.point.Y;
-
-            lock (_messageQueue) {
-                _messageQueue.Enqueue($"x: {lpPoint.X}, y: {lpPoint.Y}");
-            }
             
             return true;
         }

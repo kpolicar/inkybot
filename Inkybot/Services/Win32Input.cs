@@ -13,7 +13,7 @@ using InkybotHook;
 
 namespace Inkybot.Services
 {
-    public class Win32Input : Input, HasDependencies
+    public class Win32Input : Input, HasDependencies, IDisposable
     {
         private static ServerInterface _server;
         private static Int32 targetPID = 0;
@@ -188,6 +188,13 @@ namespace Inkybot.Services
             Win32.SendMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYUP, (IntPtr) Keys.RControlKey, IntPtr.Zero);
             
+        }
+
+        public void Dispose() {
+            if (isInitialized) {
+                _server.ShutdownFlag = true;
+                Thread.Sleep(5000); // Wait for dll to disinject (hopefully)
+            }
         }
     }
 }

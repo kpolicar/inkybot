@@ -36,7 +36,6 @@ namespace Inkybot
                 if (pDofus != null) {
                     WindowHelpers.RestoreWindowBorders(hWndDocked);
                     WindowHelpers.UndockProcess(pDofus.MainWindowHandle, parentHandle);
-                    
                     //m_GlobalHook.Dispose();
                 }
             };

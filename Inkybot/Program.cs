@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -106,7 +107,19 @@ namespace Inkybot
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new MageQueueForm());
-            Application.Run(new MainForm());
+            var form = new MainForm();
+            Application.ApplicationExit += OnAppClosing;
+            Application.Run(form);
+        }
+
+        private static void OnAppClosing(object sender, EventArgs eventArgs) {
+            foreach (var serviceBinding in _services) {
+                var concrete = serviceBinding.Value;
+                if (concrete is IDisposable disposable) {
+                    disposable.Dispose();
+                    Debug.WriteLine("Disposed of "+disposable.GetType().Name);
+                }
+            }
         }
 
         private static void ApplyAdditionalUserSettings() {

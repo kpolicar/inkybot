@@ -44,6 +44,8 @@ namespace InkybotHook
             public int Y;
         }
 
+        public bool ShutdownFlag = false;
+
         public POINT point = new POINT { X = -1, Y = -1 };
 
         public void IsInstalled(int clientPID) {
@@ -65,7 +67,7 @@ namespace InkybotHook
         }
 
         public void ReportMessage(string message) {
-            File.WriteAllText(System.IO.Path.GetTempPath()+"inkybot", message);
+            File.AppendAllText(@"A:\Projects\RiderProjects\inkybot\Inkybot\bin\Release\logs\injected.txt", message);
         }
 
         /// <summary>
@@ -75,8 +77,6 @@ namespace InkybotHook
         public void ReportException(Exception e) {
             ReportMessage("The target process has reported an error:\r\n" + e.ToString());
         }
-
-        int count = 0;
 
         /// <summary>
         /// Called to confirm that the IPC channel is still open / host application has not closed
