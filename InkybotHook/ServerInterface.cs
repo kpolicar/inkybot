@@ -67,7 +67,7 @@ namespace InkybotHook
         }
 
         public void ReportMessage(string message) {
-            File.AppendAllText(@"A:\Projects\RiderProjects\inkybot\Inkybot\bin\Release\logs\injected.txt", message);
+            //File.AppendAllText(@"A:\Projects\RiderProjects\inkybot\Inkybot\bin\Release\logs\injected.txt", message);
         }
 
         /// <summary>

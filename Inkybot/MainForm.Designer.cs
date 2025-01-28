@@ -511,7 +511,7 @@ namespace Inkybot
             this.Controls.Add(this.sidebarRightPanel);
             this.BackColor = Color.Black;
             this.HelpButton = true;
-            this.MinimumSize = new System.Drawing.Size(1024, 600);
+            this.MinimumSize = new System.Drawing.Size(1366, 768);
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);

@@ -51,7 +51,6 @@ namespace Inkybot.Services
                 //x += 114;
                 //y += 23;
             }
-            Debug.WriteLine(x+", "+y);
             _server.SetCursorFixedPosition(new ServerInterface.POINT{X = x, Y = y});
         }
 
@@ -116,14 +115,11 @@ namespace Inkybot.Services
             SetCursorPosition(x, y);
             Thread.Sleep(10);
             
-            SetForegroundWindow(relativeToControl); // todo, neccessary?
-            
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONUP, 1, Win32.MakeLParam(x, y));
         }
 
         public void Drag(int x, int y, int tX, int tY) {
-            SetForegroundWindow(relativeToControl);
             SetCursorPosition(x, y);
             Thread.Sleep(10);
             Win32.SendMessage(relativeToControl, Win32.WM_LBUTTONDOWN, 1, Win32.MakeLParam(x, y));
@@ -163,7 +159,6 @@ namespace Inkybot.Services
         }
 
         public void CtrlDoubleClick(int x, int y) {
-            SetForegroundWindow(relativeToControl);
             Move(x, y);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.RControlKey, IntPtr.Zero);
