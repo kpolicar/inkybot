@@ -216,9 +216,9 @@ namespace Inkybot
             resetSetttingsLabel.Click += new System.EventHandler(resetSettings_Clicked);
             resources.ApplyResources(resetSetttingsLabel, "resetSetttingsLabel");
 
-            disableOpenCLLabel = new ToolStripMenuItem();
-            disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
-            resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
+            // disableOpenCLLabel = new ToolStripMenuItem();
+            // disableOpenCLLabel.Click += new System.EventHandler(disableOpenCL_Clicked);
+            // resources.ApplyResources(disableOpenCLLabel, "disableOpenCLLabel");
 
             openSettingsInFileExplorer = new ToolStripMenuItem();
             openSettingsInFileExplorer.Click += new System.EventHandler(openSettingsInFileExplorer_Clicked);
@@ -227,7 +227,7 @@ namespace Inkybot
             this.settingsContextMenuStrip.Items.AddRange(new [] {
                 switchLanguageLabel, resetSetttingsLabel, openSettingsInFileExplorer
             });
-            this.settingsContextMenuStrip.Items.Add(disableOpenCLLabel);
+            // this.settingsContextMenuStrip.Items.Add(disableOpenCLLabel);
             this.settingsContextMenuStrip.AutoSize = true;
             this.settingsContextMenuStrip.ShowCheckMargin = false;
             this.settingsContextMenuStrip.ShowImageMargin = false;
