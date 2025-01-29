@@ -1,11 +1,19 @@
 <project outputDir="confused" baseDir="bin\Release">
-  <rule pattern="not namespace('Inkybot.Resources') and not namespace('Inkybot.Properties') and not namespace('Inkybot.Services.Win32Input')" preset="maximum" inherit="false">
+  <rule pattern="not namespace('Inkybot.Resources') and not namespace('Inkybot.Properties')" preset="maximum" inherit="false">
     <protection id="rename" action="add" />
     <protection id="resources" action="add" />
+    <protection id="anti debug" action="remove"/>
+    <protection id="anti dump" action="remove"/>
+    <protection id="anti tamper" action="remove"/>
+    <protection id="ref proxy" action="remove"/>
   </rule>
   <rule pattern="namespace('Inkybot.Resources') or namespace('Inkybot.Properties')" preset="maximum" inherit="false">
     <protection id="rename" action="remove" />
     <protection id="resources" action="remove" />
+    <protection id="anti debug" action="remove"/>
+    <protection id="anti dump" action="remove"/>
+    <protection id="anti tamper" action="remove"/>
+    <protection id="ref proxy" action="remove"/>
   </rule>
   <module path="Inkybot.exe" />
 </project>
