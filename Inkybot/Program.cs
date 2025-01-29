@@ -20,6 +20,7 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
 using Inkybot.Properties;
 using Inkybot.Services;
+using Inkybot.Services.Win32Input;
 using Microsoft.CSharp;
 using Newtonsoft.Json;
 using ScreenRecorderLib;

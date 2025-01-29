@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ using Inkybot.Design;
 using Inkybot.Events;
 using InkybotHook;
 
-namespace Inkybot.Services
+namespace Inkybot.Services.Win32Input
 {
     public class Win32Input : Input, HasDependencies, IDisposable
     {
@@ -24,6 +25,7 @@ namespace Inkybot.Services
         static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
+        
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {

@@ -10,6 +10,7 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Services;
+using Inkybot.Services.Win32Input;
 using UserSettings = Inkybot.Properties.Settings;
 
 namespace Inkybot
