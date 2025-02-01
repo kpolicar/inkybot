@@ -84,7 +84,8 @@ namespace Inkybot.Services.Win32Input
             EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
 
             // Get the full path to the assembly we want to inject into the target process
-            string injectionLibrary = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "InkybotHook.dll");
+            string assemblyPath = AppContext.BaseDirectory;
+            string injectionLibrary = Path.Combine(assemblyPath, "InkybotHook.dll");
 
             try
             {
