@@ -41,7 +41,6 @@ namespace Inkybot.Services.Win32Input
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             magingJob.Starting += OnMagingJobStart;
-            magingJob.Started += OnMagingJobStarted;
             magingJob.Stopped += OnMagingJobStopped;
         }
         private void SetCursorPosition(int x, int y) {
@@ -60,12 +59,9 @@ namespace Inkybot.Services.Win32Input
             SetCursorPosition(-1, -1);
         }
 
-        private void OnMagingJobStarted(object sender, MagingJobStartedEventArgs e) {
-            SetCursorPosition(0, 0);
-        }
-
         private void OnMagingJobStart(object sender, EventArgs e) {
             Init();
+            SetCursorPosition(0, 0);
         }
         
         public static void SetTargetProcessId(int processId) => targetPID = processId;
