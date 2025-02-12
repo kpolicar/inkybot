@@ -28,7 +28,7 @@ namespace Inkybot.Helpers
     public static class Responsive
     {
         
-        private static double perfectRatio => 0.6;
+        private static double perfectRatio => 0.56;
         // const double perfectRatio = 0.8;
 
         public struct RatioRect
