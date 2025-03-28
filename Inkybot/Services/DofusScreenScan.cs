@@ -29,8 +29,8 @@ namespace Inkybot.Services
             private static ScreenScanner? historyScanner;
             private static ScreenScanner? latestHistoryScanner;
             private static ScreenScanner? statValuesScanner;
-            private static ScreenScanner? statMinsScanner;
-            private static ScreenScanner? statMaxesScanner;
+            private static MinMaxScreenScanner? statMinsScanner;
+            private static MinMaxScreenScanner? statMaxesScanner;
             private static ScreenScanner? sinkScanner;
             private static ScreenScanner? runeScanner;
             private static ScreenScanner? averageItemPriceScanner;
@@ -117,7 +117,7 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
+                if (true || lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
@@ -126,10 +126,10 @@ namespace Inkybot.Services
                         new ResizeImagePreprocessor(350));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                         new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SparseText);
-                    statMinsScanner = new NumberScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SingleBlock);
-                    statMaxesScanner = new NumberScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SingleBlock);
+                    statMinsScanner = new MinMaxScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
+                    statMaxesScanner = new MinMaxScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =

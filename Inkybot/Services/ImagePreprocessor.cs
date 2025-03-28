@@ -152,11 +152,7 @@ namespace Inkybot.Services
 
                         steps(newImage);
 
-                        newImage.Write(ms);
-
-                        var outImage = Image.FromStream(ms);
-
-                        return outImage;
+                        return newImage.ToBitmap();
                     }
                 }
             }

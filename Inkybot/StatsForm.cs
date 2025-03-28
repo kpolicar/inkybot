@@ -302,6 +302,12 @@ namespace Inkybot
                 configManager.EnforceConfigSetForItem(item);
                     
             } catch (Exception exception) {
+                if (exception is AggregateException aggr) {
+                    foreach (var aggrInnerException in aggr.InnerExceptions) {
+                        Debug.WriteLine(aggrInnerException.Message);
+                        Debug.WriteLine(aggrInnerException.StackTrace);
+                    }
+                }
                 Error?.Invoke(this, new ExceptionEventArgs(exception));
                 dataProvider.Reset();
                 Debug.WriteLine(exception.Message);

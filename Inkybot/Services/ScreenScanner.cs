@@ -1,27 +1,91 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ImageMagick;
+using ImageMagick.Factories;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
+using ImageFormat = Tesseract.ImageFormat;
 
 namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider
     {
+        public class MinMaxScreenScanner : ScreenScanner
+        {
+            public MinMaxScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]>? split = null, ImagePreprocessor? preprocessor = null, PageSegMode segMode = PageSegMode.SingleBlock)
+                : base(regionOfInterest, split, preprocessor, segMode) {
+                SetVariables(engine => {
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
+                    engine.SetVariable("classify_bln_numeric_mode", 1);
+                    engine.SetVariable("debug", 0);
+                });
+            }
+
+            public override event EventHandler<TesseractPageProcessed>? PageProcessed;
+            public override event EventHandler<FileSystemEventArgs>? Saved;
+            
+            public override string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+
+                var bounds = CalculateBounds(screenshot);
+                
+                var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
+                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshotHeight))
+                    : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                
+                
+                if (saveToDisk) {
+                    var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
+                    Directory.CreateDirectory(folderPath);
+                    var fileName = Path.GetRandomFileName() + ".bmp";
+                
+                    PixConverter.ToPix(image).Save(folderPath + "/" + fileName);
+                    Saved?.Invoke(this, new FileSystemEventArgs(
+                        WatcherChangeTypes.Created, folderPath, fileName));
+                }
+                
+                var m = new MagickFactory();
+                MagickImage magickImage = new MagickImage(m.Image.Create(image));
+                
+                var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
+                var folderPath1 = Path.Combine(AppContext.BaseDirectory, @"debug\images");
+                PixConverter.ToPix(magickImage.ToBitmap()).Save(folderPath1 + "/" + "original.bmp");
+                
+                IEnumerable<string> textLines = new string[] {};
+                
+                var i = 0;
+                foreach (var slice in slices) {
+                    
+                    using (var ocrPage = ProcessImage(engine, slice.ToBitmap())) {
+                        var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
+                        PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
+                        if (i++ == 0 || (scanned != "-") && scanned != "") {
+                            textLines = textLines.Append(scanned);
+                        }
+                    }
+                }
+                
+                
+                return textLines.ToArray();
+            }
+        }
+
         public class ScreenScanner : IDisposable
         {
-            public event EventHandler<TesseractPageProcessed>? PageProcessed;
-            public event EventHandler<FileSystemEventArgs>? Saved;
+            public virtual event EventHandler<TesseractPageProcessed>? PageProcessed;
+            public virtual event EventHandler<FileSystemEventArgs>? Saved;
 
-            private TesseractEngine engine;
+            protected TesseractEngine engine;
             private Responsive.Measurement regionOfInterest;
             private Func<string, string[]>? split;
 
@@ -76,7 +140,7 @@ namespace Inkybot.Services
                 (1d*optimalScreenshotHeight)/(1d*screenshotHeight);
             private readonly int optimalScreenshotHeight = 1080; //1920x1080
 
-            public string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+            public virtual string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
                 var bounds = CalculateBounds(screenshot);
 
                 var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
@@ -105,7 +169,7 @@ namespace Inkybot.Services
                 }
             }
 
-            private Page ProcessImage(TesseractEngine engine, Bitmap image) {
+            protected Page ProcessImage(TesseractEngine engine, Bitmap image) {
                 try {
                     return engine.Process(image, segMode);
                 } catch (InvalidOperationException exception) {

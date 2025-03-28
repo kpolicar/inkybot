@@ -46,11 +46,14 @@
           <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="Magick.NET-Q8-x64, Version=14.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=Amd64">
-          <HintPath>..\packages\Magick.NET-Q8-x64.14.1.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
+        <Reference Include="Magick.NET-Q8-x64, Version=14.5.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=Amd64">
+          <HintPath>..\packages\Magick.NET-Q8-x64.14.5.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
         </Reference>
-        <Reference Include="Magick.NET.Core, Version=14.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-          <HintPath>..\packages\Magick.NET.Core.14.1.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
+        <Reference Include="Magick.NET.Core, Version=14.5.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+          <HintPath>..\packages\Magick.NET.Core.14.5.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Magick.NET.SystemDrawing, Version=8.0.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+          <HintPath>..\packages\Magick.NET.SystemDrawing.8.0.5\lib\net462\Magick.NET.SystemDrawing.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
           <HintPath>..\packages\Microsoft.Build.Framework.15.7.179\lib\net46\Microsoft.Build.Framework.dll</HintPath>
@@ -637,12 +640,12 @@
       </PropertyGroup>
       <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
       <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
-      <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
       <Error Condition="!Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.5.2.0\build\Tesseract.targets'))" />
+      <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
     </Target>
     <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets')" />
-    <Import Project="..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.1.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
     <Import Project="..\packages\Tesseract.5.2.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" />
+    <Import Project="..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
 </Project>
