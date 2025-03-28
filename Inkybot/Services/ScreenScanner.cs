@@ -66,15 +66,27 @@ namespace Inkybot.Services
                 var i = 0;
                 foreach (var slice in slices) {
                     
-                    using (var ocrPage = ProcessImage(engine, slice.ToBitmap())) {
-                        var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
-                        PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
-                        if (i++ == 0 || (scanned != "-") && scanned != "") {
-                            textLines = textLines.Append(scanned);
-                        }
+                    var sliceBmp = slice.ToBitmap();
+
+                    var ocrPage = ProcessImage(engine, sliceBmp);
+                    var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
+                    PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
+
+                    if (scanned == "") {
+                        Debug.WriteLine("trying again! at 130%");
+                        slice.Resize(new Percentage(130));
+                        ocrPage.Dispose();
+                        using var ocrPage2 = ProcessImage(engine, slice.ToBitmap());
+                        scanned = ocrPage2.GetText().Replace(Environment.NewLine, "").Trim();
+                        Debug.WriteLine("scanned: "+scanned);
                     }
+                    
+                    if (i++ == 0 || (scanned != "-") && scanned != "") {
+                        textLines = textLines.Append(scanned);
+                    }
+                    
+                    ocrPage.Dispose();
                 }
-                
                 
                 return textLines.ToArray();
             }
