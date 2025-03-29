@@ -58,9 +58,6 @@ namespace Inkybot.Services
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
                 
                 var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
-                var folderPath1 = Path.Combine(AppContext.BaseDirectory, @"debug\images");
-                var rand = Path.GetRandomFileName();
-                PixConverter.ToPix(magickImage.ToBitmap()).Save(folderPath1 + "/" + "original-"+rand+".bmp");
                 
                 IEnumerable<string> textLines = new string[] {};
                 
@@ -70,7 +67,6 @@ namespace Inkybot.Services
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/4), Gravity.North);
                     
                     var sliceBmp = slice.ToBitmap();
-                    PixConverter.ToPix(sliceBmp).Save(folderPath1 + "/" + "original-"+rand+(i++)+".bmp");
 
                     var ocrPage = ProcessImage(engine, sliceBmp);
                     var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
