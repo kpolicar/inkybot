@@ -18,6 +18,7 @@ using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
+using Timer = System.Windows.Forms.Timer;
 
 
 namespace Inkybot
@@ -47,7 +48,6 @@ namespace Inkybot
                 RegisterQueueControl(inventoryBoundingBox);
             }
         }
-        
         private void ShowQueueControls() {
             foreach (var control in queueControls) {
                 control.Key.Show();

@@ -58,13 +58,13 @@ namespace Inkybot.Services
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
                 
                 var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
-                var folderPath1 = Path.Combine(AppContext.BaseDirectory, @"debug\images");
-                PixConverter.ToPix(magickImage.ToBitmap()).Save(folderPath1 + "/" + "original.bmp");
                 
                 IEnumerable<string> textLines = new string[] {};
                 
                 var i = 0;
                 foreach (var slice in slices) {
+                    slice.ResetPage();
+                    slice.Crop(new MagickGeometry(0,0, slice.Width, slice.Height/2+slice.Height/6), Gravity.North);
                     
                     var sliceBmp = slice.ToBitmap();
 
@@ -80,8 +80,9 @@ namespace Inkybot.Services
                         scanned = ocrPage2.GetText().Replace(Environment.NewLine, "").Trim();
                         Debug.WriteLine("scanned: "+scanned);
                     }
-                    
-                    if (i++ == 0 || (scanned != "-") && scanned != "") {
+
+                    if (scanned == "") scanned = "-";
+                    if (scanned != "-" || !textLines.Any(s => s != "-")) {
                         textLines = textLines.Append(scanned);
                     }
                     

@@ -129,19 +129,19 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement StatValuesBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(634, 318, 824, 823),
+            Rectangle = Rect.FromCoords(634, 318, 824, 832),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement StatMinBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(496, 318, 524, 823),
+            Rectangle = Rect.FromCoords(496, 318, 524, 832),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement StatMaxBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(554, 318, 581, 823),
+            Rectangle = Rect.FromCoords(554, 318, 581, 832),
             Width = 1694,
             Height = 1009
         };
@@ -195,7 +195,7 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement SinkMeasurement => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(526, 205, 603, 232),
+            Rectangle = Rect.FromCoords(569, 205, 603, 232),
             Width = 1694,
             Height = 1009
         };
