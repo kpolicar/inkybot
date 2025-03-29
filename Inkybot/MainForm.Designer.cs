@@ -513,7 +513,7 @@ namespace Inkybot
             this.Controls.Add(this.dofusClientPanel);
             this.BackColor = Color.Black;
             this.HelpButton = true;
-            this.MinimumSize = new System.Drawing.Size(1366, 768);
+            this.MinimumSize = new System.Drawing.Size(1650, 900);
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);

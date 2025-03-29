@@ -70,7 +70,8 @@ namespace Inkybot.Helpers
         public static Rectangle ResponsiveRectangle(Measurement measurement, int width, int height) {
             var r = measurement.Rectangle;
             var statsRect = PointsToRatioRect(r.X1, r.Y1, r.X2, r.Y2, measurement.Width, measurement.Height);
-            
+
+            (width, height) = (1694, 1010);
             return RatioRectToScreenRect(statsRect, width, height);
         }
 

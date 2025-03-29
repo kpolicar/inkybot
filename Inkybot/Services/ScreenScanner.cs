@@ -40,7 +40,7 @@ namespace Inkybot.Services
                 var bounds = CalculateBounds(screenshot);
                 
                 var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
-                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshotHeight))
+                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
                 
                 
@@ -58,27 +58,29 @@ namespace Inkybot.Services
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
                 
                 var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
+                var folderPath1 = Path.Combine(AppContext.BaseDirectory, @"debug\images");
+                var rand = Path.GetRandomFileName();
+                PixConverter.ToPix(magickImage.ToBitmap()).Save(folderPath1 + "/" + "original-"+rand+".bmp");
                 
                 IEnumerable<string> textLines = new string[] {};
                 
                 var i = 0;
                 foreach (var slice in slices) {
                     slice.ResetPage();
-                    slice.Crop(new MagickGeometry(0,0, slice.Width, slice.Height/2+slice.Height/6), Gravity.North);
+                    slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/4), Gravity.North);
                     
                     var sliceBmp = slice.ToBitmap();
+                    PixConverter.ToPix(sliceBmp).Save(folderPath1 + "/" + "original-"+rand+(i++)+".bmp");
 
                     var ocrPage = ProcessImage(engine, sliceBmp);
                     var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
                     PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
 
                     if (scanned == "") {
-                        Debug.WriteLine("trying again! at 130%");
                         slice.Resize(new Percentage(130));
                         ocrPage.Dispose();
                         using var ocrPage2 = ProcessImage(engine, slice.ToBitmap());
                         scanned = ocrPage2.GetText().Replace(Environment.NewLine, "").Trim();
-                        Debug.WriteLine("scanned: "+scanned);
                     }
 
                     if (scanned == "") scanned = "-";
@@ -157,7 +159,7 @@ namespace Inkybot.Services
                 var bounds = CalculateBounds(screenshot);
 
                 var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
-                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(screenshotHeight))
+                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
                 if (saveToDisk) {

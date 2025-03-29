@@ -99,13 +99,13 @@ namespace Inkybot.Services
             SplitStatLineMeasurementsIntoIndividualLineMeasurements(StatMaxBounds);
         
         public static Responsive.Measurement MagingTable => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(251, 152, 1039, 848),
+            Rectangle = Rect.FromCoords(230, 157, 1046, 851),
             Width = 1694,
             Height = 1009
         };
         
         public static Responsive.Measurement MagingTableCharacterDetails => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(258, 194, 557, 268),
+            Rectangle = Rect.FromCoords(238, 200, 455, 272),
             Width = 1694,
             Height = 1009
         };

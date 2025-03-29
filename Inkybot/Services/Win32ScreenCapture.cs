@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using ImageMagick;
+using ImageMagick.Factories;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
 using ScreenRecorderLib;
@@ -26,9 +27,11 @@ namespace Inkybot
         private Semaphore waitUntilFrameRecorded;
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
+        private int xOffsetLeft;
+        private int xOffsetRight;
         
-        
-        public void BindTo(IntPtr handle, Panel dofusClientPanel) {
+        public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight) {
+            (this.xOffsetLeft, this.xOffsetRight) = (xOffsetLeft, xOffsetRight);
             this.dofusClientPanel = dofusClientPanel;
             var source = new WindowRecordingSource(handle);
             
@@ -88,15 +91,11 @@ namespace Inkybot
 
             mstream.Position = 0;
             using var newImage = new MagickImage(mstream);
-            newImage.Crop((uint)dofusClientPanel.Width, (uint)dofusClientPanel.Height, Gravity.South);
-            
-            using var mmstream = new MemoryStream();
-            newImage.Write(mmstream);
-            mmstream.Position = 0;
-            
-            EndScreenshot?.Invoke(this, EventArgs.Empty);
-                
-            return Image.FromStream(mmstream);
+            Debug.WriteLine("y: "+SystemInformation.CaptionHeight);
+            newImage.Crop((uint)dofusClientPanel.Width, newImage.Height-31, Gravity.South);
+            newImage.Crop((uint)(newImage.Width-xOffsetLeft), (uint)dofusClientPanel.Height, Gravity.East);
+            newImage.Crop((uint)(newImage.Width-xOffsetRight), (uint)dofusClientPanel.Height, Gravity.West);
+            return newImage.ToBitmap();
         }
 
         public void Dispose() {
