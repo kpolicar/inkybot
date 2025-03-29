@@ -103,8 +103,10 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.dofusClientPanel, "dofusClientPanel");
             this.dofusClientPanel.Name = "dofusClientPanel";
-            this.dofusClientPanel.Dock = DockStyle.Fill;
+            this.dofusClientPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            this.dofusClientPanel.Size = new Size(1694, 1010); // TODO: THIS IS FIXED
             this.dofusClientPanel.BackColor = Color.Black;
+            this.dofusClientPanel.AutoSize = false;
             // 
             // toastPanel
             // 
@@ -506,9 +508,9 @@ namespace Inkybot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.shutdownToastPanel);
-            this.Controls.Add(this.dofusClientPanel);
             this.Controls.Add(this.sidebarPanel);
             this.Controls.Add(this.sidebarRightPanel);
+            this.Controls.Add(this.dofusClientPanel);
             this.BackColor = Color.Black;
             this.HelpButton = true;
             this.MinimumSize = new System.Drawing.Size(1366, 768);
