@@ -39,9 +39,9 @@ namespace Inkybot.Services
 
                 var bounds = CalculateBounds(screenshot);
                 
-                var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
+                var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
-                    : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                    : */(Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
                 
                 
                 if (saveToDisk) {
@@ -64,7 +64,7 @@ namespace Inkybot.Services
                 var i = 0;
                 foreach (var slice in slices) {
                     slice.ResetPage();
-                    slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/4), Gravity.North);
+                    slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/6), Gravity.North);
                     
                     var sliceBmp = slice.ToBitmap();
 
@@ -154,9 +154,9 @@ namespace Inkybot.Services
             public virtual string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
                 var bounds = CalculateBounds(screenshot);
 
-                var image = preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
+                var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
-                    : (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                    :*/ (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
 
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");

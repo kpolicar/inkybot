@@ -66,8 +66,8 @@ namespace Inkybot
         }
 
         private void ShowOcrIndicators() {
-            ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>(); // todo temporary
-            InitOcrIndicators(); // todo temp
+            //ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>(); // todo temporary
+            //InitOcrIndicators(); // todo temp
             foreach (var ocrIndicatorControl in ocrIndicators) {
                 ocrIndicatorControl.Key.Show();
                 ocrIndicatorControl.Key.BringToFront();

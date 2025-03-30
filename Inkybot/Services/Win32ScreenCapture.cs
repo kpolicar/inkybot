@@ -23,6 +23,7 @@ namespace Inkybot
     {
         private Recorder recorder;
         private IntPtr handle;
+        private Form mainForm;
         private Panel dofusClientPanel;
         private Semaphore waitUntilFrameRecorded;
         public event EventHandler? BeginScreenshot;
@@ -30,9 +31,10 @@ namespace Inkybot
         private int xOffsetLeft;
         private int xOffsetRight;
         
-        public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight) {
+        public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm) {
             (this.xOffsetLeft, this.xOffsetRight) = (xOffsetLeft, xOffsetRight);
             this.dofusClientPanel = dofusClientPanel;
+            this.mainForm = mainForm;
             var source = new WindowRecordingSource(handle);
             
             var opts = new RecorderOptions
@@ -79,7 +81,8 @@ namespace Inkybot
             BeginScreenshot?.Invoke(this, EventArgs.Empty);
             
             using var mstream = new MemoryStream();
-            
+
+            var yOffset = this.yOffset();
             recorder.Record(mstream);
             waitUntilFrameRecorded.WaitOne();
             recorder.Stop();
@@ -91,16 +94,30 @@ namespace Inkybot
 
             mstream.Position = 0;
             using var newImage = new MagickImage(mstream);
-            Debug.WriteLine("y: "+SystemInformation.CaptionHeight);
-            newImage.Crop((uint)dofusClientPanel.Width, newImage.Height-31, Gravity.South);
-            newImage.Crop((uint)(newImage.Width-xOffsetLeft), (uint)dofusClientPanel.Height, Gravity.East);
-            newImage.Crop((uint)(newImage.Width-xOffsetRight), (uint)dofusClientPanel.Height, Gravity.West);
+            
+            newImage.Crop(new MagickGeometry(xOffsetLeft, yOffset, (uint)(newImage.Width-xOffsetRight-xOffsetLeft), (uint)(newImage.Height-yOffset)));
             return newImage.ToBitmap();
         }
 
         public void Dispose() {
             if (recorder!=null)
                 recorder.Dispose();
+        }
+
+        public int yOffset() {
+            int borderHeight = 0;
+            
+            mainForm.Invoke(() => {
+                var formScreenLocation = mainForm.WindowState == FormWindowState.Maximized ? Point.Empty : mainForm.Location;
+        
+                // Get the panel's screen position
+                var panelScreenLocation = dofusClientPanel.PointToScreen(dofusClientPanel.Location);
+        
+                // Calculate the window border size (top and left borders)
+                borderHeight = panelScreenLocation.Y - formScreenLocation.Y;
+            });
+            
+            return borderHeight;
         }
     }
 }
