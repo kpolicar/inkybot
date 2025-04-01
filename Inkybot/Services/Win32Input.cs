@@ -36,13 +36,36 @@ namespace Inkybot.Services.Win32Input
         }
         
         private IntPtr relativeToControl;
+        private ServerInterface.POINT previousCursorPosition = new ServerInterface.POINT{X = -1, Y = -1};
+        private ServerInterface.POINT preScreenshotCursorPosition = new ServerInterface.POINT{X = -1, Y = -1};
+        private bool isMaging;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
+            var screenCapture = serviceContainer.GetService<ScreenCapture>();
             magingJob.Starting += OnMagingJobStart;
             magingJob.Stopped += OnMagingJobStopped;
+            screenCapture.BeginScreenshot += OnBeginScreenshot;
+            screenCapture.EndScreenshot += OnEndScreenshot;
         }
+
+        private void OnBeginScreenshot(object sender, EventArgs e) {
+            if (isMaging) return;
+            
+            preScreenshotCursorPosition = previousCursorPosition;
+            Init();
+            SetCursorPosition(0, 0);
+        }
+        
+        private void OnEndScreenshot(object sender, EventArgs e) {
+            if (isMaging) return;
+            
+            Debug.WriteLine(preScreenshotCursorPosition.X + "," + preScreenshotCursorPosition.Y);
+            _server.SetCursorFixedPosition(previousCursorPosition = preScreenshotCursorPosition);
+        }
+
+
         private void SetCursorPosition(int x, int y) {
             if (x != -1 || y != -1) {
                 var r = new RECT();
@@ -52,14 +75,16 @@ namespace Inkybot.Services.Win32Input
                 //x += 114;
                 //y += 23;
             }
-            _server.SetCursorFixedPosition(new ServerInterface.POINT{X = x, Y = y});
+            _server.SetCursorFixedPosition(previousCursorPosition = new ServerInterface.POINT{X = x, Y = y});
         }
 
         private void OnMagingJobStopped(object sender, EventArgs e) {
+            isMaging = false;
             SetCursorPosition(-1, -1);
         }
 
         private void OnMagingJobStart(object sender, EventArgs e) {
+            isMaging = true;
             Init();
             SetCursorPosition(0, 0);
         }

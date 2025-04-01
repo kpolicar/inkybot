@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -36,9 +37,15 @@ namespace Inkybot
                         var processes = Process.GetProcesses();
                         var dofusProcesses = processes
                             .Where(process =>
-                                (process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                (
+                                    (process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                     (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*"))
+                                ) ||
                                  process.ProcessName.IndexOf("?tasis", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 process.ProcessName.IndexOf(Properties.Settings.Default.dofusProcessName, StringComparison.OrdinalIgnoreCase) >= 0)
+                                 (
+                                     (process.ProcessName.IndexOf(Properties.Settings.Default.dofusProcessName, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                                     (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*") || Properties.Settings.Default.dofusProcessName != "dofus"))
+                                    )
                                 && process.MainWindowTitle != "")
                             .ToArray();
 

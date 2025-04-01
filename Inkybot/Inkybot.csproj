@@ -84,9 +84,6 @@
           <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="ScreenRecorderLib">
-          <HintPath>..\..\ConsoleApp2recorder\ConsoleApp2recorder\bin\x64\Debug\net7.0\ScreenRecorderLib.dll</HintPath>
-        </Reference>
         <Reference Include="SymSpell, Version=6.5.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\packages\SymSpell.6.5.0\lib\net472\SymSpell.dll</HintPath>
           <Private>True</Private>
@@ -642,10 +639,12 @@
       <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
       <Error Condition="!Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.5.2.0\build\Tesseract.targets'))" />
       <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
+      <Error Condition="!Exists('..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets'))" />
     </Target>
     <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
     <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets')" />
     <Import Project="..\packages\Tesseract.5.2.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" />
     <Import Project="..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
+    <Import Project="..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets" Condition="Exists('..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets')" />
 </Project>

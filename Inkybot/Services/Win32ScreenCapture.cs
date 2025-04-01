@@ -91,6 +91,8 @@ namespace Inkybot
                 Debug.WriteLine("sleeping because screenshot wasn't created");
                 Thread.Sleep(50);
             }
+            
+            EndScreenshot?.Invoke(this, EventArgs.Empty);
 
             mstream.Position = 0;
             using var newImage = new MagickImage(mstream);
