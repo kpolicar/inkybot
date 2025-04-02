@@ -25,7 +25,8 @@ namespace Inkybot
         private IntPtr handle;
         private Form mainForm;
         private Panel dofusClientPanel;
-        private Semaphore waitUntilFrameRecorded;
+        private Semaphore waitUntilFrameRecorded = new Semaphore(0, 1);
+        private Semaphore capturingWindow = new Semaphore(1, 1);
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
         private int xOffsetLeft;
@@ -35,7 +36,11 @@ namespace Inkybot
             (this.xOffsetLeft, this.xOffsetRight) = (xOffsetLeft, xOffsetRight);
             this.dofusClientPanel = dofusClientPanel;
             this.mainForm = mainForm;
-            var source = new WindowRecordingSource(handle);
+            var source = new WindowRecordingSource {
+                Handle = handle,
+                IsBorderRequired = false,
+                IsCursorCaptureEnabled = false
+            };
             
             var opts = new RecorderOptions
             {
@@ -51,20 +56,20 @@ namespace Inkybot
                 },
                 MouseOptions = new MouseOptions() {
                     IsMousePointerEnabled = false,
+                    IsMouseClicksDetected = false,
                 },
             };  
             this.recorder = Recorder.CreateRecorder(opts);
             
             recorder.OnRecordingFailed += (sender, args) => {
                 Console.WriteLine(args.Error);
+                waitUntilFrameRecorded.Release();
             };
             recorder.OnRecordingComplete += (sender, args) => {
                 waitUntilFrameRecorded.Release();
             };
             
             this.handle = handle;
-            this.waitUntilFrameRecorded = new Semaphore(1, 1);
-            waitUntilFrameRecorded.WaitOne();
         }
 
         /// <summary>
@@ -82,19 +87,16 @@ namespace Inkybot
             
             using var mstream = new MemoryStream();
 
+            capturingWindow.WaitOne();
             var yOffset = this.yOffset();
             recorder.Record(mstream);
             waitUntilFrameRecorded.WaitOne();
             recorder.Stop();
+            capturingWindow.Release();
 
-            while (mstream.Length == 0) {
-                Debug.WriteLine("sleeping because screenshot wasn't created");
-                Thread.Sleep(50);
-            }
-            
             EndScreenshot?.Invoke(this, EventArgs.Empty);
 
-            mstream.Position = 0;
+            mstream.Seek(0, SeekOrigin.Begin);
             using var newImage = new MagickImage(mstream);
             
             newImage.Crop(new MagickGeometry(xOffsetLeft, yOffset, (uint)(newImage.Width-xOffsetRight-xOffsetLeft), (uint)(newImage.Height-yOffset)));
