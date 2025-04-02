@@ -22,6 +22,7 @@ using Inkybot.Properties;
 using Inkybot.Services;
 using Inkybot.Services.Win32Input;
 using Microsoft.CSharp;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using ScreenRecorderLib;
 using DofusMagingAI = Inkybot.Services.DofusMagingAI;
@@ -39,7 +40,7 @@ namespace Inkybot
     internal static class Program
     {
         
-        #if !DEBUG
+        #if DEBUG
             public const string Url = "http://inkybot.test";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
@@ -100,6 +101,7 @@ namespace Inkybot
             ApplyAdditionalUserSettings();
             SetAppLocale();
             InitDependencies();
+            EnforceFirstTimeSetup();
                 
             BindServices();
             BindLogger();
@@ -111,6 +113,52 @@ namespace Inkybot
             var form = new MainForm();
             Application.ApplicationExit += OnAppClosing;
             Application.Run(form);
+        }
+
+        private static void EnforceFirstTimeSetup() {
+            if (!Settings.Default.NeedsSetup)
+                return;
+            
+            Settings.Default.NeedsSetup = false;
+            Properties.Settings.Default.Save();
+            var exePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory).Replace('\\', '/');;
+            
+            Console.WriteLine("Running VC_redist.x86.exe");
+            var p1 = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "VC_redist.x86.exe",
+                    Arguments = $"-install -quiet",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+            p1.Start();
+            
+            Console.WriteLine("Removing zone identifiers");
+            var p2 = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "streams.exe",
+                    Arguments = $"-d -s \"{exePath}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+            p2.Start();
+            p1.WaitForExit();
+            p2.WaitForExit();
+
+            Console.WriteLine("Restarting process");
+            Application.Restart();
+            Application.ExitThread();           
+            Environment.Exit(0);
         }
 
         private static void OnAppClosing(object sender, EventArgs eventArgs) {
