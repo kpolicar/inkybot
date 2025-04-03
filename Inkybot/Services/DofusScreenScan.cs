@@ -277,7 +277,7 @@ namespace Inkybot.Services
 
             public async Task<decimal?> Sink() {
                 var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
-                var result = scanned.FirstOrDefault() ?? "";
+                var result = scanned.FirstOrDefault()?.Replace(",", ".") ?? ""; // some dofus seem to have "," separator instead of dot
                 var sinkResult = Regex.Match(result, @"(\d*\.?\d+)", RegexOptions.RightToLeft).Groups[1].Value;
                 if (sinkResult.StartsWith("."))
                     sinkResult = Regex.Match(result, @"(\d+)", RegexOptions.RightToLeft).Groups[1].Value;

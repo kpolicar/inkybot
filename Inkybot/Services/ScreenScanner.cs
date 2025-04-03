@@ -257,7 +257,7 @@ namespace Inkybot.Services
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleWord) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => { 
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789.");
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789.,");
                     engine.SetVariable("debug", "0");
                     //engine.SetVariable("classify_bln_numeric_mode", 1);
                 });
