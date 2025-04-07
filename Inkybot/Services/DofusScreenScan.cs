@@ -127,9 +127,9 @@ namespace Inkybot.Services
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                         new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SparseText);
                     statMinsScanner = new MinMaxScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
+                        new MinMaxImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
                     statMaxesScanner = new MinMaxScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
+                        new MinMaxImagePreprocessor(userSettings, 300), PageSegMode.SingleChar);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
@@ -171,6 +171,7 @@ namespace Inkybot.Services
                 var mins = await minstask;
                 var maxes = await maxesTask;
                 var values = await valuesTask;
+                
                 for (int i = 0; i < Math.Min(mins.Length, maxes.Length); i++) {
                     Debug.Write(mins[i] + " ");
                     Debug.Write(maxes[i] + " ");

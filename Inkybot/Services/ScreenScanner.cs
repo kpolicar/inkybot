@@ -32,6 +32,15 @@ namespace Inkybot.Services
                 });
             }
 
+            protected override TesseractEngine CreateEngine() {
+                var eng = new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    "eng", // Hardcode engine language to eng (not sure why other is less accurate on digits)
+                    EngineMode.Default);
+                eng.SetVariable("debug", "0");
+                return eng;
+            }
+
             public override event EventHandler<TesseractPageProcessed>? PageProcessed;
             public override event EventHandler<FileSystemEventArgs>? Saved;
             
@@ -67,6 +76,7 @@ namespace Inkybot.Services
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/6), Gravity.North);
                     
                     var sliceBmp = slice.ToBitmap();
+                    // sliceBmp.Save(Path.Combine(AppContext.BaseDirectory, @"debug\images\")+Path.GetRandomFileName() + ".bmp");
 
                     var ocrPage = ProcessImage(engine, sliceBmp);
                     var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();

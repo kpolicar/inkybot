@@ -118,6 +118,25 @@ namespace Inkybot.Services
             }
         }
 
+        public class MinMaxImagePreprocessor : ResizeImagePreprocessor
+        {
+            protected UserSettingsConfigManager UserSettings;
+            
+            public MinMaxImagePreprocessor(UserSettingsConfigManager userSettings,
+                int resizePercentage) : base(resizePercentage) {
+                UserSettings = userSettings;
+            }
+            
+            protected override void PreprocessingSteps(MagickImage image) {
+                image.Resize(new Percentage(resizePercentage));
+                image.ColorSpace = ColorSpace.Gray;
+                image.Alpha(AlphaOption.Remove);
+                image.BlackThreshold(new Percentage(40));
+                image.Negate();
+                image.BlackThreshold(new Percentage(60));
+            }
+        }
+
         public class ImagePreprocessor
         {
             protected uint originalImageHeight;
