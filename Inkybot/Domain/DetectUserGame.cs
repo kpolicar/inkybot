@@ -16,7 +16,7 @@ namespace Inkybot.Domain
             try {
                 return JsonConvert
                     .DeserializeObject<Settings>(
-                        File.ReadAllText(BasePath + @"\zaap\repositories\production\dofus3\main\settings.json"));
+                        File.ReadAllText(BasePath + @"\zaap\repositories\production\dofus\dofus3\settings.json"));
             } catch (Exception) {
                 return null;
             }
@@ -26,7 +26,7 @@ namespace Inkybot.Domain
             try {
                 return JsonConvert
                     .DeserializeObject<Release>(
-                        File.ReadAllText(BasePath + @"\zaap\repositories\production\dofus3\main\release.json"));
+                        File.ReadAllText(BasePath + @"\zaap\repositories\production\dofus\dofus3\release.json"));
             } catch (Exception) {
                 return null;
             }
