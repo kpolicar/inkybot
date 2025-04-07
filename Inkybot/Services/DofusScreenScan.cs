@@ -13,6 +13,7 @@ using Inkybot.Helpers;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
 using Enumerable = System.Linq.Enumerable;
+using UserSettings = Inkybot.Properties.Settings;
 
 namespace Inkybot.Services
 {
@@ -135,7 +136,7 @@ namespace Inkybot.Services
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
                             new ResizeImagePreprocessor(350), PageSegMode.SingleWord);
-                    sinkScanner = new SinkScanner(Measurements.SinkMeasurement, SplitStatTextLines,
+                    sinkScanner = new SinkScanner(Program.Lang.TwoLetterISOLanguageName == "fr" ? Measurements.SinkFrMeasurement : Measurements.SinkMeasurement, SplitStatTextLines,
                         new SinkScannerImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                 }
                 

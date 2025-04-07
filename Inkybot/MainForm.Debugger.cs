@@ -10,6 +10,7 @@ using Inkybot.Helpers;
 using Inkybot.Services;
 using Debug = System.Diagnostics.Debug;
 using Rectangle = Inkybot.Controls.Rectangle;
+using UserSettings = Inkybot.Properties.Settings;
 
 namespace Inkybot
 {
@@ -27,7 +28,7 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatValuesBounds);
             RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             RegisterOcrIndicator(Measurements.InventorySearchTextBox);
-            RegisterOcrIndicator(Measurements.SinkMeasurement);
+            RegisterOcrIndicator(Program.Lang.TwoLetterISOLanguageName == "fr" ? Measurements.SinkFrMeasurement : Measurements.SinkMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
@@ -66,8 +67,8 @@ namespace Inkybot
         }
 
         private void ShowOcrIndicators() {
-            //ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>(); // todo temporary
-            //InitOcrIndicators(); // todo temp
+            // ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>(); // todo temporary
+            // InitOcrIndicators(); // todo temp
             foreach (var ocrIndicatorControl in ocrIndicators) {
                 ocrIndicatorControl.Key.Show();
                 ocrIndicatorControl.Key.BringToFront();

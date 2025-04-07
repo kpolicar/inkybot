@@ -200,6 +200,13 @@ namespace Inkybot.Services
             Height = 1009
         };
         
+        // Seems to be different on FR
+        public static Responsive.Measurement SinkFrMeasurement => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(582, 205, 603, 232),
+            Width = 1694,
+            Height = 1009
+        };
+        
         public static Responsive.Measurement InventorySearchTextBox=> new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1141, 200, 1284, 222),
             Width = 1694,
