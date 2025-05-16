@@ -42,9 +42,9 @@ namespace Inkybot.Services
 
         public static Responsive.Measurement InventoryBoxBounds(int column, int row) {
             var x1 = 1146 + column * 60;
-            var y1 = (int)(337 + row * 60.5);
+            var y1 = (int)(296 + row * 60.5);
             var x2 =  (int)(1201 + column * 60.5);
-            var y2 = 391 + row * 60;
+            var y2 = 350 + row * 60;
 
             return new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x1, y1, x2, y2),
@@ -177,7 +177,7 @@ namespace Inkybot.Services
         // };
         
         public static Responsive.Measurement InventoryFirstItemMeasurement => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1175, 366, 1175, 366),
+            Rectangle = Rect.FromCoords(1171, 324, 1171, 324),
             Width = 1694,
             Height = 1009
         };

@@ -26,7 +26,7 @@ namespace Inkybot.Services
             public MinMaxScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]>? split = null, ImagePreprocessor? preprocessor = null, PageSegMode segMode = PageSegMode.SingleBlock)
                 : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789-");
                     engine.SetVariable("classify_bln_numeric_mode", 1);
                     engine.SetVariable("debug", 0);
                 });
@@ -227,7 +227,7 @@ namespace Inkybot.Services
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789-");
                     engine.SetVariable("classify_bln_numeric_mode", 1);
                     engine.SetVariable("debug", 0);
                 });
