@@ -111,6 +111,7 @@ namespace Inkybot.Services
             
             var statsResult = statResults
                 .Select(result => result.Replace("0O", "0").Replace("O0", "0")) // Fix some poor OCR readings
+                .Select(result => result.Replace("0 0", "")) // Fix some poor OCR readings
                 .ZipWithDefault(
                     relevantMinMaxes,
                     (value, minmax) => (minmax ?? "- -") + " " + value)

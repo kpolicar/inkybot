@@ -129,6 +129,7 @@ namespace Inkybot.Services
             
             protected override void PreprocessingSteps(MagickImage image) {
                 image.Resize(new Percentage(resizePercentage));
+                image.Sharpen();
                 image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(40));
