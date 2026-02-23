@@ -103,7 +103,7 @@ namespace Inkybot.Services
         }
 
         public Item Item() {
-            if (previousMinMaxScan.Length == 0 || true) {
+            if (previousMinMaxScan.Length == 0) {
                 previousMinMaxScan = Scan!.MinMaxStats().Result;
             }
             var statResults = Scan!.Stats().Result;
