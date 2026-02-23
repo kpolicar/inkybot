@@ -34,11 +34,20 @@ namespace InkybotHook
                 targetFunction,
                 new GetCursorPosDelegate(HookedGetCursorPos),
                 this);
-            
+
             _originalGetCursorPos = Marshal.GetDelegateForFunctionPointer<GetCursorPosDelegate>(targetFunction);
+
+            IntPtr isIconicTarget = EasyHook.LocalHook.GetProcAddress("user32.dll", "IsIconic");
+            var isIconicHook = EasyHook.LocalHook.Create(
+                isIconicTarget,
+                new IsIconicDelegate(HookedIsIconic),
+                this);
+
+            _originalIsIconic = Marshal.GetDelegateForFunctionPointer<IsIconicDelegate>(isIconicTarget);
 
             // Activate hooks on all threads except the current thread
             getCursorPosHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+            isIconicHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
 
             _server.ReportMessage("Hooks installed");
 
@@ -75,6 +84,7 @@ namespace InkybotHook
 
             // Remove hooks
             getCursorPosHook.Dispose();
+            isIconicHook.Dispose();
 
             // Finalise cleanup of hooks
             EasyHook.LocalHook.Release();
@@ -98,8 +108,17 @@ namespace InkybotHook
 
             lpPoint.X = _server.point.X;
             lpPoint.Y = _server.point.Y;
-            
+
             return true;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate bool IsIconicDelegate(IntPtr hWnd);
+        private IsIconicDelegate _originalIsIconic;
+
+        public bool HookedIsIconic(IntPtr hWnd)
+        {
+            return false;
         }
 
     }
