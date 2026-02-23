@@ -41,6 +41,24 @@ namespace Tests
 
         private const int ScaleFactor = 3; // 300% upscale
 
+        // ── Tesseract engines loaded once for the entire fixture ──
+        private TesseractEngine _digitEngine;
+        private TesseractEngine _textEngine;
+
+        [OneTimeSetUp]
+        public void SetUpEngines()
+        {
+            _digitEngine = CreateDigitEngine();
+            _textEngine = CreateTextEngine();
+        }
+
+        [OneTimeTearDown]
+        public void TearDownEngines()
+        {
+            _digitEngine?.Dispose();
+            _textEngine?.Dispose();
+        }
+
         /// <summary>
         /// Returns the path to a screenshot file by index (1-16).
         /// </summary>
@@ -63,13 +81,17 @@ namespace Tests
         /// upscale 300%, grayscale, alpha removal, median filter, negate, Otsu threshold, line removal.
         /// Returns a new MagickImage that callers must dispose.
         /// </summary>
-        private MagickImage PreprocessFull(MagickImage source)
+        private MagickImage PreprocessFull(MagickImage source, string debugDir = null)
         {
             var processed = (MagickImage)source.Clone();
+            
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step1_lines_removed.png"));
 
             // 1. Upscale
             processed.FilterType = FilterType.Lanczos;
             processed.Resize(new Percentage(300));
+            
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step2_upscaled.png"));
 
             // 2. Grayscale AND Remove Alpha
             processed.ColorSpace = ColorSpace.Gray;
@@ -78,10 +100,14 @@ namespace Tests
 
             // 3. Negate (light-on-dark → dark-on-light)
             processed.Negate();
+            
+
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step3_gray_negated.png"));
 
             // 4. Otsu threshold
             processed.AutoThreshold(AutoThresholdMethod.OTSU);
-
+            
+            
             // 5. Line removal via morphology
             using (var lineMask = processed.Clone())
             {
@@ -94,9 +120,21 @@ namespace Tests
                     KernelArguments = "60x1"
                 };
                 lineMask.Morphology(morphologySettings);
+                
+                var dilateSettings = new MorphologySettings
+                {
+                    Method = MorphologyMethod.Dilate,
+                    Kernel = Kernel.Rectangle,
+                    KernelArguments = "1x6" 
+                };
+                lineMask.Morphology(dilateSettings);
 
                 processed.Composite(lineMask, CompositeOperator.Lighten);
             }
+
+
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step4_otsu.png"));
+            
 
             return processed;
         }
@@ -106,7 +144,7 @@ namespace Tests
         /// original cropped-image space and get scaled by <see cref="ScaleFactor"/>),
         /// then adds a white border and returns a Bitmap ready for Tesseract.
         /// </summary>
-        private Bitmap CropForOcr(MagickImage preprocessed, MagickGeometry cropArea)
+        private Bitmap CropForOcr(MagickImage preprocessed, MagickGeometry cropArea, string debugPath = null)
         {
             var scaledCrop = new MagickGeometry(
                 cropArea.X * ScaleFactor,
@@ -119,9 +157,12 @@ namespace Tests
                 slice.Crop(scaledCrop);
                 slice.ResetPage();
 
+                if (debugPath != null) slice.Write(debugPath + "_cropped.png");
+
                 using (var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150))
                 {
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
+                    if (debugPath != null) canvas.Write(debugPath + "_bordered.png");
                     return canvas.ToBitmap();
                 }
             }
@@ -157,6 +198,9 @@ namespace Tests
             engine.SetVariable("load_punc_dawg", "0");
             engine.SetVariable("load_number_dawg", "0");
             engine.SetVariable("classify_bln_numeric_mode", "0");
+            engine.SetVariable("classify_enable_learning", "0");
+            engine.SetVariable("classify_enable_adaptive_matcher", "0");
+            engine.SetVariable("tessedit_enable_doc_dict", "0");
             return engine;
         }
 
@@ -174,7 +218,7 @@ namespace Tests
         /// Always reads <see cref="MaxDataRows"/> rows; empty rows produce "".
         /// </summary>
         private (List<string> minValues, List<string> maxValues) ReadMinMaxColumns(
-            MagickImage preprocessed, TesseractEngine digitEngine)
+            MagickImage preprocessed, TesseractEngine digitEngine, string debugDir = null)
         {
             var minValues = new List<string>();
             var maxValues = new List<string>();
@@ -184,14 +228,16 @@ namespace Tests
                 var rowY = HeaderHeight + (row * RowHeight);
 
                 var minCrop = new MagickGeometry(MinColX, rowY, (uint)MinColW, (uint)RowHeight);
-                using (var minBmp = CropForOcr(preprocessed, minCrop))
+                var minDebug = debugDir != null ? Path.Combine(debugDir, $"min_row{row:D2}") : null;
+                using (var minBmp = CropForOcr(preprocessed, minCrop, minDebug))
                 {
                     var lines = OcrLines(digitEngine, minBmp, PageSegMode.SingleWord);
                     minValues.Add(lines.Length > 0 ? lines[0] : "");
                 }
 
                 var maxCrop = new MagickGeometry(MaxColX, rowY, (uint)MaxColW, (uint)RowHeight);
-                using (var maxBmp = CropForOcr(preprocessed, maxCrop))
+                var maxDebug = debugDir != null ? Path.Combine(debugDir, $"max_row{row:D2}") : null;
+                using (var maxBmp = CropForOcr(preprocessed, maxCrop, maxDebug))
                 {
                     var lines = OcrLines(digitEngine, maxBmp, PageSegMode.SingleWord);
                     maxValues.Add(lines.Length > 0 ? lines[0] : "");
@@ -206,11 +252,12 @@ namespace Tests
         /// Crops from the header down to cover all possible data rows.
         /// </summary>
         private string[] ReadEffectsColumn(
-            MagickImage preprocessed, TesseractEngine textEngine)
+            MagickImage preprocessed, TesseractEngine textEngine, string debugDir = null)
         {
             var dataHeight = MaxDataRows * RowHeight;
             var statsCrop = new MagickGeometry(EffectsColX, HeaderHeight, (uint)EffectsColW, (uint)dataHeight);
-            using (var statsBmp = CropForOcr(preprocessed, statsCrop))
+            var effectsDebug = debugDir != null ? Path.Combine(debugDir, "effects_full") : null;
+            using (var statsBmp = CropForOcr(preprocessed, statsCrop, effectsDebug))
             {
                 return OcrLines(textEngine, statsBmp);
             }
@@ -218,6 +265,7 @@ namespace Tests
 
         /// <summary>
         /// Shared assertion logic for a single screenshot test case.
+        /// On failure, dumps all intermediate and crop images to a debug folder.
         /// </summary>
         private void AssertScreenshot(int index,
             string[] expectedMin, string[] expectedMax, string[] expectedEffects)
@@ -226,13 +274,11 @@ namespace Tests
             Assert.IsTrue(File.Exists(path),
                 $"Screenshot not found at: {Path.GetFullPath(path)}");
 
-            using (var digitEngine = CreateDigitEngine())
-            using (var textEngine = CreateTextEngine())
             using (var cropped = LoadAndCropScreenshot(path))
             using (var preprocessed = PreprocessFull(cropped))
             {
-                var (minVals, maxVals) = ReadMinMaxColumns(preprocessed, digitEngine);
-                var effects = ReadEffectsColumn(preprocessed, textEngine);
+                var (minVals, maxVals) = ReadMinMaxColumns(preprocessed, _digitEngine);
+                var effects = ReadEffectsColumn(preprocessed, _textEngine);
 
                 // ── Console output: combine Min, Max, Effects per row ──
                 Console.WriteLine($"=== Screenshot_{index} OCR Results ===");
@@ -245,25 +291,52 @@ namespace Tests
                     Console.WriteLine($"  Row {i:D2}: Min=[{min}]  Max=[{max}]  Effect=[{eff}]");
                 }
 
-                Assert.AreEqual(MaxDataRows, minVals.Count, "Min column row count mismatch");
-                Assert.AreEqual(MaxDataRows, maxVals.Count, "Max column row count mismatch");
+                // ── Collect all mismatches ──
+                var failures = new List<string>();
 
-                for (int i = 0; i < MaxDataRows; i++)
+                if (minVals.Count != MaxDataRows)
+                    failures.Add($"Min column row count: expected {MaxDataRows} but got {minVals.Count}");
+                if (maxVals.Count != MaxDataRows)
+                    failures.Add($"Max column row count: expected {MaxDataRows} but got {maxVals.Count}");
+
+                for (int i = 0; i < MaxDataRows && i < minVals.Count; i++)
                 {
-                    Assert.AreEqual(expectedMin[i], minVals[i],
-                        $"Min row {i}: expected '{expectedMin[i]}' but got '{minVals[i]}'");
-                    Assert.AreEqual(expectedMax[i], maxVals[i],
-                        $"Max row {i}: expected '{expectedMax[i]}' but got '{maxVals[i]}'");
+                    if (expectedMin[i] != minVals[i])
+                        failures.Add($"Min row {i}: expected '{expectedMin[i]}' but got '{minVals[i]}'");
+                    if (expectedMax[i] != maxVals[i])
+                        failures.Add($"Max row {i}: expected '{expectedMax[i]}' but got '{maxVals[i]}'");
                 }
 
-                Assert.AreEqual(expectedEffects.Length, effects.Length,
-                    $"Effects: expected {expectedEffects.Length} lines but got {effects.Length}.\n" +
-                    $"Actual: [{string.Join(", ", effects)}]");
+                if (expectedEffects.Length != effects.Length)
+                    failures.Add($"Effects count: expected {expectedEffects.Length} but got {effects.Length}. " +
+                                 $"Actual: [{string.Join(", ", effects)}]");
 
-                for (int i = 0; i < expectedEffects.Length; i++)
+                for (int i = 0; i < Math.Min(expectedEffects.Length, effects.Length); i++)
                 {
-                    Assert.AreEqual(expectedEffects[i], effects[i],
-                        $"Effects row {i}: expected '{expectedEffects[i]}' but got '{effects[i]}'");
+                    if (expectedEffects[i] != effects[i])
+                        failures.Add($"Effects row {i}: expected '{expectedEffects[i]}' but got '{effects[i]}'");
+                }
+
+                // ── On failure: dump debug images and assert ──
+                if (failures.Count > 0)
+                {
+                    var debugDir = Path.Combine(AppContext.BaseDirectory, "debug_ocr", $"Screenshot_{index}");
+                    if (Directory.Exists(debugDir)) Directory.Delete(debugDir, true);
+                    Directory.CreateDirectory(debugDir);
+
+                    Console.WriteLine($"  FAILURES DETECTED — dumping debug images to: {debugDir}");
+
+                    // Save the raw crop
+                    cropped.Write(Path.Combine(debugDir, "00_raw_crop.png"));
+
+                    // Re-run preprocessing with debug saving
+                    using (var debugPreprocessed = PreprocessFull(cropped, debugDir))
+                    {
+                        ReadMinMaxColumns(debugPreprocessed, _digitEngine, debugDir);
+                        ReadEffectsColumn(debugPreprocessed, _textEngine, debugDir);
+                    }
+
+                    Assert.Fail(string.Join("\n", failures));
                 }
             }
         }
