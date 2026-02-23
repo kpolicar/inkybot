@@ -23,21 +23,15 @@ namespace Tests
         // ── Crop coordinates within the full 1920x1080 screenshot ──
         private const int CropX = 587;
         private const int CropY = 325;
-        private const int CropW = 908 - 587; // 356
-        private const int CropH = 887 - 325; // 596
+        private const int CropW = 908 - 587;
+        private const int CropH = 887 - 325;
 
-        // ── Row layout within the 356x596 cropped area ──
-        // Header row occupies the first ~35px, data rows start after.
-        // Each data row is ~35px tall. We always read 16 rows (empty rows produce "").
-        private const int HeaderHeight = 35;
-        private const int RowHeight = 35;
-        private const int MaxDataRows = 16;
+        // ── Row layout within the cropped area ──
+        private const int HeaderHeight = 8;
+        private const int RowHeight = 42;
+        private const int MaxDataRows = 13;
 
-        // ── Column layout (in original 356-wide crop coordinates) ──
-        // Measured from step5b (3x upscaled) and divided by 3:
-        //   Min numbers centered ~x=20, span roughly x=3..40
-        //   Max numbers centered ~x=80, span roughly x=55..100
-        //   Effects text (icon+value+name) starts ~x=120, ends ~x=340
+        // ── Column layout (in original crop coordinates) ──
         private const int MinColX = 2;
         private const int MinColW = 42;
         private const int MaxColX = 45;
@@ -69,30 +63,24 @@ namespace Tests
         /// upscale 300%, grayscale, alpha removal, median filter, negate, Otsu threshold, line removal.
         /// Returns a new MagickImage that callers must dispose.
         /// </summary>
-        private MagickImage PreprocessFull(MagickImage source, string debugDir = null)
+        private MagickImage PreprocessFull(MagickImage source)
         {
             var processed = (MagickImage)source.Clone();
-
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step0_original.png"));
 
             // 1. Upscale
             processed.FilterType = FilterType.Lanczos;
             processed.Resize(new Percentage(300));
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step1_upscaled.png"));
 
             // 2. Grayscale AND Remove Alpha
             processed.ColorSpace = ColorSpace.Gray;
             processed.Alpha(AlphaOption.Remove);
             processed.MedianFilter(2);
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step2_grayscale_median.png"));
 
             // 3. Negate (light-on-dark → dark-on-light)
             processed.Negate();
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step3_negated.png"));
 
             // 4. Otsu threshold
             processed.AutoThreshold(AutoThresholdMethod.OTSU);
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step4_otsu.png"));
 
             // 5. Line removal via morphology
             using (var lineMask = processed.Clone())
@@ -107,12 +95,8 @@ namespace Tests
                 };
                 lineMask.Morphology(morphologySettings);
 
-                if (debugDir != null) ((MagickImage)lineMask).Write(Path.Combine(debugDir, "step5a_linemask.png"));
-
                 processed.Composite(lineMask, CompositeOperator.Lighten);
             }
-
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step5b_lines_removed.png"));
 
             return processed;
         }
@@ -122,9 +106,8 @@ namespace Tests
         /// original cropped-image space and get scaled by <see cref="ScaleFactor"/>),
         /// then adds a white border and returns a Bitmap ready for Tesseract.
         /// </summary>
-        private Bitmap CropForOcr(MagickImage preprocessed, MagickGeometry cropArea, string debugPath = null)
+        private Bitmap CropForOcr(MagickImage preprocessed, MagickGeometry cropArea)
         {
-            // Scale crop coordinates to match the 300% upscaled image
             var scaledCrop = new MagickGeometry(
                 cropArea.X * ScaleFactor,
                 cropArea.Y * ScaleFactor,
@@ -136,13 +119,9 @@ namespace Tests
                 slice.Crop(scaledCrop);
                 slice.ResetPage();
 
-                if (debugPath != null) slice.Write(debugPath + "_a_cropped.png");
-
-                // Place on white canvas with whitespace border
                 using (var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150))
                 {
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
-                    if (debugPath != null) canvas.Write(debugPath + "_b_bordered.png");
                     return canvas.ToBitmap();
                 }
             }
@@ -195,7 +174,7 @@ namespace Tests
         /// Always reads <see cref="MaxDataRows"/> rows; empty rows produce "".
         /// </summary>
         private (List<string> minValues, List<string> maxValues) ReadMinMaxColumns(
-            MagickImage preprocessed, TesseractEngine digitEngine, string debugDir = null)
+            MagickImage preprocessed, TesseractEngine digitEngine)
         {
             var minValues = new List<string>();
             var maxValues = new List<string>();
@@ -204,19 +183,15 @@ namespace Tests
             {
                 var rowY = HeaderHeight + (row * RowHeight);
 
-                // Min column cell
                 var minCrop = new MagickGeometry(MinColX, rowY, (uint)MinColW, (uint)RowHeight);
-                var minDebug = debugDir != null ? Path.Combine(debugDir, $"min_row{row:D2}") : null;
-                using (var minBmp = CropForOcr(preprocessed, minCrop, minDebug))
+                using (var minBmp = CropForOcr(preprocessed, minCrop))
                 {
                     var lines = OcrLines(digitEngine, minBmp, PageSegMode.SingleWord);
                     minValues.Add(lines.Length > 0 ? lines[0] : "");
                 }
 
-                // Max column cell
                 var maxCrop = new MagickGeometry(MaxColX, rowY, (uint)MaxColW, (uint)RowHeight);
-                var maxDebug = debugDir != null ? Path.Combine(debugDir, $"max_row{row:D2}") : null;
-                using (var maxBmp = CropForOcr(preprocessed, maxCrop, maxDebug))
+                using (var maxBmp = CropForOcr(preprocessed, maxCrop))
                 {
                     var lines = OcrLines(digitEngine, maxBmp, PageSegMode.SingleWord);
                     maxValues.Add(lines.Length > 0 ? lines[0] : "");
@@ -228,60 +203,242 @@ namespace Tests
 
         /// <summary>
         /// Reads the Effects/Stats column from a preprocessed image.
-        /// Crops from the header down to cover all 16 possible data rows.
+        /// Crops from the header down to cover all possible data rows.
         /// </summary>
         private string[] ReadEffectsColumn(
-            MagickImage preprocessed, TesseractEngine textEngine, string debugDir = null)
+            MagickImage preprocessed, TesseractEngine textEngine)
         {
             var dataHeight = MaxDataRows * RowHeight;
             var statsCrop = new MagickGeometry(EffectsColX, HeaderHeight, (uint)EffectsColW, (uint)dataHeight);
-            var effectsDebug = debugDir != null ? Path.Combine(debugDir, "effects_full") : null;
-            using (var statsBmp = CropForOcr(preprocessed, statsCrop, effectsDebug))
+            using (var statsBmp = CropForOcr(preprocessed, statsCrop))
             {
                 return OcrLines(textEngine, statsBmp);
             }
         }
 
         /// <summary>
-        /// Discovery test: runs OCR on Screenshot_1 and dumps all intermediate
-        /// images to a debug folder for manual inspection of crop coordinates.
+        /// Shared assertion logic for a single screenshot test case.
         /// </summary>
-        [Test]
-        public void DiscoverAllScreenshots()
+        private void AssertScreenshot(int index,
+            string[] expectedMin, string[] expectedMax, string[] expectedEffects)
         {
-            var debugDir = Path.Combine(AppContext.BaseDirectory, "debug_ocr");
-            if (Directory.Exists(debugDir)) Directory.Delete(debugDir, true);
-            Directory.CreateDirectory(debugDir);
-
-            Console.WriteLine($"Debug images will be written to: {debugDir}");
-
-            var path = ScreenshotPath(1);
-            Assert.IsTrue(File.Exists(path), $"Screenshot not found at: {Path.GetFullPath(path)}");
+            var path = ScreenshotPath(index);
+            Assert.IsTrue(File.Exists(path),
+                $"Screenshot not found at: {Path.GetFullPath(path)}");
 
             using (var digitEngine = CreateDigitEngine())
             using (var textEngine = CreateTextEngine())
             using (var cropped = LoadAndCropScreenshot(path))
+            using (var preprocessed = PreprocessFull(cropped))
             {
-                // Save the raw crop so we can verify the initial crop region
-                cropped.Write(Path.Combine(debugDir, "00_raw_crop.png"));
+                var (minVals, maxVals) = ReadMinMaxColumns(preprocessed, digitEngine);
+                var effects = ReadEffectsColumn(preprocessed, textEngine);
 
-                Console.WriteLine($"Cropped image size: {cropped.Width}x{cropped.Height}");
-
-                using (var preprocessed = PreprocessFull(cropped, debugDir))
+                // ── Console output: combine Min, Max, Effects per row ──
+                Console.WriteLine($"=== Screenshot_{index} OCR Results ===");
+                var maxRows = Math.Max(MaxDataRows, effects.Length);
+                for (int i = 0; i < maxRows; i++)
                 {
-                    var (minVals, maxVals) = ReadMinMaxColumns(preprocessed, digitEngine, debugDir);
-                    var effects = ReadEffectsColumn(preprocessed, textEngine, debugDir);
+                    var min = i < minVals.Count ? minVals[i] : "";
+                    var max = i < maxVals.Count ? maxVals[i] : "";
+                    var eff = i < effects.Length ? effects[i] : "";
+                    Console.WriteLine($"  Row {i:D2}: Min=[{min}]  Max=[{max}]  Effect=[{eff}]");
+                }
 
-                    Console.WriteLine("\n=== Screenshot_1.png ===");
-                    for (int i = 0; i < MaxDataRows; i++)
-                    {
-                        Console.WriteLine($"  Row {i:D2}: Min=[{minVals[i]}] Max=[{maxVals[i]}]");
-                    }
-                    Console.WriteLine("  Effects: " + string.Join(", ", effects.Select(v => $"[{v}]")));
-                    Console.WriteLine($"  Effects count: {effects.Length}");
+                Assert.AreEqual(MaxDataRows, minVals.Count, "Min column row count mismatch");
+                Assert.AreEqual(MaxDataRows, maxVals.Count, "Max column row count mismatch");
+
+                for (int i = 0; i < MaxDataRows; i++)
+                {
+                    Assert.AreEqual(expectedMin[i], minVals[i],
+                        $"Min row {i}: expected '{expectedMin[i]}' but got '{minVals[i]}'");
+                    Assert.AreEqual(expectedMax[i], maxVals[i],
+                        $"Max row {i}: expected '{expectedMax[i]}' but got '{maxVals[i]}'");
+                }
+
+                Assert.AreEqual(expectedEffects.Length, effects.Length,
+                    $"Effects: expected {expectedEffects.Length} lines but got {effects.Length}.\n" +
+                    $"Actual: [{string.Join(", ", effects)}]");
+
+                for (int i = 0; i < expectedEffects.Length; i++)
+                {
+                    Assert.AreEqual(expectedEffects[i], effects[i],
+                        $"Effects row {i}: expected '{expectedEffects[i]}' but got '{effects[i]}'");
                 }
             }
         }
+
+        [Test]
+        public void Screenshot_01_Reads_AllColumns()
+        {
+            AssertScreenshot(1,
+                new[] { "301", "71", "31", "3", "1", "1", "11", "11", "16", "16", "7", "7", "-1" },
+                new[] { "350", "100", "50", "4", "1", "1", "15", "15", "20", "20", "10", "10", "-1" },
+                new[] { "437 Vitality", "100 Agility", "39 Wisdom", "4% Critical", "1 AP", "1 Summons",
+                    "9 Air damage", "13 Prospecting", "18 Water Resistance", "18 Air Resistance",
+                    "9 Lock", "9 Critical Damage", "-1 Range" });
+        }
+
+        [Test]
+        public void Screenshot_02_Reads_AllColumns()
+        {
+            AssertScreenshot(2,
+                new[] { "201", "41", "41", "31", "1", "8", "8", "7", "301", "5", "5", "5", "4" },
+                new[] { "250", "60", "60", "40", "1", "12", "12", "10", "400", "7", "7", "7", "5" },
+                new[] { "292 Vitality", "59 Chance", "58 Agility", "30 Wisdom", "1 Range",
+                    "11 Water Damage", "11 Air damage", "6 Prospecting", "391 Initiative",
+                    "7% Neutral Resistance", "7% Earth Resistance", "7% Fire Resistance", "4 Lock" });
+        }
+
+        [Test]
+        public void Screenshot_03_Reads_AllColumns()
+        {
+            AssertScreenshot(3,
+                new[] { "", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
+                new[] { "", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
+                new[] { "1 AP", "294 Vitality", "57 Agility", "33 Wisdom", "1 Range",
+                    "14 Air damage", "9 Prospecting", "10% Earth Resistance",
+                    "5 MP Parry", "14 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_04_Reads_AllColumns()
+        {
+            AssertScreenshot(4,
+                new[] { "301", "41", "41", "31", "1", "1", "9", "9", "9", "11", "7", "5", "11" },
+                new[] { "350", "60", "60", "40", "1", "1", "12", "12", "12", "15", "10", "7", "15" },
+                new[] { "393 Vitality", "54 Strength", "59 Agility", "36 Wisdom", "1 AP", "1 MP",
+                    "10 Neutral Damage", "11 Earth Damage", "11 Air damage", "6 Prospecting",
+                    "10% Water Resistance", "7 Dodge", "14 Critical Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_05_Reads_AllColumns()
+        {
+            AssertScreenshot(5,
+                new[] { "301", "31", "31", "3", "1", "11", "7", "7", "5", "16", "16", "-10", "" },
+                new[] { "350", "40", "50", "4", "1", "15", "10", "10", "7", "20", "20", "-10", "" },
+                new[] { "374 Vitality", "36 Wisdom", "49 Power", "4% Critical", "1 AP",
+                    "2 Prospecting", "10% Neutral Resistance", "10% Water Resistance",
+                    "5 MP Parry", "19 Critical Damage", "18 Pushback Resistance", "-10 Dodge" });
+        }
+
+        [Test]
+        public void Screenshot_06_Reads_AllColumns()
+        {
+            AssertScreenshot(6,
+                new[] { "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "", "" },
+                new[] { "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "", "" },
+                new[] { "257 Vitality", "40 Agility", "16 Wisdom", "1 Range",
+                    "9 Air damage", "5 Prospecting", "7% Earth Resistance",
+                    "2 MP Parry", "10 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_07_Reads_AllColumns()
+        {
+            AssertScreenshot(7,
+                new[] { "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "", "" },
+                new[] { "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "", "" },
+                new[] { "257 Vitality", "43 Agility", "16 Wisdom", "1 Range",
+                    "9 Air damage", "5 Prospecting", "7% Earth Resistance",
+                    "2 MP Parry", "10 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_08_Reads_AllColumns()
+        {
+            AssertScreenshot(8,
+                new[] { "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "", "" },
+                new[] { "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "", "" },
+                new[] { "257 Vitality", "40 Agility", "14 Wisdom", "1 Range",
+                    "9 Air damage", "5 Prospecting", "7% Earth Resistance",
+                    "2 MP Parry", "10 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_09_Reads_AllColumns()
+        {
+            AssertScreenshot(9,
+                new[] { "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "", "" },
+                new[] { "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "", "" },
+                new[] { "307 Vitality", "40 Agility", "12 Wisdom", "1 Range",
+                    "9 Air damage", "3 Prospecting", "7% Earth Resistance",
+                    "2 MP Parry", "10 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_10_Reads_AllColumns()
+        {
+            AssertScreenshot(10,
+                new[] { "", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
+                new[] { "", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
+                new[] { "10 Initiative", "302 Vitality", "40 Agility", "12 Wisdom", "1 Range",
+                    "9 Air damage", "3 Prospecting", "7% Earth Resistance",
+                    "2 MP Parry", "10 Pushback Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_11_Reads_AllColumns()
+        {
+            AssertScreenshot(11,
+                new[] { "101", "36", "2", "1", "7", "11", "5", "5", "7", "7", "", "", "" },
+                new[] { "150", "45", "3", "1", "10", "15", "7", "7", "10", "10", "", "", "" },
+                new[] { "112 Vitality", "44 Wisdom", "2% Critical", "1 AP", "0 Heal",
+                    "10 Prospecting", "7% Earth Resistance", "0% Fire Resistance",
+                    "0 Critical Damage", "0 Pushback Damage" });
+        }
+
+        [Test]
+        public void Screenshot_12_Reads_AllColumns()
+        {
+            AssertScreenshot(12,
+                new[] { "101", "36", "2", "1", "7", "11", "5", "5", "7", "7", "", "", "" },
+                new[] { "150", "45", "3", "1", "10", "15", "7", "7", "10", "10", "", "", "" },
+                new[] { "112 Vitality", "44 Wisdom", "2% Critical", "1 AP", "0 Heal",
+                    "10 Prospecting", "7% Earth Resistance", "0% Fire Resistance",
+                    "0 Critical Damage", "1 Pushback Damage" });
+        }
+
+        [Test]
+        public void Screenshot_13_Reads_AllColumns()
+        {
+            AssertScreenshot(13,
+                new[] { "151", "26", "26", "21", "2", "6", "11", "301", "6", "6", "", "", "" },
+                new[] { "200", "40", "40", "30", "5", "10", "20", "400", "10", "10", "", "", "" },
+                new[] { "19 Vitality", "16 Intelligence", "33 Chance", "16 Wisdom",
+                    "1% Critical", "4 Damage", "28 Prospecting", "20 Initiative",
+                    "0% Earth Resistance", "0 Earth Resistance" });
+        }
+
+        [Test]
+        public void Screenshot_14_Reads_AllColumns()
+        {
+            AssertScreenshot(14,
+                new[] { "", "16", "7", "", "", "", "", "", "", "", "", "", "" },
+                new[] { "-", "20", "10", "", "", "", "", "", "", "", "", "", "" },
+                new[] { "3 Initiative", "25 Vitality", "12 Power" });
+        }
+
+        [Test]
+        public void Screenshot_15_Reads_AllColumns()
+        {
+            AssertScreenshot(15,
+                new[] { "16", "16", "", "", "", "", "", "", "", "", "", "", "" },
+                new[] { "20", "20", "", "", "", "", "", "", "", "", "", "", "" },
+                new[] { "32 Vitality", "7 Intelligence" });
+        }
+
+        [Test]
+        public void Screenshot_16_Reads_AllColumns()
+        {
+            AssertScreenshot(16,
+                new[] { "", "", "101", "31", "31", "1", "5", "11", "6", "6", "6", "6", "11" },
+                new[] { "", "", "150", "50", "40", "1", "7", "20", "10", "10", "10", "10", "20" },
+                new[] { "10 Initiative", "1 Pushback Resistance", "127 Vitality", "44 Agility",
+                    "40 Wisdom", "1 Range", "6 Damage", "17 Prospecting", "7% Water Resistance",
+                    "8 Neutral Resistance", "6 Earth Resistance", "7 Water Resistance",
+                    "17 Trap Damage" });
+        }
     }
 }
-
