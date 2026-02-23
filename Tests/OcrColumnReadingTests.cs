@@ -86,19 +86,26 @@ namespace Tests
 
             if (debugDir != null) processed.Write(Path.Combine(debugDir, "step0_original.png"));
 
-            // 1. Upscale
-            processed.FilterType = FilterType.Lanczos;
-            processed.Resize(new Percentage(300));
-
-            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step1_upscaled.png"));
-
             // 2. Grayscale AND Remove Alpha
             processed.ColorSpace = ColorSpace.Gray;
             processed.Alpha(AlphaOption.Remove);
-            processed.MedianFilter(2);
-
-            // 3. Negate (light-on-dark → dark-on-light)
+            
             processed.Negate();
+            
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step1_grayscale.png"));
+            
+            RemoveHorizontalLines(processed);
+            
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "step1_horizontal_lines_removed.png"));
+            
+            // 1. Upscale
+            processed.FilterType = FilterType.Lanczos;
+            processed.Resize(new Percentage(300));
+            
+            
+            if (debugDir != null) processed.Write(Path.Combine(debugDir, "upscaled.png"));
+
+            processed.MedianFilter(2);
 
             if (debugDir != null) processed.Write(Path.Combine(debugDir, "step2_gray_negated.png"));
 
@@ -115,19 +122,24 @@ namespace Tests
             {
                 lineMask.Negate();
 
+                // Solidify the gray line into pure white so the morphology catches it perfectly
+                lineMask.Threshold(new Percentage(40));
+
+                // SCALED DOWN: 20x1 (Because the image is 3x smaller now)
                 var morphologySettings = new MorphologySettings
                 {
                     Method = MorphologyMethod.Open,
                     Kernel = Kernel.Rectangle,
-                    KernelArguments = "60x1"
+                    KernelArguments = "20x1"
                 };
                 lineMask.Morphology(morphologySettings);
 
+                // SCALED DOWN: 1x3
                 var dilateSettings = new MorphologySettings
                 {
                     Method = MorphologyMethod.Dilate,
                     Kernel = Kernel.Rectangle,
-                    KernelArguments = "1x6"
+                    KernelArguments = "1x3"
                 };
                 lineMask.Morphology(dilateSettings);
 
@@ -150,9 +162,6 @@ namespace Tests
 
             if (debugDir != null) processed.Write(Path.Combine(debugDir, "digits_post_otsu.png"));
 
-            // 5. Line removal
-            RemoveHorizontalLines(processed);
-
             if (debugDir != null) processed.Write(Path.Combine(debugDir, "digits_final.png"));
 
             return processed;
@@ -167,9 +176,6 @@ namespace Tests
         private MagickImage PreprocessForText(MagickImage source, string debugDir = null)
         {
             var processed = PreprocessBase(source);
-
-            // 4. Line removal (before white threshold so lines are detected in grayscale)
-            RemoveHorizontalLines(processed);
 
             if (debugDir != null) processed.Write(Path.Combine(debugDir, "text_after_lineremoval.png"));
 
@@ -434,8 +440,8 @@ namespace Tests
         public void Screenshot_03_Reads_AllColumns()
         {
             AssertScreenshot(3,
-                new[] { "", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
-                new[] { "", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
+                new[] { "-", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
+                new[] { "-", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
                 new[] { "1 AP", "294 Vitality", "57 Agility", "33 Wisdom", "1 Range",
                     "14 Air damage", "9 Prospecting", "10% Earth Resistance",
                     "5 MP Parry", "14 Pushback Resistance" });
@@ -511,8 +517,8 @@ namespace Tests
         public void Screenshot_10_Reads_AllColumns()
         {
             AssertScreenshot(10,
-                new[] { "", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
-                new[] { "", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
+                new[] { "-", "251", "41", "31", "1", "11", "11", "7", "4", "11", "", "", "" },
+                new[] { "-", "300", "60", "40", "1", "15", "15", "10", "6", "15", "", "", "" },
                 new[] { "10 Initiative", "302 Vitality", "40 Agility", "12 Wisdom", "1 Range",
                     "9 Air damage", "3 Prospecting", "7% Earth Resistance",
                     "2 MP Parry", "10 Pushback Resistance" });
@@ -555,7 +561,7 @@ namespace Tests
         public void Screenshot_14_Reads_AllColumns()
         {
             AssertScreenshot(14,
-                new[] { "", "16", "7", "", "", "", "", "", "", "", "", "", "" },
+                new[] { "-", "16", "7", "", "", "", "", "", "", "", "", "", "" },
                 new[] { "-", "20", "10", "", "", "", "", "", "", "", "", "", "" },
                 new[] { "3 Initiative", "25 Vitality", "12 Power" });
         }
@@ -573,8 +579,8 @@ namespace Tests
         public void Screenshot_16_Reads_AllColumns()
         {
             AssertScreenshot(16,
-                new[] { "", "", "101", "31", "31", "1", "5", "11", "6", "6", "6", "6", "11" },
-                new[] { "", "", "150", "50", "40", "1", "7", "20", "10", "10", "10", "10", "20" },
+                new[] { "-", "-", "101", "31", "31", "1", "5", "11", "6", "6", "6", "6", "11" },
+                new[] { "-", "-", "150", "50", "40", "1", "7", "20", "10", "10", "10", "10", "20" },
                 new[] { "10 Initiative", "1 Pushback Resistance", "127 Vitality", "44 Agility",
                     "40 Wisdom", "1 Range", "6 Damage", "17 Prospecting", "7% Water Resistance",
                     "8 Neutral Resistance", "6 Earth Resistance", "7 Water Resistance",
@@ -675,8 +681,8 @@ namespace Tests
         public void Screenshot_26_Reads_AllColumns()
         {
             AssertScreenshot(26,
-                new[] { "", "26", "16", "11", "2", "4", "", "", "", "", "", "", "" },
-                new[] { "", "35", "20", "15", "3", "5", "", "", "", "", "", "", "" },
+                new[] { "-", "26", "16", "11", "2", "4", "", "", "", "", "", "", "" },
+                new[] { "-", "35", "20", "15", "3", "5", "", "", "", "", "", "", "" },
                 new[] { "1 Damage", "0 Vitality", "1 Intelligence", "32 Wisdom",
                     "0 Fire Damage", "0 Dodge" });
         }
@@ -685,7 +691,7 @@ namespace Tests
         public void Screenshot_27_Reads_AllColumns()
         {
             AssertScreenshot(27,
-                new[] { "", "", "", "21", "4", "", "", "", "", "", "", "", "" },
+                new[] { "-", "-", "-", "21", "4", "", "", "", "", "", "", "", "" },
                 new[] { "-", "-", "-", "30", "5", "", "", "", "", "", "", "", "" },
                 new[] { "3 Agility", "2 Wisdom", "3 MP Parry", "20 Vitality", "1 Lock" });
         }
@@ -694,8 +700,8 @@ namespace Tests
         public void Screenshot_28_Reads_AllColumns()
         {
             AssertScreenshot(28,
-                new[] { "", "5", "5", "5", "5", "", "", "", "", "", "", "", "" },
-                new[] { "", "5", "5", "5", "5", "", "", "", "", "", "", "", "" },
+                new[] { "-", "5", "5", "5", "5", "", "", "", "", "", "", "", "" },
+                new[] { "-", "5", "5", "5", "5", "", "", "", "", "", "", "", "" },
                 new[] { "2 Wisdom", "6 Strength", "6 Intelligence", "5 Chance", "5 Agility" });
         }
 
