@@ -52,61 +52,71 @@ namespace Inkybot.Services
             public override event EventHandler<FileSystemEventArgs>? Saved;
             
             public override string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+                var totalSw = System.Diagnostics.Stopwatch.StartNew();
 
                 var bounds = CalculateBounds(screenshot);
-                
+
+                var prepSw = System.Diagnostics.Stopwatch.StartNew();
                 var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     : */(Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
-                
-                
+                Debug.WriteLine($"[Scan] MinMaxScreenScanner preprocess: {prepSw.ElapsedMilliseconds}ms");
+
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
                     Directory.CreateDirectory(folderPath);
                     var fileName = Path.GetRandomFileName() + ".bmp";
-                
+
                     PixConverter.ToPix(image).Save(folderPath + "/" + fileName);
                     Saved?.Invoke(this, new FileSystemEventArgs(
                         WatcherChangeTypes.Created, folderPath, fileName));
                 }
-                
+
                 var m = new MagickFactory();
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
-                
+
                 var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
-                
+
                 IEnumerable<string> textLines = new string[] {};
-                
+
                 var i = 0;
                 foreach (var slice in slices) {
+                    var sliceSw = System.Diagnostics.Stopwatch.StartNew();
                     slice.ResetPage();
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/10), Gravity.North);
 
                     using var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150);
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
-                    
-                    var sliceBmp = canvas.ToBitmap();
-                    //sliceBmp.Save(Path.Combine(AppContext.BaseDirectory, @"debug\images\")+Path.GetRandomFileName() + ".bmp");
 
+                    var sliceBmp = canvas.ToBitmap();
+
+                    var ocrSw = System.Diagnostics.Stopwatch.StartNew();
                     var ocrPage = ProcessImage(engine, sliceBmp);
+                    var ocrMs = ocrSw.ElapsedMilliseconds;
                     var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
                     PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
 
                     if (scanned == "") {
                         slice.Resize(new Percentage(130));
                         ocrPage.Dispose();
+                        ocrSw.Restart();
                         using var ocrPage2 = ProcessImage(engine, slice.ToBitmap());
+                        ocrMs += ocrSw.ElapsedMilliseconds;
                         scanned = ocrPage2.GetText().Replace(Environment.NewLine, "").Trim();
                     }
+
+                    Debug.WriteLine($"  [OCR] MinMaxScreenScanner slice {i}: ocr={ocrMs}ms total={sliceSw.ElapsedMilliseconds}ms result=\"{scanned}\"");
 
                     if (scanned == "") scanned = "-";
                     if (scanned != "-" || !textLines.Any(s => s != "-")) {
                         textLines = textLines.Append(scanned);
                     }
-                    
+
                     ocrPage.Dispose();
+                    i++;
                 }
-                
+
+                Debug.WriteLine($"[Scan] MinMaxScreenScanner total: {totalSw.ElapsedMilliseconds}ms ({slices.Count()} slices)");
                 return textLines.ToArray();
             }
         }
@@ -172,11 +182,14 @@ namespace Inkybot.Services
             private readonly int optimalScreenshotHeight = 1080; //1920x1080
 
             public virtual string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+                var totalSw = System.Diagnostics.Stopwatch.StartNew();
                 var bounds = CalculateBounds(screenshot);
 
+                var prepSw = System.Diagnostics.Stopwatch.StartNew();
                 var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     :*/ (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                Debug.WriteLine($"[Scan] {GetType().Name} preprocess: {prepSw.ElapsedMilliseconds}ms");
 
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
@@ -188,12 +201,15 @@ namespace Inkybot.Services
                         WatcherChangeTypes.Created, folderPath, fileName));
                 }
 
+                var ocrSw = System.Diagnostics.Stopwatch.StartNew();
                 using (var ocrPage = ProcessImage(engine, image)) {
+                    Debug.WriteLine($"[OCR] {GetType().Name} engine.Process: {ocrSw.ElapsedMilliseconds}ms");
                     var scanned = ocrPage.GetText();
                     PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
 
                     var textLines = split?.Invoke(scanned) ?? new[] {scanned};
 
+                    Debug.WriteLine($"[Scan] {GetType().Name} total: {totalSw.ElapsedMilliseconds}ms");
                     return textLines
                         .Select(text => text.Replace("\n", " "))
                         .ToArray();

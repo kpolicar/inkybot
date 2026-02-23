@@ -103,44 +103,67 @@ namespace Inkybot.Services
         public class StatValuesImagePreprocessor : ResizeImagePreprocessor
         {
             protected UserSettingsConfigManager UserSettings;
-            
+
             public StatValuesImagePreprocessor(UserSettingsConfigManager userSettings,
                 int resizePercentage) : base(resizePercentage) {
                 UserSettings = userSettings;
             }
-            
+
             protected override void PreprocessingSteps(MagickImage image) {
+                var sw = Stopwatch.StartNew();
+                long last = 0;
+                void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [StatValues] {step}: {now - last}ms"); last = now; }
+
                 image.FilterType = FilterType.Lanczos;
                 image.Resize(new Percentage(resizePercentage));
+                Log("Resize(Lanczos)");
                 image.ColorSpace = ColorSpace.Gray;
+                Log("Grayscale");
                 image.Alpha(AlphaOption.Remove);
+                Log("AlphaRemove");
                 image.MedianFilter(2);
+                Log("MedianFilter");
                 image.Negate();
+                Log("Negate");
                 RemoveHorizontalLines(image);
+                Log("RemoveHorizontalLines");
                 image.WhiteThreshold(new Percentage(60));
+                Log("WhiteThreshold");
                 image.BorderColor = MagickColors.White;
                 image.Border(75);
+                Log("Border");
             }
         }
 
         public class MinMaxImagePreprocessor : ResizeImagePreprocessor
         {
             protected UserSettingsConfigManager UserSettings;
-            
+
             public MinMaxImagePreprocessor(UserSettingsConfigManager userSettings,
                 int resizePercentage) : base(resizePercentage) {
                 UserSettings = userSettings;
             }
-            
+
             protected override void PreprocessingSteps(MagickImage image) {
+                var sw = Stopwatch.StartNew();
+                long last = 0;
+                void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [MinMax] {step}: {now - last}ms"); last = now; }
+
                 image.FilterType = FilterType.Lanczos;
                 image.Resize(new Percentage(resizePercentage));
+                Log("Resize(Lanczos)");
                 image.ColorSpace = ColorSpace.Gray;
+                Log("Grayscale");
                 image.Alpha(AlphaOption.Remove);
+                Log("AlphaRemove");
                 image.MedianFilter(2);
+                Log("MedianFilter");
                 image.Negate();
+                Log("Negate");
                 image.AutoThreshold(AutoThresholdMethod.OTSU);
+                Log("OTSU");
                 RemoveHorizontalLines(image);
+                Log("RemoveHorizontalLines");
             }
         }
 
@@ -187,6 +210,7 @@ namespace Inkybot.Services
             }
 
             private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
+                var total = Stopwatch.StartNew();
 
                 using (var ms = new MemoryStream()) {
                     lock (image) {
@@ -198,13 +222,15 @@ namespace Inkybot.Services
                         originalImageHeight = newImage.Height;
                         var b = bounds;
 
-                        // Resize each image in the collection to a width of 200. When zero is specified for the height
-                        // the height will be calculated with the aspect ratio.
                         newImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
 
                         steps(newImage);
 
-                        return newImage.ToBitmap();
+                        var sw = Stopwatch.StartNew();
+                        var result = newImage.ToBitmap();
+                        Debug.WriteLine($"  [{GetType().Name}] ToBitmap: {sw.ElapsedMilliseconds}ms");
+                        Debug.WriteLine($"[Preprocess] {GetType().Name} total: {total.ElapsedMilliseconds}ms");
+                        return result;
                     }
                 }
             }
