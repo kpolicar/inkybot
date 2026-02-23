@@ -19,7 +19,7 @@ namespace Inkybot
     /// <summary>
     ///     Provides functions to capture the entire screen, or a particular window, and save it to a file.
     /// </summary>
-    public class Win32ScreenCapture : ScreenCapture, IDisposable
+    public class WinScreenRecorderScreenCapture : ScreenCapture, IDisposable
     {
         private Recorder recorder;
         private IntPtr handle;

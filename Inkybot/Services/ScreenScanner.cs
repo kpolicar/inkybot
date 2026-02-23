@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Inkybot;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -56,11 +57,9 @@ namespace Inkybot.Services
 
                 var bounds = CalculateBounds(screenshot);
 
-                var prepSw = System.Diagnostics.Stopwatch.StartNew();
                 var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     : */(Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
-                Debug.WriteLine($"[Scan] MinMaxScreenScanner preprocess: {prepSw.ElapsedMilliseconds}ms");
 
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
@@ -81,7 +80,6 @@ namespace Inkybot.Services
 
                 var i = 0;
                 foreach (var slice in slices) {
-                    var sliceSw = System.Diagnostics.Stopwatch.StartNew();
                     slice.ResetPage();
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/10), Gravity.North);
 
@@ -105,7 +103,7 @@ namespace Inkybot.Services
                         scanned = ocrPage2.GetText().Replace(Environment.NewLine, "").Trim();
                     }
 
-                    Debug.WriteLine($"  [OCR] MinMaxScreenScanner slice {i}: ocr={ocrMs}ms total={sliceSw.ElapsedMilliseconds}ms result=\"{scanned}\"");
+                    Profiler.Record("OCR", "MinMax.slice", ocrMs);
 
                     if (scanned == "") scanned = "-";
                     if (scanned != "-" || !textLines.Any(s => s != "-")) {
@@ -116,7 +114,7 @@ namespace Inkybot.Services
                     i++;
                 }
 
-                Debug.WriteLine($"[Scan] MinMaxScreenScanner total: {totalSw.ElapsedMilliseconds}ms ({slices.Count()} slices)");
+                Profiler.Record("OCR", "MinMax.total", totalSw.ElapsedMilliseconds);
                 return textLines.ToArray();
             }
         }
@@ -185,11 +183,9 @@ namespace Inkybot.Services
                 var totalSw = System.Diagnostics.Stopwatch.StartNew();
                 var bounds = CalculateBounds(screenshot);
 
-                var prepSw = System.Diagnostics.Stopwatch.StartNew();
                 var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
                     ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
                     :*/ (Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
-                Debug.WriteLine($"[Scan] {GetType().Name} preprocess: {prepSw.ElapsedMilliseconds}ms");
 
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
@@ -203,13 +199,13 @@ namespace Inkybot.Services
 
                 var ocrSw = System.Diagnostics.Stopwatch.StartNew();
                 using (var ocrPage = ProcessImage(engine, image)) {
-                    Debug.WriteLine($"[OCR] {GetType().Name} engine.Process: {ocrSw.ElapsedMilliseconds}ms");
+                    Profiler.Record("OCR", $"{GetType().Name}.process", ocrSw.ElapsedMilliseconds);
                     var scanned = ocrPage.GetText();
                     PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
 
                     var textLines = split?.Invoke(scanned) ?? new[] {scanned};
 
-                    Debug.WriteLine($"[Scan] {GetType().Name} total: {totalSw.ElapsedMilliseconds}ms");
+                    Profiler.Record("OCR", $"{GetType().Name}.total", totalSw.ElapsedMilliseconds);
                     return textLines
                         .Select(text => text.Replace("\n", " "))
                         .ToArray();

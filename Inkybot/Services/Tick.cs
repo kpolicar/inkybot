@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Inkybot;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -40,6 +41,7 @@ namespace Inkybot.Services
             private static bool hasDoneRuneCheck = false;
 
             public void Execute() {
+                Profiler.Reset();
                 var currentStep = job.state.Step;
                 //job.magus.SetHistory(job.state.PreviousHistory ?? new List<MageHistoryRecord>());
                 switch (job.state.Step) {
@@ -62,6 +64,7 @@ namespace Inkybot.Services
                     job.SuccessfulCombineTick?.Invoke(this, EventArgs.Empty);
                     job.unsuccessfulCombineTicks = 0;
                 }
+                Profiler.PrintSummary();
             }
 
             private void DoMainMageAction() {

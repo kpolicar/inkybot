@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using ImageMagick;
+using Inkybot;
 using Inkybot.Contracts;
 
 namespace Inkybot.Services
@@ -112,7 +113,7 @@ namespace Inkybot.Services
             protected override void PreprocessingSteps(MagickImage image) {
                 var sw = Stopwatch.StartNew();
                 long last = 0;
-                void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [StatValues] {step}: {now - last}ms"); last = now; }
+                void Log(string step) { var now = sw.ElapsedMilliseconds; Profiler.Record("Preprocess", $"StatValues.{step}", now - last); last = now; }
 
                 image.ColorSpace = ColorSpace.Gray;
                 Log("Grayscale");
@@ -147,7 +148,7 @@ namespace Inkybot.Services
             protected override void PreprocessingSteps(MagickImage image) {
                 var sw = Stopwatch.StartNew();
                 long last = 0;
-                void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [MinMax] {step}: {now - last}ms"); last = now; }
+                void Log(string step) { var now = sw.ElapsedMilliseconds; Profiler.Record("Preprocess", $"MinMax.{step}", now - last); last = now; }
 
                 image.ColorSpace = ColorSpace.Gray;
                 Log("Grayscale");
@@ -232,8 +233,9 @@ namespace Inkybot.Services
 
                         var sw = Stopwatch.StartNew();
                         var result = newImage.ToBitmap();
-                        Debug.WriteLine($"  [{GetType().Name}] ToBitmap: {sw.ElapsedMilliseconds}ms");
-                        Debug.WriteLine($"[Preprocess] {GetType().Name} total: {total.ElapsedMilliseconds}ms");
+                        var shortName = GetType().Name.Replace("ImagePreprocessor", "");
+                        Profiler.Record("Preprocess", $"{shortName}.ToBitmap", sw.ElapsedMilliseconds);
+                        Profiler.Record("Preprocess", $"{shortName}.total", total.ElapsedMilliseconds);
                         return result;
                     }
                 }
