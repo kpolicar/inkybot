@@ -81,8 +81,11 @@ namespace Inkybot.Services
                 foreach (var slice in slices) {
                     slice.ResetPage();
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/10), Gravity.North);
+
+                    using var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150);
+                    canvas.Composite(slice, 75, 75, CompositeOperator.Over);
                     
-                    var sliceBmp = slice.ToBitmap();
+                    var sliceBmp = canvas.ToBitmap();
                     //sliceBmp.Save(Path.Combine(AppContext.BaseDirectory, @"debug\images\")+Path.GetRandomFileName() + ".bmp");
 
                     var ocrPage = ProcessImage(engine, sliceBmp);
