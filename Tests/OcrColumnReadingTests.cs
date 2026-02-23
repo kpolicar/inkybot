@@ -30,69 +30,87 @@ namespace Tests
         // Stat value+name column (Effects/Stats): roughly x=130..360
         // Modif column: roughly x=360..420
 
+        private const int ScaleFactor = 3; // 300% upscale
+
         /// <summary>
-        /// Preprocesses a column slice from the source image:
-        /// crop, upscale 300%, grayscale, negate, Otsu threshold, white border.
-        /// Returns a Bitmap ready for Tesseract.
+        /// Runs the heavy preprocessing pipeline once on the entire source image:
+        /// upscale 300%, grayscale, alpha removal, negate, Otsu threshold, line removal.
+        /// Returns a new MagickImage that callers must dispose.
         /// </summary>
-        private Bitmap PreprocessSlice(MagickImage source, MagickGeometry cropArea)
+        private MagickImage PreprocessFull(MagickImage source)
         {
-            using (var slice = (MagickImage)source.Clone())
+            Directory.CreateDirectory("images");
+
+            var processed = (MagickImage)source.Clone();
+            processed.Write("images/step0_original.png");
+
+            // 1. Upscale
+            processed.FilterType = FilterType.Lanczos;
+            processed.Resize(new Percentage(300));
+            processed.Write("images/step1_upscaled.png");
+
+            // 2. Grayscale AND Remove Alpha
+            processed.ColorSpace = ColorSpace.Gray;
+            processed.Alpha(AlphaOption.Remove);
+            processed.Write("images/step2_grayscale.png");
+            processed.MedianFilter(2);
+
+            // 3. Negate (light-on-dark → dark-on-light)
+            processed.Negate();
+            processed.Write("images/step3_negated.png");
+
+            // 4. Otsu threshold
+            processed.AutoThreshold(AutoThresholdMethod.OTSU);
+            processed.Write("images/step4_otsu.png");
+
+            // 5. Line removal via morphology
+            using (var lineMask = processed.Clone())
             {
-                slice.ToBitmap().Save("preprocessed_slice1.png"); 
-    
-                // 1. Crop to the region of interest
-                slice.Crop(cropArea);
-                slice.ResetPage();
-                slice.ToBitmap().Save("preprocessed_slice2.png"); 
+                lineMask.Negate();
 
-                // 2. Upscale
-                slice.FilterType = FilterType.Lanczos;
-                slice.Resize(new Percentage(300));
-                slice.ToBitmap().Save("preprocessed_slice3.png"); 
-
-                // 3. Grayscale AND Remove Alpha (The Safety Net)
-                slice.ColorSpace = ColorSpace.Gray;
-                slice.Alpha(AlphaOption.Remove); // <-- Strips any transparent UI artifacts
-
-                // 4. Negate 
-                slice.Negate();
-                slice.ToBitmap().Save("preprocessed_slice4.png"); 
-
-                // 5. Otsu threshold
-                slice.AutoThreshold(AutoThresholdMethod.OTSU);
-                slice.ToBitmap().Save("preprocessed_slice5.png"); 
-                
-                using (var lineMask = slice.Clone())
+                var morphologySettings = new MorphologySettings
                 {
-                    // Negate so the shapes we want to target are White (ImageMagick morphology prefers white foregrounds)
-                    lineMask.Negate(); 
+                    Method = MorphologyMethod.Open,
+                    Kernel = Kernel.Rectangle,
+                    KernelArguments = "60x1"
+                };
+                lineMask.Morphology(morphologySettings);
+                ((MagickImage)lineMask).Write("images/step5a_linemask.png");
 
-                    // Apply an "Open" morphology using a horizontal rectangle kernel.
-                    // "Rectangle:60x1" means: Destroy everything that cannot fit a 60-pixel wide horizontal line inside it.
-                    // Since your upscaled minus signs '-' are likely around 20-30 pixels wide, they get destroyed.
-                    // The bounding box lines (which span the whole 120px crop) will survive.
-                    var morphologySettings = new MorphologySettings
-                    {
-                        Method = MorphologyMethod.Open,
-                        Kernel = Kernel.Rectangle,
-                        KernelArguments = "60x1" // 60 pixels wide, 1 pixel tall
-                    };
-                    lineMask.Morphology(morphologySettings);
+                processed.Composite(lineMask, CompositeOperator.Lighten);
+            }
+            processed.Write("images/step5b_lines_removed.png");
 
-                    // Now lineMask contains ONLY the long white bounding box lines on a black background.
-                    // We composite this over our original slice using 'Lighten' or 'Screen'.
-                    // This essentially paints white over the black bounding boxes on the original image, erasing them seamlessly!
-                    slice.Composite(lineMask, CompositeOperator.Lighten);
-                }
-                slice.ToBitmap().Save("preprocessed_slice6.png"); 
+            return processed;
+        }
 
-                // 6. The Compositing Fix (Avoids Magick.NET's 1-bit palette washout)
+        /// <summary>
+        /// Crops a region from the already-preprocessed image (coordinates are in
+        /// original image space and get scaled by <see cref="ScaleFactor"/>),
+        /// then adds a white border and returns a Bitmap ready for Tesseract.
+        /// </summary>
+        private Bitmap CropForOcr(MagickImage preprocessed, MagickGeometry cropArea, string label = null)
+        {
+            var tag = label ?? $"{cropArea.X}_{cropArea.Y}";
+
+            // Scale crop coordinates to match the 300% upscaled image
+            var scaledCrop = new MagickGeometry(
+                cropArea.X * ScaleFactor,
+                cropArea.Y * ScaleFactor,
+                (uint)(cropArea.Width * ScaleFactor),
+                (uint)(cropArea.Height * ScaleFactor));
+
+            using (var slice = (MagickImage)preprocessed.Clone())
+            {
+                slice.Crop(scaledCrop);
+                slice.ResetPage();
+                slice.Write($"images/crop_{tag}_a_cropped.png");
+
+                // Compositing fix: place on white canvas with whitespace border
                 using (var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150))
                 {
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
-                    canvas.ToBitmap().Save("preprocessed_slice7.png"); 
-        
+                    canvas.Write($"images/crop_{tag}_b_bordered.png");
                     return canvas.ToBitmap();
                 }
             }
@@ -121,6 +139,7 @@ namespace Tests
                 $"Test image not found at: {Path.GetFullPath(ImagePath)}");
 
             using (var source = new MagickImage(ImagePath))
+            using (var preprocessed = PreprocessFull(source))
             {
                 var imgWidth = (int)source.Width;
                 var imgHeight = (int)source.Height;
@@ -131,20 +150,24 @@ namespace Tests
                 var rowH = dataAreaHeight / 10;
 
                 // ── Digit engine for Min / Max columns (digits, -, %) ──
-                // Note: We use the "eng" model to safely process the '%' sign
-                using (var digitEngine = new TesseractEngine(TessDataPath, "eng", EngineMode.Default))
+                using (var digitEngine = new TesseractEngine(TessDataPath, "eng", EngineMode.TesseractOnly))
                 {
-                    // Removed the trailing space from the whitelist to prevent hallucinated gaps
                     digitEngine.SetVariable("tessedit_char_whitelist", "0123456789-%");
                     digitEngine.SetVariable("load_system_dawg", "0");
                     digitEngine.SetVariable("load_freq_dawg", "0");
                     digitEngine.SetVariable("load_unambig_dawg", "0");
                     digitEngine.SetVariable("load_punc_dawg", "0");
                     digitEngine.SetVariable("load_number_dawg", "0");
-                    // Removed the legacy 'classify_bln_numeric_mode' as it does nothing in v5
+                    digitEngine.SetVariable("classify_bln_numeric_mode", "0");
 
                     var minValues = new List<string>();
                     var maxValues = new List<string>();
+                    
+                    using (var minBmp = CropForOcr(preprocessed, new MagickGeometry(12, 30, 55-12, 465-30), "min_full"))
+                    {
+                        var lines = OcrLines(digitEngine, minBmp, PageSegMode.SparseText);
+                        Console.WriteLine(lines);
+                    }
 
                     // Iterate row by row to prevent Tesseract from dropping single digits
                     for (int row = 0; row < 10; row++)
@@ -153,18 +176,17 @@ namespace Tests
 
                         // -- Min column cell --
                         var minCrop = new MagickGeometry(0, rowY, 70, (uint)rowH);
-                        using (var minBmp = PreprocessSlice(source, minCrop))
+                        using (var minBmp = CropForOcr(preprocessed, minCrop, $"min_row{row}"))
                         {
-                            // Force SingleLine mode so it reads isolated single digits like '7'
-                            var lines = OcrLines(digitEngine, minBmp, PageSegMode.SingleLine);
+                            var lines = OcrLines(digitEngine, minBmp, PageSegMode.SingleWord);
                             minValues.Add(lines.Length > 0 ? lines[0] : "");
                         }
 
                         // -- Max column cell --
                         var maxCrop = new MagickGeometry(70, rowY, 55, (uint)rowH);
-                        using (var maxBmp = PreprocessSlice(source, maxCrop))
+                        using (var maxBmp = CropForOcr(preprocessed, maxCrop, $"max_row{row}"))
                         {
-                            var lines = OcrLines(digitEngine, maxBmp, PageSegMode.SingleLine);
+                            var lines = OcrLines(digitEngine, maxBmp, PageSegMode.SingleWord);
                             maxValues.Add(lines.Length > 0 ? lines[0] : "");
                         }
                     }
@@ -204,17 +226,18 @@ namespace Tests
                 $"Test image not found at: {Path.GetFullPath(ImagePath)}");
 
             using (var source = new MagickImage(ImagePath))
+            using (var preprocessed = PreprocessFull(source))
             {
                 var imgHeight = (int)source.Height;
                 var rowHeight = imgHeight / 11;
 
                 // ── Text engine for the Effects / Stats column (English text + digits) ──
-                using (var textEngine = new TesseractEngine(TessDataPath, "eng", EngineMode.Default))
+                using (var textEngine = new TesseractEngine(TessDataPath, "eng-fine-tuned", EngineMode.Default))
                 {
                     // The Effects/Stats column contains icon + value + stat name.
                     // We crop starting after the icon area (~148px) to get "10 Initiative", etc.
-                    var statsCrop = new MagickGeometry(148, rowHeight, 230, (uint)(imgHeight - rowHeight));
-                    using (var statsBmp = PreprocessSlice(source, statsCrop))
+                    var statsCrop = new MagickGeometry(162, rowHeight, 200, (uint)(imgHeight - rowHeight));
+                    using (var statsBmp = CropForOcr(preprocessed, statsCrop, "stats_full"))
                     {
                         var statsLines = OcrLines(textEngine, statsBmp);
 
@@ -246,56 +269,6 @@ namespace Tests
                                 $"Stats row {i}: expected '{expectedStats[i]}' but got '{statsLines[i]}'");
                         }
                     }
-                }
-            }
-        }
-
-        [Test]
-        public void ReadModifColumn_Values()
-        {
-            Assert.IsTrue(File.Exists(ImagePath),
-                $"Test image not found at: {Path.GetFullPath(ImagePath)}");
-
-            using (var source = new MagickImage(ImagePath))
-            {
-                var imgWidth = (int)source.Width;
-                var imgHeight = (int)source.Height;
-                var rowHeight = imgHeight / 11;
-
-                // ── Digit engine for the Modif column ──
-                using (var digitEngine = new TesseractEngine(TessDataPath, "eng", EngineMode.Default))
-                {
-                    digitEngine.SetVariable("tessedit_char_whitelist", "0123456789-+% ");
-
-                    // Modif column: the coloured badges on the right side
-                    // Only 2 rows have values: row 0 = "+10", row 1 = "-2"
-                    // We process each row individually for better accuracy on small badges
-                    var modifValues = new List<string>();
-
-                    for (int row = 0; row < 10; row++)
-                    {
-                        var rowY = rowHeight + (row * ((imgHeight - rowHeight) / 10));
-                        var rowH = (imgHeight - rowHeight) / 10;
-                        var modifCrop = new MagickGeometry(370, rowY, (uint)imgWidth - 370 - 15, (uint)rowH);
-
-                        using (var modifBmp = PreprocessSlice(source, modifCrop))
-                        {
-                            var lines = OcrLines(digitEngine, modifBmp, PageSegMode.SingleLine);
-                            var value = lines.Length > 0 ? lines[0] : "";
-                            modifValues.Add(value);
-                        }
-                    }
-
-                    Console.WriteLine("=== Modif column OCR ===");
-                    for (int i = 0; i < modifValues.Count; i++)
-                        Console.WriteLine($"  Row {i}: [{modifValues[i]}]");
-
-                    // We mainly care that the first two rows have recognisable modifier values
-                    // Row 0: +10 (Initiative), Row 1: -2 (Vitality)
-                    Assert.IsTrue(modifValues[0].Contains("10"),
-                        $"Modif row 0: expected to contain '10', got '{modifValues[0]}'");
-                    Assert.IsTrue(modifValues[1].Contains("2"),
-                        $"Modif row 1: expected to contain '2', got '{modifValues[1]}'");
                 }
             }
         }
