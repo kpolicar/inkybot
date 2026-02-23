@@ -319,7 +319,17 @@ namespace Tests
                 var effectsDebug = debugDir != null ? Path.Combine(debugDir, "effects_full") : null;
                 using (var statsBmp = CropForOcr(preprocessed, statsCrop, effectsDebug))
                 {
-                    return OcrLines(textEngine, statsBmp);
+                    var lines = OcrLines(textEngine, statsBmp);
+
+                    // Normalize leading "O " (letter O) to "0 " (digit zero).
+                    // The LSTM engine often confuses 0 with O at the start of a line.
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (lines[i].StartsWith("O "))
+                            lines[i] = "0" + lines[i].Substring(1);
+                    }
+
+                    return lines;
                 }
             }
         }
