@@ -114,19 +114,19 @@ namespace Inkybot.Services
                 long last = 0;
                 void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [StatValues] {step}: {now - last}ms"); last = now; }
 
-                image.FilterType = FilterType.Lanczos;
-                image.Resize(new Percentage(resizePercentage));
-                Log("Resize(Lanczos)");
                 image.ColorSpace = ColorSpace.Gray;
                 Log("Grayscale");
                 image.Alpha(AlphaOption.Remove);
                 Log("AlphaRemove");
-                image.MedianFilter(2);
-                Log("MedianFilter");
                 image.Negate();
                 Log("Negate");
                 RemoveHorizontalLines(image);
                 Log("RemoveHorizontalLines");
+                image.FilterType = FilterType.Lanczos;
+                image.Resize(new Percentage(resizePercentage));
+                Log("Resize(Lanczos)");
+                image.MedianFilter(2);
+                Log("MedianFilter");
                 image.WhiteThreshold(new Percentage(60));
                 Log("WhiteThreshold");
                 image.BorderColor = MagickColors.White;
@@ -149,21 +149,21 @@ namespace Inkybot.Services
                 long last = 0;
                 void Log(string step) { var now = sw.ElapsedMilliseconds; Debug.WriteLine($"  [MinMax] {step}: {now - last}ms"); last = now; }
 
-                image.FilterType = FilterType.Lanczos;
-                image.Resize(new Percentage(resizePercentage));
-                Log("Resize(Lanczos)");
                 image.ColorSpace = ColorSpace.Gray;
                 Log("Grayscale");
                 image.Alpha(AlphaOption.Remove);
                 Log("AlphaRemove");
-                image.MedianFilter(2);
-                Log("MedianFilter");
                 image.Negate();
                 Log("Negate");
-                image.AutoThreshold(AutoThresholdMethod.OTSU);
-                Log("OTSU");
                 RemoveHorizontalLines(image);
                 Log("RemoveHorizontalLines");
+                image.FilterType = FilterType.Lanczos;
+                image.Resize(new Percentage(resizePercentage));
+                Log("Resize(Lanczos)");
+                image.MedianFilter(2);
+                Log("MedianFilter");
+                image.AutoThreshold(AutoThresholdMethod.OTSU);
+                Log("OTSU");
             }
         }
 
@@ -191,17 +191,21 @@ namespace Inkybot.Services
                 using (var lineMask = image.Clone()) {
                     lineMask.Negate();
 
+                    // Solidify the gray line into pure white so the morphology catches it perfectly
+                    lineMask.Threshold(new Percentage(40));
+
+                    // Kernel sizes are for the pre-upscale image (3x smaller than before)
                     var openSettings = new MorphologySettings {
                         Method = MorphologyMethod.Open,
                         Kernel = Kernel.Rectangle,
-                        KernelArguments = "60x1"
+                        KernelArguments = "20x1"
                     };
                     lineMask.Morphology(openSettings);
 
                     var dilateSettings = new MorphologySettings {
                         Method = MorphologyMethod.Dilate,
                         Kernel = Kernel.Rectangle,
-                        KernelArguments = "1x6"
+                        KernelArguments = "1x3"
                     };
                     lineMask.Morphology(dilateSettings);
 
