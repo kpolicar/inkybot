@@ -57,23 +57,18 @@ namespace Inkybot.Services
                 var bounds = CalculateBounds(screenshot);
 
                 var prepSw = System.Diagnostics.Stopwatch.StartNew();
-                var image = /*preprocessor is ResizeImagePreprocessor resizeImagePreprocessor
-                    ? (Bitmap) resizeImagePreprocessor.PreprocessImage(screenshot, bounds, ratioFromOptimalScreenshotHeight(1080))
-                    : */(Bitmap) preprocessor.PreprocessImage(screenshot, bounds);
+                using var magickImage = preprocessor.PreprocessToMagickImage(screenshot, bounds);
                 Debug.WriteLine($"[Scan] MinMaxScreenScanner preprocess: {prepSw.ElapsedMilliseconds}ms");
 
                 if (saveToDisk) {
                     var folderPath = Path.Combine(AppContext.BaseDirectory, @"debug\images");
                     Directory.CreateDirectory(folderPath);
-                    var fileName = Path.GetRandomFileName() + ".bmp";
+                    var fileName = Path.GetRandomFileName() + ".png";
 
-                    PixConverter.ToPix(image).Save(folderPath + "/" + fileName);
+                    magickImage.Write(Path.Combine(folderPath, fileName));
                     Saved?.Invoke(this, new FileSystemEventArgs(
                         WatcherChangeTypes.Created, folderPath, fileName));
                 }
-
-                var m = new MagickFactory();
-                MagickImage magickImage = new MagickImage(m.Image.Create(image));
 
                 var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
 
@@ -94,7 +89,7 @@ namespace Inkybot.Services
                     var ocrPage = ProcessImage(engine, sliceBmp);
                     var ocrMs = ocrSw.ElapsedMilliseconds;
                     var scanned = ocrPage.GetText().Replace(Environment.NewLine, "").Trim();
-                    PageProcessed?.Invoke(this, new TesseractPageProcessed(image, ocrPage, scanned));
+                    PageProcessed?.Invoke(this, new TesseractPageProcessed(sliceBmp, ocrPage, scanned));
 
                     if (scanned == "") {
                         slice.Resize(new Percentage(130));

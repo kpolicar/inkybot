@@ -172,8 +172,19 @@ namespace Inkybot.Services
             protected uint originalImageHeight;
             protected virtual int thresholdPercentage => 27;
 
+            public MagickImage PreprocessToMagickImage(Image image, Rectangle bounds) {
+                return DoPreprocessMagick(image, bounds, PreprocessingSteps);
+            }
+
             public Image PreprocessImage(Image image, Rectangle bounds) {
-                return DoPreprocess(image, bounds, PreprocessingSteps);
+                var total = Stopwatch.StartNew();
+                using (var magick = DoPreprocessMagick(image, bounds, PreprocessingSteps)) {
+                    var sw = Stopwatch.StartNew();
+                    var result = magick.ToBitmap();
+                    Debug.WriteLine($"  [{GetType().Name}] ToBitmap: {sw.ElapsedMilliseconds}ms");
+                    Debug.WriteLine($"[Preprocess] {GetType().Name} total: {total.ElapsedMilliseconds}ms");
+                    return result;
+                }
             }
 
             protected virtual void PreprocessingSteps(MagickImage image) {
@@ -213,29 +224,22 @@ namespace Inkybot.Services
                 }
             }
 
-            private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
-                var total = Stopwatch.StartNew();
-
+            private MagickImage DoPreprocessMagick(Image image, Rectangle bounds, Action<MagickImage> steps) {
                 using (var ms = new MemoryStream()) {
                     lock (image) {
                         image.Save(ms, ImageFormat.Bmp);
                     }
                     ms.Position = 0;
 
-                    using (var newImage = new MagickImage(ms)) {
-                        originalImageHeight = newImage.Height;
-                        var b = bounds;
+                    var newImage = new MagickImage(ms);
+                    originalImageHeight = newImage.Height;
+                    var b = bounds;
 
-                        newImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
+                    newImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
 
-                        steps(newImage);
+                    steps(newImage);
 
-                        var sw = Stopwatch.StartNew();
-                        var result = newImage.ToBitmap();
-                        Debug.WriteLine($"  [{GetType().Name}] ToBitmap: {sw.ElapsedMilliseconds}ms");
-                        Debug.WriteLine($"[Preprocess] {GetType().Name} total: {total.ElapsedMilliseconds}ms");
-                        return result;
-                    }
+                    return newImage;
                 }
             }
         }
