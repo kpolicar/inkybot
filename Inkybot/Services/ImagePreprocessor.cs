@@ -16,6 +16,7 @@ namespace Inkybot.Services
             }
             
             protected override void PreprocessingSteps(MagickImage image) {
+                image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
                 image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
                 image.Negate();
@@ -71,6 +72,7 @@ namespace Inkybot.Services
 
             protected override void PreprocessingSteps(MagickImage image) {
                 PreprocessResizeImage(image);
+                image.ColorSpace = ColorSpace.Gray;
                 image.Sharpen();
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(30));
@@ -108,9 +110,11 @@ namespace Inkybot.Services
             }
             
             protected override void PreprocessingSteps(MagickImage image) {
+                image.FilterType = FilterType.Lanczos;
                 image.Resize(new Percentage(resizePercentage));
-                image.MedianFilter(2);
+                image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
+                image.MedianFilter(2);
                 image.Negate();
                 RemoveHorizontalLines(image);
                 image.WhiteThreshold(new Percentage(60));
@@ -127,9 +131,11 @@ namespace Inkybot.Services
             }
             
             protected override void PreprocessingSteps(MagickImage image) {
+                image.FilterType = FilterType.Lanczos;
                 image.Resize(new Percentage(resizePercentage));
-                image.MedianFilter(2);
+                image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
+                image.MedianFilter(2);
                 image.Negate();
                 image.AutoThreshold(AutoThresholdMethod.OTSU);
                 RemoveHorizontalLines(image);
@@ -146,6 +152,7 @@ namespace Inkybot.Services
             }
 
             protected virtual void PreprocessingSteps(MagickImage image) {
+                image.ColorSpace = ColorSpace.Gray;
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(thresholdPercentage));
                 image.Negate();
@@ -192,7 +199,6 @@ namespace Inkybot.Services
                         // Resize each image in the collection to a width of 200. When zero is specified for the height
                         // the height will be calculated with the aspect ratio.
                         newImage.Crop(new MagickGeometry(b.X, b.Y, (uint)b.Width, (uint)b.Height));
-                        newImage.ColorSpace = ColorSpace.Gray;
 
                         steps(newImage);
 
