@@ -109,12 +109,11 @@ namespace Inkybot.Services
             
             protected override void PreprocessingSteps(MagickImage image) {
                 image.Resize(new Percentage(resizePercentage));
-                image.ColorSpace = ColorSpace.Gray;
+                image.MedianFilter(2);
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(40));
                 image.Negate();
-                image.BlackThreshold(new Percentage(60));
-                //image.BlackThreshold(new Percentage(55));
+                RemoveHorizontalLines(image);
+                image.WhiteThreshold(new Percentage(60));
             }
         }
 
@@ -129,12 +128,11 @@ namespace Inkybot.Services
             
             protected override void PreprocessingSteps(MagickImage image) {
                 image.Resize(new Percentage(resizePercentage));
-                image.Sharpen();
-                image.ColorSpace = ColorSpace.Gray;
+                image.MedianFilter(2);
                 image.Alpha(AlphaOption.Remove);
-                image.BlackThreshold(new Percentage(40));
                 image.Negate();
-                image.BlackThreshold(new Percentage(60));
+                image.AutoThreshold(AutoThresholdMethod.OTSU);
+                RemoveHorizontalLines(image);
             }
         }
 
@@ -151,6 +149,32 @@ namespace Inkybot.Services
                 image.Alpha(AlphaOption.Remove);
                 image.BlackThreshold(new Percentage(thresholdPercentage));
                 image.Negate();
+            }
+
+            /// <summary>
+            /// Removes horizontal lines via morphology: isolate lines with an Open operation,
+            /// dilate the mask vertically to catch drop-shadow halos, then composite with Lighten.
+            /// </summary>
+            protected static void RemoveHorizontalLines(MagickImage image) {
+                using (var lineMask = image.Clone()) {
+                    lineMask.Negate();
+
+                    var openSettings = new MorphologySettings {
+                        Method = MorphologyMethod.Open,
+                        Kernel = Kernel.Rectangle,
+                        KernelArguments = "60x1"
+                    };
+                    lineMask.Morphology(openSettings);
+
+                    var dilateSettings = new MorphologySettings {
+                        Method = MorphologyMethod.Dilate,
+                        Kernel = Kernel.Rectangle,
+                        KernelArguments = "1x6"
+                    };
+                    lineMask.Morphology(dilateSettings);
+
+                    image.Composite(lineMask, CompositeOperator.Lighten);
+                }
             }
 
             private Image DoPreprocess(Image image, Rectangle bounds, Action<MagickImage> steps) {
