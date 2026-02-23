@@ -118,6 +118,8 @@ namespace Inkybot.Services
                 image.Negate();
                 RemoveHorizontalLines(image);
                 image.WhiteThreshold(new Percentage(60));
+                image.BorderColor = MagickColors.White;
+                image.Border(75);
             }
         }
 

@@ -26,17 +26,24 @@ namespace Inkybot.Services
             public MinMaxScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]>? split = null, ImagePreprocessor? preprocessor = null, PageSegMode segMode = PageSegMode.SingleBlock)
                 : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789-");
-                    engine.SetVariable("classify_bln_numeric_mode", 1);
-                    engine.SetVariable("debug", 0);
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
+                    engine.SetVariable("load_system_dawg", "0");
+                    engine.SetVariable("load_freq_dawg", "0");
+                    engine.SetVariable("load_unambig_dawg", "0");
+                    engine.SetVariable("load_punc_dawg", "0");
+                    engine.SetVariable("load_number_dawg", "0");
+                    engine.SetVariable("classify_bln_numeric_mode", "0");
+                    engine.SetVariable("classify_enable_learning", "0");
+                    engine.SetVariable("classify_enable_adaptive_matcher", "0");
+                    engine.SetVariable("tessedit_enable_doc_dict", "0");
                 });
             }
 
             protected override TesseractEngine CreateEngine() {
                 var eng = new TesseractEngine(
                     Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "digits", // Hardcode engine language to eng (not sure why other is less accurate on digits)
-                    EngineMode.Default);
+                    "eng",
+                    EngineMode.TesseractOnly);
                 eng.SetVariable("debug", "0");
                 return eng;
             }
@@ -212,11 +219,21 @@ namespace Inkybot.Services
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
-                    engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
-                    engine.SetVariable("tessedit_enable_dict_correction", 1);
-                    engine.SetVariable("language_model_penalty_non_freq_dict_word", 1);
-                    engine.SetVariable("language_model_penalty_non_dict_word", 1);
+                    engine.SetVariable("load_system_dawg", "0");
+                    engine.SetVariable("load_freq_dawg", "0");
+                    engine.SetVariable("load_unambig_dawg", "0");
+                    engine.SetVariable("classify_enable_learning", "0");
+                    engine.SetVariable("classify_enable_adaptive_matcher", "0");
                 });
+            }
+
+            protected override TesseractEngine CreateEngine() {
+                var eng = new TesseractEngine(
+                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
+                    "eng-fine-tuned",
+                    EngineMode.Default);
+                eng.SetVariable("debug", "0");
+                return eng;
             }
         }
 
