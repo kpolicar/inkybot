@@ -52,12 +52,12 @@ namespace Inkybot.Services
         }
 
         public void FetchData() {
-            Scan?.Dispose();
+            Scan?.DisposeAsync();
             Scan = new DofusScreenScan(serviceContainer, LatestHistoryBounds, false, false);
         }
 
         public void FetchData(Image image, bool saveToDisk=false) {
-            Scan?.Dispose();
+            Scan?.DisposeAsync();
             Scan = new DofusScreenScan(image, serviceContainer, LatestHistoryBounds, saveToDisk);
         }
 

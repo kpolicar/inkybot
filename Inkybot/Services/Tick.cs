@@ -149,6 +149,9 @@ namespace Inkybot.Services
                 previousTickDeferredExecutionTask?.Wait();
                 EnforceChangeTimeoutRunningAndNotFinished();
 
+                // Start history + sink + stats OCR in parallel on this scan
+                job.dataProvider.Scan!.PrefetchForHistoryCheck();
+
                 var itemHistory = job.dataProvider.History();
 
                 var historyHasChanged = Enumerable.ZipWithDefault(itemHistory, job.state.PreviousHistory, (s, s1) => {

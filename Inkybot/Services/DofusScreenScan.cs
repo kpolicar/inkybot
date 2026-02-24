@@ -38,6 +38,10 @@ namespace Inkybot.Services
 
             private static CultureInfo? lang;
 
+            private Task<string[]>? _prefetchedHistoryTask;
+            private Task<decimal?>? _prefetchedSinkTask;
+            private Task<string[]>? _prefetchedStatsTask;
+
             private int screenshotHeight;
             public Image _screenshot = null!;
             public Image screenshot {
@@ -117,16 +121,23 @@ namespace Inkybot.Services
                     WatcherChangeTypes.Created, folderPath, fileName));
             }
 
+            public void PrefetchForHistoryCheck() {
+                // Start history, sink, and stats OCR in parallel — each uses a different scanner/engine
+                _prefetchedHistoryTask = historyScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
+                _prefetchedSinkTask = SinkInternal();
+                _prefetchedStatsTask = StatsInternal();
+            }
+
             private void Init() {
                 if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(350));
+                        new ResizeImagePreprocessor(300));
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
-                        new ResizeImagePreprocessor(350));
+                        new ResizeImagePreprocessor(300));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
-                        new StatValuesImagePreprocessor(userSettings, 350), PageSegMode.SparseText);
+                        new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
                     statMinsScanner = new MinMaxScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                     statMaxesScanner = new MinMaxScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
@@ -222,6 +233,11 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> Stats() {
+                if (_prefetchedStatsTask != null) return await _prefetchedStatsTask;
+                return await StatsInternal();
+            }
+
+            private async Task<string[]> StatsInternal() {
                 var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 return (await statValuesScanTask).Select(s => {
                     if (s.StartsWith("O ") || s.StartsWith("o ")) {
@@ -274,16 +290,22 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> History() {
+                if (_prefetchedHistoryTask != null) return await _prefetchedHistoryTask;
                 return await historyScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
             }
 
             public async Task<decimal?> Sink() {
+                if (_prefetchedSinkTask != null) return await _prefetchedSinkTask;
+                return await SinkInternal();
+            }
+
+            private async Task<decimal?> SinkInternal() {
                 var scanned = await sinkScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 var result = scanned.FirstOrDefault()?.Replace(",", ".") ?? ""; // some dofus seem to have "," separator instead of dot
                 var sinkResult = Regex.Match(result, @"(\d*\.?\d+)", RegexOptions.RightToLeft).Groups[1].Value;
                 if (sinkResult.StartsWith("."))
                     sinkResult = Regex.Match(result, @"(\d+)", RegexOptions.RightToLeft).Groups[1].Value;
-                
+
                 var succ = decimal.TryParse(sinkResult, NumberStyles.Any, CultureInfo.InvariantCulture, out var sink);
                 return succ ? sink : null;
             }
@@ -335,6 +357,42 @@ namespace Inkybot.Services
                 Screenshot?.Invoke(this, new ImageEventArgs(bitmap));
 
                 return bitmap;
+            }
+
+            /// <summary>
+            /// Non-blocking dispose: unsubscribes events immediately, then waits for
+            /// in-flight prefetch tasks and disposes the screenshot on a background thread.
+            /// </summary>
+            public void DisposeAsync() {
+                if (saveToDisk) {
+                    historyScanner!.Saved -= Saved;
+                    latestHistoryScanner!.Saved -= Saved;
+                    statValuesScanner!.Saved -= Saved;
+                    statMinsScanner!.Saved -= Saved;
+                    statMaxesScanner!.Saved -= Saved;
+                    runeScanner!.Saved -= Saved;
+                    averageItemPriceScanner!.Saved -= Saved;
+                }
+                latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;
+
+                var historyTask = _prefetchedHistoryTask;
+                var sinkTask = _prefetchedSinkTask;
+                var statsTask = _prefetchedStatsTask;
+                var img = screenshot;
+
+                Task.Run(() => {
+                    try {
+                        historyTask?.Wait();
+                        sinkTask?.Wait();
+                        statsTask?.Wait();
+                    } catch { /* ignore OCR errors during disposal */ }
+
+                    if (img != null) {
+                        lock (img) {
+                            img.Dispose();
+                        }
+                    }
+                });
             }
 
             public void Dispose() {

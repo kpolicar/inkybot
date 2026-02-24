@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using Inkybot;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
 using ImageMagick.Factories;
@@ -52,7 +54,7 @@ namespace Inkybot.Services
             public override event EventHandler<TesseractPageProcessed>? PageProcessed;
             public override event EventHandler<FileSystemEventArgs>? Saved;
             
-            public override string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+            public override string[] ScanRegion(Image screenshot, int screenshotHeight, TesseractEngine engine, bool saveToDisk = false) {
                 var totalSw = System.Diagnostics.Stopwatch.StartNew();
 
                 var bounds = CalculateBounds(screenshot);
@@ -124,7 +126,8 @@ namespace Inkybot.Services
             public virtual event EventHandler<TesseractPageProcessed>? PageProcessed;
             public virtual event EventHandler<FileSystemEventArgs>? Saved;
 
-            protected TesseractEngine engine;
+            private readonly ConcurrentBag<TesseractEngine> _enginePool = new();
+            private readonly SemaphoreSlim _engineAvailable = new(2, 2);
             private Responsive.Measurement regionOfInterest;
             private Func<string, string[]>? split;
 
@@ -134,12 +137,13 @@ namespace Inkybot.Services
             }
             private PageSegMode segMode;
 
-            
+
             public ScreenScanner(Responsive.Measurement regionOfInterest,
                 Func<string, string[]>? split = null,
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) {
-                engine = CreateEngine();
+                _enginePool.Add(CreateEngine());
+                _enginePool.Add(CreateEngine());
                 this.preprocessor = preprocessor ?? new ImagePreprocessor();
                 this.regionOfInterest = regionOfInterest;
                 this.split = split;
@@ -155,8 +159,19 @@ namespace Inkybot.Services
                 return eng;
             }
 
+            protected TesseractEngine AcquireEngine() {
+                _engineAvailable.Wait();
+                _enginePool.TryTake(out var eng);
+                return eng!;
+            }
+
+            protected void ReleaseEngine(TesseractEngine eng) {
+                _enginePool.Add(eng);
+                _engineAvailable.Release();
+            }
+
             public void SetVariables(Action<TesseractEngine> callback) {
-                callback(engine);
+                foreach (var eng in _enginePool) callback(eng);
             }
 
             public void SetRegion(Responsive.Measurement regionOfInterest) {
@@ -172,14 +187,21 @@ namespace Inkybot.Services
             }
 
             public Task<string[]> ScanRegionAsync(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
-                return Task.Run(() => ScanRegion(screenshot, screenshotHeight, saveToDisk));
+                return Task.Run(() => {
+                    var eng = AcquireEngine();
+                    try {
+                        return ScanRegion(screenshot, screenshotHeight, eng, saveToDisk);
+                    } finally {
+                        ReleaseEngine(eng);
+                    }
+                });
             }
             
             public double ratioFromOptimalScreenshotHeight(int screenshotHeight) =>
                 (1d*optimalScreenshotHeight)/(1d*screenshotHeight);
             private readonly int optimalScreenshotHeight = 1080; //1920x1080
 
-            public virtual string[] ScanRegion(Image screenshot, int screenshotHeight, bool saveToDisk = false) {
+            public virtual string[] ScanRegion(Image screenshot, int screenshotHeight, TesseractEngine engine, bool saveToDisk = false) {
                 var totalSw = System.Diagnostics.Stopwatch.StartNew();
                 var bounds = CalculateBounds(screenshot);
 
@@ -223,7 +245,7 @@ namespace Inkybot.Services
             }
 
             public void Dispose() {
-                engine?.Dispose();
+                while (_enginePool.TryTake(out var eng)) eng?.Dispose();
             }
         }
 
