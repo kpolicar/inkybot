@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Adapters;
 using Inkybot.Api;
@@ -285,13 +286,12 @@ namespace Inkybot
         public void RefreshStats() {
             if (magingJob.IsMaging)
                 return;
-            new Thread(RefreshStatsTask).Start();
+            Task.Run(RefreshStatsTask);
         }
 
-        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private void RefreshStatsTask() {
             try {
-                Invoke(new MethodInvoker(() => {
+                BeginInvoke(new MethodInvoker(() => {
                     selectPresetPanel.Enabled = false;
                     refreshButton.Enabled = false;
                 }));

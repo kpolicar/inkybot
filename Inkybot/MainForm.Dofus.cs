@@ -78,26 +78,18 @@ namespace Inkybot
             
             Win32Input.SetTargetProcessId(pDofus.Id);
 
-            // Inside your MainForm Constructor or OnLoad
-            EventHandler onShownOnce = null;
-            onShownOnce = (sender, args) =>
-            {
-                this.Shown -= onShownOnce;
-
+            Task.Run(async () => {
+                Task.Delay(3000);
                 this.BeginInvoke(new Action(() =>
                 {
-                    try 
-                    {
+                    try {
                         BindServicesToDockedWindow();
-                    } 
-                    catch (Exception e) 
-                    {
+                    } catch (Exception e) {
                         Debug.WriteLine(e);
                     }
                 }));
-            };
-
-            this.Shown += onShownOnce;
+                
+            });
             
             // m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
             // m_GlobalHook.KeyDown += (sender, args) => {
