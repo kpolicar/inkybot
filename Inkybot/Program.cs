@@ -228,6 +228,9 @@ namespace Inkybot
 
         private static void BindLogger() {
             new FileEventLogger().BindToServices();
+#if DEBUG
+            new Inkybot.Debugging.ProfilerFileLogger().Bind();
+#endif
         }
     }
 }

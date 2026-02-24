@@ -7,8 +7,11 @@ namespace Inkybot
 {
     public static class Profiler
     {
+#if DEBUG
         private static readonly List<(string Section, string Key, long Ms)> _entries = new();
         private static readonly object _lock = new();
+
+        public static event System.Action<System.Collections.Generic.IReadOnlyList<(string Section, string Key, long Ms)>>? SummaryReady;
 
         public static void Reset() {
             lock (_lock) { _entries.Clear(); }
@@ -36,6 +39,12 @@ namespace Inkybot
             }
 
             Debug.Write(sb.ToString());
+            SummaryReady?.Invoke(snapshot);
         }
+#else
+        public static void Reset() { }
+        public static void Record(string section, string key, long ms) { }
+        public static void PrintSummary() { }
+#endif
     }
 }

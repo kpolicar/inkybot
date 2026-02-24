@@ -218,6 +218,7 @@
         <Compile Include="Controls\Rectangle.Designer.cs">
           <DependentUpon>Rectangle.cs</DependentUpon>
         </Compile>
+        <Compile Include="Debugging\ProfilerFileLogger.cs" />
         <Compile Include="Debugging\WelcomeDialogue.cs" />
         <Compile Include="Events\ProcessEventArgs.cs" />
         <Compile Include="Exceptions\SinkTooHighException.cs" />

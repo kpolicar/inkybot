@@ -41,7 +41,9 @@ namespace Inkybot.Services
             private static bool hasDoneRuneCheck = false;
 
             public void Execute() {
+#if DEBUG
                 Profiler.Reset();
+#endif
                 var currentStep = job.state.Step;
                 //job.magus.SetHistory(job.state.PreviousHistory ?? new List<MageHistoryRecord>());
                 switch (job.state.Step) {
@@ -64,7 +66,9 @@ namespace Inkybot.Services
                     job.SuccessfulCombineTick?.Invoke(this, EventArgs.Empty);
                     job.unsuccessfulCombineTicks = 0;
                 }
+#if DEBUG
                 Profiler.PrintSummary();
+#endif
             }
 
             private void DoMainMageAction() {
