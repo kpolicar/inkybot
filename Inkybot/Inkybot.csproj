@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
     <PropertyGroup>
+        <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
         <ProjectGuid>{A3D66FB2-1B40-45BD-9B0D-98947FBA69BD}</ProjectGuid>
@@ -16,7 +18,9 @@
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
         <PlatformTarget>x64</PlatformTarget>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
+
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
         <PlatformTarget>x64</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
@@ -27,6 +31,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
         <Obfuscate>True</Obfuscate>
         <PlatformTarget>x64</PlatformTarget>
@@ -38,105 +43,21 @@
         <WarningLevel>4</WarningLevel>
         <ApplicationIcon>../icon.ico</ApplicationIcon>
     </PropertyGroup>
+
     <ItemGroup>
-        <Reference Include="EasyHook, Version=2.7.7097.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
-          <HintPath>..\packages\EasyHook.2.7.7097\lib\net40\EasyHook.dll</HintPath>
-        </Reference>
-        <Reference Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' " Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Magick.NET-Q8-x64, Version=14.5.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=Amd64">
-          <HintPath>..\packages\Magick.NET-Q8-x64.14.5.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
-        </Reference>
-        <Reference Include="Magick.NET.Core, Version=14.5.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-          <HintPath>..\packages\Magick.NET.Core.14.5.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Magick.NET.SystemDrawing, Version=8.0.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-          <HintPath>..\packages\Magick.NET.SystemDrawing.8.0.5\lib\net462\Magick.NET.SystemDrawing.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.Build.Framework.15.7.179\lib\net46\Microsoft.Build.Framework.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.Build.Tasks.Core.15.7.179\lib\net46\Microsoft.Build.Tasks.Core.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.Build.Utilities.Core.15.7.179\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-          <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="mscorlib" />
-        <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-          <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-          <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="SymSpell, Version=6.5.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\SymSpell.6.5.0\lib\net472\SymSpell.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System" />
-        <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.ComponentModel.Composition" />
         <Reference Include="System.Configuration" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
-        <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.IO.Compression" />
         <Reference Include="System.Linq" />
-        <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.Reflection" />
-        <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.Runtime.InteropServices" />
-        <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.Runtime.Remoting" />
         <Reference Include="System.Runtime.Serialization" />
-        <Reference Include="System.Runtime.WindowsRuntime" />
         <Reference Include="System.Security" />
-        <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System.ServiceModel" />
         <Reference Include="System.Threading.Thread" />
         <Reference Include="System.Transactions" />
@@ -149,14 +70,47 @@
         <Reference Include="System.Drawing" />
         <Reference Include="System.Windows.Forms" />
         <Reference Include="System.Xml" />
-        <Reference Include="Tesseract, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\packages\Tesseract.5.2.0\lib\net48\Tesseract.dll</HintPath>
-        </Reference>
-        <Reference Include="Westwind.Scripting, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\Westwind.Scripting.0.3.0\lib\net472\Westwind.Scripting.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Confuser.MSBuild" Version="1.4.1" />
+        <PackageReference Include="EasyHook" Version="2.7.7097" />
+        <PackageReference Include="Magick.NET-Q8-x64" Version="14.5.0" />
+        <PackageReference Include="Magick.NET.Core" Version="14.5.0" />
+        <PackageReference Include="Magick.NET.SystemDrawing" Version="8.0.5" />
+        <PackageReference Include="Microsoft.Build.Framework" Version="15.7.179" />
+        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.7.179" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.7.179" />
+        <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="3.6.0" />
+        <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix" Version="1.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" Version="1.16.30" />
+        <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.28000.1-RTM" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="NLog" Version="4.7.5" />
+        <PackageReference Include="ScreenRecorderLib" Version="6.5.1" />
+        <PackageReference Include="SharpDX" Version="4.2.0" />
+        <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+        <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+        <PackageReference Include="SymSpell" Version="6.5.0" />
+        <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+        <PackageReference Include="System.IO" Version="4.3.0" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Runtime" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.WindowsRuntime" Version="4.6.0" />
+        <PackageReference Include="System.Runtime.WindowsRuntime.UI.Xaml" Version="4.6.0" />
+        <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+        <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+        <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+        <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.0" />
+        <PackageReference Include="Tesseract" Version="5.2.0" />
+        <PackageReference Include="Westwind.Scripting" Version="0.3.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+        <PackageReference Include="MouseKeyHook" Version="5.6.0" />
+    </ItemGroup>
+
     <ItemGroup>
         <Compile Include="Actions\InventorySelectAllAction.cs" />
         <Compile Include="Actions\InventorySelectEquipmentAction.cs" />
@@ -176,10 +130,10 @@
         <Compile Include="Adapters\StatConfigAdapter.cs" />
         <Compile Include="Aes256CbcEncrypter.cs" />
         <Compile Include="Api\ApiConnection.cs">
-          <Link>Api\ApiConnection.cs</Link>
+            <Link>Api\ApiConnection.cs</Link>
         </Compile>
         <Compile Include="Api\ApiClient.cs">
-          <Link>Api\ApiClient.cs</Link>
+            <Link>Api\ApiClient.cs</Link>
         </Compile>
         <Compile Include="Api\ApiNotifier.cs" />
         <Compile Include="Api\Resources\AuthDetails.cs" />
@@ -187,13 +141,13 @@
         <Compile Include="Api\Resources\User.cs" />
         <Compile Include="Api\Resources\VersionDetails.cs" />
         <Compile Include="Api\ApiAuthManager.cs">
-          <Link>Api\ApiAuthManager.cs</Link>
+            <Link>Api\ApiAuthManager.cs</Link>
         </Compile>
         <Compile Include="ConfigForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="ConfigForm.Designer.cs">
-          <DependentUpon>ConfigForm.cs</DependentUpon>
+            <DependentUpon>ConfigForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Contracts\AuthManager.cs" />
         <Compile Include="Contracts\DofusMagingJob.cs" />
@@ -201,22 +155,22 @@
         <Compile Include="Contracts\UserSettingsConfigManager.cs" />
         <Compile Include="Controls\ComboBox.cs" />
         <Compile Include="Controls\Crosshair.cs">
-          <SubType>UserControl</SubType>
+            <SubType>UserControl</SubType>
         </Compile>
         <Compile Include="Controls\Crosshair.Designer.cs">
-          <DependentUpon>Crosshair.cs</DependentUpon>
+            <DependentUpon>Crosshair.cs</DependentUpon>
         </Compile>
         <Compile Include="Controls\DataGridViewNumericUpDownColumn.cs" />
         <Compile Include="Controls\EnqueueRectangle.cs">
-          <SubType>UserControl</SubType>
+            <SubType>UserControl</SubType>
         </Compile>
         <Compile Include="Controls\GroupBox.cs" />
         <Compile Include="Controls\MenuButton.cs" />
         <Compile Include="Controls\Rectangle.cs">
-          <SubType>UserControl</SubType>
+            <SubType>UserControl</SubType>
         </Compile>
         <Compile Include="Controls\Rectangle.Designer.cs">
-          <DependentUpon>Rectangle.cs</DependentUpon>
+            <DependentUpon>Rectangle.cs</DependentUpon>
         </Compile>
         <Compile Include="Debugging\ProfilerFileLogger.cs" />
         <Compile Include="Debugging\WelcomeDialogue.cs" />
@@ -225,19 +179,19 @@
         <Compile Include="Profiler.cs" />
         <Compile Include="Services\WinScreenRecorderScreenCapture.cs" />
         <Compile Include="WaitingForDofusForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="WaitingForDofusForm.Designer.cs">
-          <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
+            <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
         <Compile Include="Domain\ItemHistoryAnalyzer.cs" />
         <Compile Include="Domain\Release.cs">
-          <DependentUpon>DetectUserGame.cs</DependentUpon>
+            <DependentUpon>DetectUserGame.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\RuneAction.cs" />
         <Compile Include="Domain\Settings.cs">
-          <DependentUpon>DetectUserGame.cs</DependentUpon>
+            <DependentUpon>DetectUserGame.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\DetectUserGame.cs" />
         <Compile Include="Events\BalanceChangedEventArgs.cs" />
@@ -290,10 +244,10 @@
         <Compile Include="Extensions\ListExtensions.cs" />
         <Compile Include="Extensions\StringExtensions.cs" />
         <Compile Include="FirstTimeInfoForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="FirstTimeInfoForm.Designer.cs">
-          <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
+            <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Helpers\DataGridView.cs" />
         <Compile Include="Helpers\Debug.cs" />
@@ -301,16 +255,16 @@
         <Compile Include="Helpers\Responsive.cs" />
         <Compile Include="Helpers\System.cs" />
         <Compile Include="MageQueueForm.Builder.cs">
-          <DependentUpon>MageQueueForm.cs</DependentUpon>
+            <DependentUpon>MageQueueForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MageQueueForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="MageQueueForm.Designer.cs">
-          <DependentUpon>MageQueueForm.cs</DependentUpon>
+            <DependentUpon>MageQueueForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Auth.cs">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Contracts\DofusDataProvider.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
@@ -323,9 +277,9 @@
         <Compile Include="Events\FetchedUserEventArgs.cs" />
         <Compile Include="Exceptions\UserNotSubscribedException.cs" />
         <Compile Include="Properties\Regex.Designer.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Regex.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Regex.resx</DependentUpon>
         </Compile>
         <Compile Include="Resources\ConfigPreset.cs" />
         <Compile Include="Resources\ConfigPresets.cs" />
@@ -333,21 +287,21 @@
         <Compile Include="Resources\ItemPresets.cs" />
         <Compile Include="Resources\ItemStatPreset.cs" />
         <Compile Include="Resources\MagingDictionary.Designer.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>MagingDictionary.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>MagingDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Resources\RuneDictionary.Designer.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>RuneDictionary.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>RuneDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Resources\StatConfig.cs" />
         <Compile Include="Resources\StatConfigPreset.cs" />
         <Compile Include="Resources\StatDictionary.Designer.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>StatDictionary.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>StatDictionary.resx</DependentUpon>
         </Compile>
         <Compile Include="Services\ActionHandler.cs" />
         <Compile Include="Services\FileSystemUserSettingsConfigManager.cs" />
@@ -355,101 +309,101 @@
         <Compile Include="Services\QueuedConfigProvider.cs" />
         <Compile Include="Services\MageQueueManager.cs" />
         <Compile Include="Services\ReachTargetMinimumItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ReachTargetWithSinkItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\OverMageWithRemainingSinkItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ReduceOversinkItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\StandardStatsPrioritizedItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\StatConfigProvider.cs" />
         <Compile Include="Services\DofusMagingAI.cs" />
         <Compile Include="Services\ExoItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\FileEventLogger.cs" />
         <Compile Include="Services\DofusStandardStatsMagingAI.cs" />
         <Compile Include="Services\ImagePreprocessor.cs">
-          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\MagingAIServiceManager.cs" />
         <Compile Include="Services\Measurements.cs">
-          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\OverTargetItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\PerfectionItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\PrioritizedItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\RuneQuantityScan.cs">
-          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ScreenReaderDofusMagingJob.cs" />
         <Compile Include="Services\ItemInfo.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\Supervisor.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\TargetItemMageResolve.cs">
-          <DependentUpon>DofusMagingAI.cs</DependentUpon>
+            <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\State.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ApiAnalyticsReporter.cs" />
         <Compile Include="Services\Tick.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ScreenScanner.cs">
-          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\UserRunes.cs">
-          <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
         </Compile>
         <Compile Include="StatisticsForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="StatisticsForm.Designer.cs">
-          <DependentUpon>StatisticsForm.cs</DependentUpon>
+            <DependentUpon>StatisticsForm.cs</DependentUpon>
         </Compile>
         <Compile Include="WelcomeDialogue.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="WelcomeDialogue.Designer.cs">
-          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+            <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Debugger.cs">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Dofus.cs">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.DomainEvents.cs">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.Events.cs">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ConfigManager.cs" />
         <Compile Include="Services\MouseActionFactory.cs" />
         <Compile Include="Services\ScreenReaderDataProvider.cs" />
         <Compile Include="StatsForm.cs">
-          <SubType>Form</SubType>
+            <SubType>Form</SubType>
         </Compile>
         <Compile Include="StatsForm.Designer.cs">
-          <DependentUpon>StatsForm.cs</DependentUpon>
+            <DependentUpon>StatsForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MainForm.cs">
             <SubType>Form</SubType>
@@ -459,11 +413,11 @@
         </Compile>
         <Compile Include="Services\Win32ScreenCapture.cs" />
         <Compile Include="Services\DofusScreenScan.cs">
-          <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
+            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Win32.cs" />
         <Compile Include="Win32.Window.cs">
-          <DependentUpon>Win32.cs</DependentUpon>
+            <DependentUpon>Win32.cs</DependentUpon>
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
@@ -471,62 +425,62 @@
         <Compile Include="WindowHelpers.cs" />
         <EmbeddedResource Include="ConfigForm.fr.resx" />
         <EmbeddedResource Include="ConfigForm.resx">
-          <DependentUpon>ConfigForm.cs</DependentUpon>
+            <DependentUpon>ConfigForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="WaitingForDofusForm.fr.resx" />
         <EmbeddedResource Include="WaitingForDofusForm.resx">
-          <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
+            <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="FirstTimeInfoForm.fr.resx">
-          <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
+            <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="FirstTimeInfoForm.resx">
-          <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
+            <DependentUpon>FirstTimeInfoForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MageQueueForm.fr.resx">
-          <DependentUpon>MageQueueForm.cs</DependentUpon>
+            <DependentUpon>MageQueueForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MageQueueForm.resx">
-          <DependentUpon>MageQueueForm.cs</DependentUpon>
+            <DependentUpon>MageQueueForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.fr.resx" />
         <EmbeddedResource Include="Properties\Regex.fr.resx" />
         <EmbeddedResource Include="Properties\Regex.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>Regex.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Regex.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.fr.resx" />
         <EmbeddedResource Include="Resources\MagingDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\MagingDictionary.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Include="Resources\RuneDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\RuneDictionary.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Include="Resources\StatDictionary.fr.resx" />
         <EmbeddedResource Include="Resources\StatDictionary.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>StatDictionary.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Include="StatisticsForm.fr.resx">
-          <DependentUpon>StatisticsForm.cs</DependentUpon>
+            <DependentUpon>StatisticsForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="StatisticsForm.resx">
-          <DependentUpon>StatisticsForm.cs</DependentUpon>
+            <DependentUpon>StatisticsForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="StatsForm.fr.resx" />
         <EmbeddedResource Include="StatsForm.resx" />
         <EmbeddedResource Include="WelcomeDialogue.fr.resx">
-          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+            <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="WelcomeDialogue.resx">
-          <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+            <DependentUpon>WelcomeDialogue.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="MainForm.resx">
-          <DependentUpon>MainForm.cs</DependentUpon>
+            <DependentUpon>MainForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -538,7 +492,6 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
         <None Include="App.config" />
-        <None Include="packages.config" />
         <None Include="Properties\Settings.settings">
             <Generator>SettingsSingleFileGenerator</Generator>
             <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -549,86 +502,88 @@
             <DesignTimeSharedInput>True</DesignTimeSharedInput>
         </Compile>
     </ItemGroup>
-    <PropertyGroup>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-    </PropertyGroup>
+
     <ItemGroup>
-      <Content Include="afterbuild.sh" />
-      <Content Include="app.manifest" />
-      <Content Include="EasyHook32.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="EasyHook32Svc.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="EasyHook64.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="EasyHook64Svc.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="EasyLoad32.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="EasyLoad64.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="inkybot.certificate.pfx" />
-      <Content Include="Inkybot.crproj" />
-      <Content Include="Resources\Tesseract\digits.traineddata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="Resources\Tesseract\eng-fine-tuned.traineddata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="Resources\Tesseract\eng.traineddata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="Resources\Tesseract\fra.traineddata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="VC_redist.x86.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="_SETUP.bat">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="streams.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="streams64.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="streams64a.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Include="afterbuild.sh" />
+        <Content Include="app.manifest" />
+        <Content Include="EasyHook32.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="EasyHook32Svc.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="EasyHook64.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="EasyHook64Svc.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="EasyLoad32.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="EasyLoad64.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="inkybot.certificate.pfx" />
+        <Content Include="Inkybot.crproj" />
+        <Content Include="Resources\Tesseract\digits.traineddata">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\Tesseract\eng-fine-tuned.traineddata">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\Tesseract\eng.traineddata">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\Tesseract\fra.traineddata">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="VC_redist.x86.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="_SETUP.bat">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="streams.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="streams64.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="streams64a.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
+
     <ItemGroup>
-      <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">
-        <Project>{0a7966c1-0372-4263-94fd-1770544a0312}</Project>
-        <Name>Inkybot.Design</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
-        <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
-        <Name>Inkybot.Dofus</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\InkybotHook\InkybotHook.csproj">
-        <Project>{0ac8e0fe-afdd-4681-9501-88bda7f7f01d}</Project>
-        <Name>InkybotHook</Name>
-      </ProjectReference>
+        <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">
+            <Project>{0a7966c1-0372-4263-94fd-1770544a0312}</Project>
+            <Name>Inkybot.Design</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\Inkybot.Dofus\Inkybot.Dofus.csproj">
+            <Project>{172ee759-8286-4479-aa27-b77b98cb6aee}</Project>
+            <Name>Inkybot.Dofus</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\InkybotHook\InkybotHook.csproj">
+            <Project>{0ac8e0fe-afdd-4681-9501-88bda7f7f01d}</Project>
+            <Name>InkybotHook</Name>
+        </ProjectReference>
     </ItemGroup>
+
     <ItemGroup>
-      <COMReference Include="SHDocVw">
-        <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
-        <VersionMajor>1</VersionMajor>
-        <VersionMinor>1</VersionMinor>
-        <Lcid>0</Lcid>
-        <WrapperTool>tlbimp</WrapperTool>
-        <Isolated>False</Isolated>
-        <EmbedInteropTypes>True</EmbedInteropTypes>
-      </COMReference>
+        <COMReference Include="SHDocVw">
+            <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
+            <VersionMajor>1</VersionMajor>
+            <VersionMinor>1</VersionMinor>
+            <Lcid>0</Lcid>
+            <WrapperTool>tlbimp</WrapperTool>
+            <Isolated>False</Isolated>
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+        </COMReference>
     </ItemGroup>
+
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
     <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild">
         <ItemGroup>
             <RoslynFiles Include="$(OutputPath)roslyn\*" />
@@ -637,20 +592,4 @@
         <Move SourceFiles="@(RoslynFiles)" DestinationFolder="$(OutputPath)bin\roslyn" />
         <RemoveDir Directories="$(OutputPath)roslyn" />
     </Target>
-    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-      <PropertyGroup>
-        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-      </PropertyGroup>
-      <Error Condition="!Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets'))" />
-      <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
-      <Error Condition="!Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.5.2.0\build\Tesseract.targets'))" />
-      <Error Condition="!Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
-      <Error Condition="!Exists('..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets'))" />
-    </Target>
-    <Import Project="..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets" Condition="Exists('..\packages\Confuser.MSBuild.1.4.1\build\Confuser.MSBuild.targets')" />
-    <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-    <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix.targets')" />
-    <Import Project="..\packages\Tesseract.5.2.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.5.2.0\build\Tesseract.targets')" />
-    <Import Project="..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('..\packages\Magick.NET-Q8-x64.14.5.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
-    <Import Project="..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets" Condition="Exists('..\packages\ScreenRecorderLib.6.5.1\build\ScreenRecorderLib.targets')" />
 </Project>
