@@ -40,7 +40,7 @@ namespace Inkybot
     internal static class Program
     {
         
-        #if !DEBUG
+        #if DEBUG
             public const string Url = "http://inkybot.test";
             public const string GrantId = "2";
             public const string GrantSecret = "***REMOVED***";
@@ -50,9 +50,9 @@ namespace Inkybot
             public const string GrantSecret = "***REMOVED***";
         #endif
         
-        public const string VersionNumber = "22";
-        public const string Version = "v3.0";
-        public const string VersionEndpoint = "v3.0";
+        public const string VersionNumber = "23";
+        public const string Version = "v3.1";
+        public const string VersionEndpoint = "v3.1";
 
         public static string InstanceIdentifier {
             private set;
