@@ -39,6 +39,7 @@ namespace Inkybot
         private readonly object frameLock = new object();
         private bool isCapturing = false;
         private volatile bool hasFirstFrame = false;
+        private readonly Stopwatch frameThrottle = Stopwatch.StartNew();
 
         public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm)
         {
@@ -94,6 +95,9 @@ namespace Inkybot
             using (var frame = sender.TryGetNextFrame())
             {
                 if (frame == null || frame.ContentSize.Width <= 0 || frame.ContentSize.Height <= 0) return;
+
+                if (hasFirstFrame && frameThrottle.ElapsedMilliseconds < 50) return;
+                frameThrottle.Restart();
 
                 if (frame.ContentSize.Width != stagingTexture.Description.Width || 
                     frame.ContentSize.Height != stagingTexture.Description.Height)

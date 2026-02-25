@@ -52,6 +52,7 @@ namespace Inkybot.Services
         }
 
         public void FetchData() {
+            Debug.WriteLine("fetching new screenshot data");
             Scan?.DisposeAsync();
             Scan = new DofusScreenScan(serviceContainer, LatestHistoryBounds, false, false);
         }
@@ -106,7 +107,7 @@ namespace Inkybot.Services
             if (previousMinMaxScan.Length == 0) {
                 previousMinMaxScan = Scan!.MinMaxStats().Result;
             }
-            var statResults = Scan!.Stats().Result;
+            var statResults = Scan!.Stats().ConfigureAwait(true).GetAwaiter().GetResult();
             var relevantMinMaxes = previousMinMaxScan.Take(statResults.Length);
             
             var statsResult = statResults

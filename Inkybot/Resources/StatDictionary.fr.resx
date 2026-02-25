@@ -157,7 +157,7 @@
         <value>Résistance Critiques</value>
     </data>
     <data name="pushback_resistance" xml:space="preserve">
-        <value>Résistance Poussée</value>
+        <value>Résistances Poussée</value>
     </data>
     <data name="ranged_resistance" xml:space="preserve">
         <value>Résistance Distance</value>

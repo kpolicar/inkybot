@@ -38,7 +38,7 @@ namespace Inkybot
                 }
             }
 
-            Debug.Write(sb.ToString());
+            //Debug.Write(sb.ToString());
             SummaryReady?.Invoke(snapshot);
         }
 #else

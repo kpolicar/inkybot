@@ -247,92 +247,116 @@ namespace Inkybot.Services
             var restarting = restartAttempt > 0;
             var autoShutdown = false;
             var stopMage = false;
-            try {
-                var item = PrepareMage(fromQueue, restarting);
 
-                if (IsMaging && runStartedEvent)
-                    Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!, false));
+            for (var attempt = 0; attempt <= 2; attempt++) {
+                if (attempt > 0)
+                    Debug.WriteLine("Restarting mage, attempt " + attempt);
+                restarting = attempt > 0 || restartAttempt > 0;
+                stopMage = false;
 
-                actions.Execute(actionFactory.InventorySelectResourcesAction());
-                Thread.Sleep(30);
-                actions.Execute(actionFactory.InventoryClearSelectionAction());
+                try {
+                    var item = PrepareMage(fromQueue, restarting);
 
-                while (IsMaging) {
-                    ticks++;
-                    new Tick(this).Execute();
-                }
+                    if (IsMaging && (runStartedEvent || attempt > 0))
+                        Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!, false));
 
-                stopMage = !(state.PreviousAction is Finish);
-                state.IsMaging = true;
-                if (!mageQueue.Empty && state.PreviousAction is Finish)
-                    mageQueue.Dequeue();
+                    actions.Execute(actionFactory.InventorySelectResourcesAction());
+                    Thread.Sleep(30);
+                    actions.Execute(actionFactory.InventoryClearSelectionAction());
 
-            } catch (OutOfRunesException exception) {
-                autoShutdown = true;
-                stopMage = true;
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (NoItemToMageFoundException exception) {
-                autoShutdown = restarting;
-                stopMage = true;
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (UserForbiddenException exception) {
-                autoShutdown = restarting;
-                stopMage = true;
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (ItemDoesNotMatchPresetException exception) {
-                autoShutdown = true;
-                stopMage = true;
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (ItemHasChangedException exception) {
-                autoShutdown = true;
-                stopMage = true;
-                dataProvider.Scan?.Save();
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (ItemHasNotChangedException exception) {
-                autoShutdown = true;
-                stopMage = true;
-                dataProvider.Scan?.Save();
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (OperationCanceledException exception) {
-                autoShutdown = false;
-                stopMage = true;
-                Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-            } catch (Exception exception) {
-                autoShutdown = true;
-                if (state.Step == State.JobStep.EXECUTING_COMBINE)
-                    unsuccessfulCombineTicks++;
-
-                if (exception is AggregateException aggregateException) {
-                    Debug.WriteLine("Aggregate exception!");
-                    foreach (var aggregateExceptionInnerException in aggregateException.InnerExceptions) {
-                        Debug.WriteLine(aggregateExceptionInnerException.Message);
-                        Debug.WriteLine(aggregateExceptionInnerException.StackTrace);
-                    }
-                } else {
-                    Debug.WriteLine(exception.Message);
-                    Debug.WriteLine(exception.StackTrace);
-                }
-
-                var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
-                    ? "Please try running Inkybot as an administrator."
-                    : "";
-
-                if (Properties.Settings.Default.autoRestartBot) {
-                    Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
-                    Thread.Sleep(1000);
-
-                    if (IsMaging && restartAttempt < 3) {
-                        return DoMageWithoutCheckingQueue(true, false, restartAttempt + 1);
+                    while (IsMaging) {
+                        ticks++;
+                        new Tick(this).Execute();
+                        if (state.Step == State.JobStep.CALCULATING_PRICE_CHANGE) // successful tick
+                            attempt = 0;
                     }
 
-                    if (restarting) {
+                    stopMage = !(state.PreviousAction is Finish);
+                    state.IsMaging = true;
+                    if (!mageQueue.Empty && state.PreviousAction is Finish)
+                        mageQueue.Dequeue();
+
+                    break;
+
+                } catch (OutOfRunesException exception) {
+                    autoShutdown = true;
+                    stopMage = true;
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (NoItemToMageFoundException exception) {
+                    autoShutdown = restarting;
+                    stopMage = true;
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (UserForbiddenException exception) {
+                    autoShutdown = restarting;
+                    stopMage = true;
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (ItemDoesNotMatchPresetException exception) {
+                    autoShutdown = true;
+                    stopMage = true;
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (ItemHasChangedException exception) {
+                    autoShutdown = true;
+                    stopMage = true;
+                    dataProvider.Scan?.Save();
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (ItemHasNotChangedException exception) {
+                    autoShutdown = true;
+                    stopMage = true;
+                    dataProvider.Scan?.Save();
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (OperationCanceledException exception) {
+                    autoShutdown = false;
+                    stopMage = true;
+                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                    break;
+                } catch (Exception exception) {
+                    autoShutdown = true;
+                    if (state.Step == State.JobStep.EXECUTING_COMBINE)
+                        unsuccessfulCombineTicks++;
+
+                    if (exception is AggregateException aggregateException) {
+                        Debug.WriteLine("Aggregate exception!");
+                        foreach (var aggregateExceptionInnerException in aggregateException.InnerExceptions) {
+                            Debug.WriteLine(aggregateExceptionInnerException.Message);
+                            Debug.WriteLine(aggregateExceptionInnerException.StackTrace);
+                        }
+                    } else {
+                        Debug.WriteLine(exception.Message);
+                        Debug.WriteLine(exception.StackTrace);
+                    }
+
+                    var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
+                        ? "Please try running Inkybot as an administrator."
+                        : "";
+
+                    if (Properties.Settings.Default.autoRestartBot) {
+                        Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
+                        Thread.Sleep(1000);
+                        state.IsMaging = true;
+
+                        if (attempt >= 2) {
+                            if (restarting) {
+                                Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
+                            }
+                            stopMage = true;
+                            break;
+                        }
+
+                        // Loop will retry
+                        continue;
+                    } else {
                         Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     }
-                } else {
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
-                }
 
-                stopMage = true;
+                    stopMage = true;
+                    break;
+                }
             }
 
             state.IsMaging = true; // If an error occured during preparation, we still want to stop properly

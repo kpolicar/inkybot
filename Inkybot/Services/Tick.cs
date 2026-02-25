@@ -85,9 +85,10 @@ namespace Inkybot.Services
                             Thread.Sleep(800);
                         }
                     }
-                } catch (ItemHasChangedException exception) {
+                } catch (Exception exception) {
                     if (MaxStatsChangedChecks >= StatsChangedChecksCount)
                         throw;
+                    Debug.WriteLine("trying attempt "+StatsChangedChecksCount+" to recover from error: "+exception.Message);
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{StatsChangedChecksCount} out of ${MaxStatsChangedChecks}"));
                     job.dataProvider.FetchData();
 
@@ -226,7 +227,6 @@ namespace Inkybot.Services
             }
             
             private void CalculatePriceChange() {
-                // todo: disabled until kamas scanning works again
                  /*Task.Run(() => {
                      var balance = job.dataProvider.AverageItemBalance();
                      if (balance == null) return;
@@ -448,7 +448,7 @@ namespace Inkybot.Services
                 if (!job.changeTimeout.IsRunning)
                     job.changeTimeout.Restart();
                 
-                if (job.changeTimeout.ElapsedMilliseconds > 15000)
+                if (job.changeTimeout.ElapsedMilliseconds > 15000 || (!job.state.PreviousCombineWasExoAttempt && job.changeTimeout.ElapsedMilliseconds > 5000))
                     HandleChangeCheckTimeout();
             }
         }

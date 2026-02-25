@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Dofus;
 using Inkybot.Domain;
@@ -34,7 +35,10 @@ namespace Inkybot.Actions
                 
                 Input.Click(pos.X, pos.Y);
                 Thread.Sleep(5);
-                // Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
+                Task.Run(async () => {
+                    await Task.Delay(80);
+                    Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
+                });
                 return;
             }
 
