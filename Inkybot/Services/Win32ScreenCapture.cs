@@ -189,7 +189,7 @@ namespace Inkybot
             int borderHeight = 0;
             mainForm.Invoke((MethodInvoker)delegate {
                 var formLoc = mainForm.WindowState == FormWindowState.Maximized ? Point.Empty : mainForm.Location;
-                var panelLoc = dofusClientPanel.PointToScreen(Point.Empty);
+                var panelLoc = dofusClientPanel.PointToScreen(dofusClientPanel.Location);
                 borderHeight = panelLoc.Y - formLoc.Y;
             });
             return borderHeight;

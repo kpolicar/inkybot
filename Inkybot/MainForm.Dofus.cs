@@ -37,7 +37,7 @@ namespace Inkybot
                         var processes = Process.GetProcesses();
                         var dofusProcesses = processes
                             .Where(process =>
-                                (
+                                /*(
                                     (process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 &&
                                      (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*"))
                                 ) ||
@@ -46,7 +46,7 @@ namespace Inkybot
                                      (process.ProcessName.IndexOf(Properties.Settings.Default.dofusProcessName, StringComparison.OrdinalIgnoreCase) >= 0) &&
                                      (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*") || Properties.Settings.Default.dofusProcessName != "dofus"))
                                     )
-                                && process.MainWindowTitle != "")
+                                &&*/ process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 && process.MainWindowTitle != "")
                             .ToArray();
 
                         if (dofusProcesses.Length == 1) {
