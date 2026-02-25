@@ -224,7 +224,7 @@ namespace Inkybot.Services
                     if (IsMaging) Thread.Sleep(500);
 
                     if (IsMaging) {
-                        autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting);
+                        autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting ? 1 : 0);
                         if (!mageQueue.Empty)
                             Thread.Sleep(500);
                     }
@@ -235,7 +235,7 @@ namespace Inkybot.Services
                 }
                 
             } else {
-                autoShutdown = DoMageWithoutCheckingQueue(true, false, restarting);
+                autoShutdown = DoMageWithoutCheckingQueue(true, false, restarting ? 1 : 0);
             }
             
             Finished?.Invoke(
@@ -243,7 +243,8 @@ namespace Inkybot.Services
                 new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
         }
 
-        private bool DoMageWithoutCheckingQueue(bool runStartedEvent, bool fromQueue, bool restarting=false) {
+        private bool DoMageWithoutCheckingQueue(bool runStartedEvent, bool fromQueue, int restartAttempt=0) {
+            var restarting = restartAttempt > 0;
             var autoShutdown = false;
             var stopMage = false;
             try {
@@ -320,8 +321,8 @@ namespace Inkybot.Services
                     Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
                     Thread.Sleep(1000);
 
-                    if (IsMaging) {
-                        return DoMageWithoutCheckingQueue(true, false, true);
+                    if (IsMaging && restartAttempt < 3) {
+                        return DoMageWithoutCheckingQueue(true, false, restartAttempt + 1);
                     }
 
                     if (restarting) {
