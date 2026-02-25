@@ -505,7 +505,7 @@ namespace Inkybot
             // 
             this.Resize += OnResize;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.shutdownToastPanel);
             this.Controls.Add(this.sidebarPanel);
