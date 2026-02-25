@@ -188,9 +188,14 @@ namespace Inkybot
         {
             int borderHeight = 0;
             mainForm.Invoke((MethodInvoker)delegate {
-                var formLoc = mainForm.WindowState == FormWindowState.Maximized ? Point.Empty : mainForm.Location;
-                var panelLoc = dofusClientPanel.PointToScreen(dofusClientPanel.Location);
-                borderHeight = panelLoc.Y - formLoc.Y;
+                // This dynamically fetches the exact height of the Title Bar text area.
+                // On standard 1080p monitors, this returns exactly 23.
+                // On 4K monitors with scaling, it scales automatically (e.g., 34 or 46).
+                int titleBarHeight = SystemInformation.CaptionHeight;
+        
+                // Add however far down the panel is placed inside your Form.
+                // (If it's docked at the very top, Top is 0. If you have a menu bar, Top accounts for it).
+                borderHeight = titleBarHeight + dofusClientPanel.Top;
             });
             return borderHeight;
         }
