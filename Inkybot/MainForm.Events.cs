@@ -49,6 +49,7 @@ namespace Inkybot
             }
         }
         private void ShowQueueControls() {
+            
             foreach (var control in queueControls) {
                 control.Key.Show();
                 control.Key.BringToFront();
