@@ -592,4 +592,23 @@
         <Move SourceFiles="@(RoslynFiles)" DestinationFolder="$(OutputPath)bin\roslyn" />
         <RemoveDir Directories="$(OutputPath)roslyn" />
     </Target>
+    <Target Name="SkipLockedPackageFiles" AfterTargets="ResolvePackageAssets;ResolveAssemblyReferences" BeforeTargets="CopyFilesToOutputDirectory;GetCopyToOutputDirectoryItems">
+        <ItemGroup>
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+                                     Condition="('%(Filename)' == 'EasyHook64' Or '%(Filename)' == 'EasyLoad64') And Exists('$(OutDir)%(ReferenceCopyLocalPaths.DestinationSubDirectory)%(Filename)%(Extension)')" />
+
+            <_SourceItemsToCopyToOutputDirectory Remove="@(_SourceItemsToCopyToOutputDirectory)"
+                                                 Condition="('%(Filename)' == 'EasyHook64' Or '%(Filename)' == 'EasyLoad64') And Exists('$(OutDir)%(_SourceItemsToCopyToOutputDirectory.TargetPath)')" />
+
+            <_SourceItemsToCopyToOutputDirectoryAlways Remove="@(_SourceItemsToCopyToOutputDirectoryAlways)"
+                                                       Condition="('%(Filename)' == 'EasyHook64' Or '%(Filename)' == 'EasyLoad64') And Exists('$(OutDir)%(_SourceItemsToCopyToOutputDirectoryAlways.TargetPath)')" />
+
+            <ContentWithTargetPath Remove="@(ContentWithTargetPath)"
+                                   Condition="('%(Filename)' == 'EasyHook64' Or '%(Filename)' == 'EasyLoad64') And Exists('$(OutDir)%(ContentWithTargetPath.TargetPath)')" />
+
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="('%(Filename)' == 'EasyHook32' Or '%(Filename)' == 'EasyLoad32') And Exists('$(OutDir)%(ReferenceCopyLocalPaths.DestinationSubDirectory)%(Filename)%(Extension)')" />
+            <_SourceItemsToCopyToOutputDirectory Remove="@(_SourceItemsToCopyToOutputDirectory)" Condition="('%(Filename)' == 'EasyHook32' Or '%(Filename)' == 'EasyLoad32') And Exists('$(OutDir)%(_SourceItemsToCopyToOutputDirectory.TargetPath)')" />
+            <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="('%(Filename)' == 'EasyHook32' Or '%(Filename)' == 'EasyLoad32') And Exists('$(OutDir)%(ContentWithTargetPath.TargetPath)')" />
+        </ItemGroup>
+    </Target>
 </Project>
