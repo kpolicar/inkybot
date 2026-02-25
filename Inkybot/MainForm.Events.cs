@@ -303,10 +303,10 @@ namespace Inkybot
             _ = mageQueueForm.Highlight(mageQueueItem);
         }
 
-        private void kamasSpentValueResetButton_Click(object sender, EventArgs e) {
-            (magingJob as ScreenReaderDofusMagingJob)?.ResetBalance();
-            kamasSpentValueLabel.Text = resources.GetString("kamasSpentValueLabel.Text");
-        }
+        //private void kamasSpentValueResetButton_Click(object sender, EventArgs e) {
+        //    (magingJob as ScreenReaderDofusMagingJob)?.ResetBalance();
+        //    kamasSpentValueLabel.Text = resources.GetString("kamasSpentValueLabel.Text");
+        //}
 
         private void exoAttemptsValueResetButton_Click(object sender, EventArgs e) {
             BeginInvoke(new MethodInvoker(() => {
@@ -314,19 +314,19 @@ namespace Inkybot
             }));
         }
         
-        private void OnKamasSpentValueResetButtonPaint(object sender, PaintEventArgs e) {
-            base.OnPaint(e);
-            var format = new StringFormat();
-            format.Alignment = StringAlignment.Center;
-            format.LineAlignment = StringAlignment.Center;
-
-            e.Graphics.DrawString(
-                "⟲",
-                kamasSpentValueResetButton.Font,
-                new SolidBrush(kamasSpentValueResetButton.ForeColor),
-                kamasSpentValueResetButton.ClientRectangle,
-                format);
-        }
+        //private void OnKamasSpentValueResetButtonPaint(object sender, PaintEventArgs e) {
+        //    base.OnPaint(e);
+        //    var format = new StringFormat();
+        //    format.Alignment = StringAlignment.Center;
+        //    format.LineAlignment = StringAlignment.Center;
+        //
+        //    e.Graphics.DrawString(
+        //        "⟲",
+        //        kamasSpentValueResetButton.Font,
+        //        new SolidBrush(kamasSpentValueResetButton.ForeColor),
+        //        kamasSpentValueResetButton.ClientRectangle,
+        //        format);
+        //}
         private void OnExoAttemptsValueResetButtonPaint(object sender, PaintEventArgs e) {
             base.OnPaint(e);
             var format = new StringFormat();
@@ -335,9 +335,9 @@ namespace Inkybot
 
             e.Graphics.DrawString(
                 "⟲",
-                kamasSpentValueResetButton.Font,
-                new SolidBrush(kamasSpentValueResetButton.ForeColor),
-                kamasSpentValueResetButton.ClientRectangle,
+                exoAttemptsValueResetButton.Font,
+                new SolidBrush(exoAttemptsValueResetButton.ForeColor),
+                exoAttemptsValueResetButton.ClientRectangle,
                 format);
         }
     }

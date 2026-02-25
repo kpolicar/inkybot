@@ -226,12 +226,13 @@ namespace Inkybot.Services
             }
             
             private void CalculatePriceChange() {
-                 Task.Run(() => {
+                // todo: disabled until kamas scanning works again
+                 /*Task.Run(() => {
                      var balance = job.dataProvider.AverageItemBalance();
                      if (balance == null) return;
                 
                      job.Balance = (int) balance;
-                 });
+                 });*/
                 hasDoneRuneCheck = false; // reset
                 job.state.Step = State.JobStep.STANDARD;
             }
