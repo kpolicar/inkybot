@@ -56,6 +56,7 @@ namespace Inkybot.Services.Win32Input
             preScreenshotCursorPosition = previousCursorPosition;
             Init();
             SetCursorPosition(0, 0);
+            Thread.Sleep(100); // wait for new frame to have been saved in screenreader
         }
         
         private void OnEndScreenshot(object sender, EventArgs e) {
