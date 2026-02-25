@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
 using Inkybot.Helpers;
@@ -29,6 +30,12 @@ namespace Inkybot.Actions
             };
             var itemInventoryPosition = GetCursorTarget(boundingBoxCenter);
             Input.DoubleClick(itemInventoryPosition.X, itemInventoryPosition.Y);
+            
+            Thread.Sleep(300);
+            
+            var combineCategoryPosition = GetCursorTarget(Measurements.CombineButtonMeasurement);
+            
+            Input.Move(combineCategoryPosition.X, combineCategoryPosition.Y);
         }
 
     }

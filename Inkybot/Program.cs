@@ -97,11 +97,11 @@ namespace Inkybot
             
             Properties.Settings.Default.dofusProcessName = Properties.Settings.Default.dofusProcessName != "" ?
                 Properties.Settings.Default.dofusProcessName : "dofus";
+            EnforceFirstTimeSetup();
             
             ApplyAdditionalUserSettings();
             SetAppLocale();
             InitDependencies();
-            EnforceFirstTimeSetup();
                 
             BindServices();
             BindLogger();
@@ -118,47 +118,46 @@ namespace Inkybot
         private static void EnforceFirstTimeSetup() {
             if (!Settings.Default.NeedsSetup)
                 return;
-            
+    
             Settings.Default.NeedsSetup = false;
             Properties.Settings.Default.Save();
-            var exePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory).Replace('\\', '/');;
-            
+            var exePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory).Replace('\\', '/');
+    
             Console.WriteLine("Running VC_redist.x86.exe");
             var p1 = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "VC_redist.x86.exe",
-                    Arguments = $"-install -quiet",
+                    Arguments = "-install -quiet",
                     UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    // Disabled redirection to prevent buffer deadlock
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false,
                     CreateNoWindow = true
                 }
             };
             p1.Start();
-            
+    
             Console.WriteLine("Removing zone identifiers");
             var p2 = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "streams.exe",
-                    Arguments = $"-d -s \"{exePath}\"",
+                    // Added -accepteula to prevent the Sysinternals license dialog hang
+                    Arguments = $"-accepteula -d -s \"{exePath}\"",
                     UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    // Disabled redirection to prevent buffer deadlock
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false,
                     CreateNoWindow = true
                 }
             };
             p2.Start();
+    
             p1.WaitForExit();
             p2.WaitForExit();
-
-            Console.WriteLine("Restarting process");
-            Application.Restart();
-            Application.ExitThread();           
-            Environment.Exit(0);
         }
 
         private static void OnAppClosing(object sender, EventArgs eventArgs) {

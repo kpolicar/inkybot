@@ -68,6 +68,10 @@ namespace Inkybot.Services.Win32Input
 
 
         private void SetCursorPosition(int x, int y) {
+            if (!isInitialized) {
+                Init();
+                Thread.Sleep(4000); // wait for dll to have been injected
+            }
             if (x != -1 || y != -1) {
                 var r = new RECT();
                 GetWindowRect(relativeToControl, out r);
