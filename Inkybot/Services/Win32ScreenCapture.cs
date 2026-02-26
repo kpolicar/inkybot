@@ -82,7 +82,13 @@ namespace Inkybot
             framePool.FrameArrived += OnFrameArrived;
             session = framePool.CreateCaptureSession(captureItem);
             session.IsCursorCaptureEnabled = false;
-            session.IsBorderRequired = false;
+            //session.IsBorderRequired = false;
+            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent(typeof(GraphicsCaptureSession).FullName, "IsBorderRequired"))
+            {
+                // Set the property dynamically at runtime
+                var borderProperty = typeof(GraphicsCaptureSession).GetProperty("IsBorderRequired");
+                borderProperty?.SetValue(session, false);
+            }
 
             StartCapture();
         }

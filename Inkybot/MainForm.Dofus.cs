@@ -79,7 +79,7 @@ namespace Inkybot
             Win32Input.SetTargetProcessId(pDofus.Id);
 
             Task.Run(async () => {
-                Task.Delay(3000);
+                Task.Delay(5000);
                 this.BeginInvoke(new Action(() =>
                 {
                     try {
