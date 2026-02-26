@@ -338,13 +338,56 @@ namespace Inkybot.Services
                 job.configManager.RemoveFallenUnconfiguredStats(item);
 
                 previousTickDeferredExecutionTask?.Wait();
+
+                // Pipeline: generate and execute rapid actions before the slow final action
+                if (job.magus is DofusMagingAI concreteMagus) {
+                    var pipeline = concreteMagus.GeneratePipeline(item, job.dSink);
+
+                    if (pipeline.Count > 3) {
+                        // Execute rapid actions until 3 remain or we hit exo/overmage/overtarget
+                        var rapidEnd = 0;
+                        while (rapidEnd < pipeline.Count) {
+                            var mage = pipeline[rapidEnd];
+                            var remaining = pipeline.Count - rapidEnd;
+                            var isExo = !item.HasStat(mage.Rune.Stat);
+
+                            if (remaining <= 3 || isExo || mage.WillOvermage || mage.WillOvertarget)
+                                break;
+
+                            var rapidAction = (CombineRune) job.actionFactory.CombineRune(mage.Rune, isExo);
+                            EnforceHasRunesForCombine(rapidAction);
+                            job.actions.Execute(rapidAction);
+                            Debug.WriteLine("pipeline rapid: " + rapidAction);
+                            rapidEnd++;
+                            Thread.Sleep(50);
+                        }
+
+                        // Execute the next pipeline item as the slow action (with history checking)
+                        if (rapidEnd > 0 && rapidEnd < pipeline.Count) {
+                            var slowMage = pipeline[rapidEnd];
+                            var slowIsExo = !item.HasStat(slowMage.Rune.Stat);
+                            var slowAction = (CombineRune) job.actionFactory.CombineRune(slowMage.Rune, slowIsExo);
+                            EnforceHasRunesForCombine(slowAction);
+
+                            if (slowAction.Exo) {
+                                job.state.PreviousHistory = job.dataProvider.History();
+                            }
+                            RaiseEventIfMagingItemWithHighSinkExo(item);
+
+                            job.actions.Execute(slowAction);
+                            Debug.WriteLine("pipeline slow: " + slowAction);
+                            return slowAction;
+                        }
+                    }
+                }
+
                 var action = job.magus.ResolveAction(item);
 
                 if (action is CombineRune combine) {
                     if (job.unsuccessfulCombineTicks >= 5) {
                         throw new OutOfRunesException(combine.Rune);
                     }
-                
+
                     EnforceHasRunesForCombine(combine);
 
                     if (combine.Exo) {
@@ -354,7 +397,7 @@ namespace Inkybot.Services
                     RaiseEventIfMagingItemWithHighSinkExo(item);
                 }
 
-                
+
                 job.actions.Execute(action);
                 Debug.WriteLine("executed action "+action);
 

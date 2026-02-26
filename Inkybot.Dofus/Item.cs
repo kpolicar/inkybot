@@ -89,6 +89,15 @@ namespace Inkybot.Dofus
                 .All(equal => equal);
         }
 
+        public Item WithStatValueIncreased(Stat stat, int increase) {
+            var newStats = Stats.Stats.Select(s =>
+                s.Stat == stat
+                    ? new ItemStat(s.Stat, s.Value + increase, s.Min, s.Max)
+                    : s
+            ).ToArray();
+            return new Item(new ItemStatRepository(newStats));
+        }
+
         public override bool Equals(object obj) {
             if (obj is Item other)
                 return Equals(other);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Inkybot.Design;
 using Inkybot.Dofus;
@@ -21,6 +22,8 @@ namespace Inkybot.Services
         internal OverrideResolve? OverrideFinishSinkOverride;
         internal OverrideResolve? OverrideExoResolve;
         private MageConfig config = null!;
+        private int? _simulatedSink;
+        protected override int Sink => _simulatedSink ?? base.Sink;
 
         public override void BindDependencies(ServiceContainer serviceContainer) {
             var configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
@@ -119,6 +122,49 @@ namespace Inkybot.Services
             var itemMage = proposedItemMage.Value;
             
             return Combine(itemMage.Rune);
+        }
+
+        public List<ItemMage> GeneratePipeline(Item item, decimal currentSink) {
+            var pipeline = new List<ItemMage>();
+            var simulatedItem = item;
+            var simulatedSink = currentSink;
+
+            while (true) {
+                _simulatedSink = (int) simulatedSink;
+                Item = simulatedItem;
+
+                var proposed = ResolveItemMage(simulatedItem, new Stat[]{})
+                            ?? ResolveItemMageForExo(simulatedItem, new Stat[]{});
+
+                if (!config.RestoreHighSinkStatsImmediately) {
+                    if (simulatedSink < proposed?.Rune.Sink || proposed == null) {
+                        var targetResolve = new TargetItemMageResolve(config, simulatedItem)
+                            .ExcludeStats(new Stat[]{}).Resolve();
+                        if (targetResolve != null)
+                            proposed = targetResolve;
+                    }
+                }
+                if (proposed != null && !SatisfiesOversinkConstraint(simulatedItem, proposed.Value))
+                    proposed = new ReduceOversinkItemMageResolve(config, simulatedItem)
+                        .ExcludeStats(new Stat[]{}).Resolve();
+
+                Item = null!;
+                _simulatedSink = null;
+
+                if (proposed == null) break;
+                if (proposed.Value.WillOvermage) break;
+                if (proposed.Value.WillOvertarget) break;
+
+                pipeline.Add(proposed.Value);
+
+                simulatedItem = simulatedItem.WithStatValueIncreased(
+                    proposed.Value.Stat,
+                    proposed.Value.Rune.IncreaseInValue);
+                simulatedSink -= proposed.Value.Rune.Sink;
+                if (simulatedSink < 0) simulatedSink = 0;
+            }
+
+            return pipeline;
         }
 
         private bool SatisfiesOversinkConstraint(Item item, ItemMage proposedItemMage) {

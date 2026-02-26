@@ -30,7 +30,7 @@ namespace Inkybot.Dofus.Contracts
         
         private MageConfigManager MageConfigManager = null!;
 
-        protected int Sink => SinkProvider.Sink;
+        protected virtual int Sink => SinkProvider.Sink;
         
         /**
          * <summary>
