@@ -165,7 +165,7 @@ namespace Inkybot
                         stagingTexture.Description.Width, 
                         stagingTexture.Description.Height, 
                         dataBox.RowPitch, 
-                        PixelFormat.Format32bppArgb, 
+                        PixelFormat.Format32bppRgb, 
                         dataBox.DataPointer))
                     {
                         Profiler.Record("Capture", "gpu_to_cpu_map", copySw.ElapsedMilliseconds);
