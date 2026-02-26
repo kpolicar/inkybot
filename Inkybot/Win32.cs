@@ -8,6 +8,10 @@ namespace Inkybot
         [DllImport("user32.dll")]
         public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
@@ -48,14 +52,20 @@ namespace Inkybot
         public const int WM_KEYDOWN = 0x0100;
         public const int WM_KEYUP = 0x0101;
         public const int WM_CHAR = 0x0102;
+        public const int WM_SYSKEYDOWN = 0x0104;
+        public const int WM_SYSKEYUP = 0x0105;
+
+        public const int VK_RETURN = 0x0D;
+        public const int VK_MENU = 0x12;
 
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct Rect
         {
-            public int Left { get; set; }
-            public int Top { get; set; }
-            public int Right { get; set; }
-            public int Bottom { get; set; }
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
         }
         
         [FlagsAttribute]

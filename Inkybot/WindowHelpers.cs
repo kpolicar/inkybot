@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Inkybot
@@ -20,6 +22,17 @@ namespace Inkybot
                 hWndDocked = process.MainWindowHandle;
             }
 
+            // If the process is in fullscreen mode, send Alt+Enter to switch to windowed
+            if (IsFullscreen(hWndDocked)) {
+                Debug.WriteLine("Process is in fullscreen mode, sending Alt+Enter to switch to windowed");
+                // Alt+Enter via WM_SYSKEYDOWN/UP — lParam bit 29 = Alt context
+                int altDownLParam = (1 << 29);
+                int altUpLParam = (1 << 29) | (1 << 30) | unchecked((int)(1u << 31));
+                Win32.SendMessage(hWndDocked, (uint)Win32.WM_SYSKEYDOWN, (IntPtr)Win32.VK_RETURN, (IntPtr)altDownLParam);
+                Win32.SendMessage(hWndDocked, (uint)Win32.WM_SYSKEYUP, (IntPtr)Win32.VK_RETURN, (IntPtr)altUpLParam);
+                Thread.Sleep(3000); // wait for Unity to transition to windowed mode
+            }
+
             var oldParentHandle = Win32.SetParent(hWndDocked, destination.Handle);
 
             var docked = hWndDocked;
@@ -29,6 +42,21 @@ namespace Inkybot
             moveEventHandler(new object(), new EventArgs());
 
             return oldParentHandle;
+        }
+
+        private static bool IsFullscreen(IntPtr hWnd) {
+            // Check if the window covers the entire screen and has no caption (title bar)
+            var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
+            bool hasNoCaption = (style & Win32.WS_CAPTION) == 0;
+
+            Win32.GetWindowRect(hWnd, out var windowRect);
+            var screen = Screen.FromHandle(hWnd);
+            bool coversScreen = windowRect.Left <= screen.Bounds.Left
+                             && windowRect.Top <= screen.Bounds.Top
+                             && windowRect.Right >= screen.Bounds.Right
+                             && windowRect.Bottom >= screen.Bounds.Bottom;
+
+            return hasNoCaption && coversScreen;
         }
 
         public static void UndockProcess(IntPtr handle, IntPtr handleDestination) {
