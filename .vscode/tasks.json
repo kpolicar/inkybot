@@ -1,0 +1,113 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "restore",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "restore",
+                "${workspaceFolder}\\Inkybot.sln"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "A:\\Applications\\JetBrains Rider 2025.3.3\\tools\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "${workspaceFolder}\\Inkybot.sln",
+                "/p:Configuration=Debug",
+                "/p:Platform=Any CPU",
+                "/restore"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "restore",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-release",
+            "type": "shell",
+            "command": "A:\\Applications\\JetBrains Rider 2025.3.3\\tools\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "${workspaceFolder}\\Inkybot.sln",
+                "/p:Configuration=Release",
+                "/p:Platform=Any CPU",
+                "/restore"
+            ],
+            "dependsOn": "restore",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "move-confused",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Copy-Item -Path '${workspaceFolder}\\${config:inkybot.releasePath}\\confused\\*' -Destination '${workspaceFolder}\\${config:inkybot.releasePath}\\' -Force; Remove-Item -Path '${workspaceFolder}\\${config:inkybot.releasePath}\\confused' -Recurse -Force"
+            ],
+            "dependsOn": "build-release",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run-release",
+            "type": "process",
+            "command": "${workspaceFolder}\\${config:inkybot.releasePath}\\Inkybot.exe",
+            "dependsOn": "move-confused",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "zip-release",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "$zipPath = '${workspaceFolder}\\Inkybot_v3.0.zip'; if (Test-Path $zipPath) { Remove-Item $zipPath -Force }; 7z a -pinkybot -tzip $zipPath '${workspaceFolder}\\${config:inkybot.releasePath}\\*'"
+            ],
+            "dependsOn": "move-confused",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "publish-release",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "$zipPath = '${workspaceFolder}\\Inkybot_v3.0.zip'; scp $zipPath root@inkybot:~/Inkybot_v3.0.zip; ssh root@inkybot 'docker cp ~/Inkybot_v3.0.zip inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.0.zip && rm ~/Inkybot_v3.0.zip'; Remove-Item $zipPath -Force; Write-Host 'Published Inkybot_v3.0.zip to inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.0.zip'"
+            ],
+            "dependsOn": "zip-release",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

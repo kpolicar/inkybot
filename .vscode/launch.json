@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Inkybot (Terminal)",
+            "type": "clr",
+            "request": "launch",
+            "program": "${workspaceFolder}\\${config:inkybot.debugPath}\\Inkybot.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}\\${config:inkybot.debugPath}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Release Inkybot",
+            "type": "clr",
+            "request": "launch",
+            "program": "${workspaceFolder}\\${config:inkybot.releasePath}\\Inkybot.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}\\${config:inkybot.releasePath}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "move-confused"
+        }
+    ]
+}
