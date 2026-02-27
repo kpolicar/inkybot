@@ -269,6 +269,8 @@ namespace Inkybot
                     await Task.Delay(500);
                 }
                 actions.Execute(actionFactory.InventorySelectEquipmentAction(), true);
+                await Task.Delay(50);
+                win32Input.ReleaseCursor();
             });
             
             if ((auth.User?.canUseMageQueue ?? false) || !mageQueue.Empty) {

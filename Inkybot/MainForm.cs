@@ -9,6 +9,7 @@ using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
 using Inkybot.Services;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
+using Win32Input = Inkybot.Services.Win32Input.Win32Input;
 
 
 namespace Inkybot
@@ -29,6 +30,7 @@ namespace Inkybot
         private int autoShutdownTimeElapsed;
         private ActionHandler actions;
         private ActionFactory actionFactory;
+        private Win32Input win32Input;
 
         public MainForm() {
             InitializeComponent();
@@ -41,6 +43,7 @@ namespace Inkybot
             mageQueue = Program.Services.GetService<MageQueueManager>();
             actions = Program.Services.GetService<ActionHandler>();
             actionFactory = Program.Services.GetService<ActionFactory>();
+            win32Input = (Win32Input) Program.Services.GetService<Input>();
             var userSettingsConfigManager = (FileSystemUserSettingsConfigManager)
                 Program.Services.GetService<UserSettingsConfigManager>();
             
