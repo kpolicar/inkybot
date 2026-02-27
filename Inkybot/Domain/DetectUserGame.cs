@@ -33,7 +33,7 @@ namespace Inkybot.Domain
             }
         }
 
-        public static DofusPreferences? ReadDofusPreferences() {
+        public static DofusPreferences ReadDofusPreferences() {
             try {
                 var localLow = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -41,10 +41,10 @@ namespace Inkybot.Domain
                 var result = JsonConvert
                     .DeserializeObject<DofusPreferences>(
                         File.ReadAllText(localLow + @"\Ankama\Dofus\RELEASE\Shared\dofus.json"));
-                Debug.WriteLine("Scanned user preferences: "+result);
+                Debug.WriteLine("Scanned user preferences: " + result);
                 return result;
             } catch (Exception) {
-                return null;
+                return DofusPreferences.Ideal;
             }
         }
 

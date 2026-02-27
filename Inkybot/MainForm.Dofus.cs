@@ -98,7 +98,7 @@ namespace Inkybot
                 
                 if (pDofus != null) {
                     var prefs = DetectUserGame.ReadDofusPreferences();
-                    if (prefs?.uiScale?.value != 90) {
+                    if (prefs != DetectUserGame.DofusPreferences.Ideal) {
                         pDofus = null;
                         foreach (var p in dofusProcesses) {
                             try { p.Kill(); } catch { /* ignore */ }
@@ -106,14 +106,16 @@ namespace Inkybot
                         waitingForm.Invoke(new MethodInvoker(() => {
                             waitingForm.ShowErrorMessage(
                                 "Dofus was terminated to adjust UI preferences.\nPlease restart it via the Ankama Launcher.");
+                        waitingForm.UpdateProcessList(Array.Empty<Process>());
                         }));
-                        await PatchDofusUiScaleTo90();
+                        await PatchDofusPreferencesToIdeal();
                     }
                 }
             } while (pDofus == null);
         }
 
-        private static async Task PatchDofusUiScaleTo90() {
+        private static async Task PatchDofusPreferencesToIdeal() {
+            var ideal = DetectUserGame.DofusPreferences.Ideal;
             var localLow = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 @"AppData\LocalLow");
@@ -121,7 +123,12 @@ namespace Inkybot
             for (var i = 0; i < 50; i++) {
                 try {
                     var json = JObject.Parse(File.ReadAllText(prefsPath));
-                    json["uiScale"]!["value"] = 90;
+                    json["uiScale"]!["value"]                      = ideal.uiScale.value;
+                    json["renderingScale"]!["value"]!["value"]     = ideal.renderingScale.value.value;
+                    json["renderingScale"]!["value"]!["isMute"]    = ideal.renderingScale.value.isMute;
+                    json["dofusQuality"]!["value"]                 = ideal.dofusQuality.value;
+                    json["windowResolutionMode"]!["value"]         = ideal.windowResolutionMode.value;
+                    json["windowDisplayMode"]!["value"]            = ideal.windowDisplayMode.value;
                     File.WriteAllText(prefsPath, json.ToString());
                 } catch { /* ignore */ }
                 await Task.Delay(100);

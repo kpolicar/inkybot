@@ -18,6 +18,10 @@ namespace Inkybot
 
         public void ShowErrorMessage(string message) {
             errorMessage.Text = message;
+            var visible = !string.IsNullOrEmpty(message);
+            errorTopRule.Visible = visible;
+            errorWrapper.Visible = visible;
+            errorBottomMargin.Visible = visible;
         }
 
         public void UpdateProcessList(Process[] dofusProcesses) {

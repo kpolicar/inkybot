@@ -38,6 +38,9 @@ namespace Inkybot
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.errorTopRule = new System.Windows.Forms.Panel();
+            this.errorWrapper = new System.Windows.Forms.Panel();
+            this.errorBottomMargin = new System.Windows.Forms.Panel();
             this.errorMessage = new System.Windows.Forms.Label();
             this.waitingLabel = new System.Windows.Forms.Label();
             this.processListView = new System.Windows.Forms.ListView();
@@ -48,6 +51,7 @@ namespace Inkybot
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.logoPictureBox)).BeginInit();
             this.panel1.SuspendLayout();
+            this.errorWrapper.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -91,13 +95,43 @@ namespace Inkybot
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.processListView);
             this.panel1.Controls.Add(this.waitingLabel);
-            this.panel1.Controls.Add(this.errorMessage);
+            this.panel1.Controls.Add(this.errorBottomMargin);
+            this.panel1.Controls.Add(this.errorTopRule);
+            this.panel1.Controls.Add(this.errorWrapper);
             this.panel1.Name = "panel1";
-            // 
+            //
+            // errorTopRule
+            //
+            this.errorTopRule.Dock = DockStyle.Top;
+            this.errorTopRule.Height = 2;
+            this.errorTopRule.BackColor = System.Drawing.Color.Firebrick;
+            this.errorTopRule.Name = "errorTopRule";
+            this.errorTopRule.Visible = false;
+            //
+            // errorWrapper
+            //
+            this.errorWrapper.Dock = DockStyle.Top;
+            this.errorWrapper.BackColor = System.Drawing.Color.MistyRose;
+            this.errorWrapper.Padding = new System.Windows.Forms.Padding(8, 6, 8, 6);
+            this.errorWrapper.AutoSize = true;
+            this.errorWrapper.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.errorWrapper.Name = "errorWrapper";
+            this.errorWrapper.Visible = false;
+            this.errorWrapper.Controls.Add(this.errorMessage);
+            //
+            // errorBottomMargin
+            //
+            this.errorBottomMargin.Dock = DockStyle.Top;
+            this.errorBottomMargin.Height = 6;
+            this.errorBottomMargin.Name = "errorBottomMargin";
+            this.errorBottomMargin.Visible = false;
+            //
             // errorMessage
-            // 
+            //
             resources.ApplyResources(this.errorMessage, "errorMessage");
-            this.errorMessage.ForeColor = System.Drawing.Color.Maroon;
+            this.errorMessage.Font = new System.Drawing.Font("Calibri", 8.25f, System.Drawing.FontStyle.Bold);
+            this.errorMessage.ForeColor = System.Drawing.Color.Firebrick;
+            this.errorMessage.BackColor = System.Drawing.Color.Transparent;
             this.errorMessage.Name = "errorMessage";
             this.errorMessage.Dock = DockStyle.Top;
             // 
@@ -145,6 +179,8 @@ namespace Inkybot
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.logoPictureBox)).EndInit();
+            this.errorWrapper.ResumeLayout(false);
+            this.errorWrapper.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -157,6 +193,10 @@ namespace Inkybot
         private System.Windows.Forms.PictureBox logoPictureBox;
 
         private System.Windows.Forms.Label errorMessage;
+
+        private System.Windows.Forms.Panel errorWrapper;
+        private System.Windows.Forms.Panel errorTopRule;
+        private System.Windows.Forms.Panel errorBottomMargin;
 
         private System.Windows.Forms.Panel panel1;
 
