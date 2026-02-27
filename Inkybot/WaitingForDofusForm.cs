@@ -16,6 +16,10 @@ namespace Inkybot
             InitializeComponent();
         }
 
+        public void ShowErrorMessage(string message) {
+            errorMessage.Text = message;
+        }
+
         public void UpdateProcessList(Process[] dofusProcesses) {
             foreach (ListViewItem item in processListView.Items) {
                 if (!dofusProcesses.Any(process => (item.Tag as Process)!.Id == process.Id))

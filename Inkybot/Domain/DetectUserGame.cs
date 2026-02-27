@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Inkybot.Api.Resources;
@@ -37,9 +38,11 @@ namespace Inkybot.Domain
                 var localLow = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     @"AppData\LocalLow");
-                return JsonConvert
+                var result = JsonConvert
                     .DeserializeObject<DofusPreferences>(
                         File.ReadAllText(localLow + @"\Ankama\Dofus\RELEASE\Shared\dofus.json"));
+                Debug.WriteLine("Scanned user preferences: "+result);
+                return result;
             } catch (Exception) {
                 return null;
             }

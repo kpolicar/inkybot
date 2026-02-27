@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using Inkybot.Contracts;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Domain;
@@ -33,33 +35,7 @@ namespace Inkybot
 
             Task.Run(async () => {
                 try {
-                    do {
-                        var processes = Process.GetProcesses();
-                        var dofusProcesses = processes
-                            .Where(process =>
-                                /*(
-                                    (process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 &&
-                                     (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*"))
-                                ) ||
-                                 process.ProcessName.IndexOf("?tasis", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 (
-                                     (process.ProcessName.IndexOf(Properties.Settings.Default.dofusProcessName, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                                     (Regex.IsMatch(process.MainWindowTitle, ".*-.*-.*") || Properties.Settings.Default.dofusProcessName != "dofus"))
-                                    )
-                                &&*/ process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 && process.MainWindowTitle != "")
-                            .ToArray();
-
-                        if (dofusProcesses.Length == 1) {
-                            pDofus = dofusProcesses[0];
-                        } else if (dofusProcesses.Length > 1) {
-                            waitingForm.Invoke(new MethodInvoker(() => {
-                                waitingForm.UpdateProcessList(dofusProcesses);
-                            }));
-                        }
-
-                        await Task.Delay(1000);
-                    } while (pDofus == null);
-                    
+                    await WaitForDofusProcessLoop(waitingForm);
                     waitingForm.Invoke(new MethodInvoker(() => {
                         waitingForm.DialogResult = DialogResult.OK;
                     }));
@@ -102,6 +78,54 @@ namespace Inkybot
             // };
 
             return true;
+        }
+
+        private async Task WaitForDofusProcessLoop(WaitingForDofusForm waitingForm) {
+            do {
+                var processes = Process.GetProcesses();
+                var dofusProcesses = processes
+                    .Where(process => process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 && process.MainWindowTitle != "")
+                    .ToArray();
+
+                if (dofusProcesses.Length == 1) {
+                    pDofus = dofusProcesses[0];
+                } else if (dofusProcesses.Length > 1) {
+                    waitingForm.Invoke(new MethodInvoker(() => {
+                        waitingForm.UpdateProcessList(dofusProcesses);
+                    }));
+                }
+                await Task.Delay(1000);
+                
+                if (pDofus != null) {
+                    var prefs = DetectUserGame.ReadDofusPreferences();
+                    if (prefs?.uiScale?.value != 90) {
+                        pDofus = null;
+                        foreach (var p in dofusProcesses) {
+                            try { p.Kill(); } catch { /* ignore */ }
+                        }
+                        waitingForm.Invoke(new MethodInvoker(() => {
+                            waitingForm.ShowErrorMessage(
+                                "Dofus was terminated to adjust UI preferences.\nPlease restart it via the Ankama Launcher.");
+                        }));
+                        await PatchDofusUiScaleTo90();
+                    }
+                }
+            } while (pDofus == null);
+        }
+
+        private static async Task PatchDofusUiScaleTo90() {
+            var localLow = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                @"AppData\LocalLow");
+            var prefsPath = Path.Combine(localLow, @"Ankama\Dofus\RELEASE\Shared\dofus.json");
+            for (var i = 0; i < 50; i++) {
+                try {
+                    var json = JObject.Parse(File.ReadAllText(prefsPath));
+                    json["uiScale"]!["value"] = 90;
+                    File.WriteAllText(prefsPath, json.ToString());
+                } catch { /* ignore */ }
+                await Task.Delay(100);
+            }
         }
 
         private void OnClickInsert() {
