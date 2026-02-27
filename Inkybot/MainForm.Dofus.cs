@@ -118,7 +118,7 @@ namespace Inkybot
 
 
         private void BindServicesToDockedWindow() {
-            var screen = (WinScreenRecorderScreenCapture) Program.Services.GetService<ScreenCapture>();
+            var screen = (WinGraphicsCaptureScreenCapture) Program.Services.GetService<ScreenCapture>();
             screen.BindTo(this.Handle, dofusClientPanel, sidebarPanel.Width, sidebarRightPanel.Width, this);
             
             var mouse = (Win32Input) Program.Services.GetService<Input>();

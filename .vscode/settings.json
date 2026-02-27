@@ -1,4 +1,5 @@
 {
     "inkybot.releasePath": "Inkybot\\bin\\Release",
-    "inkybot.debugPath": "Inkybot\\bin\\Debug"
+    "inkybot.debugPath": "Inkybot\\bin\\Debug",
+    "dotnet.preferCSharpExtension": true
 }

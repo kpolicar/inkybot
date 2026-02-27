@@ -177,6 +177,7 @@
         <Compile Include="Events\ProcessEventArgs.cs" />
         <Compile Include="Exceptions\SinkTooHighException.cs" />
         <Compile Include="Profiler.cs" />
+        <Compile Include="Services\WinGraphicsCaptureScreenCapture.cs" />
         <Compile Include="Services\WinScreenRecorderScreenCapture.cs" />
         <Compile Include="WaitingForDofusForm.cs">
             <SubType>Form</SubType>

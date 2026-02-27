@@ -1,231 +1,98 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
-using Inkybot.Design;
-using Inkybot.Exceptions;
 
 namespace Inkybot
 {
     /// <summary>
-    ///     Provides functions to capture the entire screen, or a particular window, and save it to a file.
+    ///     Orchestrator that tries <see cref="WinGraphicsCaptureScreenCapture"/> first and permanently
+    ///     switches to <see cref="Win32ScreenCapture"/> (PrintWindow) if the GPU pipeline
+    ///     produces blank frames on every one of the first 10 captures.
     /// </summary>
-    public class WinScreenRecorderScreenCapture : ScreenCapture, IDisposable, HasDependencies
+    public class WinScreenRecorderScreenCapture : ScreenCapture, IDisposable
     {
-        private IntPtr handle;
-        private Form mainForm;
-        private Panel dofusClientPanel;
         public event EventHandler? BeginScreenshot;
         public event EventHandler? EndScreenshot;
-        private int xOffsetLeft;
-        private int xOffsetRight;
 
-        private Thread? captureThread;
-        private volatile bool running;
-        private readonly object frameLock = new();
-        private Bitmap? latestFrame;
-        private RECT latestRawRect;
-        private RECT latestVisibleRect;
-        private bool startedByCaptureWindow;
+        private WinGraphicsCaptureScreenCapture gpuCapture = null!;
+        private Win32ScreenCapture printWindowCapture = null!;
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
+        private bool useFallback = false;
+        private int blankChecksRemaining = 10;
+
+        public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm)
         {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
+            gpuCapture = new WinGraphicsCaptureScreenCapture();
+            gpuCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
+
+            printWindowCapture = new Win32ScreenCapture();
+            printWindowCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
-
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmGetWindowAttribute(IntPtr hwnd, uint dwAttribute, out RECT pvAttribute, int cbAttribute);
-
-        private const uint PW_RENDERFULLCONTENT = 2;
-        private const uint DWMWA_EXTENDED_FRAME_BOUNDS = 9;
-
-        public void BindDependencies(ServiceContainer serviceContainer) {
-            var magingJob = serviceContainer.GetService<DofusMagingJob>();
-            magingJob.Starting += (_, _) => StartCapturing();
-            magingJob.Stopped += (_, _) => StopCapturing();
-        }
-
-        public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm) {
-            (this.xOffsetLeft, this.xOffsetRight) = (xOffsetLeft, xOffsetRight);
-            this.dofusClientPanel = dofusClientPanel;
-            this.mainForm = mainForm;
-            this.handle = handle;
-        }
-
-        public void StartCapturing() {
-            if (running) return;
-            startedByCaptureWindow = false;
-            running = true;
-            captureThread = new Thread(CaptureLoop) { IsBackground = true, Name = "ScreenCapture" };
-            captureThread.Start();
-        }
-
-        public void StopCapturing() {
-            if (!running) return;
-            running = false;
-            captureThread?.Join(3000);
-            captureThread = null;
-            lock (frameLock) {
-                latestFrame?.Dispose();
-                latestFrame = null;
-            }
-        }
-
-        private void CaptureLoop() {
-            while (running) {
-                try {
-                    GetWindowRect(handle, out RECT rawRect);
-                    DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out RECT visibleRect,
-                        Marshal.SizeOf(typeof(RECT)));
-
-                    int rawWidth = rawRect.Right - rawRect.Left;
-                    int rawHeight = rawRect.Bottom - rawRect.Top;
-                    if (rawWidth <= 0 || rawHeight <= 0)
-                        continue;
-
-                    var bmp = new Bitmap(rawWidth, rawHeight, PixelFormat.Format32bppArgb);
-                    using (var gfx = Graphics.FromImage(bmp)) {
-                        var hdc = gfx.GetHdc();
-                        try {
-                            PrintWindow(handle, hdc, PW_RENDERFULLCONTENT);
-                        } finally {
-                            gfx.ReleaseHdc(hdc);
-                        }
-                    }
-
-                    lock (frameLock) {
-                        latestFrame?.Dispose();
-                        latestFrame = bmp;
-                        latestRawRect = rawRect;
-                        latestVisibleRect = visibleRect;
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine($"[ScreenCapture] background capture error: {ex.Message}");
-                }
-            }
-        }
-
-        private (Bitmap frame, RECT rawRect, RECT visibleRect) TakeFrameInline() {
-            GetWindowRect(handle, out RECT rawRect);
-            DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out RECT visibleRect,
-                Marshal.SizeOf(typeof(RECT)));
-
-            int rawWidth = rawRect.Right - rawRect.Left;
-            int rawHeight = rawRect.Bottom - rawRect.Top;
-
-            var bmp = new Bitmap(rawWidth, rawHeight, PixelFormat.Format32bppArgb);
-            var sw = Stopwatch.StartNew();
-            using (var gfx = Graphics.FromImage(bmp)) {
-                var hdc = gfx.GetHdc();
-                try {
-                    PrintWindow(handle, hdc, PW_RENDERFULLCONTENT);
-                } finally {
-                    gfx.ReleaseHdc(hdc);
-                }
-            }
-            Profiler.Record("Capture", "PrintWindow (inline fallback)", sw.ElapsedMilliseconds);
-
-            return (bmp, rawRect, visibleRect);
-        }
-
-        /// <summary>
-        ///     Returns the most recently captured frame, cropped to the visible content area.
-        ///     If the background capture thread is not running, starts it, takes one frame
-        ///     inline, and stops the thread after returning.
-        /// </summary>
-        public Image CaptureWindow() {
-            if (handle == IntPtr.Zero)
-                throw new DofusProcessDetachedException("Handle of window to capture is invalid.");
-
-            bool startedHere = false;
-            if (!running) {
-                StartCapturing();
-                startedByCaptureWindow = true;
-                startedHere = true;
-            }
-
+        public Image CaptureWindow()
+        {
             BeginScreenshot?.Invoke(this, EventArgs.Empty);
 
-            var totalSw = Stopwatch.StartNew();
+            Image result;
 
-            Bitmap frame;
-            RECT rawRect, visibleRect;
+            if (useFallback)
+            {
+                result = printWindowCapture.CaptureWindow();
+            }
+            else
+            {
+                result = gpuCapture.CaptureWindow();
 
-            lock (frameLock) {
-                if (latestFrame != null) {
-                    frame = latestFrame;
-                    rawRect = latestRawRect;
-                    visibleRect = latestVisibleRect;
-                    latestFrame = null;
-                } else {
-                    frame = null!;
-                    rawRect = default;
-                    visibleRect = default;
+                if (blankChecksRemaining > 0)
+                {
+                    blankChecksRemaining--;
+                    if (IsBlankImage((Bitmap)result))
+                    {
+                        Debug.WriteLine("[WinScreenRecorderScreenCapture] Blank frame detected — switching permanently to PrintWindow fallback.");
+                        result.Dispose();
+                        useFallback = true;
+                        gpuCapture.Dispose();
+                        result = printWindowCapture.CaptureWindow();
+                    }
                 }
             }
 
-            if (frame == null) {
-                (frame, rawRect, visibleRect) = TakeFrameInline();
-            }
-
-            int rawWidth  = rawRect.Right  - rawRect.Left;
-            int rawHeight = rawRect.Bottom - rawRect.Top;
-            int borderLeft  = visibleRect.Left  - rawRect.Left;
-            int borderTop   = visibleRect.Top   - rawRect.Top;
-            int borderRight = rawRect.Right - visibleRect.Right;
-
-            var cropSw = Stopwatch.StartNew();
-            int cropLeft = borderLeft + xOffsetLeft;
-            int cropTop  = borderTop  + yOffset();
-            int cropW    = rawWidth  - borderLeft - borderRight - xOffsetLeft - xOffsetRight;
-            int cropH    = rawHeight - cropTop;
-            var cropRect = new Rectangle(cropLeft, cropTop, cropW, cropH);
-            var result = frame.Clone(cropRect, frame.PixelFormat);
-            frame.Dispose();
-            Profiler.Record("Capture", "crop", cropSw.ElapsedMilliseconds);
-            Profiler.Record("Capture", "total", totalSw.ElapsedMilliseconds);
-
             EndScreenshot?.Invoke(this, EventArgs.Empty);
-
-            if (startedHere && startedByCaptureWindow)
-                StopCapturing();
-
             return result;
         }
 
-        public void Dispose() {
-            StopCapturing();
+        /// <summary>
+        ///     Returns true when all sampled pixels share nearly the same color (range &lt; 15 per channel),
+        ///     indicating the capture produced a blank or solid-color frame.
+        /// </summary>
+        private static bool IsBlankImage(Bitmap bmp)
+        {
+            const int steps = 6; // 6×6 = 36 samples
+            int stepX = Math.Max(1, bmp.Width  / steps);
+            int stepY = Math.Max(1, bmp.Height / steps);
+
+            int minR = 255, maxR = 0;
+            int minG = 255, maxG = 0;
+            int minB = 255, maxB = 0;
+
+            for (int x = stepX / 2; x < bmp.Width; x += stepX)
+            for (int y = stepY / 2; y < bmp.Height; y += stepY)
+            {
+                var c = bmp.GetPixel(Math.Min(x, bmp.Width - 1), Math.Min(y, bmp.Height - 1));
+                if (c.R < minR) minR = c.R; if (c.R > maxR) maxR = c.R;
+                if (c.G < minG) minG = c.G; if (c.G > maxG) maxG = c.G;
+                if (c.B < minB) minB = c.B; if (c.B > maxB) maxB = c.B;
+            }
+
+            return (maxR - minR) < 15 && (maxG - minG) < 15 && (maxB - minB) < 15;
         }
 
-        public int yOffset() {
-            int borderHeight = 0;
-
-            mainForm.Invoke(() => {
-                var formScreenLocation = mainForm.WindowState == FormWindowState.Maximized ? Point.Empty : mainForm.Location;
-
-                // Get the panel's screen position
-                var panelScreenLocation = dofusClientPanel.PointToScreen(dofusClientPanel.Location);
-
-                // Calculate the window border size (top and left borders)
-                borderHeight = panelScreenLocation.Y - formScreenLocation.Y;
-            });
-
-            return borderHeight;
+        public void Dispose()
+        {
+            gpuCapture?.Dispose();
+            printWindowCapture?.Dispose();
         }
     }
 }
