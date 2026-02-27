@@ -187,6 +187,11 @@ namespace Inkybot.Services.Win32Input
             SetCursorPosition(x, y);
         }
 
+        public void ReleaseCursor() {
+            if (!isInitialized) return;
+            _server.SetCursorFixedPosition(previousCursorPosition = new ServerInterface.POINT { X = -1, Y = -1 });
+        }
+
         public void CtrlDoubleClick(int x, int y) {
             Move(x, y);
             Win32.SendMessage(relativeToControl, Win32.WM_KEYDOWN, (IntPtr) Keys.ControlKey, IntPtr.Zero);

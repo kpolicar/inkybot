@@ -22,7 +22,8 @@ namespace Inkybot.Services
     {
         private ConfigManager configManager = null!;
         private ScreenCapture screen = null!;
-        
+        private Win32Input.Win32Input win32Input = null!;
+
         public readonly List<MageQueueItem> Queue = new List<MageQueueItem>();
         private ActionFactory actionFactory;
         private ActionHandler actions;
@@ -45,6 +46,7 @@ namespace Inkybot.Services
             screen = serviceContainer.GetService<ScreenCapture>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
             actions = serviceContainer.GetService<ActionHandler>();
+            win32Input = (Win32Input.Win32Input) serviceContainer.GetService<Input>();
         }
 
         public MageQueueItem ApplyHead() {
@@ -104,7 +106,9 @@ namespace Inkybot.Services
             } else {
                 Thread.Sleep(50);
             }
-            
+
+            win32Input.ReleaseCursor();
+
             image = CapturePreviewImageOfItem(itemBoundingBox);
             
             control.Invoke(new MethodInvoker(() => {
