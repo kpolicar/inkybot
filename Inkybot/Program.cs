@@ -66,7 +66,7 @@ namespace Inkybot
             
         public static readonly Dictionary<Type, object> _services = new Dictionary<Type, object> {
             { typeof(DofusDataProvider), new ScreenReaderDataProvider() },
-            { typeof(ScreenCapture), new Win32ScreenCapture() },
+            { typeof(ScreenCapture), new WinScreenRecorderScreenCapture() },
             { typeof(Input), new Win32Input() },
             { typeof(ActionFactory), new MouseActionFactory() },
             { typeof(AuthManager), new ApiAuthManager() },
