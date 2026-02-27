@@ -32,6 +32,19 @@ namespace Inkybot.Domain
             }
         }
 
+        public static DofusPreferences? ReadDofusPreferences() {
+            try {
+                var localLow = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    @"AppData\LocalLow");
+                return JsonConvert
+                    .DeserializeObject<DofusPreferences>(
+                        File.ReadAllText(localLow + @"\Ankama\Dofus\RELEASE\Shared\dofus.json"));
+            } catch (Exception) {
+                return null;
+            }
+        }
+
         public static bool HasValidAndSupportedLanguage(Settings settings) {
             return new[] {"en", "fr"}.Contains(settings.language.value);
         }
