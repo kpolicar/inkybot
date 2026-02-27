@@ -1,9 +1,12 @@
+using System.Reflection;
 using System;
 
 namespace Inkybot.Domain
 {
     public static partial class DetectUserGame
     {
+        [Serializable]
+        [Obfuscation(Exclude = true, ApplyToMembers = true)]
         public struct DofusPreferences : IEquatable<DofusPreferences>
         {
             public DofusIntValue uiScale;
@@ -33,6 +36,7 @@ namespace Inkybot.Domain
             public static bool operator !=(DofusPreferences a, DofusPreferences b) => !a.Equals(b);
         }
 
+        [Serializable]
         public struct DofusIntValue : IEquatable<DofusIntValue>
         {
             public int value;
@@ -44,6 +48,7 @@ namespace Inkybot.Domain
             public static bool operator !=(DofusIntValue a, DofusIntValue b) => a.value != b.value;
         }
 
+        [Serializable]
         public struct DofusRenderingScaleWrapper : IEquatable<DofusRenderingScaleWrapper>
         {
             public DofusRenderingScale value;
@@ -55,6 +60,7 @@ namespace Inkybot.Domain
             public static bool operator !=(DofusRenderingScaleWrapper a, DofusRenderingScaleWrapper b) => !a.Equals(b);
         }
 
+        [Serializable]
         public struct DofusRenderingScale : IEquatable<DofusRenderingScale>
         {
             public bool isMute;
