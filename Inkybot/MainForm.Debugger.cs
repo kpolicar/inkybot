@@ -107,11 +107,12 @@ namespace Inkybot
             var height = dofusClientPanel.Height;
             
             var rect = Responsive.ResponsiveRectangle(measurements, width, height);
-            rect.X -= 6;
-            rect.Y -= 6;
+            int padding = indicatorControl is EnqueueRectangle ? 2 : 6;
+            rect.X -= padding;
+            rect.Y -= padding;
             rect.X += dofusClientPanel.Location.X;
-            rect.Width += 12;
-            rect.Height += 12;
+            rect.Width += padding * 2;
+            rect.Height += padding * 2;
             if (indicatorControl is Crosshair) {
                 rect.X += rect.Width / 2;
                 rect.Y += rect.Height / 2;
