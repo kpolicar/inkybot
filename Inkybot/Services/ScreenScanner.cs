@@ -45,7 +45,7 @@ namespace Inkybot.Services
             protected override TesseractEngine CreateEngine() {
                 var eng = new TesseractEngine(
                     Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "eng",
+                    "eng-numbers",
                     EngineMode.TesseractOnly);
                 eng.SetVariable("debug", "0");
                 return eng;
@@ -256,6 +256,7 @@ namespace Inkybot.Services
                 ImagePreprocessor? preprocessor = null,
                 PageSegMode segMode = PageSegMode.SingleBlock) : base(regionOfInterest, split, preprocessor, segMode) {
                 SetVariables(engine => {
+                    engine.SetVariable("tessedit_char_whitelist", Properties.Resources.OcrCharWhitelist);
                     engine.SetVariable("load_system_dawg", "0");
                     engine.SetVariable("load_freq_dawg", "0");
                     engine.SetVariable("load_unambig_dawg", "0");
@@ -267,7 +268,7 @@ namespace Inkybot.Services
             protected override TesseractEngine CreateEngine() {
                 var eng = new TesseractEngine(
                     Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "eng-fine-tuned",
+                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
                     EngineMode.Default);
                 eng.SetVariable("debug", "0");
                 return eng;

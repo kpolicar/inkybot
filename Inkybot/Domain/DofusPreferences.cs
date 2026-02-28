@@ -14,6 +14,7 @@ namespace Inkybot.Domain
             public DofusIntValue dofusQuality;
             public DofusIntValue windowResolutionMode;
             public DofusIntValue windowDisplayMode;
+            public DofusIntValue globalFontSize;
 
             public static readonly DofusPreferences Ideal = new DofusPreferences {
                 uiScale             = new DofusIntValue { value = 90 },
@@ -21,6 +22,7 @@ namespace Inkybot.Domain
                 dofusQuality        = new DofusIntValue { value = 1 },
                 windowResolutionMode = new DofusIntValue { value = 0 },
                 windowDisplayMode   = new DofusIntValue { value = 1 },
+                globalFontSize   = new DofusIntValue { value = 1 },
             };
 
             public bool Equals(DofusPreferences other) =>
@@ -28,10 +30,11 @@ namespace Inkybot.Domain
                 renderingScale == other.renderingScale &&
                 dofusQuality == other.dofusQuality &&
                 windowResolutionMode == other.windowResolutionMode &&
-                windowDisplayMode == other.windowDisplayMode;
+                windowDisplayMode == other.windowDisplayMode &&
+                globalFontSize == other.globalFontSize;
 
             public override bool Equals(object? obj) => obj is DofusPreferences other && Equals(other);
-            public override int GetHashCode() { unchecked { int h = 17; h = h * 31 + uiScale.GetHashCode(); h = h * 31 + renderingScale.GetHashCode(); h = h * 31 + dofusQuality.GetHashCode(); h = h * 31 + windowResolutionMode.GetHashCode(); h = h * 31 + windowDisplayMode.GetHashCode(); return h; } }
+            public override int GetHashCode() { unchecked { int h = 17; h = h * 31 + uiScale.GetHashCode(); h = h * 31 + renderingScale.GetHashCode(); h = h * 31 + dofusQuality.GetHashCode(); h = h * 31 + windowResolutionMode.GetHashCode(); h = h * 31 + windowDisplayMode.GetHashCode(); h = h * 31 + globalFontSize.GetHashCode(); return h; } }
             public static bool operator ==(DofusPreferences a, DofusPreferences b) => a.Equals(b);
             public static bool operator !=(DofusPreferences a, DofusPreferences b) => !a.Equals(b);
         }

@@ -121,12 +121,12 @@
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-      <Content Include="..\Inkybot\Resources\Tesseract\eng.traineddata">
-        <Link>Resources\Tesseract\eng.traineddata</Link>
+      <Content Include="..\Inkybot\Resources\Tesseract\eng-numbers.traineddata">
+        <Link>Resources\Tesseract\eng-numbers.traineddata</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Content Include="..\Inkybot\Resources\Tesseract\eng-fine-tuned.traineddata">
-        <Link>Resources\Tesseract\eng-fine-tuned.traineddata</Link>
+      <Content Include="..\Inkybot\Resources\Tesseract\eng.traineddata">
+        <Link>Resources\Tesseract\eng.traineddata</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="..\Inkybot\Resources\Tesseract\fra.traineddata">

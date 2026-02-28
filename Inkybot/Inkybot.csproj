@@ -531,10 +531,10 @@
         <Content Include="Resources\Tesseract\digits.traineddata">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="Resources\Tesseract\eng-fine-tuned.traineddata">
+        <Content Include="Resources\Tesseract\eng.traineddata">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="Resources\Tesseract\eng.traineddata">
+        <Content Include="Resources\Tesseract\eng-numbers.traineddata">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Resources\Tesseract\fra.traineddata">

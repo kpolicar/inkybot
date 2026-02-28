@@ -129,6 +129,7 @@ namespace Inkybot
                     json["dofusQuality"]!["value"]                 = ideal.dofusQuality.value;
                     json["windowResolutionMode"]!["value"]         = ideal.windowResolutionMode.value;
                     json["windowDisplayMode"]!["value"]            = ideal.windowDisplayMode.value;
+                    json["globalFontSize"]!["value"]               = ideal.globalFontSize.value;
                     File.WriteAllText(prefsPath, json.ToString());
                 } catch { /* ignore */ }
                 await Task.Delay(100);
