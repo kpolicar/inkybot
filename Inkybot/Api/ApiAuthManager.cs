@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -29,11 +30,61 @@ namespace Inkybot.Api
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             var apiClient = serviceContainer.GetService<ApiClient>();
-            apiClient.UserFetched += (sender, args) => User = args.user;
+            apiClient.UserFetched += (sender, args) => {
+                User = args.user;
+                NLog.GlobalDiagnosticsContext.Set("UserEmail", args.user.email);
+                NLog.GlobalDiagnosticsContext.Set("UserName", args.user.name);
+                EnableOtlpLogging();
+            };
             magingJob = serviceContainer.GetService<DofusMagingJob>();
             configManager = serviceContainer.GetService<MageConfigManager>();
             magingJob.Starting += OnMagingJobStart;
             magingJob.Started += OnMagingJobStart;
+        }
+
+        private static readonly ConcurrentQueue<NLog.LogEventInfo> _bufferedSystemLogs = new ConcurrentQueue<NLog.LogEventInfo>();
+
+        public static void BufferSystemLogs() {
+            var bufferTarget = new SystemLogBufferTarget { Name = "systemBuffer" };
+            var config = NLog.LogManager.Configuration;
+            config.AddTarget(bufferTarget);
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, bufferTarget, "system");
+            NLog.LogManager.ReconfigExistingLoggers();
+        }
+
+        private static bool otlpEnabled;
+        private static void EnableOtlpLogging() {
+            if (otlpEnabled) return;
+            otlpEnabled = true;
+
+            var otlpTarget = new NLog.Targets.OtlpTarget {
+                Name = "otlp",
+                Endpoint = "https://openobserve.inkybot.me/api/default/v1/logs",
+                Headers = "Authorization=Basic ***REMOVED***",
+                ServiceName = "inkybot",
+            };
+            otlpTarget.Resources.Add(new NLog.Targets.TargetPropertyWithContext("user.email", "${gdc:UserEmail}"));
+            otlpTarget.Resources.Add(new NLog.Targets.TargetPropertyWithContext("user.name", "${gdc:UserName}"));
+            otlpTarget.Resources.Add(new NLog.Targets.TargetPropertyWithContext("service.instance.id", "${gdc:InstanceIdentifier}"));
+
+            var config = NLog.LogManager.Configuration;
+            config.AddTarget(otlpTarget);
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, otlpTarget, "mage");
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, otlpTarget, "system");
+            NLog.LogManager.ReconfigExistingLoggers();
+
+            while (_bufferedSystemLogs.TryDequeue(out var logEvent)) {
+                otlpTarget.WriteAsyncLogEvent(new NLog.Common.AsyncLogEventInfo(logEvent, _ => { }));
+            }
+
+            config.RemoveTarget("systemBuffer");
+            NLog.LogManager.ReconfigExistingLoggers();
+        }
+
+        private class SystemLogBufferTarget : NLog.Targets.Target {
+            protected override void Write(NLog.LogEventInfo logEvent) {
+                _bufferedSystemLogs.Enqueue(logEvent);
+            }
         }
 
         private void OnMagingJobStart(object sender, EventArgs e) {

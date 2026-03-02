@@ -1,8 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Inkybot.Contracts;
+using Inkybot.Services;
 
 namespace Inkybot
 {
@@ -47,10 +47,12 @@ namespace Inkybot
 
                 if (blankChecksRemaining > 0)
                 {
+                    int checkNumber = 11 - blankChecksRemaining;
                     blankChecksRemaining--;
                     if (IsBlankImage((Bitmap)result))
                     {
-                        Debug.WriteLine("[WinScreenRecorderScreenCapture] Blank frame detected — switching permanently to PrintWindow fallback.");
+                        FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] Blank frame detected (check {checkNumber} of 10)");
+                        FileEventLogger.SystemLogger.Warn("[WinScreenRecorderScreenCapture] Switching permanently to PrintWindow fallback.");
                         result.Dispose();
                         useFallback = true;
                         gpuCapture.Dispose();

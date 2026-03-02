@@ -93,8 +93,9 @@ namespace Inkybot
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
-            
-            
+            NLog.GlobalDiagnosticsContext.Set("InstanceIdentifier", InstanceIdentifier);
+            ApiAuthManager.BufferSystemLogs();
+
             Properties.Settings.Default.dofusProcessName = Properties.Settings.Default.dofusProcessName != "" ?
                 Properties.Settings.Default.dofusProcessName : "dofus";
             EnforceFirstTimeSetup();
@@ -105,7 +106,8 @@ namespace Inkybot
                 
             BindServices();
             BindLogger();
-            
+            LogSystemInfo();
+
             Measurements.BindDependencies(Services);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -223,6 +225,28 @@ namespace Inkybot
             Resources.MagingDictionary.Culture = Lang;
             Resources.RuneDictionary.Culture = Lang;
             Resources.StatDictionary.Culture = Lang;
+        }
+
+        private static void LogSystemInfo() {
+            var logger = FileEventLogger.SystemLogger;
+            var screen = Screen.PrimaryScreen;
+            logger.Info($"Instance: {InstanceIdentifier}");
+            logger.Info($"App version: {Version} (build {VersionNumber})");
+            logger.Info($"Screen resolution: {screen.Bounds.Width}x{screen.Bounds.Height}");
+            logger.Info($"OS: {Environment.OSVersion}");
+            logger.Info($"Machine: {Environment.MachineName}, Processors: {Environment.ProcessorCount}, 64-bit: {Environment.Is64BitOperatingSystem}");
+            logger.Info($"CLR: {Environment.Version}");
+            logger.Info($"Language: {Lang}");
+
+            var s = Properties.Settings.Default;
+            logger.Info($"Settings: dofusPath={s.dofusPath}, email={s.email}, locale={s.locale}, " +
+                        $"dofusProcessName={s.dofusProcessName}, customResizeRatio={s.customResizeRatio}, " +
+                        $"FirstTime={s.FirstTime}, NeedsSetup={s.NeedsSetup}, DisableOpenCL={s.DisableOpenCL}, " +
+                        $"restoreHighSinkStatImmediately={s.restoreHighSinkStatImmediately}, " +
+                        $"autoRestartBot={s.autoRestartBot}, autoStartNewSession={s.autoStartNewSession}, " +
+                        $"showUserWarnings={s.showUserWarnings}, enableSafeMageQueueing={s.enableSafeMageQueueing}, " +
+                        $"enableRuneChecking={s.enableRuneChecking}, kamasCalculation={s.kamasCalculation}, " +
+                        $"publishExos={s.publishExos}");
         }
 
         private static void BindLogger() {

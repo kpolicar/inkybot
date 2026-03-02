@@ -14,6 +14,7 @@ namespace Inkybot.Services
         private static NLog.Logger OcrLogger = NLog.LogManager.GetLogger("ocr");
         private static NLog.Logger MagingLogger = NLog.LogManager.GetLogger("mage");
         public static NLog.Logger CustomLogger = NLog.LogManager.GetLogger("custom");
+        public static NLog.Logger SystemLogger = NLog.LogManager.GetLogger("system");
         
         
         public void BindToServices() {

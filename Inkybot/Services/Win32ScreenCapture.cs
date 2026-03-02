@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Exceptions;
+using Inkybot.Services;
 
 namespace Inkybot
 {
@@ -115,7 +116,7 @@ namespace Inkybot
                         latestVisibleRect = visibleRect;
                     }
                 } catch (Exception ex) {
-                    Debug.WriteLine($"[ScreenCapture] background capture error: {ex.Message}");
+                    FileEventLogger.SystemLogger.Warn($"[ScreenCapture] background capture error: {ex.Message}");
                 }
             }
         }
