@@ -333,6 +333,8 @@ namespace Tests
                     {
                         if (lines[i].StartsWith("O "))
                             lines[i] = "0" + lines[i].Substring(1);
+                        if (lines[i].StartsWith("O% "))
+                            lines[i] = "0%" + lines[i].Substring(2);
                     }
 
                     return lines;

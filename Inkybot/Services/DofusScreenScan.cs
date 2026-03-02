@@ -241,7 +241,7 @@ namespace Inkybot.Services
                 var statValuesScanTask = statValuesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 return (await statValuesScanTask).Select(s => {
                     s = s.Trim();
-                    if (s.StartsWith("O ") || s.StartsWith("o ")) {
+                    if (s.StartsWith("O ") || s.StartsWith("o ") || s.StartsWith("O% ") || s.StartsWith("o% ")) {
                         return "0" + s.TrimStart(new[] { 'O', 'o' }); // fix misreads of 0 with an O
                     }
 
