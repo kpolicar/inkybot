@@ -1,4 +1,5 @@
 using System;
+using Inkybot.Contracts;
 using Inkybot.Dofus;
 
 namespace Inkybot.Services
@@ -7,8 +8,8 @@ namespace Inkybot.Services
     {
         public static Item Prepare(
             MageSession session,
-            ScreenReaderDataProvider dataProvider,
-            ConfigManager configManager) {
+            IMagingDataProvider dataProvider,
+            IMagingConfigManager configManager) {
 
             var previousItem = session.PreviousItem;
             session.ResetForNewItem();
@@ -28,8 +29,8 @@ namespace Inkybot.Services
         private static Item ReadItemFromScreen(
             MageSession session,
             Item previousItem,
-            ScreenReaderDataProvider dataProvider,
-            ConfigManager configManager) {
+            IMagingDataProvider dataProvider,
+            IMagingConfigManager configManager) {
 
             if (session.ShouldResetMinMaxScan())
                 dataProvider.ResetMinMaxScan();

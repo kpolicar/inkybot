@@ -5,11 +5,12 @@ using Inkybot.Design;
 using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Contracts;
 using DofusMagingJob = Inkybot.Contracts.DofusMagingJob;
 
 namespace Inkybot.Services
 {
-    public class ActionHandler : HasDependencies
+    public class ActionHandler : IActionExecutor, HasDependencies
     {
         public event EventHandler<ActionExecutedEventArgs>? ActionExecuted;
         private CancellationTokenSource? cancelExecutingTask;

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Events;
 using Inkybot.Exceptions;
@@ -20,7 +21,7 @@ namespace Inkybot.Services
         public static Result ExecuteWithRetry(
             Func<bool> action,
             MageSession session,
-            ScreenReaderDataProvider dataProvider,
+            IMagingDataProvider dataProvider,
             Action<MagingJobErrorEventArgs> onError,
             Action<MagingJobErrorEventArgs> onWarning) {
 
@@ -83,9 +84,9 @@ namespace Inkybot.Services
             return true;
         }
 
-        private static void SaveScanOnItemError(Exception exception, ScreenReaderDataProvider dataProvider) {
+        private static void SaveScanOnItemError(Exception exception, IMagingDataProvider dataProvider) {
             if (exception is ItemHasChangedException || exception is ItemHasNotChangedException)
-                dataProvider.Scan?.Save();
+                dataProvider.SaveScan();
         }
 
         private static void LogException(Exception exception) {

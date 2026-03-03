@@ -21,7 +21,7 @@ using MageConfigProviderContract = Inkybot.Dofus.Contracts.MageConfigProvider;
 
 namespace Inkybot.Services
 {
-    public class ConfigManager : MageConfigManager, HasDependencies
+    public class ConfigManager : IMagingConfigManager, HasDependencies
     {
         public event EventHandler<ConfigModifiedEventArgs>? ConfigModified;
         public event EventHandler<ConfigResetEventArgs>? ConfigReset;

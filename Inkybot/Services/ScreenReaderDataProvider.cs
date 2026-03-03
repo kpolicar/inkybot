@@ -15,7 +15,7 @@ using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot.Services
 {
-    public partial class ScreenReaderDataProvider : DofusDataProvider, HasDependencies
+    public partial class ScreenReaderDataProvider : IMagingDataProvider, HasDependencies
     {
         private const int MaxSupportedStatsForMage = 13;
         public event EventHandler<ScannedRegionEventArgs>? ScannedStats;
@@ -155,6 +155,14 @@ namespace Inkybot.Services
 
         public bool IsSupportedConfig(MageConfig config) {
             return config.StatsConfig.Count <= MaxSupportedStatsForMage;
+        }
+
+        public void PrefetchForHistoryCheck() {
+            Scan!.PrefetchForHistoryCheck();
+        }
+
+        public void SaveScan() {
+            Scan?.Save();
         }
     }
 }
