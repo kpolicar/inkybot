@@ -105,6 +105,7 @@
         <Compile Include="Services\MageConfigProviderMock.cs" />
         <Compile Include="Services\MagingJobMock.cs" />
         <Compile Include="temptest.cs" />
+        <Compile Include="TickTests.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">

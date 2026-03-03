@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using System;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
 using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Design;
-using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
-using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
-using Debug = System.Diagnostics.Debug;
 using DofusMagingJobContract = Inkybot.Contracts.DofusMagingJob;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 
@@ -39,22 +32,14 @@ namespace Inkybot.Services
         private ActionHandler actions = null!;
         private ActionFactory actionFactory = null!;
         private ScreenReaderDataProvider dataProvider = null!;
-        private ItemHistoryAnalyzer history = new ItemHistoryAnalyzer();
         private ConfigManager configManager = null!;
         private DofusMagingAIContract magus = null!;
         private ServiceContainer serviceContainer = null!;
         private MageQueueManager mageQueue = null!;
 
-        private Supervisor? supervisor;
         private Thread? job;
-        private State state;
-        private ItemInfo itemInfo;
-        private Stopwatch changeTimeout = new Stopwatch();
-        private int unsuccessfulCombineTicks;
-        private int ticks;
-        //public MageHistoryRecord? LastHistoryRecord => state.PreviousHistory?.history.FirstOrDefault();
+        private MageSession session = new MageSession();
         private const int MaxReasonableBalanceDifference = 300000;
-
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             mageQueue = serviceContainer.GetService<MageQueueManager>();
@@ -73,16 +58,18 @@ namespace Inkybot.Services
             mageQueue.Moved += OnMagingMoved;
         }
 
+        #region Properties
+
         private int BalanceSpending;
 
         private int Balance {
-            get => state.Balance;
+            get => session.Balance;
             set {
                 var newBalance = Math.Max(value, 0);
-                var previousBalance = state.Balance;
+                var previousBalance = session.Balance;
                 var newBalanceSpent = Math.Max(0, previousBalance - newBalance);
-                    
-                state.Balance = newBalance;
+
+                session.Balance = newBalance;
                 BalanceChanged?.Invoke(this, new BalanceChangedEventArgs(previousBalance, newBalance));
 
                 if (newBalanceSpent <= MaxReasonableBalanceDifference) {
@@ -95,318 +82,121 @@ namespace Inkybot.Services
 
         public int Sink => (int) dSink;
         public decimal dSink {
-            get => state.Sink;
+            get => session.Sink;
             private set {
-                SinkChanged?.Invoke(this, 
-                    new SinkChangedEventArgs(state.PreviousItem!, configManager.Config!, state.Sink, value));
-                state.Sink = value;
+                SinkChanged?.Invoke(this,
+                    new SinkChangedEventArgs(session.PreviousItem!, configManager.Config!, session.Sink, value));
+                session.Sink = value;
             }
         }
 
-        public bool IsMaging => state.IsMaging;
+        public bool IsMaging => session.IsMaging;
+
+        #endregion
+
+        #region Public API
 
         public void BeginMage(bool begin) {
-            if (begin)
-                BeginMage();
-            else
-                StopMage();
+            if (begin) BeginMage();
+            else StopMage();
         }
 
         public void BeginMage() {
-            if (state.IsMaging) return;
+            if (session.IsMaging) return;
 
             try {
                 magus = serviceContainer.GetService<DofusMagingAIContract>();
                 Starting?.Invoke(this, EventArgs.Empty);
 
-                ticks = 0;
-                unsuccessfulCombineTicks = 0;
-                state.PreviousCheckHadRunOutOfRunes = null;
+                session.Ticks = 0;
+                session.UnsuccessfulCombineTicks = 0;
+                session.PreviousCheckHadRunOutOfRunes = null;
                 job = new Thread(() => DoMage());
                 job.Start();
                 Preparing?.Invoke(this, EventArgs.Empty);
-                
             } catch (Exception exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
             }
         }
 
         public void ResetBalance() {
-            state.Balance = 0;
+            session.Balance = 0;
         }
 
         public void StopMage() {
-            if (!state.IsMaging) return;
-            
-            state.IsMaging = false;
+            if (!session.IsMaging) return;
+
+            session.IsMaging = false;
             Stopped?.Invoke(this, EventArgs.Empty);
-            changeTimeout.Reset();
+            session.ChangeTimeout.Reset();
         }
 
-        private Item PrepareMage(bool selectNewFromQueue, bool restarting) {
-            var (previousItem, previousSink, previousCheckHadRunOutOfRunes) =
-                (state.PreviousItem, state.Sink, state.PreviousCheckHadRunOutOfRunes);
-            state.Reset();
-            state.IsPreparing = true;
-            state.IsRestarting = restarting;
-            state.PreviousCheckHadRunOutOfRunes = previousCheckHadRunOutOfRunes;
-            supervisor = new Supervisor(this);
+        #endregion
 
-            Item item;
-            try {
-                state.IsMaging = true;
-                var resetMinMaxScan = !restarting;
-                
-                if (!mageQueue.Empty && selectNewFromQueue) {
-                    actions.Execute(actionFactory.SelectItemFromQueue());
-                    Thread.Sleep(1000);
-                }
-                
-                if (((state.PreviousAction as CombineRune)?.Exo ?? false) ||
-                    ((state.PreviousItem?.HasExo ?? false) && !state.PreviousItem.Stats.ExoStats.All(stat => stat.Value < 0))) { // Refresh minmax if item has exo that isn't negative
-                    dataProvider.ResetMinMaxScan();
-                }
-                
-                dataProvider.Reset(resetMinMaxScan);
-                dataProvider.FetchData();
-                dSink = dataProvider.Sink() ?? 0;
-                item = dataProvider.Item();
-                try {
-                    state.PreviousHistory = dataProvider.History();
-                } catch (Exception) {
-                    // if we couldn't resolve previous history, no worries.
-                }
-                
-                if (!mageQueue.Empty
-                    && selectNewFromQueue
-                    && mageQueue.Peek().Config.PresetIndex != null
-                    && !configManager.ConfigIsSetForItem(item)) {
-                    throw new ItemDoesNotMatchPresetException(item);
-                }
-
-                configManager.EnforceConfigSetForItem(item);
-                configManager.RemoveFallenUnconfiguredStats(item);
-                itemInfo = new ItemInfo {
-                    Runes = dataProvider.Runes()
-                };
-                // Persist item info
-                if (previousItem != null && item.Equals(previousItem)) {
-                    state.PreviousItem = previousItem;
-                } else {
-                    state.PreviousItem = null;
-                }
-            } catch (Exception) {
-                state.IsMaging = false;
-                throw;
-            }
-            state.IsPreparing = false;
-            state.IsRestarting = false;
-            
-            return item;
-        }
+        #region Mage Execution
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
-        private void DoMage(bool restarting=false) {
-            bool autoShutdown = false;
+        private void DoMage(bool restarting = false) {
+            var executor = mageQueue.Empty
+                ? (MageExecutor) new SingleItemMageExecutor(session, dataProvider, magus, actions, actionFactory, configManager, mageQueue)
+                : new QueueMageExecutor(session, dataProvider, magus, actions, actionFactory, configManager, mageQueue);
 
-            if (!mageQueue.Empty) {
+            executor.SetSink = v => dSink = v;
+            executor.Started += (s, e) => Started?.Invoke(this, e);
+            executor.SuccessfulCombineTick += (s, e) => SuccessfulCombineTick?.Invoke(this, e);
+            executor.SensitiveMage += (s, e) => SensitiveMage?.Invoke(this, e);
+            executor.Error += (s, e) => Error?.Invoke(this, e);
+            executor.Warning += (s, e) => Warning?.Invoke(this, e);
 
-                var i = 0;
-                while (!mageQueue.Empty) {
-                    
-                    state.IsMaging = true;
-                
-                    actions.Execute(actionFactory.RemoveItemFromMagingTable());
-                    if (IsMaging) Thread.Sleep(1000);
-                    actions.Execute(actionFactory.InventorySelectAllAction());
-                    if (IsMaging) Thread.Sleep(500);
-                    actions.Execute(actionFactory.InventorySelectEquipmentAction());
-                    if (IsMaging) Thread.Sleep(500);
+            var autoShutdown = executor.Execute(restarting);
+            StopMage();
 
-                    if (IsMaging) {
-                        autoShutdown = DoMageWithoutCheckingQueue(i++ == 0, true, restarting ? 1 : 0);
-                        if (!mageQueue.Empty)
-                            Thread.Sleep(500);
-                    }
-                    
-                    
-                    if (!IsMaging)
-                        break;
-                }
-                
-            } else {
-                autoShutdown = DoMageWithoutCheckingQueue(true, false, restarting ? 1 : 0);
-            }
-            
-            Finished?.Invoke(
-                this, 
-                new MagingJobFinishedEventArgs(state.PreviousItem!, configManager.Config!, autoShutdown));
+            Finished?.Invoke(this,
+                new MagingJobFinishedEventArgs(session.PreviousItem!, configManager.Config!, autoShutdown));
         }
 
-        private bool DoMageWithoutCheckingQueue(bool runStartedEvent, bool fromQueue, int restartAttempt=0) {
-            var restarting = restartAttempt > 0;
-            var autoShutdown = false;
-            var stopMage = false;
+        #endregion
 
-            for (var attempt = 0; attempt <= 2; attempt++) {
-                if (attempt > 0)
-                    Debug.WriteLine("Restarting mage, attempt " + attempt);
-                restarting = attempt > 0 || restartAttempt > 0;
-                stopMage = false;
+        #region Event Handlers
 
-                try {
-                    var item = PrepareMage(fromQueue, restarting);
-
-                    if (IsMaging && (runStartedEvent || attempt > 0))
-                        Started?.Invoke(this, new MagingJobStartedEventArgs(restarting, item, configManager.Config!, false));
-
-                    actions.Execute(actionFactory.InventorySelectResourcesAction());
-                    Thread.Sleep(30);
-                    actions.Execute(actionFactory.InventoryClearSelectionAction());
-
-                    while (IsMaging) {
-                        ticks++;
-                        new Tick(this).Execute();
-                        if (state.Step == State.JobStep.CALCULATING_PRICE_CHANGE) // successful tick
-                            attempt = 0;
-                    }
-
-                    stopMage = !(state.PreviousAction is Finish);
-                    state.IsMaging = true;
-                    if (!mageQueue.Empty && state.PreviousAction is Finish)
-                        mageQueue.Dequeue();
-
-                    break;
-
-                } catch (OutOfRunesException exception) {
-                    autoShutdown = true;
-                    stopMage = true;
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (NoItemToMageFoundException exception) {
-                    autoShutdown = restarting;
-                    stopMage = true;
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (UserForbiddenException exception) {
-                    autoShutdown = restarting;
-                    stopMage = true;
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (ItemDoesNotMatchPresetException exception) {
-                    autoShutdown = true;
-                    stopMage = true;
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (ItemHasChangedException exception) {
-                    autoShutdown = true;
-                    stopMage = true;
-                    dataProvider.Scan?.Save();
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (ItemHasNotChangedException exception) {
-                    autoShutdown = true;
-                    stopMage = true;
-                    dataProvider.Scan?.Save();
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (OperationCanceledException exception) {
-                    autoShutdown = false;
-                    stopMage = true;
-                    Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
-                    break;
-                } catch (Exception exception) {
-                    autoShutdown = true;
-                    if (state.Step == State.JobStep.EXECUTING_COMBINE)
-                        unsuccessfulCombineTicks++;
-
-                    if (exception is AggregateException aggregateException) {
-                        Debug.WriteLine("Aggregate exception!");
-                        foreach (var aggregateExceptionInnerException in aggregateException.InnerExceptions) {
-                            Debug.WriteLine(aggregateExceptionInnerException.Message);
-                            Debug.WriteLine(aggregateExceptionInnerException.StackTrace);
-                        }
-                    } else {
-                        Debug.WriteLine(exception.Message);
-                        Debug.WriteLine(exception.StackTrace);
-                    }
-
-                    var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
-                        ? "Please try running Inkybot as an administrator."
-                        : "";
-
-                    if (Properties.Settings.Default.autoRestartBot) {
-                        Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
-                        Thread.Sleep(1000);
-                        state.IsMaging = true;
-
-                        if (attempt >= 2) {
-                            if (restarting) {
-                                Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
-                            }
-                            stopMage = true;
-                            break;
-                        }
-
-                        // Loop will retry
-                        continue;
-                    } else {
-                        Error?.Invoke(this, new MagingJobErrorEventArgs(exception, additionalInfo));
-                    }
-
-                    stopMage = true;
-                    break;
-                }
-            }
-
-            state.IsMaging = true; // If an error occured during preparation, we still want to stop properly
-            if (mageQueue.Empty || stopMage)
-                StopMage();
-            autoShutdown |= state.PreviousAction is Inkybot.Actions.Finish;
-
-            return autoShutdown;
-        }
-        
         private void OnActionExecuted(object sender, ActionExecutedEventArgs e) {
             if (e.action is Finish)
-                state.IsMaging = false;
+                session.IsMaging = false;
         }
 
         public void OnConfigModified(object sender, ConfigModifiedEventArgs e) {
             var magingAI = serviceContainer.GetService<DofusMagingAIContract>();
-            if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI) && !state.IsRestarting)
+            if (!(magingAI is DofusMagingAI) && !(magingAI is DofusStandardStatsMagingAI) && !session.IsRestarting)
                 return;
 
-            if (e.Changed && (!state.IsPreparing || state.IsRestarting)) {
-                if (state.IsRestarting && state.PreviousItem != null)
-                    throw new ItemHasChangedException(state.PreviousItem);
+            if (e.Changed && (!session.IsPreparing || session.IsRestarting)) {
+                if (session.IsRestarting && session.PreviousItem != null)
+                    throw new ItemHasChangedException(session.PreviousItem);
                 StopMage();
             }
         }
 
         private void OnMagingAiChanged(object sender, MagingAIChangedEventArgs e) {
-            if (!state.IsPreparing)
+            if (!session.IsPreparing)
                 StopMage();
             magus = e.AI;
         }
-        
+
         private void OnMagingMoved(object sender, MageQueueMovedEventArgs e) {
             if (mageQueue.Peek() == e.QueueItem || e.Index == 0)
                 StopMage();
         }
 
         private void OnMagingRemoved(object sender, MageQueueMovedEventArgs e) {
-            if (e.Index == 0)
-                StopMage();
+            if (e.Index == 0) StopMage();
         }
 
         private void OnMagingEnqueued(object sender, MageQueueMovedEventArgs e) {
-            if (e.Index == 0)
-                StopMage();
+            if (e.Index == 0) StopMage();
         }
-            
 
-        public void Dispose() =>
-            StopMage();
+        #endregion
+
+        public void Dispose() => StopMage();
     }
 }

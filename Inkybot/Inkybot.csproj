@@ -256,6 +256,7 @@
         <Compile Include="Helpers\Debug.cs" />
         <Compile Include="Helpers\Numbers.cs" />
         <Compile Include="Helpers\Responsive.cs" />
+        <Compile Include="Helpers\History.cs" />
         <Compile Include="Helpers\System.cs" />
         <Compile Include="MageQueueForm.Builder.cs">
             <DependentUpon>MageQueueForm.cs</DependentUpon>
@@ -353,22 +354,17 @@
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ScreenReaderDofusMagingJob.cs" />
-        <Compile Include="Services\ItemInfo.cs">
-            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
-        <Compile Include="Services\Supervisor.cs">
-            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
+        <Compile Include="Services\MageSession.cs" />
+        <Compile Include="Services\MagePreparation.cs" />
+        <Compile Include="Services\MageRetryHandler.cs" />
+        <Compile Include="Services\MageExecutor.cs" />
+        <Compile Include="Services\SingleItemMageExecutor.cs" />
+        <Compile Include="Services\QueueMageExecutor.cs" />
         <Compile Include="Services\TargetItemMageResolve.cs">
             <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\State.cs">
-            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
         <Compile Include="Services\ApiAnalyticsReporter.cs" />
-        <Compile Include="Services\Tick.cs">
-            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
+        <Compile Include="Services\Tick.cs" />
         <Compile Include="Services\ScreenScanner.cs">
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
