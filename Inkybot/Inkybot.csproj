@@ -353,24 +353,23 @@
         <Compile Include="Services\RuneQuantityScan.cs">
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\ScreenReaderDofusMagingJob.cs" />
-        <Compile Include="Services\MageSession.cs" />
-        <Compile Include="Services\MagePreparation.cs" />
-        <Compile Include="Services\MageRetryHandler.cs" />
-        <Compile Include="Services\MageExecutor.cs" />
-        <Compile Include="Services\SingleItemMageExecutor.cs" />
-        <Compile Include="Services\QueueMageExecutor.cs" />
+        <Compile Include="Services\MagingJob\BalanceTracker.cs" />
+        <Compile Include="Services\MagingJob\ScreenReaderDofusMagingJob.cs" />
+        <Compile Include="Services\MagingJob\MageSession.cs" />
+        <Compile Include="Services\MagingJob\MagePreparation.cs" />
+        <Compile Include="Services\MagingJob\MageRetryHandler.cs" />
+        <Compile Include="Services\MagingJob\MageExecutor.cs" />
+        <Compile Include="Services\MagingJob\SingleItemMageExecutor.cs" />
+        <Compile Include="Services\MagingJob\QueueMageExecutor.cs" />
+        <Compile Include="Services\MagingJob\Tick.cs" />
         <Compile Include="Services\TargetItemMageResolve.cs">
             <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\ApiAnalyticsReporter.cs" />
-        <Compile Include="Services\Tick.cs" />
         <Compile Include="Services\ScreenScanner.cs">
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\UserRunes.cs">
-            <DependentUpon>ScreenReaderDofusMagingJob.cs</DependentUpon>
-        </Compile>
+        <Compile Include="Services\UserRunes.cs" />
         <Compile Include="StatisticsForm.cs">
             <SubType>Form</SubType>
         </Compile>

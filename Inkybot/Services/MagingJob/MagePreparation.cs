@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using Inkybot.Actions;
 using Inkybot.Dofus;
 
 namespace Inkybot.Services
@@ -9,27 +7,21 @@ namespace Inkybot.Services
     {
         public static Item Prepare(
             MageSession session,
-            bool restarting,
             ScreenReaderDataProvider dataProvider,
-            ConfigManager configManager,
-            Action<decimal> setSink) {
+            ConfigManager configManager) {
 
-            var previousCheckHadRunOutOfRunes = session.PreviousCheckHadRunOutOfRunes;
             var previousItem = session.PreviousItem;
-            session.Reset();
+            session.ResetForNewItem();
             session.IsPreparing = true;
-            session.IsRestarting = restarting;
-            session.PreviousCheckHadRunOutOfRunes = previousCheckHadRunOutOfRunes;
 
             try {
                 session.IsMaging = true;
-                return ReadItemFromScreen(session, previousItem, dataProvider, configManager, setSink);
+                return ReadItemFromScreen(session, previousItem, dataProvider, configManager);
             } catch (Exception) {
                 session.IsMaging = false;
                 throw;
             } finally {
                 session.IsPreparing = false;
-                session.IsRestarting = false;
             }
         }
 
@@ -37,17 +29,13 @@ namespace Inkybot.Services
             MageSession session,
             Item previousItem,
             ScreenReaderDataProvider dataProvider,
-            ConfigManager configManager,
-            Action<decimal> setSink) {
+            ConfigManager configManager) {
 
-            if (((session.PreviousAction as CombineRune)?.Exo ?? false) ||
-                ((session.PreviousItem?.HasExo ?? false) && !session.PreviousItem.Stats.ExoStats.All(stat => stat.Value < 0))) {
+            if (session.ShouldResetMinMaxScan())
                 dataProvider.ResetMinMaxScan();
-            }
 
             dataProvider.Reset(!session.IsRestarting);
             dataProvider.FetchData();
-            setSink(dataProvider.Sink() ?? 0);
 
             var item = dataProvider.Item();
             try {

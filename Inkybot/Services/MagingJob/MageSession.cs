@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Linq;
+using Inkybot.Actions;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Domain;
 using Inkybot.Domain;
@@ -11,6 +13,7 @@ namespace Inkybot.Services
         public bool IsPreparing { get; set; }
         public bool IsRestarting { get; set; }
         public bool IsMaging { get; set; }
+        public bool HasStartedFired { get; set; }
 
         // Tracked values
         public decimal Sink;
@@ -31,14 +34,21 @@ namespace Inkybot.Services
         // Item info
         public UserRunes Runes;
 
-        public void Reset() {
+        public bool ShouldResetMinMaxScan() {
+            var previousWasExo = (PreviousAction as CombineRune)?.Exo ?? false;
+            var itemHasActiveExo = (PreviousItem?.HasExo ?? false)
+                && PreviousItem.Stats.ExoStats.Any(stat => stat.Value > 0);
+            return previousWasExo || itemHasActiveExo;
+        }
+
+        public void ResetForNewItem() {
             PreviousCombineWasExoAttempt = false;
             Sink = 0m;
             Balance = 0;
             PreviousAction = null;
             PreviousHistory = null;
             PreviousItem = null;
-            PreviousCheckHadRunOutOfRunes = null;
+            // PreviousCheckHadRunOutOfRunes is intentionally preserved across items
         }
     }
 }

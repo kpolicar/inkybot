@@ -1,36 +1,30 @@
 using System.Threading;
+using Inkybot.Actions;
 using Inkybot.Dofus;
-using Inkybot.Dofus.Contracts;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Services
 {
     internal class QueueMageExecutor : MageExecutor
     {
-        public QueueMageExecutor(
-            MageSession session,
-            ScreenReaderDataProvider dataProvider,
-            DofusMagingAI magus,
-            ActionHandler actions,
-            ActionFactory actionFactory,
-            ConfigManager configManager,
-            MageQueueManager mageQueue)
-            : base(session, dataProvider, magus, actions, actionFactory, configManager, mageQueue) { }
-
-        public override bool Execute(bool restarting) {
+        public override bool Execute() {
             var autoShutdown = false;
-            var first = true;
 
             while (!mageQueue.Empty && session.IsMaging) {
-                session.IsMaging = true;
                 PrepareInventoryForNextItem();
                 if (!session.IsMaging) break;
 
-                autoShutdown = MageSingleItem(runStartedEvent: first, restarting: restarting);
-                first = false;
-                restarting = false;
+                var result = MageSingleItem();
+                autoShutdown = result.AutoShutdown || session.PreviousAction is Finish;
 
-                if (!mageQueue.Empty) Thread.Sleep(500);
+                var shouldContinue = !result.StopMage
+                    && !result.AutoShutdown
+                    && session.PreviousAction is Finish
+                    && !mageQueue.Empty;
+
+                session.IsMaging = shouldContinue;
+
+                if (!mageQueue.Empty && shouldContinue) Thread.Sleep(500);
             }
 
             return autoShutdown;

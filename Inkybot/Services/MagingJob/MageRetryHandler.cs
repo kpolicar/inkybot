@@ -18,25 +18,27 @@ namespace Inkybot.Services
         }
 
         public static Result ExecuteWithRetry(
-            Func<int, bool> action,
+            Func<bool> action,
             MageSession session,
             ScreenReaderDataProvider dataProvider,
             Action<MagingJobErrorEventArgs> onError,
-            Action<MagingJobErrorEventArgs> onWarning,
-            bool restarting) {
+            Action<MagingJobErrorEventArgs> onWarning) {
 
             var result = new Result();
+            var wasRestarting = session.IsRestarting;
 
             for (var attempt = 0; attempt < MaxAttempts; attempt++) {
-                if (attempt > 0) Debug.WriteLine("Restarting mage, attempt " + attempt);
-                var isRestarting = attempt > 0 || restarting;
+                if (attempt > 0) {
+                    Debug.WriteLine("Restarting mage, attempt " + attempt);
+                    session.IsRestarting = true;
+                }
 
                 try {
-                    result.AutoShutdown = action(attempt);
+                    result.AutoShutdown = action();
                     break;
                 } catch (Exception exception) when (IsFatalException(exception)) {
                     SaveScanOnItemError(exception, dataProvider);
-                    result.AutoShutdown = ResolveAutoShutdown(exception, isRestarting);
+                    result.AutoShutdown = ResolveAutoShutdown(exception, session.IsRestarting);
                     result.StopMage = true;
                     onError(new MagingJobErrorEventArgs(exception));
                     break;
@@ -61,6 +63,7 @@ namespace Inkybot.Services
                 }
             }
 
+            session.IsRestarting = wasRestarting;
             return result;
         }
 

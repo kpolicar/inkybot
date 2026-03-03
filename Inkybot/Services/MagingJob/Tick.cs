@@ -13,6 +13,8 @@ using Inkybot.Exceptions;
 
 namespace Inkybot.Services
 {
+    internal enum TickResult { Continue, Finished }
+
     /// <summary>
     /// Represents one complete rune combination cycle:
     /// resolve action → execute → wait for result → read sink.
@@ -27,7 +29,7 @@ namespace Inkybot.Services
 
         public event EventHandler SuccessfulCombine;
         public event EventHandler<MagingJobStartedEventArgs> SensitiveMage;
-        public Action<decimal> SetSink;
+        public event EventHandler<decimal> SinkRead;
 
         public Tick(
             MageSession session,
@@ -42,12 +44,12 @@ namespace Inkybot.Services
             this.configManager = configManager;
         }
 
-        public void Execute() {
-#if DEBUG
-            Profiler.Reset();
-#endif
+        public TickResult Execute() {
             var action = ResolveAndExecuteAction();
             session.PreviousAction = action;
+
+            if (action is Finish)
+                return TickResult.Finished;
 
             if (action is CombineRune combineRune) {
                 session.PreviousCombineWasExoAttempt = combineRune.Exo;
@@ -62,16 +64,13 @@ namespace Inkybot.Services
                 SuccessfulCombine?.Invoke(this, EventArgs.Empty);
                 session.UnsuccessfulCombineTicks = 0;
             }
-#if DEBUG
-            Profiler.PrintSummary();
-#endif
+
+            return TickResult.Continue;
         }
 
         private IAction ResolveAndExecuteAction() {
-            if (((session.PreviousAction as CombineRune)?.Exo ?? false) ||
-                ((session.PreviousItem?.HasExo ?? false) && !session.PreviousItem.Stats.ExoStats.All(stat => stat.Value < 0))) {
+            if (ShouldResetMinMaxScan())
                 dataProvider.ResetMinMaxScan();
-            }
 
             var item = dataProvider.Item();
             if (item.IsInvalid)
@@ -93,7 +92,7 @@ namespace Inkybot.Services
                 if (combine.Exo)
                     session.PreviousHistory = dataProvider.History();
 
-                RaiseEventIfSensitiveMage(item);
+                EnforceNotSensitiveMage(item);
             }
 
             actions.Execute(action);
@@ -101,6 +100,8 @@ namespace Inkybot.Services
 
             return action;
         }
+
+        private bool ShouldResetMinMaxScan() => session.ShouldResetMinMaxScan();
 
         private void WaitForCombineResult() {
             while (true) {
@@ -130,25 +131,21 @@ namespace Inkybot.Services
 
             if (sink != null) {
                 Debug.WriteLine("CHANGED SINK TO " + sink.Value.ToString(CultureInfo.InvariantCulture));
-                SetSink?.Invoke(sink.Value);
+                SinkRead?.Invoke(this, sink.Value);
             }
         }
 
-        private void RaiseEventIfSensitiveMage(Item item) {
-            var interrupted = false;
-            var showDialogue = session.Ticks == 1 && item.Stats.Any(s => s.Overmaged);
+        private void EnforceNotSensitiveMage(Item item) {
+            var isFirstTickWithOvermagedStats = session.Ticks == 1 && item.Stats.Any(s => s.Overmaged);
+            var hasHighSinkExo = item.Stats.ExoStats.Any(s => s.Value > 0 && s.Stat.Config.HighSinkStat);
 
-            if (!showDialogue) {
-                showDialogue = item.Stats.ExoStats.Any(s => s.Value > 0 && s.Stat.Config.HighSinkStat);
-                if (showDialogue) interrupted = true;
-            }
+            if (!isFirstTickWithOvermagedStats && !hasHighSinkExo) return;
 
-            if (showDialogue) {
-                SensitiveMage?.Invoke(this,
-                    new MagingJobStartedEventArgs(false, item, configManager.Config!, interrupted));
-                if (!session.IsMaging)
-                    throw new OperationCanceledException();
-            }
+            SensitiveMage?.Invoke(this, new MagingJobStartedEventArgs(
+                false, item, configManager.Config!, hasHighSinkExo));
+
+            if (!session.IsMaging)
+                throw new OperationCanceledException();
         }
 
         private void EnforceSameItemAsPreviousTick(Item item) {
@@ -162,8 +159,11 @@ namespace Inkybot.Services
 
             var userRune = userRunes.First(r => r.Rune == combine.Rune);
 
-            if (userRune.Quantity == 0 && session.PreviousCheckHadRunOutOfRunes == userRune.Rune
-                && configManager.UserSettings.EnableRuneChecking)
+            var ranOutTwiceInARow = userRune.Quantity == 0
+                && session.PreviousCheckHadRunOutOfRunes == userRune.Rune
+                && configManager.UserSettings.EnableRuneChecking;
+
+            if (ranOutTwiceInARow)
                 throw new OutOfRunesException(userRune.Rune);
 
             session.PreviousCheckHadRunOutOfRunes = userRune.Quantity == 0 ? userRune.Rune : null;
@@ -174,15 +174,18 @@ namespace Inkybot.Services
                 session.ChangeTimeout.Restart();
 
             var elapsed = session.ChangeTimeout.ElapsedMilliseconds;
-            if (elapsed > 15000 || (!session.PreviousCombineWasExoAttempt && elapsed > 5000)) {
-                session.ChangeTimeout.Stop();
-                var additional = session.PreviousAction is RuneAction runeAction
-                    ? "\"" + runeAction.Rune.DisplayName + "\" "
-                    : "";
-                throw new ChangeCheckTimeoutException(
-                    "Rune combination was expected to perform within 5 seconds, but did not. " +
-                    $"This may be the result of a poor internet connection or you may have run out of {additional}runes.");
-            }
+            var timedOut = elapsed > 15000
+                || (!session.PreviousCombineWasExoAttempt && elapsed > 5000);
+
+            if (!timedOut) return;
+
+            session.ChangeTimeout.Stop();
+            var additional = session.PreviousAction is RuneAction runeAction
+                ? "\"" + runeAction.Rune.DisplayName + "\" "
+                : "";
+            throw new ChangeCheckTimeoutException(
+                "Rune combination was expected to perform within 5 seconds, but did not. " +
+                $"This may be the result of a poor internet connection or you may have run out of {additional}runes.");
         }
     }
 }
