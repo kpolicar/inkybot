@@ -97,46 +97,89 @@ namespace Inkybot.Services.Win32Input
         public static void SetTargetProcessId(int processId) => targetPID = processId;
         public static void Init() {
             if (isInitialized) return;
+
+            var log = FileEventLogger.SystemLogger;
+
+            // Wire up IPC logging callback to SystemLogger
+            ServerInterface.Logger = message => log.Info(message);
             
             // Will contain the name of the IPC server channel
             string channelName = null;
             _server = new ServerInterface();
 
             if (targetPID <= 0)
+            {
+                log.Error("[EasyHook] Cannot initialize hook: target process ID is not set (was {0})", targetPID);
                 throw new Exception("Could not initialize input handler");
+            }
 
-
-            // Create the IPC server using the FileMonitorIPC.ServiceInterface class as a singleton
-            EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
+            // Create the IPC server
+            try
+            {
+                EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
+                _server.SetState(HookState.IpcCreated);
+                log.Info("[EasyHook] IPC server created on channel: {0}", channelName);
+            }
+            catch (Exception e)
+            {
+                log.Error(e, "[EasyHook] Failed to create IPC server");
+                _server.SetState(HookState.Failed);
+                return;
+            }
 
             // Get the full path to the assembly we want to inject into the target process
             string assemblyPath = AppContext.BaseDirectory;
             string injectionLibrary = Path.Combine(assemblyPath, "InkybotHook.dll");
 
+            if (!File.Exists(injectionLibrary))
+            {
+                log.Error("[EasyHook] Injection library not found at: {0}", injectionLibrary);
+                _server.SetState(HookState.Failed);
+                return;
+            }
+
             try
             {
-                // Injecting into existing process by Id
                 if (targetPID > 0)
                 {
-                    Console.WriteLine("Attempting to inject into process {0}", targetPID);
+                    log.Info("[EasyHook] Injecting hook DLL into process {0} (library: {1})", targetPID, injectionLibrary);
+                    _server.SetState(HookState.Injecting);
 
-                    // inject into existing process
                     EasyHook.RemoteHooking.Inject(
                         targetPID,          // ID of process to inject into
                         injectionLibrary,   // 32-bit library to inject (if target is 32-bit)
                         injectionLibrary,   // 64-bit library to inject (if target is 64-bit)
                         channelName         // the parameters to pass into injected library
-                                            // ...
                     );
+
                     isInitialized = true;
+                    log.Info("[EasyHook] Injection call completed successfully for process {0}", targetPID);
                 }
+            }
+            catch (System.IO.FileNotFoundException e)
+            {
+                log.Error(e, "[EasyHook] Injection DLL or dependency not found");
+                _server.SetState(HookState.Failed);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                log.Error(e, "[EasyHook] Insufficient privileges to inject into process {0}. Try running as administrator", targetPID);
+                _server.SetState(HookState.Failed);
+            }
+            catch (System.ComponentModel.Win32Exception e)
+            {
+                log.Error(e, "[EasyHook] Win32 error during injection (code {0}): target process may have exited or be protected", e.NativeErrorCode);
+                _server.SetState(HookState.Failed);
+            }
+            catch (ApplicationException e)
+            {
+                log.Error(e, "[EasyHook] EasyHook injection failed (possible architecture mismatch or target process issue)");
+                _server.SetState(HookState.Failed);
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("There was an error while injecting into target:");
-                Console.ResetColor();
-                Console.WriteLine(e.ToString());
+                log.Error(e, "[EasyHook] Unexpected error during injection into process {0}", targetPID);
+                _server.SetState(HookState.Failed);
             }
         }
 
@@ -221,8 +264,10 @@ namespace Inkybot.Services.Win32Input
 
         public void Dispose() {
             if (isInitialized) {
+                FileEventLogger.SystemLogger.Info("[EasyHook] Shutting down hook, setting ShutdownFlag");
                 _server.ShutdownFlag = true;
                 Thread.Sleep(5000); // Wait for dll to disinject (hopefully)
+                FileEventLogger.SystemLogger.Info("[EasyHook] Shutdown wait completed");
             }
         }
     }

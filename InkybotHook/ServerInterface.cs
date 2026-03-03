@@ -32,6 +32,19 @@ using System.Threading.Tasks;
 
 namespace InkybotHook
 {
+    public enum HookState
+    {
+        NotInitialized,
+        IpcCreated,
+        Injecting,
+        Injected,
+        HooksInstalled,
+        Running,
+        IpcDisconnected,
+        Disposed,
+        Failed
+    }
+
     /// <summary>
     /// Provides an interface for communicating from the client (target) to the server (injector)
     /// </summary>
@@ -44,18 +57,35 @@ namespace InkybotHook
             public int Y;
         }
 
+        /// <summary>
+        /// Set this from the host process to forward log messages to your logging system.
+        /// </summary>
+        public static Action<string> Logger;
+
         public bool ShutdownFlag = false;
 
         public POINT point = new POINT { X = -1, Y = -1 };
 
+        public HookState State { get; private set; } = HookState.NotInitialized;
+
+        private bool _hasLoggedFirstCursorChange = false;
+
+        public void SetState(HookState newState)
+        {
+            var oldState = State;
+            State = newState;
+            Logger?.Invoke($"[EasyHook] State changed: {oldState} -> {newState}");
+        }
+
         public void IsInstalled(int clientPID) {
-            ReportMessage("FileMonitor has injected FileMonitorHook into process {0}.\r\n"+ clientPID);
+            ReportMessage($"[EasyHook] Hook DLL injected into process {clientPID}");
+            SetState(HookState.Injected);
         }
 
         /// <summary>
         /// Output the message to the console.
         /// </summary>
-        /// <param name="fileNames"></param>
+        /// <param name="messages"></param>
         public void ReportMessages(string[] messages) {
             for (int i = 0; i < messages.Length; i++) {
                 ReportMessage(messages[i]);
@@ -64,11 +94,16 @@ namespace InkybotHook
 
         public void SetCursorFixedPosition(POINT point) {
             this.point = point;
+
+            if (!_hasLoggedFirstCursorChange && point.X != -1 && point.Y != -1)
+            {
+                _hasLoggedFirstCursorChange = true;
+                Logger?.Invoke($"[EasyHook] First cursor position override applied: ({point.X}, {point.Y})");
+            }
         }
 
         public void ReportMessage(string message) {
-            //File.AppendAllText(@"A:\tmp.txt", message);
-            //File.AppendAllText(@"C:\Users\alice\OneDrive\Desktop\inky\logs\injected.txt", message);
+            Logger?.Invoke(message);
         }
 
         /// <summary>
@@ -76,14 +111,14 @@ namespace InkybotHook
         /// </summary>
         /// <param name="e"></param>
         public void ReportException(Exception e) {
-            ReportMessage("The target process has reported an error:\r\n" + e.ToString());
+            Logger?.Invoke("[EasyHook] Target process error: " + e.ToString());
         }
 
         /// <summary>
         /// Called to confirm that the IPC channel is still open / host application has not closed
         /// </summary>
         public void Ping() {
-            ReportMessage("-");
+            // No-op keep-alive; intentionally not logged to avoid noise
         }
     }
 }
