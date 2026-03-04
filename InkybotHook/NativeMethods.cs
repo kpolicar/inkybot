@@ -282,5 +282,9 @@ namespace InkybotHook
         {
             return (IntPtr)((y << 16) | (x & 0xFFFF));
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool EnumChildWindows(IntPtr hWndParent, EnumChildProc lpEnumFunc, IntPtr lParam);
+        public delegate bool EnumChildProc(IntPtr hWnd, IntPtr lParam);
     }
 }

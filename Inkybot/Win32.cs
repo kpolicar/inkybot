@@ -54,6 +54,10 @@ namespace Inkybot
         public const int WM_CHAR = 0x0102;
         public const int WM_SYSKEYDOWN = 0x0104;
         public const int WM_SYSKEYUP = 0x0105;
+        private const uint WM_LBUTTONDBLCLK = 0x0203;
+        private const uint WM_RBUTTONDBLCLK = 0x0206;
+        private const uint WM_NCLBUTTONDBLCLK = 0x00A3;
+        private const uint WM_NCRBUTTONDBLCLK = 0x00A6;
 
         public const int VK_RETURN = 0x0D;
         public const int VK_MENU = 0x12;

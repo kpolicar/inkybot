@@ -78,6 +78,7 @@ namespace InkybotHook
             switch (buttonMsg)
             {
                 case WM_LBUTTONDOWN:
+                case WM_LBUTTONDBLCLK: // ADD THIS
                     _botLButtonDown = true;
                     rawFlag = RI_MOUSE_LEFT_BUTTON_DOWN;
                     mkFlag = MK_LBUTTON;
@@ -88,6 +89,7 @@ namespace InkybotHook
                     mkFlag = 0;
                     break;
                 case WM_RBUTTONDOWN:
+                case WM_RBUTTONDBLCLK: // ADD THIS
                     _botRButtonDown = true;
                     rawFlag = RI_MOUSE_RIGHT_BUTTON_DOWN;
                     mkFlag = MK_RBUTTON;
@@ -184,6 +186,7 @@ namespace InkybotHook
                 () => TryInstallHook<MapWindowPointsDelegate>("MapWindowPoints", new MapWindowPointsDelegate(HookedMapWindowPoints), out _originalMapWindowPoints)
             };
 
+
             try
             {
                 _server.IsInstalled(EasyHook.RemoteHooking.GetCurrentProcessId());
@@ -196,6 +199,9 @@ namespace InkybotHook
                 }
 
                 _server.SetState(HookState.HooksInstalled);
+
+                // After hooks are installed and targetHwnd is set, subclass all windows
+                SubclassTargetAndChildren();
             }
             catch (Exception e)
             {
@@ -205,6 +211,51 @@ namespace InkybotHook
             }
 
             _server.SetState(HookState.Running);
+        // Helper to subclass all child windows of a given window
+        private void SubclassAllWindows(IntPtr parentHwnd)
+        {
+            NativeMethods.EnumChildWindows(parentHwnd, (hwnd, lParam) =>
+            {
+                try
+                {
+                    SubclassWindow(hwnd);
+                }
+                catch (Exception ex)
+                {
+                    _server?.ReportMessage($"Failed to subclass child window 0x{hwnd.ToInt64():X}: {ex.Message}");
+                }
+                return true; // continue enumeration
+            }, IntPtr.Zero);
+        }
+
+        // Helper to subclass a single window
+        private void SubclassWindow(IntPtr hwnd)
+        {
+            // Only subclass if not already subclassed
+            IntPtr prevWndProc = NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC);
+            if (prevWndProc == _wndProcPtr)
+                return;
+            IntPtr newWndProc = Marshal.GetFunctionPointerForDelegate(_wndProcDelegate);
+            NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC, newWndProc);
+            _server?.ReportMessage($"Subclassed window 0x{hwnd.ToInt64():X}");
+        }
+
+        // Call this after hooks are installed and targetHwnd is set
+        private void SubclassTargetAndChildren()
+        {
+            if (_server != null && _server.targetHwnd != IntPtr.Zero)
+            {
+                try
+                {
+                    SubclassWindow(_server.targetHwnd);
+                    SubclassAllWindows(_server.targetHwnd);
+                }
+                catch (Exception ex)
+                {
+                    _server?.ReportMessage($"Failed to subclass target/children: {ex.Message}");
+                }
+            }
+        }
 
             try
             {
@@ -240,7 +291,6 @@ namespace InkybotHook
                                 {
                                     PostMessage(_server.targetHwnd, outgoingMsg, outgoingWParam, outgoingLParam);
                                 }
-                                System.Threading.Thread.Sleep(2); 
                             }
                             catch (Exception e)
                             {
@@ -249,8 +299,6 @@ namespace InkybotHook
                             }
                         }
                     }
-
-                    System.Threading.Thread.Sleep(1);
 
                     string[] queued = null;
                     lock (_messageQueue)
@@ -528,10 +576,10 @@ namespace InkybotHook
                 if (IsCursorOverrideActive())
                 {
                     // Block ALL mouse/pointer button messages (down + up + NC variants)
-                    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
-                        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP ||
-                        msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP ||
-                        msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP ||
+                    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_LBUTTONDBLCLK ||
+                        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP || msg == WM_RBUTTONDBLCLK ||
+                        msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP || msg == WM_NCLBUTTONDBLCLK ||
+                        msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP || msg == WM_NCRBUTTONDBLCLK ||
                         msg == WM_POINTERDOWN || msg == WM_POINTERUP ||
                         msg == WM_POINTERCAPTURECHANGED)
                     {
@@ -719,7 +767,6 @@ namespace InkybotHook
                 }
 
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
-                
                 if (pData != IntPtr.Zero && uiCommand == RID_INPUT && result > 0 && result != unchecked((uint)-1))
                 {
                     uint dwType = (uint)Marshal.ReadInt32(pData, 0);
@@ -743,6 +790,7 @@ namespace InkybotHook
                         // Zero out button flags so real physical button presses don't reach Unity via raw input
                         Marshal.WriteInt16(pData, headerSize + 4, 0); // usButtonFlags
                         Marshal.WriteInt16(pData, headerSize + 6, 0); // usButtonData
+                        Marshal.WriteInt32(pData, headerSize + 8, 0); // Zero ulRawButtons completely!
                     }
                 }
                 return result;
@@ -887,6 +935,8 @@ namespace InkybotHook
 
                 case WM_LBUTTONDOWN:
                 case WM_RBUTTONDOWN:
+                case WM_LBUTTONDBLCLK: // ADD THIS
+                case WM_RBUTTONDBLCLK: // ADD THIS
                     if (IsCursorOverrideActive())
                     {
                         // TEMP: block ALL mouse downs unconditionally
@@ -1165,6 +1215,7 @@ namespace InkybotHook
 
         public uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
+            return 0;
             LogFirstCall("GetRawInputBuffer");
             try
             {
@@ -1429,10 +1480,10 @@ namespace InkybotHook
 
         private bool IsMouseButtonMessage(uint msg)
         {
-            return msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
-                   msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP ||
-                   msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP ||
-                   msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP;
+            return msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_LBUTTONDBLCLK ||
+                msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP || msg == WM_RBUTTONDBLCLK ||
+                msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP || msg == WM_NCLBUTTONDBLCLK ||
+                msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP || msg == WM_NCRBUTTONDBLCLK;
         }
 
         private bool IsPointerMessage(uint msg)
@@ -1792,5 +1843,6 @@ namespace InkybotHook
         }
 
         #endregion
+// ...existing code...
     }
-}
+// Remove extra closing brace
