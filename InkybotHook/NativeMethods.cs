@@ -60,6 +60,17 @@ namespace InkybotHook
         public const uint WM_POINTERLEAVE      = 0x024A;
         public const uint WM_POINTERCAPTURECHANGED = 0x024C;
 
+        // WM_POINTER wParam flags (HIWORD)
+        public const ushort POINTER_MESSAGE_FLAG_NEW          = 0x0001;
+        public const ushort POINTER_MESSAGE_FLAG_INRANGE      = 0x0002;
+        public const ushort POINTER_MESSAGE_FLAG_INCONTACT    = 0x0004;
+        public const ushort POINTER_MESSAGE_FLAG_FIRSTBUTTON  = 0x0010;
+        public const ushort POINTER_MESSAGE_FLAG_PRIMARY      = 0x2000;
+        public const ushort POINTER_MESSAGE_FLAG_CONFIDENCE   = 0x4000;
+
+        // Synthetic pointer ID used to identify bot-generated WM_POINTER messages
+        public const ushort SYNTHETIC_POINTER_ID = 0x0BEE;
+
         // Child window hit-test flags
         public const uint CWP_ALL             = 0x0000;
         public const uint CWP_SKIPINVISIBLE   = 0x0001;

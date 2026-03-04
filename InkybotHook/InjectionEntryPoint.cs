@@ -69,33 +69,38 @@ namespace InkybotHook
         /// 1. Updates button-down state for GetAsyncKeyState/GetKeyState hooks
         /// 2. Enqueues a RAWMOUSE button flag and posts WM_INPUT with MAGIC_RAWINPUT_HANDLE
         ///    so Unity's raw-input handler fires GetRawInputData (which we intercept and fabricate)
-        /// 3. Posts the legacy WM_LBUTTONDOWN/UP message with sentinel marker
+        /// 3. Posts WM_POINTERDOWN/UP with SYNTHETIC_POINTER_ID (screen coords in lParam)
         /// </summary>
         private void PostSyntheticBotClick(IntPtr hwnd, uint buttonMsg, int clientX, int clientY)
         {
             ushort rawFlag;
-            long mkFlag;
+            uint pointerMsg;
+            ushort pointerFlags;
             switch (buttonMsg)
             {
                 case WM_LBUTTONDOWN:
                     _botLButtonDown = true;
                     rawFlag = RI_MOUSE_LEFT_BUTTON_DOWN;
-                    mkFlag = MK_LBUTTON;
+                    pointerMsg = WM_POINTERDOWN;
+                    pointerFlags = (ushort)(POINTER_MESSAGE_FLAG_INRANGE | POINTER_MESSAGE_FLAG_INCONTACT | POINTER_MESSAGE_FLAG_FIRSTBUTTON | POINTER_MESSAGE_FLAG_PRIMARY | POINTER_MESSAGE_FLAG_CONFIDENCE);
                     break;
                 case WM_LBUTTONUP:
                     _botLButtonDown = false;
                     rawFlag = RI_MOUSE_LEFT_BUTTON_UP;
-                    mkFlag = 0;
+                    pointerMsg = WM_POINTERUP;
+                    pointerFlags = (ushort)(POINTER_MESSAGE_FLAG_INRANGE | POINTER_MESSAGE_FLAG_PRIMARY | POINTER_MESSAGE_FLAG_CONFIDENCE);
                     break;
                 case WM_RBUTTONDOWN:
                     _botRButtonDown = true;
                     rawFlag = RI_MOUSE_RIGHT_BUTTON_DOWN;
-                    mkFlag = MK_RBUTTON;
+                    pointerMsg = WM_POINTERDOWN;
+                    pointerFlags = (ushort)(POINTER_MESSAGE_FLAG_INRANGE | POINTER_MESSAGE_FLAG_INCONTACT | POINTER_MESSAGE_FLAG_FIRSTBUTTON | POINTER_MESSAGE_FLAG_PRIMARY | POINTER_MESSAGE_FLAG_CONFIDENCE);
                     break;
                 case WM_RBUTTONUP:
                     _botRButtonDown = false;
                     rawFlag = RI_MOUSE_RIGHT_BUTTON_UP;
-                    mkFlag = 0;
+                    pointerMsg = WM_POINTERUP;
+                    pointerFlags = (ushort)(POINTER_MESSAGE_FLAG_INRANGE | POINTER_MESSAGE_FLAG_PRIMARY | POINTER_MESSAGE_FLAG_CONFIDENCE);
                     break;
                 default:
                     return;
@@ -106,12 +111,18 @@ namespace InkybotHook
             _syntheticRawInputBufferQueue.Enqueue(rawFlag);
             bool wmInputPosted = PostMessage(hwnd, WM_INPUT, IntPtr.Zero /*RIM_INPUT*/, MAGIC_RAWINPUT_HANDLE);
 
-            // 2. Post the legacy window message with sentinel + coordinates
-            IntPtr lParam = MakeLParam(clientX, clientY);
-            IntPtr wParam = (IntPtr)(mkFlag | BOT_INPUT_SENTINEL);
-            bool wmButtonPosted = PostMessage(hwnd, buttonMsg, wParam, lParam);
+            // 2. Post WM_POINTER message with synthetic pointer ID + screen coords
+            POINT screenPt = new POINT { X = clientX, Y = clientY };
+            if (_originalClientToScreen != null)
+                _originalClientToScreen(hwnd, ref screenPt);
+            else
+                ClientToScreen(hwnd, ref screenPt);
 
-            QueueMessage($"[CLICK-FLOW] PostSyntheticBotClick: msg=0x{buttonMsg:X4} rawFlag=0x{rawFlag:X4} at ({clientX},{clientY}) WM_INPUT_posted={wmInputPosted} WM_BUTTON_posted={wmButtonPosted} dataQ={_syntheticRawInputDataQueue.Count} bufferQ={_syntheticRawInputBufferQueue.Count}");
+            IntPtr ptrLParam = MakeLParam(screenPt.X, screenPt.Y);
+            IntPtr ptrWParam = (IntPtr)(((long)pointerFlags << 16) | SYNTHETIC_POINTER_ID);
+            bool wmPointerPosted = PostMessage(hwnd, pointerMsg, ptrWParam, ptrLParam);
+
+            QueueMessage($"[CLICK-FLOW] PostSyntheticBotClick: msg=0x{buttonMsg:X4} rawFlag=0x{rawFlag:X4} at ({clientX},{clientY})->screen({screenPt.X},{screenPt.Y}) WM_INPUT={wmInputPosted} WM_POINTER(0x{pointerMsg:X4})={wmPointerPosted} dataQ={_syntheticRawInputDataQueue.Count} bufferQ={_syntheticRawInputBufferQueue.Count}");
         }
 
         public InjectionEntryPoint(
@@ -212,7 +223,7 @@ namespace InkybotHook
                 {
                     EnsureWndProcSubclassed();
                     //DrawDebugMarkerIfDue();
-                    //ClickFixedPositionIfDue(); // DISABLED: synthetic test clicks
+                    ClickFixedPositionIfDue();
 
                     if (_server.targetHwnd != IntPtr.Zero)
                     {
@@ -422,22 +433,23 @@ namespace InkybotHook
             try
             {
                 long clickId = System.Threading.Interlocked.Increment(ref _testClickSequence);
+                IntPtr hwnd = _server.targetHwnd;
                 IntPtr lParam = MakeLParam(_testPoint.X, _testPoint.Y);
 
                 QueueMessage($"[EasyHook:Target] Synthetic click #{clickId} at ({_testPoint.X},{_testPoint.Y})");
 
                 // 1. Move the mouse to update raycasters
-                PostMessage(_server.targetHwnd, WM_MOUSEMOVE, IntPtr.Zero, lParam);
+                PostMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, lParam);
                 System.Threading.Thread.Sleep(20);
 
-                // 2. Down — posts WM_INPUT(MAGIC) + WM_LBUTTONDOWN(sentinel)
-                PostSyntheticBotClick(_server.targetHwnd, WM_LBUTTONDOWN, _testPoint.X, _testPoint.Y);
+                // 2. Down — posts WM_INPUT(MAGIC) + WM_POINTERDOWN(synthetic)
+                PostSyntheticBotClick(hwnd, WM_LBUTTONDOWN, _testPoint.X, _testPoint.Y);
                 QueueMessage($"[EasyHook:Target] Click #{clickId} DOWN posted");
 
                 System.Threading.Thread.Sleep(100);
 
-                // 3. Up — posts WM_INPUT(MAGIC) + WM_LBUTTONUP(sentinel)
-                PostSyntheticBotClick(_server.targetHwnd, WM_LBUTTONUP, _testPoint.X, _testPoint.Y);
+                // 3. Up — posts WM_INPUT(MAGIC) + WM_POINTERUP(synthetic)
+                PostSyntheticBotClick(hwnd, WM_LBUTTONUP, _testPoint.X, _testPoint.Y);
                 QueueMessage($"[EasyHook:Target] Click #{clickId} UP posted");
 
                 System.Threading.Thread.Sleep(50);
@@ -532,11 +544,30 @@ namespace InkybotHook
                         msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP ||
                         msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP ||
                         msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP ||
-                        msg == WM_POINTERDOWN || msg == WM_POINTERUP ||
                         msg == WM_POINTERCAPTURECHANGED)
                     {
                         QueueMessage($"[CLICK-FLOW] WndProc BLOCKED: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X}");
                         return IntPtr.Zero;
+                    }
+
+                    // WM_POINTER: allow our synthetic pointer through, block real ones
+                    if (msg == WM_POINTERDOWN || msg == WM_POINTERUP || msg == WM_POINTERUPDATE ||
+                        msg == WM_POINTERENTER || msg == WM_POINTERLEAVE)
+                    {
+                        uint pointerId = (uint)((long)wParam & 0xFFFF);
+                        ushort ptrFlags = (ushort)(((long)wParam >> 16) & 0xFFFF);
+                        int ptrX = unchecked((short)((long)lParam & 0xFFFF));
+                        int ptrY = unchecked((short)(((long)lParam >> 16) & 0xFFFF));
+                        if (pointerId == SYNTHETIC_POINTER_ID)
+                        {
+                            QueueMessage($"[CLICK-FLOW] WndProc ALLOWED synthetic WM_POINTER: msg=0x{msg:X4} ptrId={pointerId} flags=0x{ptrFlags:X4} screenPos=({ptrX},{ptrY})");
+                            // Fall through to original WndProc
+                        }
+                        else
+                        {
+                            QueueMessage($"[CLICK-FLOW] WndProc BLOCKED real WM_POINTER: msg=0x{msg:X4} ptrId={pointerId} flags=0x{ptrFlags:X4} screenPos=({ptrX},{ptrY})");
+                            return IntPtr.Zero;
+                        }
                     }
 
                     // Block real WM_INPUT — only let our synthetic (magic handle) ones through
@@ -900,11 +931,26 @@ namespace InkybotHook
                 // Block WM_POINTER click messages (Win8+ touch/pen input that bypasses WM_LBUTTON)
                 case WM_POINTERDOWN:
                 case WM_POINTERUP:
+                case WM_POINTERUPDATE:
+                case WM_POINTERENTER:
+                case WM_POINTERLEAVE:
                 case WM_POINTERCAPTURECHANGED:
                     if (IsCursorOverrideActive())
                     {
-                        QueueMessage($"[CLICK-FLOW] FilterMessage BLOCKED WM_POINTER: msg=0x{lpMsg.message:X4}");
-                        lpMsg.message = WM_NULL;
+                        uint filtPtrId = (uint)((long)lpMsg.wParam & 0xFFFF);
+                        ushort filtPtrFlags = (ushort)(((long)lpMsg.wParam >> 16) & 0xFFFF);
+                        int filtPtrX = unchecked((short)((long)lpMsg.lParam & 0xFFFF));
+                        int filtPtrY = unchecked((short)(((long)lpMsg.lParam >> 16) & 0xFFFF));
+                        if (filtPtrId == SYNTHETIC_POINTER_ID)
+                        {
+                            QueueMessage($"[CLICK-FLOW] FilterMessage ALLOWED synthetic WM_POINTER: msg=0x{lpMsg.message:X4} ptrId={filtPtrId} flags=0x{filtPtrFlags:X4} screenPos=({filtPtrX},{filtPtrY})");
+                            // Let it through
+                        }
+                        else
+                        {
+                            QueueMessage($"[CLICK-FLOW] FilterMessage BLOCKED real WM_POINTER: msg=0x{lpMsg.message:X4} ptrId={filtPtrId} flags=0x{filtPtrFlags:X4} screenPos=({filtPtrX},{filtPtrY})");
+                            lpMsg.message = WM_NULL;
+                        }
                     }
                     break;
                 case WM_LBUTTONUP:
