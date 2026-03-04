@@ -142,11 +142,7 @@ namespace Inkybot
         }
 
         private void OnClickInsert() {
-            var inp = new Win32Input();
-            inp.SetRelativeToHandle(pDofus!.MainWindowHandle);
-            var x=1088;
-            var y=344;
-            inp.Click(x,y);
+            actions.Execute(actionFactory.InventorySelectEquipmentAction());
         }
 
         private void OnDofusProcessSelected(object sender, ProcessEventArgs e) {

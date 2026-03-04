@@ -66,6 +66,13 @@ namespace Inkybot
         public static void RemoveWindowBorders(IntPtr window) {
             var style = Win32.GetWindowLong(window, Win32.GWL_STYLE);
             Win32.SetWindowLong(window, Win32.GWL_STYLE, style & ~Win32.WS_CAPTION);
+            // Force the system to recalculate the window frame so that
+            // ClientToScreen / ScreenToClient use the updated (borderless) metrics.
+            Win32.SetWindowPos(
+                window,
+                IntPtr.Zero,
+                0, 0, 0, 0,
+                Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER | Win32.SWP_FRAMECHANGED);
         }
 
         public static void RestoreWindowBorders(IntPtr window) {

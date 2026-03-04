@@ -24,6 +24,7 @@
 // about the project, latest updates and other tutorials.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -63,9 +64,30 @@ namespace InkybotHook
         /// </summary>
         public static Action<string> Logger;
 
+        [Serializable]
+        public struct InputMessage
+        {
+            public uint Msg;
+            public IntPtr WParam;
+            public IntPtr LParam;
+        }
+
         public bool ShutdownFlag = false;
 
         public POINT point = new POINT { X = -1, Y = -1 };
+
+        private readonly ConcurrentQueue<InputMessage> _inputQueue = new ConcurrentQueue<InputMessage>();
+
+        /// <summary>
+        /// Enqueue a window message to be dispatched from within the target process
+        /// directly to the original WndProc, bypassing all hooks.
+        /// </summary>
+        public void EnqueueInput(uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            _inputQueue.Enqueue(new InputMessage { Msg = msg, WParam = wParam, LParam = lParam });
+        }
+
+        public bool TryDequeueInput(out InputMessage msg) => _inputQueue.TryDequeue(out msg);
 
         /// <summary>
         /// The target window handle. Set this from the host so that SetCursorFixedPosition
@@ -117,12 +139,15 @@ namespace InkybotHook
         }
 
         public void SetCursorFixedPosition(POINT point) {
+            if (point.X != this.point.X || point.Y != this.point.Y)
+            {
+                Logger?.Invoke($"[EasyHook:Host] Cursor position -> ({point.X}, {point.Y})");
+            }
             this.point = point;
 
             if (!_hasLoggedFirstCursorChange && point.X != -1 && point.Y != -1)
             {
                 _hasLoggedFirstCursorChange = true;
-                Logger?.Invoke($"[EasyHook:Host] First cursor position override applied: ({point.X}, {point.Y})");
             }
 
             // Post WM_MOUSEMOVE to the target window with the fixed position
