@@ -33,7 +33,8 @@ namespace Inkybot
                 Thread.Sleep(3000); // wait for Unity to transition to windowed mode
             }
 
-            var oldParentHandle = Win32.SetParent(hWndDocked, destination.Handle);
+            //var oldParentHandle = Win32.SetParent(hWndDocked, destination.Handle);
+            var oldParentHandle = IntPtr.Zero;
 
             var docked = hWndDocked;
             EventHandler moveEventHandler = (sender, e) =>
@@ -60,7 +61,7 @@ namespace Inkybot
         }
 
         public static void UndockProcess(IntPtr handle, IntPtr handleDestination) {
-            Win32.SetParent(handle, handleDestination);
+            //Win32.SetParent(handle, handleDestination);
         }
 
         public static void RemoveWindowBorders(IntPtr window) {

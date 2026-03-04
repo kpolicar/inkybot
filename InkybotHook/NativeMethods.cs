@@ -12,6 +12,10 @@ namespace InkybotHook
         public const uint WM_LBUTTONUP     = 0x0202;
         public const uint WM_RBUTTONDOWN   = 0x0204;
         public const uint WM_RBUTTONUP     = 0x0205;
+        public const uint WM_NCLBUTTONDOWN = 0x00A1;
+        public const uint WM_NCLBUTTONUP   = 0x00A2;
+        public const uint WM_NCRBUTTONDOWN = 0x00A4;
+        public const uint WM_NCRBUTTONUP   = 0x00A5;
         public const uint WM_INPUT         = 0x00FF;
         public const uint WM_NULL          = 0x0000;
         public const uint WM_ACTIVATE      = 0x0006;
@@ -26,6 +30,23 @@ namespace InkybotHook
         public const uint RIM_TYPEMOUSE    = 0;
         public const int  CURSOR_SHOWING   = 0x00000001;
         public const int  GWLP_WNDPROC     = -4;
+        public const uint INPUT_MOUSE = 0;
+        public const uint MOUSEEVENTF_MOVE = 0x0001;
+        public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
+        public const uint MOUSEEVENTF_LEFTUP = 0x0004;
+        public const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
+        public const uint MOUSEEVENTF_RIGHTUP = 0x0010;
+        public const uint MOUSEEVENTF_ABSOLUTE = 0x8000;
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
+        public const long MK_LBUTTON = 0x0001L;
+        public const long MK_RBUTTON = 0x0002L;
+
+        // Raw input mouse button transition flags (RAWMOUSE.usButtonFlags)
+        public const ushort RI_MOUSE_LEFT_BUTTON_DOWN   = 0x0001;
+        public const ushort RI_MOUSE_LEFT_BUTTON_UP     = 0x0002;
+        public const ushort RI_MOUSE_RIGHT_BUTTON_DOWN  = 0x0004;
+        public const ushort RI_MOUSE_RIGHT_BUTTON_UP    = 0x0008;
 
         // Sentinel bit ORed into wParam of bot-posted button messages.
         // MK_* virtual-key flags only use the low 7 bits, so bit 30 is safe.
@@ -94,6 +115,24 @@ namespace InkybotHook
             public RECT rcCaret;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct INPUT
+        {
+            public uint type;
+            public MOUSEINPUT mi;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MOUSEINPUT
+        {
+            public int dx;
+            public int dy;
+            public uint mouseData;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
         #endregion
 
         #region P/Invoke
@@ -110,8 +149,17 @@ namespace InkybotHook
         [DllImport("user32.dll", EntryPoint = "CallWindowProcW")]
         public static extern IntPtr CallWindowProcW(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetCursorPos(int X, int Y);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetDC(IntPtr hWnd);

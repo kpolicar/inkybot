@@ -7,8 +7,7 @@ using static InkybotHook.NativeMethods;
 
 namespace InkybotHook
 {
-    
-    public class InjectionEntryPoint: EasyHook.IEntryPoint
+    public class InjectionEntryPoint : EasyHook.IEntryPoint
     {
         ServerInterface _server = null;
 
@@ -20,6 +19,31 @@ namespace InkybotHook
         private static readonly POINT _testPoint = new POINT { X = 1652, Y = 17 };
         private long _lastMarkerDrawTick = 0;
         private long _lastClickTick = 0;
+        private long _testClickSequence = 0;
+        private long _lastKeyStateSpoofLogTick = 0;
+
+        // Magic Handle for background raw input
+        private const long MAGIC_RAWINPUT_HANDLE = 0xDEADBEEFL;
+        
+        // Stolen hardware handle from the real physical mouse
+        private static IntPtr _validMouseHandle = IntPtr.Zero;
+
+        // Tracks which mouse buttons the bot currently holds down.
+        // PostMessage doesn't update the OS key state, so we must fake it
+        // in GetAsyncKeyState / GetKeyState / GetKeyboardState.
+        private const int VK_LBUTTON = 0x01;
+        private const int VK_RBUTTON = 0x02;
+        private volatile bool _botLButtonDown = false;
+        private volatile bool _botRButtonDown = false;
+
+        // Pending raw-input button transitions.
+        // Set BEFORE PostMessage so the next GetRawInputData call injects them
+        // into RAWMOUSE.usButtonFlags (Unity reads buttons from raw input, not WM_LBUTTONDOWN).
+        private volatile bool _botLButtonPendingDown = false;
+        private volatile bool _botLButtonPendingUp = false;
+        private volatile bool _botRButtonPendingDown = false;
+        private volatile bool _botRButtonPendingUp = false;
+        private int _allowUnsentinelLButtonMessages = 0;
 
         private void LogFirstCall(string hookName)
         {
@@ -40,16 +64,15 @@ namespace InkybotHook
 
         public InjectionEntryPoint(
             EasyHook.RemoteHooking.IContext context,
-            string channelName) {
+            string channelName)
+        {
             try
             {
                 _server = EasyHook.RemoteHooking.IpcConnectClient<ServerInterface>(channelName);
-                // If Ping fails then the Run method will be not be called
                 _server.Ping();
             }
             catch (Exception e)
             {
-                // IPC connection failed - Run() will not be called by EasyHook
                 throw new Exception("[EasyHook:Target] Failed to connect IPC channel '" + channelName + "': " + e.Message, e);
             }
         }
@@ -58,55 +81,43 @@ namespace InkybotHook
             EasyHook.RemoteHooking.IContext context,
             string channelName)
         {
-            EasyHook.LocalHook getCursorPosHook = null;
-            EasyHook.LocalHook isIconicHook = null;
-            EasyHook.LocalHook getMessageWHook = null;
-            EasyHook.LocalHook peekMessageWHook = null;
-            EasyHook.LocalHook getRawInputDataHook = null;
-            EasyHook.LocalHook getCursorInfoHook = null;
-            EasyHook.LocalHook getRawInputBufferHook = null;
-            EasyHook.LocalHook getForegroundWindowHook = null;
-            EasyHook.LocalHook getActiveWindowHook = null;
-            EasyHook.LocalHook getFocusHook = null;
-            EasyHook.LocalHook getPhysicalCursorPosHook = null;
-            EasyHook.LocalHook clipCursorHook = null;
-            EasyHook.LocalHook getMessageAHook = null;
-            EasyHook.LocalHook peekMessageAHook = null;
-            EasyHook.LocalHook screenToClientHook = null;
-            EasyHook.LocalHook clientToScreenHook = null;
-            EasyHook.LocalHook getGuiThreadInfoHook = null;
-            EasyHook.LocalHook getCaptureHook = null;
-            EasyHook.LocalHook getAsyncKeyStateHook = null;
-            EasyHook.LocalHook getKeyStateHook = null;
-            EasyHook.LocalHook getKeyboardStateHook = null;
+            var installedHooks = new List<EasyHook.LocalHook>();
+
+            var hookInstallers = new List<Func<EasyHook.LocalHook>>
+            {
+                () => TryInstallHook<GetCursorPosDelegate>("GetCursorPos", new GetCursorPosDelegate(HookedGetCursorPos), out _originalGetCursorPos),
+                () => TryInstallHook<IsIconicDelegate>("IsIconic", new IsIconicDelegate(HookedIsIconic), out _originalIsIconic),
+                () => TryInstallHook<GetMessageWDelegate>("GetMessageW", new GetMessageWDelegate(HookedGetMessageW), out _originalGetMessageW),
+                () => TryInstallHook<PeekMessageWDelegate>("PeekMessageW", new PeekMessageWDelegate(HookedPeekMessageW), out _originalPeekMessageW),
+                () => TryInstallHook<GetRawInputDataDelegate>("GetRawInputData", new GetRawInputDataDelegate(HookedGetRawInputData), out _originalGetRawInputData),
+                () => TryInstallHook<GetCursorInfoDelegate>("GetCursorInfo", new GetCursorInfoDelegate(HookedGetCursorInfo), out _originalGetCursorInfo),
+                () => TryInstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer), out _originalGetRawInputBuffer),
+                () => TryInstallHook<GetCursorPosDelegate>("GetPhysicalCursorPos", new GetCursorPosDelegate(HookedGetPhysicalCursorPos), out _originalGetPhysicalCursorPos),
+                () => TryInstallHook<ClipCursorDelegate>("ClipCursor", new ClipCursorDelegate(HookedClipCursor), out _originalClipCursor),
+                () => TryInstallHook<ScreenToClientDelegate>("ScreenToClient", new ScreenToClientDelegate(HookedScreenToClient), out _originalScreenToClient),
+                () => TryInstallHook<ClientToScreenDelegate>("ClientToScreen", new ClientToScreenDelegate(HookedClientToScreen), out _originalClientToScreen),
+                () => TryInstallHook<GetMessageWDelegate>("GetMessageA", new GetMessageWDelegate(HookedGetMessageA), out _originalGetMessageA),
+                () => TryInstallHook<PeekMessageWDelegate>("PeekMessageA", new PeekMessageWDelegate(HookedPeekMessageA), out _originalPeekMessageA),
+                () => TryInstallHook<GetForegroundWindowDelegate>("GetForegroundWindow", new GetForegroundWindowDelegate(HookedGetForegroundWindow), out _originalGetForegroundWindow),
+                () => TryInstallHook<GetActiveWindowDelegate>("GetActiveWindow", new GetActiveWindowDelegate(HookedGetActiveWindow), out _originalGetActiveWindow),
+                () => TryInstallHook<GetFocusDelegate>("GetFocus", new GetFocusDelegate(HookedGetFocus), out _originalGetFocus),
+                () => TryInstallHook<GetGUIThreadInfoDelegate>("GetGUIThreadInfo", new GetGUIThreadInfoDelegate(HookedGetGUIThreadInfo), out _originalGetGUIThreadInfo),
+                () => TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture),
+                () => TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState),
+                () => TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState),
+                () => TryInstallHook<GetKeyboardStateDelegate>("GetKeyboardState", new GetKeyboardStateDelegate(HookedGetKeyboardState), out _originalGetKeyboardState)
+            };
 
             try
             {
-                // Injection is now complete and the server interface is connected
                 _server.IsInstalled(EasyHook.RemoteHooking.GetCurrentProcessId());
 
-                getCursorPosHook    = TryInstallHook<GetCursorPosDelegate>("GetCursorPos",    new GetCursorPosDelegate(HookedGetCursorPos),       out _originalGetCursorPos);
-
-                isIconicHook           = TryInstallHook<IsIconicDelegate>("IsIconic",             new IsIconicDelegate(HookedIsIconic),               out _originalIsIconic);
-                getMessageWHook        = TryInstallHook<GetMessageWDelegate>("GetMessageW",         new GetMessageWDelegate(HookedGetMessageW),          out _originalGetMessageW);
-                peekMessageWHook       = TryInstallHook<PeekMessageWDelegate>("PeekMessageW",       new PeekMessageWDelegate(HookedPeekMessageW),        out _originalPeekMessageW);
-                getRawInputDataHook    = TryInstallHook<GetRawInputDataDelegate>("GetRawInputData", new GetRawInputDataDelegate(HookedGetRawInputData),  out _originalGetRawInputData);
-                getCursorInfoHook      = TryInstallHook<GetCursorInfoDelegate>("GetCursorInfo",     new GetCursorInfoDelegate(HookedGetCursorInfo),      out _originalGetCursorInfo);
-                getRawInputBufferHook  = TryInstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer), out _originalGetRawInputBuffer);
-                getPhysicalCursorPosHook = TryInstallHook<GetCursorPosDelegate>("GetPhysicalCursorPos", new GetCursorPosDelegate(HookedGetPhysicalCursorPos), out _originalGetPhysicalCursorPos);
-                clipCursorHook         = TryInstallHook<ClipCursorDelegate>("ClipCursor",           new ClipCursorDelegate(HookedClipCursor),            out _originalClipCursor);
-                screenToClientHook     = TryInstallHook<ScreenToClientDelegate>("ScreenToClient",   new ScreenToClientDelegate(HookedScreenToClient),    out _originalScreenToClient);
-                clientToScreenHook     = TryInstallHook<ClientToScreenDelegate>("ClientToScreen",   new ClientToScreenDelegate(HookedClientToScreen),    out _originalClientToScreen);
-                getMessageAHook        = TryInstallHook<GetMessageWDelegate>("GetMessageA",         new GetMessageWDelegate(HookedGetMessageA),          out _originalGetMessageA);
-                peekMessageAHook       = TryInstallHook<PeekMessageWDelegate>("PeekMessageA",       new PeekMessageWDelegate(HookedPeekMessageA),        out _originalPeekMessageA);
-                getForegroundWindowHook = TryInstallHook<GetForegroundWindowDelegate>("GetForegroundWindow", new GetForegroundWindowDelegate(HookedGetForegroundWindow), out _originalGetForegroundWindow);
-                getActiveWindowHook    = TryInstallHook<GetActiveWindowDelegate>("GetActiveWindow", new GetActiveWindowDelegate(HookedGetActiveWindow),  out _originalGetActiveWindow);
-                getFocusHook           = TryInstallHook<GetFocusDelegate>("GetFocus",               new GetFocusDelegate(HookedGetFocus),                out _originalGetFocus);
-                getGuiThreadInfoHook   = TryInstallHook<GetGUIThreadInfoDelegate>("GetGUIThreadInfo", new GetGUIThreadInfoDelegate(HookedGetGUIThreadInfo), out _originalGetGUIThreadInfo);
-                getCaptureHook         = TryInstallHook<GetCaptureDelegate>("GetCapture",           new GetCaptureDelegate(HookedGetCapture),            out _originalGetCapture);
-                getAsyncKeyStateHook   = TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState);
-                getKeyStateHook        = TryInstallHook<GetKeyStateDelegate>("GetKeyState",         new GetKeyStateDelegate(HookedGetKeyState),          out _originalGetKeyState);
-                getKeyboardStateHook   = TryInstallHook<GetKeyboardStateDelegate>("GetKeyboardState", new GetKeyboardStateDelegate(HookedGetKeyboardState), out _originalGetKeyboardState);
+                foreach (var installHook in hookInstallers)
+                {
+                    var hook = installHook();
+                    if (hook != null)
+                        installedHooks.Add(hook);
+                }
 
                 _server.SetState(HookState.HooksInstalled);
             }
@@ -121,17 +132,12 @@ namespace InkybotHook
 
             try
             {
-                // Loop until IPC fails
                 while (!_server.ShutdownFlag)
                 {
                     EnsureWndProcSubclassed();
                     DrawDebugMarkerIfDue();
                     ClickFixedPositionIfDue();
 
-                    // Dispatch bot input actions via PostMessage so they land on the game's
-                    // UI thread message queue rather than being called directly from here.
-                    // Button messages are stamped with BOT_INPUT_SENTINEL so FilterMessage
-                    // and HookedWndProc can distinguish bot clicks from real user input.
                     if (_server.targetHwnd != IntPtr.Zero)
                     {
                         ServerInterface.InputMessage inputMsg;
@@ -139,26 +145,26 @@ namespace InkybotHook
                         {
                             try
                             {
+                                uint outgoingMsg = inputMsg.Msg;
+                                IntPtr outgoingWParam = inputMsg.WParam;
+                                IntPtr outgoingLParam = inputMsg.LParam;
+                                NormalizeNonClientButtonMessage(_server.targetHwnd, ref outgoingMsg, ref outgoingWParam, ref outgoingLParam);
+
                                 bool isButtonMsg =
-                                    inputMsg.Msg == WM_LBUTTONDOWN || inputMsg.Msg == WM_LBUTTONUP ||
-                                    inputMsg.Msg == WM_RBUTTONDOWN || inputMsg.Msg == WM_RBUTTONUP;
-                                IntPtr wParam = isButtonMsg
-                                    ? (IntPtr)((long)inputMsg.WParam | BOT_INPUT_SENTINEL)
-                                    : inputMsg.WParam;
-                                PostMessage(_server.targetHwnd, inputMsg.Msg, wParam, inputMsg.LParam);
-                                System.Threading.Thread.Sleep(2); // let the posted message get processed
+                                    outgoingMsg == WM_LBUTTONDOWN || outgoingMsg == WM_LBUTTONUP ||
+                                    outgoingMsg == WM_RBUTTONDOWN || outgoingMsg == WM_RBUTTONUP;
                                 if (isButtonMsg)
                                 {
-                                    string msgName =
-                                        inputMsg.Msg == WM_LBUTTONDOWN ? "WM_LBUTTONDOWN" :
-                                        inputMsg.Msg == WM_LBUTTONUP   ? "WM_LBUTTONUP"   :
-                                        inputMsg.Msg == WM_RBUTTONDOWN ? "WM_RBUTTONDOWN" :
-                                                                          "WM_RBUTTONUP";
-                                    int lp = inputMsg.LParam.ToInt32();
-                                    int cx = lp & 0xFFFF;
-                                    int cy = (lp >> 16) & 0xFFFF;
-                                    QueueMessage($"[EasyHook:Target] Bot input: {msgName} at client ({cx}, {cy})");
+                                    if (outgoingMsg == WM_LBUTTONDOWN) _botLButtonPendingDown = true;
+                                    else if (outgoingMsg == WM_LBUTTONUP) _botLButtonPendingUp = true;
+                                    else if (outgoingMsg == WM_RBUTTONDOWN) _botRButtonPendingDown = true;
+                                    else if (outgoingMsg == WM_RBUTTONUP) _botRButtonPendingUp = true;
                                 }
+                                IntPtr wParam = isButtonMsg
+                                    ? (IntPtr)((long)outgoingWParam | BOT_INPUT_SENTINEL)
+                                    : outgoingWParam;
+                                PostMessage(_server.targetHwnd, outgoingMsg, wParam, outgoingLParam);
+                                System.Threading.Thread.Sleep(2); 
                             }
                             catch (Exception e)
                             {
@@ -171,7 +177,6 @@ namespace InkybotHook
                     System.Threading.Thread.Sleep(1);
 
                     string[] queued = null;
-
                     lock (_messageQueue)
                     {
                         queued = _messageQueue.ToArray();
@@ -187,48 +192,20 @@ namespace InkybotHook
                         _server.Ping();
                     }
                 }
-
                 _server.ReportMessage("[EasyHook:Target] Shutdown flag received, cleaning up hooks");
             }
-            catch
-            {
-                // Ping() or ReportMessages() will raise an exception if host is unreachable
-                // Can't log via _server since it's disconnected - this is expected on app exit
-            }
+            catch { }
 
-            // Remove hooks
             try
             {
-                getCursorPosHook?.Dispose();
-                isIconicHook?.Dispose();
-                getMessageWHook?.Dispose();
-                peekMessageWHook?.Dispose();
-                getRawInputDataHook?.Dispose();
-                getCursorInfoHook?.Dispose();
-                getRawInputBufferHook?.Dispose();
-                getForegroundWindowHook?.Dispose();
-                getActiveWindowHook?.Dispose();
-                getFocusHook?.Dispose();
-                getPhysicalCursorPosHook?.Dispose();
-                clipCursorHook?.Dispose();
-                getMessageAHook?.Dispose();
-                peekMessageAHook?.Dispose();
-                screenToClientHook?.Dispose();
-                clientToScreenHook?.Dispose();
-                getGuiThreadInfoHook?.Dispose();
-                getCaptureHook?.Dispose();
-                getAsyncKeyStateHook?.Dispose();
-                getKeyStateHook?.Dispose();
-                getKeyboardStateHook?.Dispose();
+                foreach (var hook in installedHooks)
+                    hook.Dispose();
                 RestoreWndProcSubclass();
                 EasyHook.LocalHook.Release();
                 _server.ReportMessage("[EasyHook:Target] Hooks disposed and released");
                 _server.SetState(HookState.Disposed);
             }
-            catch
-            {
-                // Host may already be gone, swallow
-            }
+            catch { }
         }
 
         private EasyHook.LocalHook TryInstallHook<TOriginal>(string functionName, Delegate hookedMethod, out TOriginal original)
@@ -240,20 +217,66 @@ namespace InkybotHook
                 var hook = EasyHook.LocalHook.Create(targetFunction, hookedMethod, this);
                 original = Marshal.GetDelegateForFunctionPointer<TOriginal>(targetFunction);
                 hook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                _server.ReportMessage("[EasyHook:Target] " + functionName + " hook installed successfully");
                 return hook;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _server.ReportMessage("[EasyHook:Target] " + functionName + " hook FAILED: " + e.Message);
                 original = null;
                 return null;
             }
         }
 
+        private void NormalizeNonClientButtonMessage(IntPtr hwnd, ref uint msg, ref IntPtr wParam, ref IntPtr lParam)
+        {
+            uint mappedMsg;
+            long mappedWParamBase;
+            switch (msg)
+            {
+                case WM_NCLBUTTONDOWN:
+                    mappedMsg = WM_LBUTTONDOWN;
+                    mappedWParamBase = MK_LBUTTON;
+                    break;
+                case WM_NCLBUTTONUP:
+                    mappedMsg = WM_LBUTTONUP;
+                    mappedWParamBase = 0;
+                    break;
+                case WM_NCRBUTTONDOWN:
+                    mappedMsg = WM_RBUTTONDOWN;
+                    mappedWParamBase = MK_RBUTTON;
+                    break;
+                case WM_NCRBUTTONUP:
+                    mappedMsg = WM_RBUTTONUP;
+                    mappedWParamBase = 0;
+                    break;
+                default:
+                    return;
+            }
+
+            bool hasSentinel = ((long)wParam & BOT_INPUT_SENTINEL) != 0;
+            msg = mappedMsg;
+            wParam = (IntPtr)(mappedWParamBase | (hasSentinel ? BOT_INPUT_SENTINEL : 0L));
+
+            if (IsCursorOverrideActive())
+            {
+                lParam = MakeLParam(_testPoint.X, _testPoint.Y);
+                return;
+            }
+
+            int screenX = unchecked((short)((long)lParam & 0xFFFF));
+            int screenY = unchecked((short)(((long)lParam >> 16) & 0xFFFF));
+            var clientPoint = new POINT { X = screenX, Y = screenY };
+            if (hwnd != IntPtr.Zero)
+            {
+                if (_originalScreenToClient != null)
+                    _originalScreenToClient(hwnd, ref clientPoint);
+                else
+                    ScreenToClient(hwnd, ref clientPoint);
+            }
+            lParam = MakeLParam(clientPoint.X, clientPoint.Y);
+        }
+
         #region Debug marker
 
-        /// <summary>Converts _testPoint (client) to screen coords.</summary>
         private POINT GetTestScreenPoint()
         {
             var pt = new POINT { X = _testPoint.X, Y = _testPoint.Y };
@@ -276,7 +299,6 @@ namespace InkybotHook
         {
             long now = System.Diagnostics.Stopwatch.GetTimestamp();
             long freq = System.Diagnostics.Stopwatch.Frequency;
-            // Redraw every 500 ms — the R2_NOT mode makes each call toggle visibility
             if ((now - _lastMarkerDrawTick) < freq / 2) return;
             _lastMarkerDrawTick = now;
             DrawDebugMarker();
@@ -293,17 +315,14 @@ namespace InkybotHook
             if (hdc == IntPtr.Zero) return;
             try
             {
-                // R2_NOT inverts whatever is under the pen — drawing twice restores original
                 SetROP2(hdc, R2_NOT);
-                IntPtr pen = CreatePen(PS_SOLID, 2, 0x0000FF00); // green — colour doesn't matter with R2_NOT
+                IntPtr pen = CreatePen(PS_SOLID, 2, 0x0000FF00);
                 IntPtr oldPen = SelectObject(hdc, pen);
                 IntPtr oldBrush = SelectObject(hdc, GetStockObject(5 /*NULL_BRUSH*/));
 
-                // Crosshair
                 MoveToEx(hdc, x - arm, y, IntPtr.Zero); LineTo(hdc, x + arm, y);
                 MoveToEx(hdc, x, y - arm, IntPtr.Zero); LineTo(hdc, x, y + arm);
 
-                // Circle
                 Ellipse(hdc, x - r, y - r, x + r, y + r);
 
                 SelectObject(hdc, oldPen);
@@ -321,15 +340,95 @@ namespace InkybotHook
             if (_server == null || _server.targetHwnd == IntPtr.Zero) return;
             long now = System.Diagnostics.Stopwatch.GetTimestamp();
             long freq = System.Diagnostics.Stopwatch.Frequency;
-            if ((now - _lastClickTick) < freq) return; // 1 second interval
+            if ((now - _lastClickTick) < freq) return; 
             _lastClickTick = now;
+            
             try
             {
-                IntPtr lParam = MakeLParam(_testPoint.X, _testPoint.Y);
-                PostMessage(_server.targetHwnd, WM_LBUTTONDOWN, (IntPtr)(BOT_INPUT_SENTINEL | 0x0001L), lParam);
-                System.Threading.Thread.Sleep(50);
-                PostMessage(_server.targetHwnd, WM_LBUTTONUP,   (IntPtr)BOT_INPUT_SENTINEL,             lParam);
-                QueueMessage($"[EasyHook:Target] Test click at client ({_testPoint.X}, {_testPoint.Y})");
+                long clickId = System.Threading.Interlocked.Increment(ref _testClickSequence);
+                
+                // Get screen coordinates for the test point
+                var screenPt = GetTestScreenPoint();
+                
+                // Normalize to 0-65535 range for absolute coordinates
+                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+                int absX = (screenPt.X * 65536) / screenWidth;
+                int absY = (screenPt.Y * 65536) / screenHeight;
+                
+                QueueMessage($"[EasyHook:Target] SendInput click #{clickId} at screen({screenPt.X},{screenPt.Y}) abs({absX},{absY})");
+
+                // Set key state flags so GetAsyncKeyState/GetKeyState return correct values
+                _botLButtonDown = true;
+                _botLButtonPendingDown = true;
+
+                // 1. Move mouse to position using SendInput
+                var moveInput = new INPUT
+                {
+                    type = INPUT_MOUSE,
+                    mi = new MOUSEINPUT
+                    {
+                        dx = absX,
+                        dy = absY,
+                        dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE,
+                        mouseData = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                };
+                
+                uint sent = SendInput(1, new[] { moveInput }, Marshal.SizeOf(typeof(INPUT)));
+                QueueMessage($"[EasyHook:Target] Click #{clickId} MOVE sent={sent}, error={Marshal.GetLastWin32Error()}");
+                
+                System.Threading.Thread.Sleep(16); // One frame
+                
+                // 2. Mouse down
+                var downInput = new INPUT
+                {
+                    type = INPUT_MOUSE,
+                    mi = new MOUSEINPUT
+                    {
+                        dx = absX,
+                        dy = absY,
+                        dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_ABSOLUTE,
+                        mouseData = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                };
+                
+                sent = SendInput(1, new[] { downInput }, Marshal.SizeOf(typeof(INPUT)));
+                QueueMessage($"[EasyHook:Target] Click #{clickId} DOWN sent={sent}, error={Marshal.GetLastWin32Error()}");
+                
+                System.Threading.Thread.Sleep(50); // Hold down briefly
+                
+                _botLButtonPendingDown = false;
+                
+                // 3. Mouse up
+                _botLButtonDown = false;
+                _botLButtonPendingUp = true;
+                
+                var upInput = new INPUT
+                {
+                    type = INPUT_MOUSE,
+                    mi = new MOUSEINPUT
+                    {
+                        dx = absX,
+                        dy = absY,
+                        dwFlags = MOUSEEVENTF_LEFTUP | MOUSEEVENTF_ABSOLUTE,
+                        mouseData = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                };
+                
+                sent = SendInput(1, new[] { upInput }, Marshal.SizeOf(typeof(INPUT)));
+                QueueMessage($"[EasyHook:Target] Click #{clickId} UP sent={sent}, error={Marshal.GetLastWin32Error()}");
+                
+                System.Threading.Thread.Sleep(16);
+                _botLButtonPendingUp = false;
+
+                QueueMessage($"[EasyHook:Target] SendInput click #{clickId} completed");
             }
             catch (Exception e)
             {
@@ -351,58 +450,34 @@ namespace InkybotHook
         private bool IsCursorOverrideActive()
         {
             return true; // TEMP: test override
-            if (_server == null) return false;
-            return _server.point.X != -1 || _server.point.Y != -1;
         }
 
         private void EnsureWndProcSubclassed()
         {
             try
             {
-                if (_server == null)
-                {
-                    QueueMessage("[EasyHook:Target] EnsureWndProcSubclassed: server is null, skipping");
+                if (_server == null || _server.targetHwnd == IntPtr.Zero)
                     return;
-                }
-
-                if (_server.targetHwnd == IntPtr.Zero)
-                {
-                    //QueueMessage("[EasyHook:Target] EnsureWndProcSubclassed: targetHwnd is Zero, skipping");
-                    return;
-                }
 
                 var targetHandle = _server.targetHwnd;
 
                 if (_subclassedWindowHandle == targetHandle && _originalWndProc != IntPtr.Zero)
-                {
-                    // Already subclassed for this handle — no action needed
                     return;
-                }
 
                 if (_subclassedWindowHandle != IntPtr.Zero && _originalWndProc != IntPtr.Zero)
                 {
-                    QueueMessage("[EasyHook:Target] EnsureWndProcSubclassed: target handle changed (old=0x" + _subclassedWindowHandle.ToString("X") + ", new=0x" + targetHandle.ToString("X") + "), restoring previous subclass");
                     RestoreWndProcSubclass();
                 }
 
-                QueueMessage("[EasyHook:Target] EnsureWndProcSubclassed: installing WndProc subclass on hwnd=0x" + targetHandle.ToString("X"));
                 _subclassedWndProcDelegate = HookedWndProc;
                 var newWndProcPointer = Marshal.GetFunctionPointerForDelegate(_subclassedWndProcDelegate);
                 var originalWndProc = SetWindowLongPtrW(targetHandle, GWLP_WNDPROC, newWndProcPointer);
 
                 if (originalWndProc == IntPtr.Zero)
-                {
-                    int error = Marshal.GetLastWin32Error();
-                    if (error != 0)
-                        QueueMessage("[EasyHook:Target] Failed to subclass WndProc on hwnd=0x" + targetHandle.ToString("X") + ", SetWindowLongPtrW error: " + error);
-                    else
-                        QueueMessage("[EasyHook:Target] SetWindowLongPtrW returned Zero with no error on hwnd=0x" + targetHandle.ToString("X") + " (may already be subclassed or handle invalid)");
                     return;
-                }
 
                 _originalWndProc = originalWndProc;
                 _subclassedWindowHandle = targetHandle;
-                QueueMessage("[EasyHook:Target] WndProc subclass installed on hwnd=0x" + targetHandle.ToString("X") + ", original WndProc=0x" + originalWndProc.ToString("X"));
             }
             catch (Exception e)
             {
@@ -433,52 +508,52 @@ namespace InkybotHook
         private IntPtr HookedWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             LogFirstCall("WndProc");
-            string step = "checking override active";
             try
             {
+                NormalizeNonClientButtonMessage(hWnd, ref msg, ref wParam, ref lParam);
+
                 if (IsCursorOverrideActive())
                 {
-                    // Suppress real user button clicks — only bot-injected clicks (stamped
-                    // with BOT_INPUT_SENTINEL) should reach the game.
                     if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
                         msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP)
                     {
                         if (((long)wParam & BOT_INPUT_SENTINEL) != 0)
-                            wParam = (IntPtr)((long)wParam & ~BOT_INPUT_SENTINEL); // strip sentinel, allow through
+                        {
+                            wParam = (IntPtr)((long)wParam & ~BOT_INPUT_SENTINEL); 
+
+                            if (msg == WM_LBUTTONDOWN) _botLButtonDown = true;
+                            else if (msg == WM_LBUTTONUP) _botLButtonDown = false;
+                            else if (msg == WM_RBUTTONDOWN) _botRButtonDown = true;
+                            else if (msg == WM_RBUTTONUP) _botRButtonDown = false;
+                        }
+                        else if ((msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP) &&
+                                 System.Threading.Interlocked.CompareExchange(ref _allowUnsentinelLButtonMessages, 0, 0) > 0)
+                        {
+                            // Consume token
+                            System.Threading.Interlocked.Decrement(ref _allowUnsentinelLButtonMessages);
+                            if (msg == WM_LBUTTONDOWN) _botLButtonDown = true;
+                            else if (msg == WM_LBUTTONUP) _botLButtonDown = false;
+                        }
                         else
-                            return IntPtr.Zero; // real user click — suppress
+                        {
+                            return IntPtr.Zero; 
+                        }
                     }
 
                     if (msg == WM_MOUSEMOVE)
                     {
-                        step = "rewriting WM_MOUSEMOVE lParam";
-                        // _testPoint is already client coords — use directly
                         lParam = MakeLParam(_testPoint.X, _testPoint.Y);
-                    }
-                    else if (msg == WM_INPUT)
-                    {
-                        step = "converting WM_INPUT to WM_MOUSEMOVE";
-                        lParam = MakeLParam(_testPoint.X, _testPoint.Y);
-                        msg = WM_MOUSEMOVE;
-                        wParam = IntPtr.Zero;
                     }
                 }
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] WndProc error at '{step}': {e.Message}");
-            }
+            catch { }
 
-            step = "calling original WndProc";
             try
             {
                 if (_originalWndProc != IntPtr.Zero)
                     return CallWindowProcW(_originalWndProc, hWnd, msg, wParam, lParam);
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] WndProc error at '{step}': {e.Message}");
-            }
+            catch { }
 
             return IntPtr.Zero;
         }
@@ -501,9 +576,8 @@ namespace InkybotHook
                 lpPoint = GetTestScreenPoint();
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetCursorPos error: {e.Message}");
                 lpPoint = new POINT();
                 return false;
             }
@@ -534,20 +608,17 @@ namespace InkybotHook
         public int HookedGetMessageW(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax)
         {
             LogFirstCall("GetMessageW");
-            string step = "calling original";
             try
             {
                 int result = _originalGetMessageW(out lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
                 if (result != 0)
                 {
-                    step = "filtering message";
                     FilterMessage(ref lpMsg);
                 }
                 return result;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetMessageW error at '{step}': {e.Message}");
                 lpMsg = new MSG();
                 return 0;
             }
@@ -564,20 +635,17 @@ namespace InkybotHook
         public bool HookedPeekMessageW(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
             LogFirstCall("PeekMessageW");
-            string step = "calling original";
             try
             {
                 bool result = _originalPeekMessageW(out lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
                 if (result)
                 {
-                    step = "filtering message";
                     FilterMessage(ref lpMsg);
                 }
                 return result;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] PeekMessageW error at '{step}': {e.Message}");
                 lpMsg = new MSG();
                 return false;
             }
@@ -594,32 +662,61 @@ namespace InkybotHook
         public uint HookedGetRawInputData(IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
             LogFirstCall("GetRawInputData");
-            string step = "calling original";
             try
             {
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
-                step = "checking if mouse RID_INPUT";
-                if (pData != IntPtr.Zero && uiCommand == RID_INPUT)
+                
+                if (pData != IntPtr.Zero && uiCommand == RID_INPUT && result > 0 && result != unchecked((uint)-1))
                 {
-                    step = "reading RAWINPUTHEADER dwType";
                     uint dwType = (uint)Marshal.ReadInt32(pData, 0);
                     if (dwType == RIM_TYPEMOUSE)
                     {
-                        step = "zeroing lLastX/lLastY in RAWMOUSE";
+                        // STEAL THE REAL DEVICE HANDLE
+                        if (_validMouseHandle == IntPtr.Zero) 
+                        {
+                            _validMouseHandle = Marshal.ReadIntPtr(pData, 8); 
+                            QueueMessage($"[EasyHook:Target] Captured real valid hDevice: 0x{_validMouseHandle.ToInt64():X}");
+                        }
+
                         int headerSize = Marshal.SizeOf(typeof(RAWINPUTHEADER));
+
+                        // Zero out mouse movement deltas (cursor is spoofed elsewhere)
                         int lLastXOffset = headerSize + 12;
                         int lLastYOffset = headerSize + 16;
                         Marshal.WriteInt32(pData, lLastXOffset, 0);
                         Marshal.WriteInt32(pData, lLastYOffset, 0);
+
+                        // Inject any pending button flags from our state
+                        InjectBotButtonFlags(pData, headerSize);
                     }
                 }
                 return result;
             }
             catch (Exception e)
             {
-                QueueMessage($"[EasyHook:Target] GetRawInputData error at '{step}': {e.Message}");
+                QueueMessage($"[EasyHook:Target] GetRawInputData error: {e.Message}");
                 return 0;
             }
+        }
+
+        private void InjectBotButtonFlags(IntPtr pRawInput, int headerSize)
+        {
+            if (!_botLButtonPendingDown && !_botLButtonPendingUp &&
+                !_botRButtonPendingDown && !_botRButtonPendingUp)
+                return;
+
+            QueueMessage($"[EasyHook:Target] InjectBotButtonFlags: L_DOWN={_botLButtonPendingDown}, L_UP={_botLButtonPendingUp}, R_DOWN={_botRButtonPendingDown}, R_UP={_botRButtonPendingUp}");
+
+            int usButtonFlagsOffset = headerSize + 4;
+            ushort flags = (ushort)Marshal.ReadInt16(pRawInput, usButtonFlagsOffset);
+
+            // DO NOT clear the flags here. Let both Unity APIs read the exact same state!
+            if (_botLButtonPendingDown) { flags |= RI_MOUSE_LEFT_BUTTON_DOWN; }
+            if (_botLButtonPendingUp)   { flags |= RI_MOUSE_LEFT_BUTTON_UP; }
+            if (_botRButtonPendingDown) { flags |= RI_MOUSE_RIGHT_BUTTON_DOWN; }
+            if (_botRButtonPendingUp)   { flags |= RI_MOUSE_RIGHT_BUTTON_UP; }
+
+            Marshal.WriteInt16(pRawInput, usButtonFlagsOffset, (short)flags);
         }
 
         #endregion
@@ -633,11 +730,9 @@ namespace InkybotHook
         public bool HookedGetCursorInfo(ref CURSORINFO pci)
         {
             LogFirstCall("GetCursorInfo");
-            string step = "calling original";
             try
             {
                 bool result = _originalGetCursorInfo(ref pci);
-                step = "overriding cursor position";
                 if (result && IsCursorOverrideActive())
                 {
                     var sp = GetTestScreenPoint();
@@ -646,9 +741,8 @@ namespace InkybotHook
                 }
                 return result;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetCursorInfo error at '{step}': {e.Message}");
                 return false;
             }
         }
@@ -657,28 +751,21 @@ namespace InkybotHook
 
         #region Shared message filter
 
-        /// <summary>
-        /// Filters messages when fixed position is active:
-        /// - WM_MOUSEMOVE: replaces coordinates with fixed position
-        /// - WM_KILLFOCUS / WM_ACTIVATE(WA_INACTIVE) / WM_ACTIVATEAPP(0) / WM_NCACTIVATE(0):
-        ///   converted to no-ops so the game thinks it still has focus
-        /// </summary>
         private void FilterMessage(ref MSG lpMsg)
         {
+            NormalizeNonClientButtonMessage(lpMsg.hwnd, ref lpMsg.message, ref lpMsg.wParam, ref lpMsg.lParam);
+
             switch (lpMsg.message)
             {
                 case WM_MOUSEMOVE:
                 {
                     if (!IsCursorOverrideActive()) break;
-                    // lParam = client coords
                     lpMsg.lParam = MakeLParam(_testPoint.X, _testPoint.Y);
-                    // pt = screen coords
                     var sp = GetTestScreenPoint();
                     lpMsg.pt = new POINT { X = sp.X, Y = sp.Y };
                     break;
                 }
                 case WM_KILLFOCUS:
-                    // Suppress — change to WM_SETFOCUS so the game thinks it gained focus
                     lpMsg.message = WM_SETFOCUS;
                     lpMsg.wParam = IntPtr.Zero;
                     break;
@@ -688,24 +775,15 @@ namespace InkybotHook
                     uint loWord = (uint)((long)lpMsg.wParam & 0xFFFF);
                     if (loWord == WA_INACTIVE)
                     {
-                        // Change WA_INACTIVE to WA_ACTIVE so the game thinks it's active
                         lpMsg.wParam = (IntPtr)WA_ACTIVE;
                     }
                     break;
                 }
 
                 case WM_ACTIVATEAPP:
-                    if (lpMsg.wParam == IntPtr.Zero)
-                    {
-                        // wParam=0 means deactivating — fake it to activated
-                        lpMsg.wParam = (IntPtr)1;
-                    }
-                    break;
-
                 case WM_NCACTIVATE:
                     if (lpMsg.wParam == IntPtr.Zero)
                     {
-                        // wParam=FALSE means deactivating — fake it to TRUE
                         lpMsg.wParam = (IntPtr)1;
                     }
                     break;
@@ -714,13 +792,24 @@ namespace InkybotHook
                 case WM_LBUTTONUP:
                 case WM_RBUTTONDOWN:
                 case WM_RBUTTONUP:
-                    // Bot/real click distinction is handled exclusively in HookedWndProc.
-                    // Do NOT strip the sentinel here — WndProc needs it to tell bot
-                    // clicks apart from real user clicks.
-                    if (IsCursorOverrideActive() && ((long)lpMsg.wParam & BOT_INPUT_SENTINEL) == 0)
+                    if (IsCursorOverrideActive())
                     {
-                        // Real user click — suppress
-                        lpMsg.message = WM_NULL;
+                        // Check if this click has a free pass
+                        if ((lpMsg.message == WM_LBUTTONDOWN || lpMsg.message == WM_LBUTTONUP) &&
+                            System.Threading.Interlocked.CompareExchange(ref _allowUnsentinelLButtonMessages, 0, 0) > 0)
+                        {
+                            break; 
+                        }
+                        // Legacy support for IPC bot clicks
+                        else if (((long)lpMsg.wParam & BOT_INPUT_SENTINEL) != 0)
+                        {
+                            break; 
+                        }
+                        else
+                        {
+                            // Real user click — suppress
+                            lpMsg.message = WM_NULL;
+                        }
                     }
                     break;
             }
@@ -741,22 +830,17 @@ namespace InkybotHook
         public bool HookedScreenToClient(IntPtr hWnd, ref POINT lpPoint)
         {
             LogFirstCall("ScreenToClient");
-            string step = "checking override active";
             try
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
                 {
-                    // _testPoint is already client coords — return as-is
-                    step = "returning fixed client coords";
                     lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
                     return true;
                 }
-                step = "calling original ScreenToClient (passthrough)";
                 return _originalScreenToClient != null && _originalScreenToClient(hWnd, ref lpPoint);
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] ScreenToClient error at '{step}': {e.Message}");
                 return false;
             }
         }
@@ -764,22 +848,17 @@ namespace InkybotHook
         public bool HookedClientToScreen(IntPtr hWnd, ref POINT lpPoint)
         {
             LogFirstCall("ClientToScreen");
-            string step = "checking override active";
             try
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
                 {
-                    // Convert client coords to screen coords via the real ClientToScreen
-                    step = "converting fixed client coords to screen coords";
                     lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
                     return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
                 }
-                step = "calling original ClientToScreen (passthrough)";
                 return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] ClientToScreen error at '{step}': {e.Message}");
                 return false;
             }
         }
@@ -795,22 +874,17 @@ namespace InkybotHook
         public bool HookedGetGUIThreadInfo(uint idThread, ref GUITHREADINFO pgui)
         {
             LogFirstCall("GetGUIThreadInfo");
-            string step = "init";
             try
             {
-                step = "setting cbSize";
                 if (pgui.cbSize == 0)
                     pgui.cbSize = (uint)Marshal.SizeOf(typeof(GUITHREADINFO));
 
-                step = "calling original GetGUIThreadInfo";
                 bool result = false;
                 if (_originalGetGUIThreadInfo != null)
                     result = _originalGetGUIThreadInfo(idThread, ref pgui);
 
-                step = "checking override active";
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
                 {
-                    step = "spoofing GUI thread info handles";
                     pgui.hwndActive = _server.targetHwnd;
                     pgui.hwndFocus = _server.targetHwnd;
                     pgui.hwndCapture = _server.targetHwnd;
@@ -822,9 +896,8 @@ namespace InkybotHook
                 }
                 return result;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetGUIThreadInfo error at '{step}': {e.Message}");
                 return false;
             }
         }
@@ -852,17 +925,14 @@ namespace InkybotHook
         public IntPtr HookedGetCapture()
         {
             LogFirstCall("GetCapture");
-            string step = "checking override active";
             try
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
                     return _server.targetHwnd;
-                step = "calling original GetCapture";
                 return _originalGetCapture != null ? _originalGetCapture() : IntPtr.Zero;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetCapture error at '{step}': {e.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -872,13 +942,13 @@ namespace InkybotHook
             LogFirstCall("GetAsyncKeyState");
             try
             {
+                if (vKey == VK_LBUTTON && _botLButtonDown) return unchecked((short)0x8000);
+                if (vKey == VK_RBUTTON && _botRButtonDown) return unchecked((short)0x8000);
+
                 if (_originalGetAsyncKeyState != null)
                     return _originalGetAsyncKeyState(vKey);
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] GetAsyncKeyState error: {e.Message}");
-            }
+            catch { }
             return 0;
         }
 
@@ -887,40 +957,46 @@ namespace InkybotHook
             LogFirstCall("GetKeyState");
             try
             {
+                if (nVirtKey == VK_LBUTTON && _botLButtonDown) return unchecked((short)0x8000);
+                if (nVirtKey == VK_RBUTTON && _botRButtonDown) return unchecked((short)0x8000);
+
                 if (_originalGetKeyState != null)
                     return _originalGetKeyState(nVirtKey);
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] GetKeyState error: {e.Message}");
-            }
+            catch { }
             return 0;
         }
 
         public bool HookedGetKeyboardState(IntPtr lpKeyState)
         {
             LogFirstCall("GetKeyboardState");
-            string step = "calling original";
             try
             {
+                bool result = false;
                 if (_originalGetKeyboardState != null)
-                {
-                    bool result = _originalGetKeyboardState(lpKeyState);
-                    if (result)
-                        return true;
-                }
-                step = "providing zeroed fallback state";
+                    result = _originalGetKeyboardState(lpKeyState);
+
                 if (IsCursorOverrideActive() && lpKeyState != IntPtr.Zero)
                 {
-                    for (int i = 0; i < 256; i++)
-                        Marshal.WriteByte(lpKeyState, i, 0);
+                    if (!result)
+                    {
+                        for (int i = 0; i < 256; i++)
+                            Marshal.WriteByte(lpKeyState, i, 0);
+                    }
+
+                    byte left = Marshal.ReadByte(lpKeyState, VK_LBUTTON);
+                    byte right = Marshal.ReadByte(lpKeyState, VK_RBUTTON);
+
+                    left = _botLButtonDown ? (byte)(left | 0x80) : (byte)(left & 0x7F);
+                    right = _botRButtonDown ? (byte)(right | 0x80) : (byte)(right & 0x7F);
+
+                    Marshal.WriteByte(lpKeyState, VK_LBUTTON, left);
+                    Marshal.WriteByte(lpKeyState, VK_RBUTTON, right);
                     return true;
                 }
+                return result;
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] GetKeyboardState error at '{step}': {e.Message}");
-            }
+            catch { }
             return false;
         }
 
@@ -935,17 +1011,13 @@ namespace InkybotHook
         public IntPtr HookedGetForegroundWindow()
         {
             LogFirstCall("GetForegroundWindow");
-            string step = "checking targetHwnd";
             try
             {
-                if (_server.targetHwnd != IntPtr.Zero)
-                    return _server.targetHwnd;
-                step = "calling original GetForegroundWindow";
+                if (_server.targetHwnd != IntPtr.Zero) return _server.targetHwnd;
                 return _originalGetForegroundWindow();
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetForegroundWindow error at '{step}': {e.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -961,17 +1033,13 @@ namespace InkybotHook
         public IntPtr HookedGetActiveWindow()
         {
             LogFirstCall("GetActiveWindow");
-            string step = "checking targetHwnd";
             try
             {
-                if (_server.targetHwnd != IntPtr.Zero)
-                    return _server.targetHwnd;
-                step = "calling original GetActiveWindow";
+                if (_server.targetHwnd != IntPtr.Zero) return _server.targetHwnd;
                 return _originalGetActiveWindow();
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetActiveWindow error at '{step}': {e.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -987,17 +1055,13 @@ namespace InkybotHook
         public IntPtr HookedGetFocus()
         {
             LogFirstCall("GetFocus");
-            string step = "checking targetHwnd";
             try
             {
-                if (_server.targetHwnd != IntPtr.Zero)
-                    return _server.targetHwnd;
-                step = "calling original GetFocus";
+                if (_server.targetHwnd != IntPtr.Zero) return _server.targetHwnd;
                 return _originalGetFocus();
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetFocus error at '{step}': {e.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -1013,40 +1077,83 @@ namespace InkybotHook
         public uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
             LogFirstCall("GetRawInputBuffer");
-            string step = "calling original";
             try
             {
                 uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
-                step = "checking if buffer has mouse data";
-                if (pData != IntPtr.Zero && result > 0)
-                {
-                    int headerSize = Marshal.SizeOf(typeof(RAWINPUTHEADER));
-                    IntPtr current = pData;
 
+                if (!_botLButtonPendingDown && !_botLButtonPendingUp &&
+                    !_botRButtonPendingDown && !_botRButtonPendingUp)
+                {
+                    return result;
+                }
+
+                int headerSize = (int)cbSizeHeader; 
+                uint requiredSizeForOneEvent = (uint)(headerSize + 24); 
+
+                if (pData == IntPtr.Zero)
+                {
+                    if (result == 0 && pcbSize < requiredSizeForOneEvent)
+                        pcbSize = requiredSizeForOneEvent;
+                    return result; 
+                }
+
+                if (result == 0)
+                {
+                    if (pcbSize >= requiredSizeForOneEvent)
+                    {
+                        Marshal.WriteInt32(pData, 0, (int)RIM_TYPEMOUSE); 
+                        Marshal.WriteInt32(pData, 4, (int)requiredSizeForOneEvent); 
+                        // INJECT REAL STOLEN DEVICE HANDLE
+                        Marshal.WriteIntPtr(pData, 8, _validMouseHandle); 
+                        Marshal.WriteIntPtr(pData, 8 + IntPtr.Size, IntPtr.Zero); 
+
+                        for (int i = headerSize; i < headerSize + 24; i++)
+                            Marshal.WriteByte(pData, i, 0);
+
+                        InjectBotButtonFlags(pData, headerSize);
+                        return 1; 
+                    }
+                    else
+                    {
+                        pcbSize = requiredSizeForOneEvent;
+                        return unchecked((uint)-1);
+                    }
+                }
+
+                if (result > 0 && result != unchecked((uint)-1))
+                {
+                    IntPtr current = pData;
                     for (uint i = 0; i < result; i++)
                     {
-                        step = $"reading RAWINPUTHEADER[{i}]";
                         uint dwType = (uint)Marshal.ReadInt32(current, 0);
                         uint dwSize = (uint)Marshal.ReadInt32(current, 4);
 
                         if (dwType == RIM_TYPEMOUSE)
                         {
-                            step = $"zeroing mouse delta[{i}]";
+                            // STEAL THE REAL DEVICE HANDLE
+                            if (_validMouseHandle == IntPtr.Zero) 
+                            {
+                                _validMouseHandle = Marshal.ReadIntPtr(current, 8); 
+                            }
+
                             int lLastXOffset = headerSize + 12;
                             int lLastYOffset = headerSize + 16;
                             Marshal.WriteInt32(current, lLastXOffset, 0);
                             Marshal.WriteInt32(current, lLastYOffset, 0);
+
+                            InjectBotButtonFlags(current, headerSize);
                         }
 
                         long aligned = ((long)dwSize + 7) & ~7L;
                         current = new IntPtr(current.ToInt64() + aligned);
                     }
                 }
+
                 return result;
             }
             catch (Exception e)
             {
-                QueueMessage($"[EasyHook:Target] GetRawInputBuffer error at '{step}': {e.Message}");
+                QueueMessage($"[EasyHook:Target] GetRawInputBuffer error: {e.Message}");
                 return 0;
             }
         }
@@ -1067,9 +1174,8 @@ namespace InkybotHook
                 lpPoint = GetTestScreenPoint();
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                QueueMessage($"[EasyHook:Target] GetPhysicalCursorPos error: {e.Message}");
                 lpPoint = new POINT();
                 return false;
             }
@@ -1086,15 +1192,7 @@ namespace InkybotHook
         public bool HookedClipCursor(IntPtr lpRect)
         {
             LogFirstCall("ClipCursor");
-            try
-            {
-                return true;
-            }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] ClipCursor error: {e.Message}");
-                return false;
-            }
+            try { return true; } catch { return false; }
         }
 
         #endregion
@@ -1107,45 +1205,25 @@ namespace InkybotHook
         public int HookedGetMessageA(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax)
         {
             LogFirstCall("GetMessageA");
-            string step = "calling original";
             try
             {
                 int result = _originalGetMessageA(out lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
-                if (result != 0)
-                {
-                    step = "filtering message";
-                    FilterMessage(ref lpMsg);
-                }
+                if (result != 0) FilterMessage(ref lpMsg);
                 return result;
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] GetMessageA error at '{step}': {e.Message}");
-                lpMsg = new MSG();
-                return 0;
-            }
+            catch { lpMsg = new MSG(); return 0; }
         }
 
         public bool HookedPeekMessageA(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
             LogFirstCall("PeekMessageA");
-            string step = "calling original";
             try
             {
                 bool result = _originalPeekMessageA(out lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
-                if (result)
-                {
-                    step = "filtering message";
-                    FilterMessage(ref lpMsg);
-                }
+                if (result) FilterMessage(ref lpMsg);
                 return result;
             }
-            catch (Exception e)
-            {
-                QueueMessage($"[EasyHook:Target] PeekMessageA error at '{step}': {e.Message}");
-                lpMsg = new MSG();
-                return false;
-            }
+            catch { lpMsg = new MSG(); return false; }
         }
 
         #endregion
