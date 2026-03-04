@@ -70,7 +70,6 @@ namespace Inkybot.Services.Win32Input
         private void SetCursorPosition(int x, int y) {
             if (!isInitialized) {
                 Init();
-                Thread.Sleep(4000); // wait for dll to have been injected
             }
             if (x != -1 || y != -1) {
                 var r = new RECT();
@@ -95,6 +94,28 @@ namespace Inkybot.Services.Win32Input
         }
         
         public static void SetTargetProcessId(int processId) => targetPID = processId;
+
+        /// <summary>
+        /// Waits for the injected hook DLL to reach the Running state.
+        /// Call after Init() to ensure hooks are fully installed before proceeding.
+        /// </summary>
+        public static async Task WaitForHookReady(int timeoutMs = 30000) {
+            var log = FileEventLogger.SystemLogger;
+            if (_server == null)
+                throw new InvalidOperationException("[EasyHook:Host] WaitForHookReady called before Init()");
+
+            var sw = Stopwatch.StartNew();
+            while (_server.State != HookState.Running)
+            {
+                if (_server.State == HookState.Failed)
+                    throw new Exception($"[EasyHook:Host] Hook injection failed (state: {_server.State})");
+                if (sw.ElapsedMilliseconds > timeoutMs)
+                    throw new TimeoutException($"[EasyHook:Host] Hook did not reach Running state within {timeoutMs}ms (current state: {_server.State})");
+                await Task.Delay(100);
+            }
+            log.Info($"[EasyHook:Host] Hook reached Running state in {sw.ElapsedMilliseconds}ms");
+        }
+
         public static void Init() {
             var log = FileEventLogger.SystemLogger;
 

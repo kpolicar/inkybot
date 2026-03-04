@@ -17,6 +17,7 @@ using Inkybot.Domain;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Inkybot.Services;
+using Inkybot.Services.Win32Input;
 using Debug = System.Diagnostics.Debug;
 using Timer = System.Windows.Forms.Timer;
 

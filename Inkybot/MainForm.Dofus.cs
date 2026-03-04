@@ -56,16 +56,20 @@ namespace Inkybot
             Win32Input.SetTargetProcessId(pDofus.Id);
 
             Task.Run(async () => {
-                Task.Delay(5000);
-                this.BeginInvoke(new Action(() =>
-                {
-                    try {
-                        BindServicesToDockedWindow();
-                    } catch (Exception e) {
-                        Debug.WriteLine(e);
-                    }
-                }));
-                
+                try {
+                    Win32Input.Init();
+                    await Win32Input.WaitForHookReady();
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        try {
+                            BindServicesToDockedWindow();
+                        } catch (Exception e) {
+                            Debug.WriteLine(e);
+                        }
+                    }));
+                } catch (Exception e) {
+                    Debug.WriteLine(e);
+                }
             });
             
             // m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
