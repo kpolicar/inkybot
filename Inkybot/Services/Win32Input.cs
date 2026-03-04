@@ -70,6 +70,19 @@ namespace Inkybot.Services.Win32Input
 
 
         private void SetCursorPosition(int x, int y) {
+            if (!isInitialized) {
+                Init();
+            }
+            if (x != -1 || y != -1) {
+                // Convert client-relative coordinates to screen coordinates using
+                // ClientToScreen so that window borders/title bar are accounted for.
+                // All hooks (GetCursorPos, ScreenToClient, etc.) expect _server.point
+                // to contain screen coordinates.
+                var pt = new ServerInterface.POINT { X = x, Y = y };
+                ClientToScreen(relativeToControl, ref pt);
+                x = pt.X;
+                y = pt.Y;
+            }
             _server.SetCursorFixedPosition(previousCursorPosition = new ServerInterface.POINT{X = x, Y = y});
         }
 

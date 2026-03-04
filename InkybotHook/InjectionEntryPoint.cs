@@ -16,6 +16,11 @@ namespace InkybotHook
 
         private readonly HashSet<string> _loggedFirstCalls = new HashSet<string>();
 
+        // TEMP: hardcoded test position (client coords relative to Dofus top-left) — remove when done
+        private static readonly POINT _testPoint = new POINT { X = 1652, Y = 17 };
+        private long _lastMarkerDrawTick = 0;
+        private long _lastClickTick = 0;
+
         private void LogFirstCall(string hookName)
         {
             if (!_loggedFirstCalls.Contains(hookName))
@@ -120,6 +125,8 @@ namespace InkybotHook
                 while (!_server.ShutdownFlag)
                 {
                     EnsureWndProcSubclassed();
+                    DrawDebugMarkerIfDue();
+                    ClickFixedPositionIfDue();
 
                     // Dispatch bot input actions via PostMessage so they land on the game's
                     // UI thread message queue rather than being called directly from here.
@@ -244,6 +251,94 @@ namespace InkybotHook
             }
         }
 
+        #region Debug marker
+
+        /// <summary>Converts _testPoint (client) to screen coords.</summary>
+        private POINT GetTestScreenPoint()
+        {
+            var pt = new POINT { X = _testPoint.X, Y = _testPoint.Y };
+            try
+            {
+                IntPtr hwnd = (_server != null) ? _server.targetHwnd : IntPtr.Zero;
+                if (hwnd != IntPtr.Zero)
+                {
+                    if (_originalClientToScreen != null)
+                        _originalClientToScreen(hwnd, ref pt);
+                    else
+                        ClientToScreen(hwnd, ref pt);
+                }
+            }
+            catch { }
+            return pt;
+        }
+
+        private void DrawDebugMarkerIfDue()
+        {
+            long now = System.Diagnostics.Stopwatch.GetTimestamp();
+            long freq = System.Diagnostics.Stopwatch.Frequency;
+            // Redraw every 500 ms — the R2_NOT mode makes each call toggle visibility
+            if ((now - _lastMarkerDrawTick) < freq / 2) return;
+            _lastMarkerDrawTick = now;
+            DrawDebugMarker();
+        }
+
+        private void DrawDebugMarker()
+        {
+            var sp = GetTestScreenPoint();
+            int x = sp.X;
+            int y = sp.Y;
+            const int r = 12;
+            const int arm = 20;
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            if (hdc == IntPtr.Zero) return;
+            try
+            {
+                // R2_NOT inverts whatever is under the pen — drawing twice restores original
+                SetROP2(hdc, R2_NOT);
+                IntPtr pen = CreatePen(PS_SOLID, 2, 0x0000FF00); // green — colour doesn't matter with R2_NOT
+                IntPtr oldPen = SelectObject(hdc, pen);
+                IntPtr oldBrush = SelectObject(hdc, GetStockObject(5 /*NULL_BRUSH*/));
+
+                // Crosshair
+                MoveToEx(hdc, x - arm, y, IntPtr.Zero); LineTo(hdc, x + arm, y);
+                MoveToEx(hdc, x, y - arm, IntPtr.Zero); LineTo(hdc, x, y + arm);
+
+                // Circle
+                Ellipse(hdc, x - r, y - r, x + r, y + r);
+
+                SelectObject(hdc, oldPen);
+                SelectObject(hdc, oldBrush);
+                DeleteObject(pen);
+            }
+            finally
+            {
+                ReleaseDC(IntPtr.Zero, hdc);
+            }
+        }
+
+        private void ClickFixedPositionIfDue()
+        {
+            if (_server == null || _server.targetHwnd == IntPtr.Zero) return;
+            long now = System.Diagnostics.Stopwatch.GetTimestamp();
+            long freq = System.Diagnostics.Stopwatch.Frequency;
+            if ((now - _lastClickTick) < freq) return; // 1 second interval
+            _lastClickTick = now;
+            try
+            {
+                IntPtr lParam = MakeLParam(_testPoint.X, _testPoint.Y);
+                PostMessage(_server.targetHwnd, WM_LBUTTONDOWN, (IntPtr)(BOT_INPUT_SENTINEL | 0x0001L), lParam);
+                System.Threading.Thread.Sleep(50);
+                PostMessage(_server.targetHwnd, WM_LBUTTONUP,   (IntPtr)BOT_INPUT_SENTINEL,             lParam);
+                QueueMessage($"[EasyHook:Target] Test click at client ({_testPoint.X}, {_testPoint.Y})");
+            }
+            catch (Exception e)
+            {
+                QueueMessage($"[EasyHook:Target] Test click error: {e.Message}");
+            }
+        }
+
+        #endregion
+
         #region Window procedure subclassing
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -255,6 +350,7 @@ namespace InkybotHook
 
         private bool IsCursorOverrideActive()
         {
+            return true; // TEMP: test override
             if (_server == null) return false;
             return _server.point.X != -1 || _server.point.Y != -1;
         }
@@ -356,18 +452,13 @@ namespace InkybotHook
                     if (msg == WM_MOUSEMOVE)
                     {
                         step = "rewriting WM_MOUSEMOVE lParam";
-                        var clientPt = new POINT { X = _server.point.X, Y = _server.point.Y };
-                        //if (_originalScreenToClient != null)
-                        //    _originalScreenToClient(hWnd, ref clientPt);
-                        lParam = MakeLParam(clientPt.X, clientPt.Y);
+                        // _testPoint is already client coords — use directly
+                        lParam = MakeLParam(_testPoint.X, _testPoint.Y);
                     }
                     else if (msg == WM_INPUT)
                     {
                         step = "converting WM_INPUT to WM_MOUSEMOVE";
-                        var clientPt = new POINT { X = _server.point.X, Y = _server.point.Y };
-                        //if (_originalScreenToClient != null)
-                        //    _originalScreenToClient(hWnd, ref clientPt);
-                        lParam = MakeLParam(clientPt.X, clientPt.Y);
+                        lParam = MakeLParam(_testPoint.X, _testPoint.Y);
                         msg = WM_MOUSEMOVE;
                         wParam = IntPtr.Zero;
                     }
@@ -407,8 +498,7 @@ namespace InkybotHook
             {
                 if (!IsCursorOverrideActive())
                     return _originalGetCursorPos(out lpPoint);
-                lpPoint.X = _server.point.X;
-                lpPoint.Y = _server.point.Y;
+                lpPoint = GetTestScreenPoint();
                 return true;
             }
             catch (Exception e)
@@ -550,8 +640,9 @@ namespace InkybotHook
                 step = "overriding cursor position";
                 if (result && IsCursorOverrideActive())
                 {
-                    pci.ptScreenPos.X = _server.point.X;
-                    pci.ptScreenPos.Y = _server.point.Y;
+                    var sp = GetTestScreenPoint();
+                    pci.ptScreenPos.X = sp.X;
+                    pci.ptScreenPos.Y = sp.Y;
                 }
                 return result;
             }
@@ -579,11 +670,11 @@ namespace InkybotHook
                 case WM_MOUSEMOVE:
                 {
                     if (!IsCursorOverrideActive()) break;
-                    var clientPt = new POINT { X = _server.point.X, Y = _server.point.Y };
-                    if (_originalScreenToClient != null)
-                        _originalScreenToClient(lpMsg.hwnd, ref clientPt);
-                    lpMsg.lParam = MakeLParam(clientPt.X, clientPt.Y);
-                    lpMsg.pt = new POINT { X = _server.point.X, Y = _server.point.Y };
+                    // lParam = client coords
+                    lpMsg.lParam = MakeLParam(_testPoint.X, _testPoint.Y);
+                    // pt = screen coords
+                    var sp = GetTestScreenPoint();
+                    lpMsg.pt = new POINT { X = sp.X, Y = sp.Y };
                     break;
                 }
                 case WM_KILLFOCUS:
@@ -655,11 +746,10 @@ namespace InkybotHook
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
                 {
-                    // Override input with the fixed screen position, then convert
-                    // to client coordinates via the real ScreenToClient.
-                    step = "converting fixed screen position to client coords";
-                    lpPoint = new POINT { X = _server.point.X, Y = _server.point.Y };
-                    return _originalScreenToClient != null && _originalScreenToClient(hWnd, ref lpPoint);
+                    // _testPoint is already client coords — return as-is
+                    step = "returning fixed client coords";
+                    lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
+                    return true;
                 }
                 step = "calling original ScreenToClient (passthrough)";
                 return _originalScreenToClient != null && _originalScreenToClient(hWnd, ref lpPoint);
@@ -679,9 +769,10 @@ namespace InkybotHook
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
                 {
-                    step = "setting fixed screen point";
-                    lpPoint = new POINT { X = _server.point.X, Y = _server.point.Y };
-                    return true;
+                    // Convert client coords to screen coords via the real ClientToScreen
+                    step = "converting fixed client coords to screen coords";
+                    lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
+                    return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
                 }
                 step = "calling original ClientToScreen (passthrough)";
                 return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
@@ -973,8 +1064,7 @@ namespace InkybotHook
             {
                 if (!IsCursorOverrideActive())
                     return _originalGetPhysicalCursorPos(out lpPoint);
-                lpPoint.X = _server.point.X;
-                lpPoint.Y = _server.point.Y;
+                lpPoint = GetTestScreenPoint();
                 return true;
             }
             catch (Exception e)
