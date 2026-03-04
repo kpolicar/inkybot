@@ -218,18 +218,18 @@ namespace Inkybot.Services.Win32Input
             Thread.Sleep(10);
 
             int lParam = Win32.MakeLParam(x, y);
-            _server.EnqueueInput((uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)lParam);
-            _server.EnqueueInput((uint)Win32.WM_LBUTTONUP,   (IntPtr)0, (IntPtr)lParam);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)lParam);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONUP,   (IntPtr)0, (IntPtr)lParam);
         }
 
         public void Drag(int x, int y, int tX, int tY) {
             SetCursorPosition(x, y);
             Thread.Sleep(10);
-            _server.EnqueueInput((uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)Win32.MakeLParam(x, y));
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)Win32.MakeLParam(x, y));
 
             SetCursorPosition(tX, tY);
             Thread.Sleep(10);
-            _server.EnqueueInput((uint)Win32.WM_LBUTTONUP, (IntPtr)0, (IntPtr)Win32.MakeLParam(tX, tY));
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONUP, (IntPtr)0, (IntPtr)Win32.MakeLParam(tX, tY));
         }
 
         public void DoubleClick(int x, int y) {
@@ -241,9 +241,9 @@ namespace Inkybot.Services.Win32Input
         public void TypeMessage(string message, CancellationToken? cancel=null) {
             foreach (var character in message) {
                 cancel?.ThrowIfCancellationRequested();
-                _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)character, IntPtr.Zero);
-                _server.EnqueueInput((uint)Win32.WM_CHAR,    (IntPtr)character, IntPtr.Zero);
-                _server.EnqueueInput((uint)Win32.WM_KEYUP,   (IntPtr)character, IntPtr.Zero);
+                Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)character, IntPtr.Zero);
+                Win32.PostMessage(relativeToControl, (uint)Win32.WM_CHAR,    (IntPtr)character, IntPtr.Zero);
+                Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP,   (IntPtr)character, IntPtr.Zero);
                 Thread.Sleep(100);
             }
         }
@@ -259,11 +259,11 @@ namespace Inkybot.Services.Win32Input
 
         public void CtrlDoubleClick(int x, int y) {
             Move(x, y);
-            _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
-            _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)Keys.RControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)Keys.RControlKey, IntPtr.Zero);
             DoubleClick(x, y);
-            _server.EnqueueInput((uint)Win32.WM_KEYUP, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
-            _server.EnqueueInput((uint)Win32.WM_KEYUP, (IntPtr)Keys.RControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP, (IntPtr)Keys.RControlKey, IntPtr.Zero);
         }
 
         public void SetRelativeToHandle(IntPtr handle) {
@@ -273,13 +273,13 @@ namespace Inkybot.Services.Win32Input
         }
 
         public void SelectAll() {
-            _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
-            _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)Keys.RControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)Keys.RControlKey, IntPtr.Zero);
             Thread.Sleep(500);
-            _server.EnqueueInput((uint)Win32.WM_KEYDOWN, (IntPtr)'A', IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)'A', IntPtr.Zero);
             Thread.Sleep(500);
-            _server.EnqueueInput((uint)Win32.WM_KEYUP, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
-            _server.EnqueueInput((uint)Win32.WM_KEYUP, (IntPtr)Keys.RControlKey, IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP, (IntPtr)Keys.ControlKey,  IntPtr.Zero);
+            Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP, (IntPtr)Keys.RControlKey, IntPtr.Zero);
         }
 
         public void Dispose() {
