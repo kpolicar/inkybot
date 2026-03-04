@@ -211,7 +211,7 @@ namespace InkybotHook
                 while (!_server.ShutdownFlag)
                 {
                     EnsureWndProcSubclassed();
-                    DrawDebugMarkerIfDue();
+                    //DrawDebugMarkerIfDue();
                     //ClickFixedPositionIfDue(); // DISABLED: synthetic test clicks
 
                     if (_server.targetHwnd != IntPtr.Zero)
@@ -234,7 +234,7 @@ namespace InkybotHook
                                 {
                                     int clientX = unchecked((short)((long)outgoingLParam & 0xFFFF));
                                     int clientY = unchecked((short)(((long)outgoingLParam >> 16) & 0xFFFF));
-                                    PostSyntheticBotClick(_server.targetHwnd, outgoingMsg, clientX, clientY);
+                                    //PostSyntheticBotClick(_server.targetHwnd, outgoingMsg, clientX, clientY);
                                 }
                                 else
                                 {
@@ -536,6 +536,12 @@ namespace InkybotHook
                         msg == WM_POINTERCAPTURECHANGED)
                     {
                         QueueMessage($"[CLICK-FLOW] WndProc BLOCKED: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X}");
+                        return IntPtr.Zero;
+                    }
+
+                    // Block real WM_INPUT — only let our synthetic (magic handle) ones through
+                    if (msg == WM_INPUT && lParam != MAGIC_RAWINPUT_HANDLE)
+                    {
                         return IntPtr.Zero;
                     }
                 /*
@@ -871,7 +877,11 @@ namespace InkybotHook
                 case WM_INPUT:
                 {
                     bool isMagic = lpMsg.lParam == MAGIC_RAWINPUT_HANDLE;
-                    QueueMessage($"[CLICK-FLOW] FilterMessage: WM_INPUT lParam=0x{lpMsg.lParam.ToInt64():X} isMagic={isMagic}");
+                    if (!isMagic && IsCursorOverrideActive())
+                    {
+                        // Block real WM_INPUT — only let synthetic (magic handle) ones through
+                        lpMsg.message = WM_NULL;
+                    }
                     break;
                 }
 
