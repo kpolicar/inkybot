@@ -96,9 +96,14 @@ namespace Inkybot.Services.Win32Input
         
         public static void SetTargetProcessId(int processId) => targetPID = processId;
         public static void Init() {
-            if (isInitialized) return;
-
             var log = FileEventLogger.SystemLogger;
+
+            if (isInitialized) {
+                log.Info("[EasyHook:Host] Init() skipped — already initialized");
+                return;
+            }
+
+            log.Info("[EasyHook:Host] Init() starting...");
 
             // Wire up IPC logging callback to SystemLogger
             ServerInterface.Logger = message => log.Info(message);
@@ -109,7 +114,7 @@ namespace Inkybot.Services.Win32Input
 
             if (targetPID <= 0)
             {
-                log.Error("[EasyHook] Cannot initialize hook: target process ID is not set (was {0})", targetPID);
+                log.Error($"[EasyHook:Host] Cannot initialize hook: target process ID is not set (was {targetPID})");
                 throw new Exception("Could not initialize input handler");
             }
 
@@ -118,11 +123,11 @@ namespace Inkybot.Services.Win32Input
             {
                 EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
                 _server.SetState(HookState.IpcCreated);
-                log.Info("[EasyHook] IPC server created on channel: {0}", channelName);
+                log.Info($"[EasyHook:Host] IPC server created on channel: {channelName}");
             }
             catch (Exception e)
             {
-                log.Error(e, "[EasyHook] Failed to create IPC server");
+                log.Error(e, "[EasyHook:Host] Failed to create IPC server");
                 _server.SetState(HookState.Failed);
                 return;
             }
@@ -133,7 +138,7 @@ namespace Inkybot.Services.Win32Input
 
             if (!File.Exists(injectionLibrary))
             {
-                log.Error("[EasyHook] Injection library not found at: {0}", injectionLibrary);
+                log.Error($"[EasyHook:Host] Injection library not found at: {injectionLibrary}");
                 _server.SetState(HookState.Failed);
                 return;
             }
@@ -142,7 +147,7 @@ namespace Inkybot.Services.Win32Input
             {
                 if (targetPID > 0)
                 {
-                    log.Info("[EasyHook] Injecting hook DLL into process {0} (library: {1})", targetPID, injectionLibrary);
+                    log.Info($"[EasyHook:Host] Injecting hook DLL into process {targetPID} (library: {injectionLibrary})");
                     _server.SetState(HookState.Injecting);
 
                     EasyHook.RemoteHooking.Inject(
@@ -153,32 +158,32 @@ namespace Inkybot.Services.Win32Input
                     );
 
                     isInitialized = true;
-                    log.Info("[EasyHook] Injection call completed successfully for process {0}", targetPID);
+                    log.Info($"[EasyHook:Host] Injection call completed successfully for process {targetPID}");
                 }
             }
             catch (System.IO.FileNotFoundException e)
             {
-                log.Error(e, "[EasyHook] Injection DLL or dependency not found");
+                log.Error(e, "[EasyHook:Host] Injection DLL or dependency not found");
                 _server.SetState(HookState.Failed);
             }
             catch (UnauthorizedAccessException e)
             {
-                log.Error(e, "[EasyHook] Insufficient privileges to inject into process {0}. Try running as administrator", targetPID);
+                log.Error(e, $"[EasyHook:Host] Insufficient privileges to inject into process {targetPID}. Try running as administrator");
                 _server.SetState(HookState.Failed);
             }
             catch (System.ComponentModel.Win32Exception e)
             {
-                log.Error(e, "[EasyHook] Win32 error during injection (code {0}): target process may have exited or be protected", e.NativeErrorCode);
+                log.Error(e, $"[EasyHook:Host] Win32 error during injection (code {e.NativeErrorCode}): target process may have exited or be protected");
                 _server.SetState(HookState.Failed);
             }
             catch (ApplicationException e)
             {
-                log.Error(e, "[EasyHook] EasyHook injection failed (possible architecture mismatch or target process issue)");
+                log.Error(e, "[EasyHook:Host] EasyHook injection failed (possible architecture mismatch or target process issue)");
                 _server.SetState(HookState.Failed);
             }
             catch (Exception e)
             {
-                log.Error(e, "[EasyHook] Unexpected error during injection into process {0}", targetPID);
+                log.Error(e, $"[EasyHook:Host] Unexpected error during injection into process {targetPID}");
                 _server.SetState(HookState.Failed);
             }
         }
@@ -246,6 +251,8 @@ namespace Inkybot.Services.Win32Input
 
         public void SetRelativeToHandle(IntPtr handle) {
             relativeToControl = handle;
+            if (_server != null)
+                _server.targetHwnd = handle;
         }
 
         public void SelectAll() {
@@ -264,10 +271,10 @@ namespace Inkybot.Services.Win32Input
 
         public void Dispose() {
             if (isInitialized) {
-                FileEventLogger.SystemLogger.Info("[EasyHook] Shutting down hook, setting ShutdownFlag");
+                FileEventLogger.SystemLogger.Info("[EasyHook:Host] Shutting down hook, setting ShutdownFlag");
                 _server.ShutdownFlag = true;
                 Thread.Sleep(5000); // Wait for dll to disinject (hopefully)
-                FileEventLogger.SystemLogger.Info("[EasyHook] Shutdown wait completed");
+                FileEventLogger.SystemLogger.Info("[EasyHook:Host] Shutdown wait completed");
             }
         }
     }

@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,19 +67,42 @@ namespace InkybotHook
 
         public POINT point = new POINT { X = -1, Y = -1 };
 
+        /// <summary>
+        /// The target window handle. Set this from the host so that SetCursorFixedPosition
+        /// can post WM_MOUSEMOVE messages to the target window.
+        /// </summary>
+        public IntPtr targetHwnd = IntPtr.Zero;
+
         public HookState State { get; private set; } = HookState.NotInitialized;
 
         private bool _hasLoggedFirstCursorChange = false;
+
+        #region Win32 imports for WM_MOUSEMOVE posting
+
+        const uint WM_MOUSEMOVE = 0x0200;
+
+        [DllImport("user32.dll")]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+
+        static IntPtr MakeLParam(int x, int y)
+        {
+            return (IntPtr)((y << 16) | (x & 0xFFFF));
+        }
+
+        #endregion
 
         public void SetState(HookState newState)
         {
             var oldState = State;
             State = newState;
-            Logger?.Invoke($"[EasyHook] State changed: {oldState} -> {newState}");
+            Logger?.Invoke($"[EasyHook:Target] State changed: {oldState} -> {newState}");
         }
 
         public void IsInstalled(int clientPID) {
-            ReportMessage($"[EasyHook] Hook DLL injected into process {clientPID}");
+            ReportMessage($"[EasyHook:Target] Hook DLL injected into process {clientPID}");
             SetState(HookState.Injected);
         }
 
@@ -98,7 +122,22 @@ namespace InkybotHook
             if (!_hasLoggedFirstCursorChange && point.X != -1 && point.Y != -1)
             {
                 _hasLoggedFirstCursorChange = true;
-                Logger?.Invoke($"[EasyHook] First cursor position override applied: ({point.X}, {point.Y})");
+                Logger?.Invoke($"[EasyHook:Host] First cursor position override applied: ({point.X}, {point.Y})");
+            }
+
+            // Post WM_MOUSEMOVE to the target window with the fixed position
+            if (targetHwnd != IntPtr.Zero && point.X != -1 && point.Y != -1)
+            {
+                try
+                {
+                    var clientPt = new POINT { X = point.X, Y = point.Y };
+                    ScreenToClient(targetHwnd, ref clientPt);
+                    PostMessage(targetHwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(clientPt.X, clientPt.Y));
+                }
+                catch (Exception e)
+                {
+                    Logger?.Invoke("[EasyHook:Host] Failed to post WM_MOUSEMOVE: " + e.Message);
+                }
             }
         }
 
@@ -111,7 +150,7 @@ namespace InkybotHook
         /// </summary>
         /// <param name="e"></param>
         public void ReportException(Exception e) {
-            Logger?.Invoke("[EasyHook] Target process error: " + e.ToString());
+            Logger?.Invoke("[EasyHook:Target] Target process error: " + e.ToString());
         }
 
         /// <summary>
