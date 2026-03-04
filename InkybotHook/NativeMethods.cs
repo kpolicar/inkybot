@@ -155,6 +155,9 @@ namespace InkybotHook
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetCursorPos(int X, int Y);
 
+        [DllImport("user32.dll")]
+        public static extern uint GetMessagePos();
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 

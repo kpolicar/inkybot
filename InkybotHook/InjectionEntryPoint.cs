@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,17 +14,19 @@ namespace InkybotHook
 
         Queue<string> _messageQueue = new Queue<string>();
 
-        private readonly HashSet<string> _loggedFirstCalls = new HashSet<string>();
+        private readonly ConcurrentDictionary<string, byte> _loggedFirstCalls = new ConcurrentDictionary<string, byte>();
 
         // TEMP: hardcoded test position (client coords relative to Dofus top-left) — remove when done
         private static readonly POINT _testPoint = new POINT { X = 1652, Y = 17 };
         private long _lastMarkerDrawTick = 0;
         private long _lastClickTick = 0;
         private long _testClickSequence = 0;
-        private long _lastKeyStateSpoofLogTick = 0;
 
-        // Magic Handle for background raw input
-        private const long MAGIC_RAWINPUT_HANDLE = 0xDEADBEEFL;
+        // Magic handle used as lParam in posted WM_INPUT messages.
+        // When GetRawInputData sees this handle, it fabricates a synthetic RAWMOUSE event
+        // instead of calling the real API — this is how we trigger Unity's raw-input path
+        // without SendInput (which would move the real cursor).
+        private static readonly IntPtr MAGIC_RAWINPUT_HANDLE = new IntPtr(0x0DEADBEE);
         
         // Stolen hardware handle from the real physical mouse
         private static IntPtr _validMouseHandle = IntPtr.Zero;
@@ -36,20 +39,19 @@ namespace InkybotHook
         private volatile bool _botLButtonDown = false;
         private volatile bool _botRButtonDown = false;
 
-        // Pending raw-input button transitions.
-        // Set BEFORE PostMessage so the next GetRawInputData call injects them
-        // into RAWMOUSE.usButtonFlags (Unity reads buttons from raw input, not WM_LBUTTONDOWN).
-        private volatile bool _botLButtonPendingDown = false;
-        private volatile bool _botLButtonPendingUp = false;
-        private volatile bool _botRButtonPendingDown = false;
-        private volatile bool _botRButtonPendingUp = false;
+        // Separate queues for each raw-input API path.
+        // Unity uses BOTH GetRawInputData (per-message, from WndProc) and GetRawInputBuffer
+        // (batch polling). If we used one queue, GetRawInputData would consume the event
+        // before GetRawInputBuffer ever saw it.
+        private readonly ConcurrentQueue<ushort> _syntheticRawInputDataQueue = new ConcurrentQueue<ushort>();
+        private readonly ConcurrentQueue<ushort> _syntheticRawInputBufferQueue = new ConcurrentQueue<ushort>();
+
         private int _allowUnsentinelLButtonMessages = 0;
 
         private void LogFirstCall(string hookName)
         {
-            if (!_loggedFirstCalls.Contains(hookName))
+            if (_loggedFirstCalls.TryAdd(hookName, 0))
             {
-                _loggedFirstCalls.Add(hookName);
                 QueueMessage("[EasyHook:Target] First call intercepted: " + hookName);
             }
         }
@@ -60,6 +62,56 @@ namespace InkybotHook
             {
                 _messageQueue.Enqueue(message);
             }
+        }
+
+        /// <summary>
+        /// Posts a synthetic bot click (or release) to the target window.
+        /// 1. Updates button-down state for GetAsyncKeyState/GetKeyState hooks
+        /// 2. Enqueues a RAWMOUSE button flag and posts WM_INPUT with MAGIC_RAWINPUT_HANDLE
+        ///    so Unity's raw-input handler fires GetRawInputData (which we intercept and fabricate)
+        /// 3. Posts the legacy WM_LBUTTONDOWN/UP message with sentinel marker
+        /// </summary>
+        private void PostSyntheticBotClick(IntPtr hwnd, uint buttonMsg, int clientX, int clientY)
+        {
+            ushort rawFlag;
+            long mkFlag;
+            switch (buttonMsg)
+            {
+                case WM_LBUTTONDOWN:
+                    _botLButtonDown = true;
+                    rawFlag = RI_MOUSE_LEFT_BUTTON_DOWN;
+                    mkFlag = MK_LBUTTON;
+                    break;
+                case WM_LBUTTONUP:
+                    _botLButtonDown = false;
+                    rawFlag = RI_MOUSE_LEFT_BUTTON_UP;
+                    mkFlag = 0;
+                    break;
+                case WM_RBUTTONDOWN:
+                    _botRButtonDown = true;
+                    rawFlag = RI_MOUSE_RIGHT_BUTTON_DOWN;
+                    mkFlag = MK_RBUTTON;
+                    break;
+                case WM_RBUTTONUP:
+                    _botRButtonDown = false;
+                    rawFlag = RI_MOUSE_RIGHT_BUTTON_UP;
+                    mkFlag = 0;
+                    break;
+                default:
+                    return;
+            }
+
+            // 1. Enqueue synthetic raw-input event to BOTH queues + post WM_INPUT to trigger Unity's handler
+            _syntheticRawInputDataQueue.Enqueue(rawFlag);
+            _syntheticRawInputBufferQueue.Enqueue(rawFlag);
+            bool wmInputPosted = PostMessage(hwnd, WM_INPUT, IntPtr.Zero /*RIM_INPUT*/, MAGIC_RAWINPUT_HANDLE);
+
+            // 2. Post the legacy window message with sentinel + coordinates
+            IntPtr lParam = MakeLParam(clientX, clientY);
+            IntPtr wParam = (IntPtr)(mkFlag | BOT_INPUT_SENTINEL);
+            bool wmButtonPosted = PostMessage(hwnd, buttonMsg, wParam, lParam);
+
+            QueueMessage($"[CLICK-FLOW] PostSyntheticBotClick: msg=0x{buttonMsg:X4} rawFlag=0x{rawFlag:X4} at ({clientX},{clientY}) WM_INPUT_posted={wmInputPosted} WM_BUTTON_posted={wmButtonPosted} dataQ={_syntheticRawInputDataQueue.Count} bufferQ={_syntheticRawInputBufferQueue.Count}");
         }
 
         public InjectionEntryPoint(
@@ -105,7 +157,8 @@ namespace InkybotHook
                 () => TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture),
                 () => TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState),
                 () => TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState),
-                () => TryInstallHook<GetKeyboardStateDelegate>("GetKeyboardState", new GetKeyboardStateDelegate(HookedGetKeyboardState), out _originalGetKeyboardState)
+                () => TryInstallHook<GetKeyboardStateDelegate>("GetKeyboardState", new GetKeyboardStateDelegate(HookedGetKeyboardState), out _originalGetKeyboardState),
+                () => TryInstallHook<GetMessagePosDelegate>("GetMessagePos", new GetMessagePosDelegate(HookedGetMessagePos), out _originalGetMessagePos)
             };
 
             try
@@ -153,17 +206,17 @@ namespace InkybotHook
                                 bool isButtonMsg =
                                     outgoingMsg == WM_LBUTTONDOWN || outgoingMsg == WM_LBUTTONUP ||
                                     outgoingMsg == WM_RBUTTONDOWN || outgoingMsg == WM_RBUTTONUP;
+
                                 if (isButtonMsg)
                                 {
-                                    if (outgoingMsg == WM_LBUTTONDOWN) _botLButtonPendingDown = true;
-                                    else if (outgoingMsg == WM_LBUTTONUP) _botLButtonPendingUp = true;
-                                    else if (outgoingMsg == WM_RBUTTONDOWN) _botRButtonPendingDown = true;
-                                    else if (outgoingMsg == WM_RBUTTONUP) _botRButtonPendingUp = true;
+                                    int clientX = unchecked((short)((long)outgoingLParam & 0xFFFF));
+                                    int clientY = unchecked((short)(((long)outgoingLParam >> 16) & 0xFFFF));
+                                    PostSyntheticBotClick(_server.targetHwnd, outgoingMsg, clientX, clientY);
                                 }
-                                IntPtr wParam = isButtonMsg
-                                    ? (IntPtr)((long)outgoingWParam | BOT_INPUT_SENTINEL)
-                                    : outgoingWParam;
-                                PostMessage(_server.targetHwnd, outgoingMsg, wParam, outgoingLParam);
+                                else
+                                {
+                                    PostMessage(_server.targetHwnd, outgoingMsg, outgoingWParam, outgoingLParam);
+                                }
                                 System.Threading.Thread.Sleep(2); 
                             }
                             catch (Exception e)
@@ -346,89 +399,26 @@ namespace InkybotHook
             try
             {
                 long clickId = System.Threading.Interlocked.Increment(ref _testClickSequence);
-                
-                // Get screen coordinates for the test point
-                var screenPt = GetTestScreenPoint();
-                
-                // Normalize to 0-65535 range for absolute coordinates
-                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-                int absX = (screenPt.X * 65536) / screenWidth;
-                int absY = (screenPt.Y * 65536) / screenHeight;
-                
-                QueueMessage($"[EasyHook:Target] SendInput click #{clickId} at screen({screenPt.X},{screenPt.Y}) abs({absX},{absY})");
+                IntPtr lParam = MakeLParam(_testPoint.X, _testPoint.Y);
 
-                // Set key state flags so GetAsyncKeyState/GetKeyState return correct values
-                _botLButtonDown = true;
-                _botLButtonPendingDown = true;
+                QueueMessage($"[EasyHook:Target] Synthetic click #{clickId} at ({_testPoint.X},{_testPoint.Y})");
 
-                // 1. Move mouse to position using SendInput
-                var moveInput = new INPUT
-                {
-                    type = INPUT_MOUSE,
-                    mi = new MOUSEINPUT
-                    {
-                        dx = absX,
-                        dy = absY,
-                        dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE,
-                        mouseData = 0,
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
-                    }
-                };
-                
-                uint sent = SendInput(1, new[] { moveInput }, Marshal.SizeOf(typeof(INPUT)));
-                QueueMessage($"[EasyHook:Target] Click #{clickId} MOVE sent={sent}, error={Marshal.GetLastWin32Error()}");
-                
-                System.Threading.Thread.Sleep(16); // One frame
-                
-                // 2. Mouse down
-                var downInput = new INPUT
-                {
-                    type = INPUT_MOUSE,
-                    mi = new MOUSEINPUT
-                    {
-                        dx = absX,
-                        dy = absY,
-                        dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_ABSOLUTE,
-                        mouseData = 0,
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
-                    }
-                };
-                
-                sent = SendInput(1, new[] { downInput }, Marshal.SizeOf(typeof(INPUT)));
-                QueueMessage($"[EasyHook:Target] Click #{clickId} DOWN sent={sent}, error={Marshal.GetLastWin32Error()}");
-                
-                System.Threading.Thread.Sleep(50); // Hold down briefly
-                
-                _botLButtonPendingDown = false;
-                
-                // 3. Mouse up
-                _botLButtonDown = false;
-                _botLButtonPendingUp = true;
-                
-                var upInput = new INPUT
-                {
-                    type = INPUT_MOUSE,
-                    mi = new MOUSEINPUT
-                    {
-                        dx = absX,
-                        dy = absY,
-                        dwFlags = MOUSEEVENTF_LEFTUP | MOUSEEVENTF_ABSOLUTE,
-                        mouseData = 0,
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
-                    }
-                };
-                
-                sent = SendInput(1, new[] { upInput }, Marshal.SizeOf(typeof(INPUT)));
-                QueueMessage($"[EasyHook:Target] Click #{clickId} UP sent={sent}, error={Marshal.GetLastWin32Error()}");
-                
-                System.Threading.Thread.Sleep(16);
-                _botLButtonPendingUp = false;
+                // 1. Move the mouse to update raycasters
+                PostMessage(_server.targetHwnd, WM_MOUSEMOVE, IntPtr.Zero, lParam);
+                System.Threading.Thread.Sleep(20);
 
-                QueueMessage($"[EasyHook:Target] SendInput click #{clickId} completed");
+                // 2. Down — posts WM_INPUT(MAGIC) + WM_LBUTTONDOWN(sentinel)
+                PostSyntheticBotClick(_server.targetHwnd, WM_LBUTTONDOWN, _testPoint.X, _testPoint.Y);
+                QueueMessage($"[EasyHook:Target] Click #{clickId} DOWN posted");
+
+                System.Threading.Thread.Sleep(100);
+
+                // 3. Up — posts WM_INPUT(MAGIC) + WM_LBUTTONUP(sentinel)
+                PostSyntheticBotClick(_server.targetHwnd, WM_LBUTTONUP, _testPoint.X, _testPoint.Y);
+                QueueMessage($"[EasyHook:Target] Click #{clickId} UP posted");
+
+                System.Threading.Thread.Sleep(50);
+                QueueMessage($"[EasyHook:Target] Synthetic click #{clickId} completed");
             }
             catch (Exception e)
             {
@@ -514,12 +504,23 @@ namespace InkybotHook
 
                 if (IsCursorOverrideActive())
                 {
+                    if (msg == WM_INPUT)
+                    {
+                        bool isMagic = lParam == MAGIC_RAWINPUT_HANDLE;
+                        QueueMessage($"[CLICK-FLOW] WndProc received WM_INPUT: lParam=0x{lParam.ToInt64():X} isMagic={isMagic} wParam=0x{wParam.ToInt64():X}");
+                    }
+
                     if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
                         msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP)
                     {
-                        if (((long)wParam & BOT_INPUT_SENTINEL) != 0)
+                        bool hasSentinel = ((long)wParam & BOT_INPUT_SENTINEL) != 0;
+                        int lx = unchecked((short)((long)lParam & 0xFFFF));
+                        int ly = unchecked((short)(((long)lParam >> 16) & 0xFFFF));
+
+                        if (hasSentinel)
                         {
                             wParam = (IntPtr)((long)wParam & ~BOT_INPUT_SENTINEL); 
+                            QueueMessage($"[CLICK-FLOW] WndProc ACCEPTED bot click: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X} pos=({lx},{ly}) -> forwarding to original WndProc");
 
                             if (msg == WM_LBUTTONDOWN) _botLButtonDown = true;
                             else if (msg == WM_LBUTTONUP) _botLButtonDown = false;
@@ -529,13 +530,14 @@ namespace InkybotHook
                         else if ((msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP) &&
                                  System.Threading.Interlocked.CompareExchange(ref _allowUnsentinelLButtonMessages, 0, 0) > 0)
                         {
-                            // Consume token
                             System.Threading.Interlocked.Decrement(ref _allowUnsentinelLButtonMessages);
+                            QueueMessage($"[CLICK-FLOW] WndProc ACCEPTED free-pass click: msg=0x{msg:X4} pos=({lx},{ly})");
                             if (msg == WM_LBUTTONDOWN) _botLButtonDown = true;
                             else if (msg == WM_LBUTTONUP) _botLButtonDown = false;
                         }
                         else
                         {
+                            QueueMessage($"[CLICK-FLOW] WndProc BLOCKED real user click: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X} pos=({lx},{ly})");
                             return IntPtr.Zero; 
                         }
                     }
@@ -664,6 +666,15 @@ namespace InkybotHook
             LogFirstCall("GetRawInputData");
             try
             {
+                // Detect our magic handle — fabricate a synthetic RAWMOUSE event
+                if (hRawInput == MAGIC_RAWINPUT_HANDLE)
+                {
+                    QueueMessage($"[CLICK-FLOW] GetRawInputData: MAGIC handle detected! uiCommand=0x{uiCommand:X} pData={(pData == IntPtr.Zero ? "NULL" : "0x" + pData.ToInt64().ToString("X"))} pcbSize={pcbSize} dataQ={_syntheticRawInputDataQueue.Count}");
+                    uint syntheticResult = HandleSyntheticRawInput(uiCommand, pData, ref pcbSize, cbSizeHeader);
+                    QueueMessage($"[CLICK-FLOW] GetRawInputData: HandleSyntheticRawInput returned {syntheticResult} (0x{syntheticResult:X})");
+                    return syntheticResult;
+                }
+
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
                 
                 if (pData != IntPtr.Zero && uiCommand == RID_INPUT && result > 0 && result != unchecked((uint)-1))
@@ -671,7 +682,7 @@ namespace InkybotHook
                     uint dwType = (uint)Marshal.ReadInt32(pData, 0);
                     if (dwType == RIM_TYPEMOUSE)
                     {
-                        // STEAL THE REAL DEVICE HANDLE
+                        // Steal the real device handle for use in synthetic events
                         if (_validMouseHandle == IntPtr.Zero) 
                         {
                             _validMouseHandle = Marshal.ReadIntPtr(pData, 8); 
@@ -680,14 +691,11 @@ namespace InkybotHook
 
                         int headerSize = Marshal.SizeOf(typeof(RAWINPUTHEADER));
 
-                        // Zero out mouse movement deltas (cursor is spoofed elsewhere)
+                        // Zero out mouse movement deltas to keep cursor pinned
                         int lLastXOffset = headerSize + 12;
                         int lLastYOffset = headerSize + 16;
                         Marshal.WriteInt32(pData, lLastXOffset, 0);
                         Marshal.WriteInt32(pData, lLastYOffset, 0);
-
-                        // Inject any pending button flags from our state
-                        InjectBotButtonFlags(pData, headerSize);
                     }
                 }
                 return result;
@@ -699,24 +707,54 @@ namespace InkybotHook
             }
         }
 
-        private void InjectBotButtonFlags(IntPtr pRawInput, int headerSize)
+        /// <summary>
+        /// Fabricates a synthetic RAWINPUT (RAWMOUSE) response for our magic WM_INPUT handle.
+        /// Dequeues the next button-flag entry from _syntheticRawInputQueue.
+        /// </summary>
+        private uint HandleSyntheticRawInput(uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
-            if (!_botLButtonPendingDown && !_botLButtonPendingUp &&
-                !_botRButtonPendingDown && !_botRButtonPendingUp)
-                return;
+            int headerSize = Marshal.SizeOf(typeof(RAWINPUTHEADER));
+            const int rawMouseSize = 24; // sizeof(RAWMOUSE) — fixed on all platforms
+            uint totalSize = (uint)(headerSize + rawMouseSize);
 
-            QueueMessage($"[EasyHook:Target] InjectBotButtonFlags: L_DOWN={_botLButtonPendingDown}, L_UP={_botLButtonPendingUp}, R_DOWN={_botRButtonPendingDown}, R_UP={_botRButtonPendingUp}");
+            // Size query
+            if (pData == IntPtr.Zero)
+            {
+                pcbSize = totalSize;
+                return 0;
+            }
 
-            int usButtonFlagsOffset = headerSize + 4;
-            ushort flags = (ushort)Marshal.ReadInt16(pRawInput, usButtonFlagsOffset);
+            // Buffer too small
+            if (pcbSize < totalSize)
+            {
+                pcbSize = totalSize;
+                return unchecked((uint)-1);
+            }
 
-            // DO NOT clear the flags here. Let both Unity APIs read the exact same state!
-            if (_botLButtonPendingDown) { flags |= RI_MOUSE_LEFT_BUTTON_DOWN; }
-            if (_botLButtonPendingUp)   { flags |= RI_MOUSE_LEFT_BUTTON_UP; }
-            if (_botRButtonPendingDown) { flags |= RI_MOUSE_RIGHT_BUTTON_DOWN; }
-            if (_botRButtonPendingUp)   { flags |= RI_MOUSE_RIGHT_BUTTON_UP; }
+            // Dequeue the button flags (if queue is empty, use 0 — harmless no-op event)
+            ushort buttonFlags;
+            _syntheticRawInputDataQueue.TryDequeue(out buttonFlags);
 
-            Marshal.WriteInt16(pRawInput, usButtonFlagsOffset, (short)flags);
+            QueueMessage($"[EasyHook:Target] Fabricating synthetic RAWMOUSE: buttonFlags=0x{buttonFlags:X4}, hDevice=0x{_validMouseHandle.ToInt64():X}");
+
+            // Write RAWINPUTHEADER
+            Marshal.WriteInt32(pData, 0, (int)RIM_TYPEMOUSE);           // dwType
+            Marshal.WriteInt32(pData, 4, (int)totalSize);               // dwSize
+            Marshal.WriteIntPtr(pData, 8, _validMouseHandle);           // hDevice
+            Marshal.WriteIntPtr(pData, 8 + IntPtr.Size, IntPtr.Zero);   // wParam (RIM_INPUT = 0)
+
+            // Write RAWMOUSE (24 bytes starting at headerSize)
+            // Zero the entire RAWMOUSE region first
+            for (int i = 0; i < rawMouseSize; i++)
+                Marshal.WriteByte(pData, headerSize + i, 0);
+
+            // usButtonFlags at offset headerSize + 4 (after usFlags[2] + padding[2])
+            Marshal.WriteInt16(pData, headerSize + 4, (short)buttonFlags);
+
+            // lLastX, lLastY already zeroed — no cursor movement
+
+            pcbSize = totalSize;
+            return totalSize;
         }
 
         #endregion
@@ -788,26 +826,40 @@ namespace InkybotHook
                     }
                     break;
 
+                case WM_INPUT:
+                {
+                    bool isMagic = lpMsg.lParam == MAGIC_RAWINPUT_HANDLE;
+                    QueueMessage($"[CLICK-FLOW] FilterMessage: WM_INPUT lParam=0x{lpMsg.lParam.ToInt64():X} isMagic={isMagic}");
+                    break;
+                }
+
                 case WM_LBUTTONDOWN:
                 case WM_LBUTTONUP:
                 case WM_RBUTTONDOWN:
                 case WM_RBUTTONUP:
                     if (IsCursorOverrideActive())
                     {
+                        bool hasSentinel = ((long)lpMsg.wParam & BOT_INPUT_SENTINEL) != 0;
+                        int fx = unchecked((short)((long)lpMsg.lParam & 0xFFFF));
+                        int fy = unchecked((short)(((long)lpMsg.lParam >> 16) & 0xFFFF));
+
                         // Check if this click has a free pass
                         if ((lpMsg.message == WM_LBUTTONDOWN || lpMsg.message == WM_LBUTTONUP) &&
                             System.Threading.Interlocked.CompareExchange(ref _allowUnsentinelLButtonMessages, 0, 0) > 0)
                         {
+                            QueueMessage($"[CLICK-FLOW] FilterMessage ACCEPTED free-pass: msg=0x{lpMsg.message:X4} pos=({fx},{fy})");
                             break; 
                         }
-                        // Legacy support for IPC bot clicks
-                        else if (((long)lpMsg.wParam & BOT_INPUT_SENTINEL) != 0)
+                        // Bot click — let it through WITH sentinel intact.
+                        // WndProc will strip the sentinel when it processes this message.
+                        else if (hasSentinel)
                         {
+                            QueueMessage($"[CLICK-FLOW] FilterMessage PASSING bot click (sentinel kept): msg=0x{lpMsg.message:X4} wParam=0x{lpMsg.wParam.ToInt64():X} pos=({fx},{fy})");
                             break; 
                         }
                         else
                         {
-                            // Real user click — suppress
+                            QueueMessage($"[CLICK-FLOW] FilterMessage BLOCKED real click: msg=0x{lpMsg.message:X4} pos=({fx},{fy})");
                             lpMsg.message = WM_NULL;
                         }
                     }
@@ -834,6 +886,9 @@ namespace InkybotHook
             {
                 if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
                 {
+                    // The game may get screen coords from sources we don't hook (e.g. cached values,
+                    // internal state). Force the result to _testPoint so every ScreenToClient query
+                    // for the target window returns our spoofed client position.
                     lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
                     return true;
                 }
@@ -850,11 +905,6 @@ namespace InkybotHook
             LogFirstCall("ClientToScreen");
             try
             {
-                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && hWnd == _server.targetHwnd)
-                {
-                    lpPoint = new POINT { X = _testPoint.X, Y = _testPoint.Y };
-                    return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
-                }
                 return _originalClientToScreen != null && _originalClientToScreen(hWnd, ref lpPoint);
             }
             catch
@@ -1081,46 +1131,12 @@ namespace InkybotHook
             {
                 uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
 
-                if (!_botLButtonPendingDown && !_botLButtonPendingUp &&
-                    !_botRButtonPendingDown && !_botRButtonPendingUp)
-                {
-                    return result;
-                }
+                int headerSize = (int)cbSizeHeader;
+                const int rawMouseSize = 24;
+                uint oneEventSize = (uint)(headerSize + rawMouseSize);
 
-                int headerSize = (int)cbSizeHeader; 
-                uint requiredSizeForOneEvent = (uint)(headerSize + 24); 
-
-                if (pData == IntPtr.Zero)
-                {
-                    if (result == 0 && pcbSize < requiredSizeForOneEvent)
-                        pcbSize = requiredSizeForOneEvent;
-                    return result; 
-                }
-
-                if (result == 0)
-                {
-                    if (pcbSize >= requiredSizeForOneEvent)
-                    {
-                        Marshal.WriteInt32(pData, 0, (int)RIM_TYPEMOUSE); 
-                        Marshal.WriteInt32(pData, 4, (int)requiredSizeForOneEvent); 
-                        // INJECT REAL STOLEN DEVICE HANDLE
-                        Marshal.WriteIntPtr(pData, 8, _validMouseHandle); 
-                        Marshal.WriteIntPtr(pData, 8 + IntPtr.Size, IntPtr.Zero); 
-
-                        for (int i = headerSize; i < headerSize + 24; i++)
-                            Marshal.WriteByte(pData, i, 0);
-
-                        InjectBotButtonFlags(pData, headerSize);
-                        return 1; 
-                    }
-                    else
-                    {
-                        pcbSize = requiredSizeForOneEvent;
-                        return unchecked((uint)-1);
-                    }
-                }
-
-                if (result > 0 && result != unchecked((uint)-1))
+                // Process real events: steal device handle + zero out mouse deltas
+                if (pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
                 {
                     IntPtr current = pData;
                     for (uint i = 0; i < result; i++)
@@ -1130,23 +1146,80 @@ namespace InkybotHook
 
                         if (dwType == RIM_TYPEMOUSE)
                         {
-                            // STEAL THE REAL DEVICE HANDLE
-                            if (_validMouseHandle == IntPtr.Zero) 
-                            {
-                                _validMouseHandle = Marshal.ReadIntPtr(current, 8); 
-                            }
+                            if (_validMouseHandle == IntPtr.Zero)
+                                _validMouseHandle = Marshal.ReadIntPtr(current, 8);
 
-                            int lLastXOffset = headerSize + 12;
-                            int lLastYOffset = headerSize + 16;
-                            Marshal.WriteInt32(current, lLastXOffset, 0);
-                            Marshal.WriteInt32(current, lLastYOffset, 0);
-
-                            InjectBotButtonFlags(current, headerSize);
+                            Marshal.WriteInt32(current, headerSize + 12, 0); // lLastX
+                            Marshal.WriteInt32(current, headerSize + 16, 0); // lLastY
                         }
 
                         long aligned = ((long)dwSize + 7) & ~7L;
                         current = new IntPtr(current.ToInt64() + aligned);
                     }
+                }
+
+                // If we have pending synthetic events, append them to the buffer
+                // (Unity uses GetRawInputBuffer to batch-poll, so our posted WM_INPUT
+                // may have triggered this call — inject synthetic events here too)
+                if (!_syntheticRawInputBufferQueue.IsEmpty && pData != IntPtr.Zero)
+                {
+                    // Calculate remaining buffer space
+                    long alignedOneEvent = ((long)oneEventSize + 7) & ~7L;
+                    long usedBytes = 0;
+                    if (result > 0 && result != unchecked((uint)-1))
+                    {
+                        // Walk to find end of existing data
+                        IntPtr walk = pData;
+                        for (uint i = 0; i < result; i++)
+                        {
+                            uint dwSize = (uint)Marshal.ReadInt32(walk, 4);
+                            long aligned = ((long)dwSize + 7) & ~7L;
+                            walk = new IntPtr(walk.ToInt64() + aligned);
+                        }
+                        usedBytes = walk.ToInt64() - pData.ToInt64();
+                    }
+
+                    long remainingBytes = (long)pcbSize - usedBytes;
+                    uint appendedCount = (result > 0 && result != unchecked((uint)-1)) ? result : 0;
+                    IntPtr writePtr = new IntPtr(pData.ToInt64() + usedBytes);
+
+                    ushort buttonFlags;
+                    while (_syntheticRawInputBufferQueue.TryDequeue(out buttonFlags))
+                    {
+                        if (remainingBytes < alignedOneEvent)
+                        {
+                            // Re-enqueue — we'll catch it next call
+                            _syntheticRawInputBufferQueue.Enqueue(buttonFlags);
+                            break;
+                        }
+
+                        // Write RAWINPUTHEADER
+                        Marshal.WriteInt32(writePtr, 0, (int)RIM_TYPEMOUSE);           // dwType
+                        Marshal.WriteInt32(writePtr, 4, (int)oneEventSize);             // dwSize
+                        Marshal.WriteIntPtr(writePtr, 8, _validMouseHandle);            // hDevice
+                        Marshal.WriteIntPtr(writePtr, 8 + IntPtr.Size, IntPtr.Zero);    // wParam
+
+                        // Write RAWMOUSE — zero everything, then set button flags
+                        for (int i = 0; i < rawMouseSize; i++)
+                            Marshal.WriteByte(writePtr, headerSize + i, 0);
+                        Marshal.WriteInt16(writePtr, headerSize + 4, (short)buttonFlags);
+
+                        QueueMessage($"[EasyHook:Target] GetRawInputBuffer: appended synthetic RAWMOUSE flags=0x{buttonFlags:X4}");
+
+                        writePtr = new IntPtr(writePtr.ToInt64() + alignedOneEvent);
+                        remainingBytes -= alignedOneEvent;
+                        appendedCount++;
+                    }
+
+                    if (appendedCount > 0)
+                        return appendedCount;
+                }
+
+                // If buffer is empty and we have synthetics queued, handle size query
+                if (!_syntheticRawInputBufferQueue.IsEmpty && pData == IntPtr.Zero)
+                {
+                    if (pcbSize < oneEventSize)
+                        pcbSize = oneEventSize;
                 }
 
                 return result;
@@ -1193,6 +1266,33 @@ namespace InkybotHook
         {
             LogFirstCall("ClipCursor");
             try { return true; } catch { return false; }
+        }
+
+        #endregion
+
+        #region GetMessagePos hook
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate uint GetMessagePosDelegate();
+        private GetMessagePosDelegate _originalGetMessagePos;
+
+        public uint HookedGetMessagePos()
+        {
+            LogFirstCall("GetMessagePos");
+            try
+            {
+                if (IsCursorOverrideActive())
+                {
+                    // Return spoofed screen coords packed as DWORD (low=X, high=Y)
+                    var sp = GetTestScreenPoint();
+                    return (uint)((sp.Y << 16) | (sp.X & 0xFFFF));
+                }
+                return _originalGetMessagePos != null ? _originalGetMessagePos() : 0;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         #endregion
