@@ -7,6 +7,10 @@ namespace InkybotHook
     {
         #region Constants
 
+        public const uint WM_LBUTTONDBLCLK = 0x0203;
+        public const uint WM_RBUTTONDBLCLK = 0x0206;
+        public const uint WM_NCLBUTTONDBLCLK = 0x00A3;
+        public const uint WM_NCRBUTTONDBLCLK = 0x00A6;
         public const uint WM_MOUSEMOVE     = 0x0200;
         public const uint WM_LBUTTONDOWN   = 0x0201;
         public const uint WM_LBUTTONUP     = 0x0202;

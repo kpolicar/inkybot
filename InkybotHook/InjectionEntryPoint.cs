@@ -131,6 +131,52 @@ namespace InkybotHook
             }
         }
 
+        // Helper to subclass all child windows of a given window
+        private void SubclassAllWindows(IntPtr parentHwnd)
+        {
+            NativeMethods.EnumChildWindows(parentHwnd, (hwnd, lParam) =>
+            {
+                try
+                {
+                    SubclassWindow(hwnd);
+                }
+                catch (Exception ex)
+                {
+                    _server?.ReportMessage($"Failed to subclass child window 0x{hwnd.ToInt64():X}: {ex.Message}");
+                }
+                return true; // continue enumeration
+            }, IntPtr.Zero);
+        }
+
+        // Helper to subclass a single window
+        private void SubclassWindow(IntPtr hwnd)
+        {
+            // Only subclass if not already subclassed
+            IntPtr prevWndProc = NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC);
+            if (prevWndProc == _wndProcPtr)
+                return;
+            IntPtr newWndProc = Marshal.GetFunctionPointerForDelegate(_wndProcDelegate);
+            NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC, newWndProc);
+            _server?.ReportMessage($"Subclassed window 0x{hwnd.ToInt64():X}");
+        }
+
+        // Call this after hooks are installed and targetHwnd is set
+        private void SubclassTargetAndChildren()
+        {
+            if (_server != null && _server.targetHwnd != IntPtr.Zero)
+            {
+                try
+                {
+                    SubclassWindow(_server.targetHwnd);
+                    SubclassAllWindows(_server.targetHwnd);
+                }
+                catch (Exception ex)
+                {
+                    _server?.ReportMessage($"Failed to subclass target/children: {ex.Message}");
+                }
+            }
+        }
+        
         public void Run(
             EasyHook.RemoteHooking.IContext context,
             string channelName)
@@ -211,51 +257,6 @@ namespace InkybotHook
             }
 
             _server.SetState(HookState.Running);
-        // Helper to subclass all child windows of a given window
-        private void SubclassAllWindows(IntPtr parentHwnd)
-        {
-            NativeMethods.EnumChildWindows(parentHwnd, (hwnd, lParam) =>
-            {
-                try
-                {
-                    SubclassWindow(hwnd);
-                }
-                catch (Exception ex)
-                {
-                    _server?.ReportMessage($"Failed to subclass child window 0x{hwnd.ToInt64():X}: {ex.Message}");
-                }
-                return true; // continue enumeration
-            }, IntPtr.Zero);
-        }
-
-        // Helper to subclass a single window
-        private void SubclassWindow(IntPtr hwnd)
-        {
-            // Only subclass if not already subclassed
-            IntPtr prevWndProc = NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC);
-            if (prevWndProc == _wndProcPtr)
-                return;
-            IntPtr newWndProc = Marshal.GetFunctionPointerForDelegate(_wndProcDelegate);
-            NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWLP_WNDPROC, newWndProc);
-            _server?.ReportMessage($"Subclassed window 0x{hwnd.ToInt64():X}");
-        }
-
-        // Call this after hooks are installed and targetHwnd is set
-        private void SubclassTargetAndChildren()
-        {
-            if (_server != null && _server.targetHwnd != IntPtr.Zero)
-            {
-                try
-                {
-                    SubclassWindow(_server.targetHwnd);
-                    SubclassAllWindows(_server.targetHwnd);
-                }
-                catch (Exception ex)
-                {
-                    _server?.ReportMessage($"Failed to subclass target/children: {ex.Message}");
-                }
-            }
-        }
 
             try
             {
