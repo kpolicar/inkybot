@@ -158,7 +158,30 @@ namespace InkybotHook
                 () => TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState),
                 () => TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState),
                 () => TryInstallHook<GetKeyboardStateDelegate>("GetKeyboardState", new GetKeyboardStateDelegate(HookedGetKeyboardState), out _originalGetKeyboardState),
-                () => TryInstallHook<GetMessagePosDelegate>("GetMessagePos", new GetMessagePosDelegate(HookedGetMessagePos), out _originalGetMessagePos)
+                () => TryInstallHook<GetMessagePosDelegate>("GetMessagePos", new GetMessagePosDelegate(HookedGetMessagePos), out _originalGetMessagePos),
+                () => TryInstallHook<DispatchMessageDelegate>("DispatchMessageW", new DispatchMessageDelegate(HookedDispatchMessageW), out _originalDispatchMessageW),
+                () => TryInstallHook<DispatchMessageDelegate>("DispatchMessageA", new DispatchMessageDelegate(HookedDispatchMessageA), out _originalDispatchMessageA),
+                // SendMessage variants — bypass message queue entirely, go straight to WndProc
+                () => TryInstallHook<SendMessageDelegate>("SendMessageW", new SendMessageDelegate(HookedSendMessageW), out _originalSendMessageW),
+                () => TryInstallHook<SendMessageDelegate>("SendMessageA", new SendMessageDelegate(HookedSendMessageA), out _originalSendMessageA),
+                () => TryInstallHook<SendMessageTimeoutDelegate>("SendMessageTimeoutW", new SendMessageTimeoutDelegate(HookedSendMessageTimeoutW), out _originalSendMessageTimeoutW),
+                () => TryInstallHook<SendMessageTimeoutDelegate>("SendMessageTimeoutA", new SendMessageTimeoutDelegate(HookedSendMessageTimeoutA), out _originalSendMessageTimeoutA),
+                () => TryInstallHook<SendNotifyMessageDelegate>("SendNotifyMessageW", new SendNotifyMessageDelegate(HookedSendNotifyMessageW), out _originalSendNotifyMessageW),
+                () => TryInstallHook<SendNotifyMessageDelegate>("SendNotifyMessageA", new SendNotifyMessageDelegate(HookedSendNotifyMessageA), out _originalSendNotifyMessageA),
+                () => TryInstallHook<SendMessageCallbackDelegate>("SendMessageCallbackW", new SendMessageCallbackDelegate(HookedSendMessageCallbackW), out _originalSendMessageCallbackW),
+                () => TryInstallHook<SendMessageCallbackDelegate>("SendMessageCallbackA", new SendMessageCallbackDelegate(HookedSendMessageCallbackA), out _originalSendMessageCallbackA),
+                // CallWindowProc / DefWindowProc — other paths to deliver messages to WndProcs
+                () => TryInstallHook<CallWindowProcDelegate>("CallWindowProcW", new CallWindowProcDelegate(HookedCallWindowProcW), out _originalCallWindowProcW),
+                () => TryInstallHook<CallWindowProcDelegate>("CallWindowProcA", new CallWindowProcDelegate(HookedCallWindowProcA), out _originalCallWindowProcA),
+                () => TryInstallHook<DefWindowProcDelegate>("DefWindowProcW", new DefWindowProcDelegate(HookedDefWindowProcW), out _originalDefWindowProcW),
+                () => TryInstallHook<DefWindowProcDelegate>("DefWindowProcA", new DefWindowProcDelegate(HookedDefWindowProcA), out _originalDefWindowProcA),
+                // Capture control
+                () => TryInstallHook<SetCaptureDelegate>("SetCapture", new SetCaptureDelegate(HookedSetCapture), out _originalSetCapture),
+                () => TryInstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture), out _originalReleaseCapture),
+                // Hit testing / coordinate mapping
+                () => TryInstallHook<WindowFromPointDelegate>("WindowFromPoint", new WindowFromPointDelegate(HookedWindowFromPoint), out _originalWindowFromPoint),
+                () => TryInstallHook<ChildWindowFromPointExDelegate>("ChildWindowFromPointEx", new ChildWindowFromPointExDelegate(HookedChildWindowFromPointEx), out _originalChildWindowFromPointEx),
+                () => TryInstallHook<MapWindowPointsDelegate>("MapWindowPoints", new MapWindowPointsDelegate(HookedMapWindowPoints), out _originalMapWindowPoints)
             };
 
             try
@@ -189,7 +212,7 @@ namespace InkybotHook
                 {
                     EnsureWndProcSubclassed();
                     DrawDebugMarkerIfDue();
-                    ClickFixedPositionIfDue();
+                    //ClickFixedPositionIfDue(); // DISABLED: synthetic test clicks
 
                     if (_server.targetHwnd != IntPtr.Zero)
                     {
@@ -500,19 +523,33 @@ namespace InkybotHook
             LogFirstCall("WndProc");
             try
             {
-                NormalizeNonClientButtonMessage(hWnd, ref msg, ref wParam, ref lParam);
+                //NormalizeNonClientButtonMessage(hWnd, ref msg, ref wParam, ref lParam);
 
                 if (IsCursorOverrideActive())
                 {
+                    // Block ALL mouse/pointer button messages (down + up + NC variants)
+                    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
+                        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP ||
+                        msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP ||
+                        msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP ||
+                        msg == WM_POINTERDOWN || msg == WM_POINTERUP ||
+                        msg == WM_POINTERCAPTURECHANGED)
+                    {
+                        QueueMessage($"[CLICK-FLOW] WndProc BLOCKED: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X}");
+                        return IntPtr.Zero;
+                    }
+                /*
                     if (msg == WM_INPUT)
                     {
                         bool isMagic = lParam == MAGIC_RAWINPUT_HANDLE;
                         QueueMessage($"[CLICK-FLOW] WndProc received WM_INPUT: lParam=0x{lParam.ToInt64():X} isMagic={isMagic} wParam=0x{wParam.ToInt64():X}");
+                        return IntPtr.Zero;
                     }
 
                     if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
                         msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP)
                     {
+                        return IntPtr.Zero;
                         bool hasSentinel = ((long)wParam & BOT_INPUT_SENTINEL) != 0;
                         int lx = unchecked((short)((long)lParam & 0xFFFF));
                         int ly = unchecked((short)(((long)lParam >> 16) & 0xFFFF));
@@ -540,7 +577,7 @@ namespace InkybotHook
                             QueueMessage($"[CLICK-FLOW] WndProc BLOCKED real user click: msg=0x{msg:X4} wParam=0x{wParam.ToInt64():X} pos=({lx},{ly})");
                             return IntPtr.Zero; 
                         }
-                    }
+                    }*/
 
                     if (msg == WM_MOUSEMOVE)
                     {
@@ -696,6 +733,10 @@ namespace InkybotHook
                         int lLastYOffset = headerSize + 16;
                         Marshal.WriteInt32(pData, lLastXOffset, 0);
                         Marshal.WriteInt32(pData, lLastYOffset, 0);
+
+                        // Zero out button flags so real physical button presses don't reach Unity via raw input
+                        Marshal.WriteInt16(pData, headerSize + 4, 0); // usButtonFlags
+                        Marshal.WriteInt16(pData, headerSize + 6, 0); // usButtonData
                     }
                 }
                 return result;
@@ -749,7 +790,8 @@ namespace InkybotHook
                 Marshal.WriteByte(pData, headerSize + i, 0);
 
             // usButtonFlags at offset headerSize + 4 (after usFlags[2] + padding[2])
-            Marshal.WriteInt16(pData, headerSize + 4, (short)buttonFlags);
+            // Always zero — no button events through synthetic raw input path
+            Marshal.WriteInt16(pData, headerSize + 4, 0);
 
             // lLastX, lLastY already zeroed — no cursor movement
 
@@ -834,34 +876,35 @@ namespace InkybotHook
                 }
 
                 case WM_LBUTTONDOWN:
-                case WM_LBUTTONUP:
                 case WM_RBUTTONDOWN:
+                    if (IsCursorOverrideActive())
+                    {
+                        // TEMP: block ALL mouse downs unconditionally
+                        int fx = unchecked((short)((long)lpMsg.lParam & 0xFFFF));
+                        int fy = unchecked((short)(((long)lpMsg.lParam >> 16) & 0xFFFF));
+                        QueueMessage($"[CLICK-FLOW] FilterMessage KILL-ALL DOWN: msg=0x{lpMsg.message:X4} wParam=0x{lpMsg.wParam.ToInt64():X} pos=({fx},{fy})");
+                        lpMsg.message = WM_NULL;
+                    }
+                    break;
+
+                // Block WM_POINTER click messages (Win8+ touch/pen input that bypasses WM_LBUTTON)
+                case WM_POINTERDOWN:
+                case WM_POINTERUP:
+                case WM_POINTERCAPTURECHANGED:
+                    if (IsCursorOverrideActive())
+                    {
+                        QueueMessage($"[CLICK-FLOW] FilterMessage BLOCKED WM_POINTER: msg=0x{lpMsg.message:X4}");
+                        lpMsg.message = WM_NULL;
+                    }
+                    break;
+                case WM_LBUTTONUP:
                 case WM_RBUTTONUP:
                     if (IsCursorOverrideActive())
                     {
-                        bool hasSentinel = ((long)lpMsg.wParam & BOT_INPUT_SENTINEL) != 0;
                         int fx = unchecked((short)((long)lpMsg.lParam & 0xFFFF));
                         int fy = unchecked((short)(((long)lpMsg.lParam >> 16) & 0xFFFF));
-
-                        // Check if this click has a free pass
-                        if ((lpMsg.message == WM_LBUTTONDOWN || lpMsg.message == WM_LBUTTONUP) &&
-                            System.Threading.Interlocked.CompareExchange(ref _allowUnsentinelLButtonMessages, 0, 0) > 0)
-                        {
-                            QueueMessage($"[CLICK-FLOW] FilterMessage ACCEPTED free-pass: msg=0x{lpMsg.message:X4} pos=({fx},{fy})");
-                            break; 
-                        }
-                        // Bot click — let it through WITH sentinel intact.
-                        // WndProc will strip the sentinel when it processes this message.
-                        else if (hasSentinel)
-                        {
-                            QueueMessage($"[CLICK-FLOW] FilterMessage PASSING bot click (sentinel kept): msg=0x{lpMsg.message:X4} wParam=0x{lpMsg.wParam.ToInt64():X} pos=({fx},{fy})");
-                            break; 
-                        }
-                        else
-                        {
-                            QueueMessage($"[CLICK-FLOW] FilterMessage BLOCKED real click: msg=0x{lpMsg.message:X4} pos=({fx},{fy})");
-                            lpMsg.message = WM_NULL;
-                        }
+                        QueueMessage($"[CLICK-FLOW] FilterMessage KILL-ALL UP: msg=0x{lpMsg.message:X4} wParam=0x{lpMsg.wParam.ToInt64():X} pos=({fx},{fy})");
+                        lpMsg.message = WM_NULL;
                     }
                     break;
             }
@@ -992,8 +1035,8 @@ namespace InkybotHook
             LogFirstCall("GetAsyncKeyState");
             try
             {
-                if (vKey == VK_LBUTTON && _botLButtonDown) return unchecked((short)0x8000);
-                if (vKey == VK_RBUTTON && _botRButtonDown) return unchecked((short)0x8000);
+                // Always report mouse buttons as not pressed — block real physical clicks
+                if (vKey == VK_LBUTTON || vKey == VK_RBUTTON) return 0;
 
                 if (_originalGetAsyncKeyState != null)
                     return _originalGetAsyncKeyState(vKey);
@@ -1007,8 +1050,8 @@ namespace InkybotHook
             LogFirstCall("GetKeyState");
             try
             {
-                if (nVirtKey == VK_LBUTTON && _botLButtonDown) return unchecked((short)0x8000);
-                if (nVirtKey == VK_RBUTTON && _botRButtonDown) return unchecked((short)0x8000);
+                // Always report mouse buttons as not pressed — block real physical clicks
+                if (nVirtKey == VK_LBUTTON || nVirtKey == VK_RBUTTON) return 0;
 
                 if (_originalGetKeyState != null)
                     return _originalGetKeyState(nVirtKey);
@@ -1022,27 +1065,13 @@ namespace InkybotHook
             LogFirstCall("GetKeyboardState");
             try
             {
-                bool result = false;
-                if (_originalGetKeyboardState != null)
-                    result = _originalGetKeyboardState(lpKeyState);
+                bool result = _originalGetKeyboardState != null && _originalGetKeyboardState(lpKeyState);
 
-                if (IsCursorOverrideActive() && lpKeyState != IntPtr.Zero)
+                if (lpKeyState != IntPtr.Zero)
                 {
-                    if (!result)
-                    {
-                        for (int i = 0; i < 256; i++)
-                            Marshal.WriteByte(lpKeyState, i, 0);
-                    }
-
-                    byte left = Marshal.ReadByte(lpKeyState, VK_LBUTTON);
-                    byte right = Marshal.ReadByte(lpKeyState, VK_RBUTTON);
-
-                    left = _botLButtonDown ? (byte)(left | 0x80) : (byte)(left & 0x7F);
-                    right = _botRButtonDown ? (byte)(right | 0x80) : (byte)(right & 0x7F);
-
-                    Marshal.WriteByte(lpKeyState, VK_LBUTTON, left);
-                    Marshal.WriteByte(lpKeyState, VK_RBUTTON, right);
-                    return true;
+                    // Always force mouse buttons to not-pressed
+                    Marshal.WriteByte(lpKeyState, VK_LBUTTON, 0);
+                    Marshal.WriteByte(lpKeyState, VK_RBUTTON, 0);
                 }
                 return result;
             }
@@ -1151,6 +1180,10 @@ namespace InkybotHook
 
                             Marshal.WriteInt32(current, headerSize + 12, 0); // lLastX
                             Marshal.WriteInt32(current, headerSize + 16, 0); // lLastY
+
+                            // Zero out button flags so real physical button presses don't reach Unity via raw input
+                            Marshal.WriteInt16(current, headerSize + 4, 0); // usButtonFlags
+                            Marshal.WriteInt16(current, headerSize + 6, 0); // usButtonData
                         }
 
                         long aligned = ((long)dwSize + 7) & ~7L;
@@ -1199,12 +1232,11 @@ namespace InkybotHook
                         Marshal.WriteIntPtr(writePtr, 8, _validMouseHandle);            // hDevice
                         Marshal.WriteIntPtr(writePtr, 8 + IntPtr.Size, IntPtr.Zero);    // wParam
 
-                        // Write RAWMOUSE — zero everything, then set button flags
+                        // Write RAWMOUSE — zero everything, no button events allowed
                         for (int i = 0; i < rawMouseSize; i++)
                             Marshal.WriteByte(writePtr, headerSize + i, 0);
-                        Marshal.WriteInt16(writePtr, headerSize + 4, (short)buttonFlags);
 
-                        QueueMessage($"[EasyHook:Target] GetRawInputBuffer: appended synthetic RAWMOUSE flags=0x{buttonFlags:X4}");
+                        QueueMessage($"[EasyHook:Target] GetRawInputBuffer: appended synthetic RAWMOUSE (buttons suppressed, was flags=0x{buttonFlags:X4})");
 
                         writePtr = new IntPtr(writePtr.ToInt64() + alignedOneEvent);
                         remainingBytes -= alignedOneEvent;
@@ -1324,6 +1356,429 @@ namespace InkybotHook
                 return result;
             }
             catch { lpMsg = new MSG(); return false; }
+        }
+
+        #endregion
+
+        #region DispatchMessageW / DispatchMessageA hooks
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr DispatchMessageDelegate(ref MSG lpMsg);
+        private DispatchMessageDelegate _originalDispatchMessageW;
+        private DispatchMessageDelegate _originalDispatchMessageA;
+
+        private IntPtr HookedDispatchMessageW(ref MSG lpMsg)
+        {
+            LogFirstCall("DispatchMessageW");
+            return HookedDispatchMessageCommon(ref lpMsg, _originalDispatchMessageW);
+        }
+
+        private IntPtr HookedDispatchMessageA(ref MSG lpMsg)
+        {
+            LogFirstCall("DispatchMessageA");
+            return HookedDispatchMessageCommon(ref lpMsg, _originalDispatchMessageA);
+        }
+
+        private IntPtr HookedDispatchMessageCommon(ref MSG lpMsg, DispatchMessageDelegate original)
+        {
+            try
+            {
+                if (IsCursorOverrideActive() &&
+                    (lpMsg.message == WM_LBUTTONDOWN || lpMsg.message == WM_LBUTTONUP ||
+                     lpMsg.message == WM_RBUTTONDOWN || lpMsg.message == WM_RBUTTONUP ||
+                     lpMsg.message == WM_NCLBUTTONDOWN || lpMsg.message == WM_NCLBUTTONUP ||
+                     lpMsg.message == WM_NCRBUTTONDOWN || lpMsg.message == WM_NCRBUTTONUP ||
+                     lpMsg.message == WM_POINTERDOWN || lpMsg.message == WM_POINTERUP ||
+                     lpMsg.message == WM_POINTERCAPTURECHANGED))
+                {
+                    int x = unchecked((short)((long)lpMsg.lParam & 0xFFFF));
+                    int y = unchecked((short)(((long)lpMsg.lParam >> 16) & 0xFFFF));
+                    QueueMessage($"[CLICK-FLOW] DispatchMessage BLOCKED: msg=0x{lpMsg.message:X4} hwnd=0x{lpMsg.hwnd.ToInt64():X} wParam=0x{lpMsg.wParam.ToInt64():X} pos=({x},{y})");
+                    return IntPtr.Zero;
+                }
+            }
+            catch { }
+
+            try
+            {
+                if (original != null)
+                    return original(ref lpMsg);
+            }
+            catch { }
+            return IntPtr.Zero;
+        }
+
+        #endregion
+
+        #region SendMessage hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr SendMessageDelegate(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private SendMessageDelegate _originalSendMessageW;
+        private SendMessageDelegate _originalSendMessageA;
+
+        private bool IsMouseButtonMessage(uint msg)
+        {
+            return msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
+                   msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP ||
+                   msg == WM_NCLBUTTONDOWN || msg == WM_NCLBUTTONUP ||
+                   msg == WM_NCRBUTTONDOWN || msg == WM_NCRBUTTONUP;
+        }
+
+        private bool IsPointerMessage(uint msg)
+        {
+            return msg == WM_POINTERDOWN || msg == WM_POINTERUP;
+        }
+
+        private IntPtr HookedSendMessageW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("SendMessageW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X} wParam=0x{wParam.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalSendMessageW != null ? _originalSendMessageW(hWnd, Msg, wParam, lParam) : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        private IntPtr HookedSendMessageA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("SendMessageA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X} wParam=0x{wParam.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalSendMessageA != null ? _originalSendMessageA(hWnd, Msg, wParam, lParam) : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        #endregion
+
+        #region SendMessageTimeout hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr SendMessageTimeoutDelegate(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
+        private SendMessageTimeoutDelegate _originalSendMessageTimeoutW;
+        private SendMessageTimeoutDelegate _originalSendMessageTimeoutA;
+
+        private IntPtr HookedSendMessageTimeoutW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult)
+        {
+            LogFirstCall("SendMessageTimeoutW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageTimeoutW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    lpdwResult = IntPtr.Zero;
+                    return IntPtr.Zero;
+                }
+                return _originalSendMessageTimeoutW != null
+                    ? _originalSendMessageTimeoutW(hWnd, Msg, wParam, lParam, fuFlags, uTimeout, out lpdwResult)
+                    : (lpdwResult = IntPtr.Zero);
+            }
+            catch { lpdwResult = IntPtr.Zero; return IntPtr.Zero; }
+        }
+
+        private IntPtr HookedSendMessageTimeoutA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult)
+        {
+            LogFirstCall("SendMessageTimeoutA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageTimeoutA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    lpdwResult = IntPtr.Zero;
+                    return IntPtr.Zero;
+                }
+                return _originalSendMessageTimeoutA != null
+                    ? _originalSendMessageTimeoutA(hWnd, Msg, wParam, lParam, fuFlags, uTimeout, out lpdwResult)
+                    : (lpdwResult = IntPtr.Zero);
+            }
+            catch { lpdwResult = IntPtr.Zero; return IntPtr.Zero; }
+        }
+
+        #endregion
+
+        #region SendNotifyMessage hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate bool SendNotifyMessageDelegate(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private SendNotifyMessageDelegate _originalSendNotifyMessageW;
+        private SendNotifyMessageDelegate _originalSendNotifyMessageA;
+
+        private bool HookedSendNotifyMessageW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("SendNotifyMessageW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendNotifyMessageW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return true; // pretend success
+                }
+                return _originalSendNotifyMessageW != null && _originalSendNotifyMessageW(hWnd, Msg, wParam, lParam);
+            }
+            catch { return false; }
+        }
+
+        private bool HookedSendNotifyMessageA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("SendNotifyMessageA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendNotifyMessageA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return true;
+                }
+                return _originalSendNotifyMessageA != null && _originalSendNotifyMessageA(hWnd, Msg, wParam, lParam);
+            }
+            catch { return false; }
+        }
+
+        #endregion
+
+        #region SendMessageCallback hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate bool SendMessageCallbackDelegate(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, IntPtr lpResultCallBack, IntPtr dwData);
+        private SendMessageCallbackDelegate _originalSendMessageCallbackW;
+        private SendMessageCallbackDelegate _originalSendMessageCallbackA;
+
+        private bool HookedSendMessageCallbackW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, IntPtr lpResultCallBack, IntPtr dwData)
+        {
+            LogFirstCall("SendMessageCallbackW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageCallbackW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return true;
+                }
+                return _originalSendMessageCallbackW != null && _originalSendMessageCallbackW(hWnd, Msg, wParam, lParam, lpResultCallBack, dwData);
+            }
+            catch { return false; }
+        }
+
+        private bool HookedSendMessageCallbackA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, IntPtr lpResultCallBack, IntPtr dwData)
+        {
+            LogFirstCall("SendMessageCallbackA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] SendMessageCallbackA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return true;
+                }
+                return _originalSendMessageCallbackA != null && _originalSendMessageCallbackA(hWnd, Msg, wParam, lParam, lpResultCallBack, dwData);
+            }
+            catch { return false; }
+        }
+
+        #endregion
+
+        #region CallWindowProc hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr CallWindowProcDelegate(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private CallWindowProcDelegate _originalCallWindowProcW;
+        private CallWindowProcDelegate _originalCallWindowProcA;
+
+        private IntPtr HookedCallWindowProcW(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("CallWindowProcW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] CallWindowProcW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalCallWindowProcW != null
+                    ? _originalCallWindowProcW(lpPrevWndFunc, hWnd, Msg, wParam, lParam)
+                    : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        private IntPtr HookedCallWindowProcA(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("CallWindowProcA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] CallWindowProcA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalCallWindowProcA != null
+                    ? _originalCallWindowProcA(lpPrevWndFunc, hWnd, Msg, wParam, lParam)
+                    : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        #endregion
+
+        #region DefWindowProc hooks (W/A variants)
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr DefWindowProcDelegate(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private DefWindowProcDelegate _originalDefWindowProcW;
+        private DefWindowProcDelegate _originalDefWindowProcA;
+
+        private IntPtr HookedDefWindowProcW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("DefWindowProcW");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] DefWindowProcW BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalDefWindowProcW != null
+                    ? _originalDefWindowProcW(hWnd, Msg, wParam, lParam)
+                    : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        private IntPtr HookedDefWindowProcA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)
+        {
+            LogFirstCall("DefWindowProcA");
+            try
+            {
+                if (IsCursorOverrideActive() && (IsMouseButtonMessage(Msg) || IsPointerMessage(Msg)))
+                {
+                    QueueMessage($"[CLICK-FLOW] DefWindowProcA BLOCKED: msg=0x{Msg:X4} hwnd=0x{hWnd.ToInt64():X}");
+                    return IntPtr.Zero;
+                }
+                return _originalDefWindowProcA != null
+                    ? _originalDefWindowProcA(hWnd, Msg, wParam, lParam)
+                    : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        #endregion
+
+        #region SetCapture / ReleaseCapture hooks
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr SetCaptureDelegate(IntPtr hWnd);
+        private SetCaptureDelegate _originalSetCapture;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate bool ReleaseCaptureDelegate();
+        private ReleaseCaptureDelegate _originalReleaseCapture;
+
+        private IntPtr HookedSetCapture(IntPtr hWnd)
+        {
+            LogFirstCall("SetCapture");
+            try
+            {
+                // When cursor override is active, always return the target hwnd
+                // but still call the original so OS state stays consistent
+                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
+                {
+                    if (_originalSetCapture != null)
+                        _originalSetCapture(_server.targetHwnd);
+                    return _server.targetHwnd;
+                }
+                return _originalSetCapture != null ? _originalSetCapture(hWnd) : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        private bool HookedReleaseCapture()
+        {
+            LogFirstCall("ReleaseCapture");
+            try
+            {
+                // Block ReleaseCapture when override is active — keep capture locked to target
+                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
+                    return true; // pretend success
+                return _originalReleaseCapture != null && _originalReleaseCapture();
+            }
+            catch { return false; }
+        }
+
+        #endregion
+
+        #region WindowFromPoint / ChildWindowFromPointEx hooks
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr WindowFromPointDelegate(POINT Point);
+        private WindowFromPointDelegate _originalWindowFromPoint;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate IntPtr ChildWindowFromPointExDelegate(IntPtr hwndParent, POINT pt, uint uFlags);
+        private ChildWindowFromPointExDelegate _originalChildWindowFromPointEx;
+
+        private IntPtr HookedWindowFromPoint(POINT Point)
+        {
+            LogFirstCall("WindowFromPoint");
+            try
+            {
+                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
+                    return _server.targetHwnd;
+                return _originalWindowFromPoint != null ? _originalWindowFromPoint(Point) : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        private IntPtr HookedChildWindowFromPointEx(IntPtr hwndParent, POINT pt, uint uFlags)
+        {
+            LogFirstCall("ChildWindowFromPointEx");
+            try
+            {
+                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero)
+                    return _server.targetHwnd;
+                return _originalChildWindowFromPointEx != null
+                    ? _originalChildWindowFromPointEx(hwndParent, pt, uFlags)
+                    : IntPtr.Zero;
+            }
+            catch { return IntPtr.Zero; }
+        }
+
+        #endregion
+
+        #region MapWindowPoints hook
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate int MapWindowPointsDelegate(IntPtr hWndFrom, IntPtr hWndTo, ref POINT lpPoints, uint cPoints);
+        private MapWindowPointsDelegate _originalMapWindowPoints;
+
+        private int HookedMapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref POINT lpPoints, uint cPoints)
+        {
+            LogFirstCall("MapWindowPoints");
+            try
+            {
+                int result = _originalMapWindowPoints != null
+                    ? _originalMapWindowPoints(hWndFrom, hWndTo, ref lpPoints, cPoints)
+                    : 0;
+
+                // If mapping to/from our target window with cursor override, force spoofed position
+                if (IsCursorOverrideActive() && _server.targetHwnd != IntPtr.Zero && cPoints == 1)
+                {
+                    if (hWndTo == _server.targetHwnd && hWndFrom == IntPtr.Zero)
+                    {
+                        // Screen → client: force to test point
+                        lpPoints = new POINT { X = _testPoint.X, Y = _testPoint.Y };
+                    }
+                }
+                return result;
+            }
+            catch { return 0; }
         }
 
         #endregion

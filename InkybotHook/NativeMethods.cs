@@ -52,6 +52,25 @@ namespace InkybotHook
         // MK_* virtual-key flags only use the low 7 bits, so bit 30 is safe.
         public const long BOT_INPUT_SENTINEL = 0x40000000L;
 
+        // WM_POINTER messages (Win8+)
+        public const uint WM_POINTERDOWN       = 0x0246;
+        public const uint WM_POINTERUP         = 0x0247;
+        public const uint WM_POINTERUPDATE     = 0x0245;
+        public const uint WM_POINTERENTER      = 0x0249;
+        public const uint WM_POINTERLEAVE      = 0x024A;
+        public const uint WM_POINTERCAPTURECHANGED = 0x024C;
+
+        // Child window hit-test flags
+        public const uint CWP_ALL             = 0x0000;
+        public const uint CWP_SKIPINVISIBLE   = 0x0001;
+        public const uint CWP_SKIPDISABLED    = 0x0002;
+        public const uint CWP_SKIPTRANSPARENT = 0x0004;
+
+        // SendMessageTimeout flags
+        public const uint SMTO_NORMAL          = 0x0000;
+        public const uint SMTO_BLOCK           = 0x0001;
+        public const uint SMTO_ABORTIFHUNG     = 0x0002;
+
         #endregion
 
         #region Structs
@@ -151,6 +170,63 @@ namespace InkybotHook
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessageW(ref MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessageA(ref MSG lpMsg);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageW")]
+        public static extern IntPtr SendMessageW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageA")]
+        public static extern IntPtr SendMessageA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageTimeoutW")]
+        public static extern IntPtr SendMessageTimeoutW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageTimeoutA")]
+        public static extern IntPtr SendMessageTimeoutA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
+
+        [DllImport("user32.dll", EntryPoint = "SendNotifyMessageW")]
+        public static extern bool SendNotifyMessageW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "SendNotifyMessageA")]
+        public static extern bool SendNotifyMessageA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageCallbackW")]
+        public static extern bool SendMessageCallbackW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, IntPtr lpResultCallBack, IntPtr dwData);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageCallbackA")]
+        public static extern bool SendMessageCallbackA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, IntPtr lpResultCallBack, IntPtr dwData);
+
+        [DllImport("user32.dll", EntryPoint = "CallWindowProcA")]
+        public static extern IntPtr CallWindowProcA(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "DefWindowProcW")]
+        public static extern IntPtr DefWindowProcW(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "DefWindowProcA")]
+        public static extern IntPtr DefWindowProcA(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetCapture(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr WindowFromPoint(POINT Point);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr ChildWindowFromPointEx(IntPtr hwndParent, POINT pt, uint uFlags);
+
+        [DllImport("user32.dll")]
+        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref POINT lpPoints, uint cPoints);
+
+        [DllImport("user32.dll", EntryPoint = "GetPointerType", SetLastError = true)]
+        public static extern bool GetPointerType(uint pointerId, out uint pointerType);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetCursorPos(int X, int Y);
