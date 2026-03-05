@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using static InkybotHook.NativeMethods;
 
 namespace InkybotHook
@@ -124,7 +125,46 @@ namespace InkybotHook
             public uint ButtonChangeType;
         }
 
-        // --- UPDATED AUTOMATION STATE VARIABLES ---
+        // --- WIN32 RAW INPUT STRUCTS ---
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RAWINPUTHEADER
+        {
+            public uint dwType;
+            public uint dwSize;
+            public IntPtr hDevice;
+            public IntPtr wParam;
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct RAWMOUSE
+        {
+            [FieldOffset(0)]
+            public ushort usFlags;
+
+            // Union for ulButtons / usButtonFlags & usButtonData
+            [FieldOffset(4)]
+            public uint ulButtons;
+
+            [FieldOffset(4)]
+            public ushort usButtonFlags;
+
+            [FieldOffset(6)]
+            public ushort usButtonData;
+
+            [FieldOffset(8)]
+            public uint ulRawButtons;
+
+            [FieldOffset(12)]
+            public int lLastX;
+
+            [FieldOffset(16)]
+            public int lLastY;
+
+            [FieldOffset(20)]
+            public uint ulExtraInformation;
+        }
+
+        // --- AUTOMATION STATE VARIABLES ---
         private enum ForgeState { Idle, Hover, ButtonDown, ButtonUp } 
         private volatile ForgeState _rawState = ForgeState.Idle;
         private volatile ForgeState _msgState = ForgeState.Idle;
@@ -132,8 +172,34 @@ namespace InkybotHook
         private int _lastClickTime = 0;
         private IntPtr _mainHwnd = IntPtr.Zero; // Tracks the game's window handle
 
+        // captured raw input metadata (set from first real packet observed)
+        private IntPtr _capturedDevice = IntPtr.Zero;      // first raw input device id we observed
+        private uint _capturedPacketSize = 0;         // header.dwSize from the first observed packet
+        private uint _rawInputHeaderSize = 0;         // cbSizeHeader (typically 24 on x64)
+        private readonly object _deviceLock = new object();
+
+        // native buffer for prepared fake packet (unmanaged)
+        private IntPtr _nativeFakePacketPtr = IntPtr.Zero;
+        private int _nativeFakePacketSize = 0; // exact size in bytes
+        private readonly object _nativeBufLock = new object();
+        private const int MAGIC_RAW_HANDLE = 0x1337;
+
+        // Background thread to wake up the game
+        private Thread _automationThread;
+        private volatile bool _stopAutomationThread = false;
+
+        [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
+        private static extern void CopyMemory(IntPtr dest, IntPtr src, UIntPtr size);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+
         // =========================================================
-        // 3. INSTALLATION
+        // 4. INSTALLATION
         // =========================================================
         private List<EasyHook.LocalHook> InstallMousePositionHooks()
         {
@@ -169,293 +235,578 @@ namespace InkybotHook
             var isIconicHook = TryInstallHook<IsIconicDelegate>("IsIconic", new IsIconicDelegate(HookedIsIconic), out _originalIsIconic);
             if (isIconicHook != null) hooks.Add(isIconicHook);
 
-            /*
             var screenToClientHook = TryInstallHook<ScreenToClientDelegate>("ScreenToClient", new ScreenToClientDelegate(HookedScreenToClient), out _originalScreenToClient);
             if (screenToClientHook != null) hooks.Add(screenToClientHook);
 
             var clientToScreenHook = TryInstallHook<ClientToScreenDelegate>("ClientToScreen", new ClientToScreenDelegate(HookedClientToScreen), out _originalClientToScreen);
-            if (clientToScreenHook != null) hooks.Add(clientToScreenHook);*/
+            if (clientToScreenHook != null) hooks.Add(clientToScreenHook);
+
+            // Start the background automation thread
+            _stopAutomationThread = false;
+            _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };
+            _automationThread.Start();
 
             return hooks;
         }
 
         // =========================================================
-        // 4. TIMER AUTOMATION
+        // 5. TIMER AUTOMATION (Now running in background)
         // =========================================================
-        private void CheckTimer()
+        private void AutomationThreadLoop()
         {
-            if (!IsCursorOverrideActive) return;
-
-            int now = Environment.TickCount;
-            if (now - _lastClickTime >= 1000 && _rawState == ForgeState.Idle && _msgState == ForgeState.Idle)
+            while (!_stopAutomationThread)
             {
-                _rawState = ForgeState.ButtonDown; // Raw input doesn't need hover
-                _msgState = ForgeState.Hover;      // UI input MUST hover first
-                _lastClickTime = now;
+                try
+                {
+                    if (IsCursorOverrideActive)
+                    {
+                        // 1. Manage state via timer (you can trigger this from IPC instead if you prefer)
+                        int now = Environment.TickCount;
+                        if (now - _lastClickTime >= 1000 && _rawState == ForgeState.Idle && _msgState == ForgeState.Idle)
+                        {
+                            _rawState = ForgeState.ButtonDown;
+                            _msgState = ForgeState.Hover;
+                            _lastClickTime = now;
+                        }
+
+                        // 2. Wake up the main thread if we have work to do
+                        bool pendingRaw = (_rawState == ForgeState.ButtonDown && _lastInjectedRawState != ForgeState.ButtonDown) ||
+                                          (_rawState == ForgeState.ButtonUp && _lastInjectedRawState != ForgeState.ButtonUp);
+                        
+                        bool pendingMsg = _msgState != ForgeState.Idle;
+
+                        if ((pendingRaw || pendingMsg) && _mainHwnd != IntPtr.Zero)
+                        {
+                            // Spam a harmless message to force the game out of WaitMessage()
+                            PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _server.ReportMessage($"[EXCEPTION in AutomationThreadLoop]\n{ex}");
+                }
+
+                // Sleep for ~1 frame (16ms) to avoid destroying CPU performance
+                Thread.Sleep(16);
             }
         }
 
         // =========================================================
-        // 5. IMPLEMENTATIONS
+        // 6. IMPLEMENTATIONS
         // =========================================================
 
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
-            if (IsCursorOverrideActive)
+            try
             {
-                lpPoint = GetFixedScreenPoint();
-                return true;
+                if (IsCursorOverrideActive)
+                {
+                    lpPoint = GetFixedScreenPoint();
+                    return true;
+                }
+                return _originalGetCursorPos(out lpPoint);
             }
-            return _originalGetCursorPos(out lpPoint);
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetCursorPos]\n{ex}");
+                return _originalGetCursorPos(out lpPoint);
+            }
         }
 
         private bool HookedGetCursorInfo(ref CURSORINFO pci)
         {
-            bool result = _originalGetCursorInfo(ref pci);
-            if (IsCursorOverrideActive && result)
+            bool calledOriginal = false;
+            bool result = false;
+            try
             {
-                pci.ptScreenPos = GetFixedScreenPoint();
+                result = _originalGetCursorInfo(ref pci);
+                calledOriginal = true;
+
+                if (IsCursorOverrideActive && result)
+                {
+                    pci.ptScreenPos = GetFixedScreenPoint();
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetCursorInfo]\n{ex}");
+                if (!calledOriginal) return _originalGetCursorInfo(ref pci);
+                return result;
+            }
         }
 
         private bool HookedGetPointerInfo(uint pointerId, ref POINTER_INFO pointerInfo)
         {
-            bool result = _originalGetPointerInfo(pointerId, ref pointerInfo);
-            if (IsCursorOverrideActive && result)
+            bool calledOriginal = false;
+            bool result = false;
+            try
             {
-                pointerInfo.ptPixelLocation = GetFixedScreenPoint();
-                pointerInfo.ptPixelLocationRaw = GetFixedScreenPoint();
-                
-                return true;
+                result = _originalGetPointerInfo(pointerId, ref pointerInfo);
+                calledOriginal = true;
+
+                if (IsCursorOverrideActive && result)
+                {
+                    pointerInfo.ptPixelLocation = GetFixedScreenPoint();
+                    pointerInfo.ptPixelLocationRaw = GetFixedScreenPoint();
+                    return true;
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetPointerInfo]\n{ex}");
+                if (!calledOriginal) return _originalGetPointerInfo(pointerId, ref pointerInfo);
+                return result;
+            }
         }
 
-        private bool HookedIsIconic(IntPtr hWnd) { return false; }
-
-
+        private bool HookedIsIconic(IntPtr hWnd) 
+        { 
+            try { return false; } 
+            catch { return false; } 
+        }
 
         // --- THE MESSAGE PUMP HOOKS (BACKGROUND UI DISPATCHER) ---
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
-            CheckTimer();
+            string step = "Init";
+            bool calledOriginal = false;
+            bool result = false;
 
-            bool result = _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
-
-            if (IsCursorOverrideActive)
+            try
             {
-                // 1. Capture the window handle so we can do coordinate math
-                if (_mainHwnd == IntPtr.Zero && lpMsg.hwnd != IntPtr.Zero) 
+                step = "Calling _originalPeekMessageW";
+                result = _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+                calledOriginal = true;
+
+                if (IsCursorOverrideActive)
                 {
-                    _mainHwnd = lpMsg.hwnd;
-                }
+                    step = "Capturing main hWnd";
+                    if (_mainHwnd == IntPtr.Zero && lpMsg.hwnd != IntPtr.Zero) 
+                    {
+                        _mainHwnd = lpMsg.hwnd;
+                    }
 
-                // 2. Filter physical mouse movements, BUT keep the position locked!
-                if (result) FilterMouseMessage(ref lpMsg);
+                    step = "Filtering mouse message";
+                    if (result) FilterMouseMessage(ref lpMsg);
 
-                // 3. Inject our sequence (Hover -> Down -> Up) into empty queues
-                if (_msgState != ForgeState.Idle && (!result || lpMsg.message == WM_NULL))
-                {
-                    // Fallback to active window if PeekMessage was called with a null hWnd
-                    IntPtr targetHwnd = (hWnd != IntPtr.Zero) ? hWnd : _mainHwnd;
-                    if (targetHwnd == IntPtr.Zero) return result; 
-
-                    lpMsg.hwnd = targetHwnd; 
+                    // Check injection state
+                    bool pendingRaw = (_rawState == ForgeState.ButtonDown && _lastInjectedRawState != ForgeState.ButtonDown) ||
+                                      (_rawState == ForgeState.ButtonUp && _lastInjectedRawState != ForgeState.ButtonUp);
                     
-                    // --- TRANSLATE SCREEN TO CLIENT COORDS ---
-                    POINT target = GetFixedScreenPoint();
-                    lpMsg.pt = target; 
-                    lpMsg.time = (uint)Environment.TickCount;
+                    bool pendingMsg = _msgState != ForgeState.Idle;
 
-                    // Pointer messages use Screen Coordinates in lParam
-                    lpMsg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF));
-
-                    // The wParam for the primary mouse pointer is usually ID 1 in the LOWORD. 
-                    // We use 1 to match the ID Unity expects for the mouse (as seen in your log).
-                    lpMsg.wParam = (IntPtr)1; 
-
-                    // --- THE 4-STEP STATE MACHINE (NOW USING POINTERS) ---
-                    if (_msgState == ForgeState.Hover)
+                    step = "Injecting automated message state";
+                    if ((pendingRaw || pendingMsg) && (!result || lpMsg.message == WM_NULL))
                     {
-                        lpMsg.message = 0x0245; // WM_POINTERUPDATE
-                        //lpMsg.message = WM_MOUSEMOVE; 
-                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
-                    }
-                    else if (_msgState == ForgeState.ButtonDown)
-                    {
-                        lpMsg.message = 0x0246; // WM_POINTERDOWN
-                        //lpMsg.message = WM_LBUTTONDOWN; 
-                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
-                    }
-                    else if (_msgState == ForgeState.ButtonUp)
-                    {
-                        lpMsg.message = 0x0247; // WM_POINTERUP
-                        //lpMsg.message = WM_LBUTTONUP; 
-                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
-                    }
+                        IntPtr targetHwnd = (hWnd != IntPtr.Zero) ? hWnd : _mainHwnd;
+                        if (targetHwnd == IntPtr.Zero) return result; 
 
-                    return true;
+                        lpMsg.hwnd = targetHwnd; 
+                        POINT target = GetFixedScreenPoint();
+                        lpMsg.pt = target; 
+                        lpMsg.time = (uint)Environment.TickCount;
+
+                        if (pendingRaw)
+                        {
+                            // Wake up GetRawInputBuffer
+                            lpMsg.message = WM_INPUT;
+                            lpMsg.wParam = IntPtr.Zero; 
+                            lpMsg.lParam = (IntPtr)MAGIC_RAW_HANDLE;
+                            return true;
+                        }
+                        else if (pendingMsg)
+                        {
+                            // Inject UI events
+                            lpMsg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF));
+                            lpMsg.wParam = (IntPtr)1; 
+
+                            if (_msgState == ForgeState.Hover)
+                            {
+                                lpMsg.message = 0x0245; // WM_POINTERUPDATE
+                                if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
+                            }
+                            else if (_msgState == ForgeState.ButtonDown)
+                            {
+                                lpMsg.message = 0x0246; // WM_POINTERDOWN
+                                if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
+                            }
+                            else if (_msgState == ForgeState.ButtonUp)
+                            {
+                                lpMsg.message = 0x0247; // WM_POINTERUP
+                                if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
+                            }
+                            return true;
+                        }
+                    }
                 }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedPeekMessageW | Step: {step}]\n{ex}");
+                if (!calledOriginal) return _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+                return result;
+            }
         }
 
         private int HookedGetMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax)
         {
-            int result = _originalGetMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
-            if (IsCursorOverrideActive && result > 0)
+            bool calledOriginal = false;
+            int result = 0;
+            try
             {
-                FilterMouseMessage(ref lpMsg);
+                result = _originalGetMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+                calledOriginal = true;
+
+                if (IsCursorOverrideActive && result > 0)
+                {
+                    FilterMouseMessage(ref lpMsg);
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetMessageW]\n{ex}");
+                if (!calledOriginal) return _originalGetMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+                return result;
+            }
         }
 
         private void FilterMouseMessage(ref MSG msg)
         {
-            bool isStandardMouse = (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST);
-            bool isPointerOrTouch = (msg.message >= WM_POINTERFIRST && msg.message <= WM_POINTERLAST);
-            
-            // --- 1. HIJACK LEGACY MOUSE MOVEMENT ---
-            if (msg.message == 0x0200 /* WM_MOUSEMOVE */)
+            try
             {
-                POINT target = GetFixedScreenPoint();
-                msg.pt = target; // Lock absolute screen coordinates
-
-                if (_mainHwnd != IntPtr.Zero)
-                {
-                    _originalScreenToClient(_mainHwnd, ref target); // Convert to client
-                    msg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF)); // Lock relative coordinates
-                }
-                return; 
-            }
-
-            // --- 2. HIJACK MODERN POINTER MOVEMENT ---
-            if (msg.message == 0x0245 /* WM_POINTERUPDATE */)
-            {
-                POINT target = GetFixedScreenPoint();
-                msg.pt = target; // Lock absolute screen coordinates
+                bool isStandardMouse = (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST);
+                bool isPointerOrTouch = (msg.message >= WM_POINTERFIRST && msg.message <= WM_POINTERLAST);
                 
-                // DO NOT CONVERT TO CLIENT! WM_POINTERUPDATE expects Screen Coordinates in the lParam.
-                msg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF)); 
-                return;
+                // If it is a physical mouse or touch event from the OS, completely shred it.
+                // We do not want the physical mouse interfering with our injected bot clicks.
+                if (isStandardMouse || isPointerOrTouch)
+                {
+                    msg.message = WM_NULL; 
+                }
             }
-
-            // Shred everything else (physical clicks, raw input notifications, touch events)
-            if (isStandardMouse || isPointerOrTouch/* || msg.message == WM_INPUT*/) // todo by removing this, real clicks are coming through now 
+            catch (Exception ex)
             {
-                msg.message = WM_NULL; 
+                _server.ReportMessage($"[EXCEPTION in FilterMouseMessage]\n{ex}");
             }
         }
 
         // --- THE RAW INPUT HOOKS (3D WORLD DISPATCHER) ---
         private uint HookedGetRawInputData(IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
-            uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
+            string step = "Init";
+            bool calledOriginal = false;
+            uint result = 0;
 
-            if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
+            try
             {
-                // Only modify if it's asking for the actual header/data (RID_INPUT = 0x10000003)
-                if (uiCommand == RID_INPUT)
+                // -------------------------------------------------------------
+                // SYNTHETIC INJECTION (THE MAGIC HANDLE BYPASS)
+                // -------------------------------------------------------------
+                if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE && uiCommand == RID_INPUT)
                 {
-                    // 1. CRITICAL SAFETY FIX: Read only the header first!
-                    // This prevents out-of-bounds memory crashes if the packet is a smaller Keyboard event.
-                    RAWINPUTHEADER header = (RAWINPUTHEADER)Marshal.PtrToStructure(pData, typeof(RAWINPUTHEADER));
-                    
-                    // 2. Only cast to the full RAWINPUT struct if we are absolutely sure it is a mouse
-                    if (header.dwType == 0) // RIM_TYPEMOUSE
+                    if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0) return unchecked((uint)-1);
+
+                    // 1. Unity is asking for the size of the buffer needed
+                    if (pData == IntPtr.Zero)
                     {
-                        RAWINPUT raw = (RAWINPUT)Marshal.PtrToStructure(pData, typeof(RAWINPUT));
-                        
-                        // Neutralize physical hardware clicks
-                        raw.mouse.ulButtons = 0;
-                        raw.mouse.lLastX = 0;
-                        raw.mouse.lLastY = 0;
-                        
-                        // Write the scrubbed data back to memory
-                        Marshal.StructureToPtr(raw, pData, false);
+                        pcbSize = _capturedPacketSize;
+                        return 0; // 0 means success for a size query
+                    }
+
+                    // 2. Unity's buffer is too small
+                    if (pcbSize < _capturedPacketSize)
+                    {
+                        pcbSize = _capturedPacketSize;
+                        return unchecked((uint)-1); 
+                    }
+
+                    // 3. Unity is providing the buffer, fill it with our synthetic data!
+                    uint buttonFlag = 0;
+
+                    if (_rawState == ForgeState.ButtonDown)
+                    {
+                        buttonFlag = (uint)RI_MOUSE_LEFT_BUTTON_DOWN;
+                        _lastInjectedRawState = ForgeState.ButtonDown;
+                        _rawState = ForgeState.ButtonUp; // Advance state machine
+                    }
+                    else if (_rawState == ForgeState.ButtonUp)
+                    {
+                        buttonFlag = (uint)RI_MOUSE_LEFT_BUTTON_UP;
+                        _lastInjectedRawState = ForgeState.ButtonUp;
+                        _rawState = ForgeState.Idle; // Advance state machine
+                    }
+                    else
+                    {
+                        return unchecked((uint)-1);
+                    }
+
+                    // Pack the unmanaged memory and copy it to Unity's pointer
+                    if (EnsureNativePrepared(buttonFlag))
+                    {
+                        lock (_nativeBufLock)
+                        {
+                            CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
+                            return _capturedPacketSize; // Return bytes copied
+                        }
+                    }
+                    return unchecked((uint)-1);
+                }
+                // -------------------------------------------------------------
+
+                // If it's not our magic handle, let the OS handle the real hardware input
+                step = "Calling _originalGetRawInputData";
+                result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
+                calledOriginal = true;
+
+                if (!IsCursorOverrideActive) return result;
+                if (pData == IntPtr.Zero || result == 0 || result == unchecked((uint)-1)) return result;
+                if (uiCommand != RID_INPUT) return result;
+
+                step = "Setting Header Size";
+                if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
+
+                step = "Marshaling RAWINPUTHEADER";
+                RAWINPUTHEADER header = Marshal.PtrToStructure<RAWINPUTHEADER>(pData);
+
+                if (header.dwType == RIM_TYPEMOUSE && header.hDevice != IntPtr.Zero)
+                {
+                    step = "Capturing device metadata";
+                    lock (_deviceLock)
+                    {
+                        if (_capturedDevice == IntPtr.Zero) _capturedDevice = header.hDevice;
+                        if (_capturedPacketSize == 0 && header.dwSize != 0) _capturedPacketSize = header.dwSize;
                     }
                 }
+
+                if (header.dwType == RIM_TYPEMOUSE)
+                {
+                    step = "Scrubbing RAWMOUSE struct";
+                    if (header.dwSize != 0 && header.dwSize <= pcbSize)
+                    {
+                        long headerSize = (_rawInputHeaderSize != 0) ? _rawInputHeaderSize : 24;
+                        IntPtr pMouse = new IntPtr(pData.ToInt64() + headerSize);
+
+                        RAWMOUSE mouse = Marshal.PtrToStructure<RAWMOUSE>(pMouse);
+                        
+                        mouse.usButtonFlags = 0; 
+                        mouse.lLastX = 0;
+                        mouse.lLastY = 0;
+
+                        Marshal.StructureToPtr(mouse, pMouse, false);
+                    }
+                }
+
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetRawInputData | Step: {step}]\n{ex}");
+                if (!calledOriginal) return _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
+                return result;
+            }
         }
 
         private uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
-            uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
+            string step = "Init";
+            bool calledOriginal = false;
+            uint result = 0;
 
-            if (!IsCursorOverrideActive) return result;
-            if (pData == IntPtr.Zero) return result;
-
-            if (result > 0 && result != unchecked((uint)-1))
+            try
             {
-                ScrubRawInputBuffer(pData, (int)result); 
-                return result; 
-            }
+                step = "Calling _originalGetRawInputBuffer";
+                result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
+                calledOriginal = true;
 
-            // ONLY inject if buffer is exactly 0
-            if (result == 0)
-            {
-                if (_rawState == ForgeState.ButtonDown) // <-- USING _rawState!
+                if (!IsCursorOverrideActive) return result;
+                if (pData == IntPtr.Zero) return result;
+
+                step = "Setting header size";
+                if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
+
+                step = "Scrubbing existing buffer";
+                if (result > 0 && result != unchecked((uint)-1))
                 {
-                    if (_lastInjectedRawState != ForgeState.ButtonDown)
+                    ScrubRawInputBuffer(pData, (int)result);
+                    return result;
+                }
+
+                step = "Checking for metadata";
+                if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0 || _rawInputHeaderSize == 0) return result;
+
+                step = "Handling Injection State Machine";
+                if (result == 0)
+                {
+                    if (_rawState == ForgeState.ButtonDown)
                     {
-                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_DOWN);
-                        if (pcbSize >= fakeInput.header.dwSize)
+                        step = "Injecting ButtonDown - Prepare";
+                        if (_lastInjectedRawState != ForgeState.ButtonDown)
                         {
-                            Marshal.StructureToPtr(fakeInput, pData, false);
-                            _lastInjectedRawState = ForgeState.ButtonDown;
-                            return 1; 
+                            if (!EnsureNativePrepared((uint)RI_MOUSE_LEFT_BUTTON_DOWN)) return result;
+
+                            step = "Injecting ButtonDown - Copy Memory";
+                            lock (_nativeBufLock)
+                            {
+                                if (_nativeFakePacketPtr == IntPtr.Zero || _nativeFakePacketSize == 0) return result;
+                                if (pcbSize < (uint)_nativeFakePacketSize) return result;
+
+                                CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_nativeFakePacketSize);
+                                _lastInjectedRawState = ForgeState.ButtonDown;
+                                return 1;
+                            }
+                        }
+                        else
+                        {
+                            _rawState = ForgeState.ButtonUp;
                         }
                     }
-                    else
+                    else if (_rawState == ForgeState.ButtonUp)
                     {
-                        _rawState = ForgeState.ButtonUp; // Advance the hardware state!
-                    }
-                }
-                else if (_rawState == ForgeState.ButtonUp) // <-- USING _rawState!
-                {
-                    if (_lastInjectedRawState != ForgeState.ButtonUp)
-                    {
-                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_UP);
-                        if (pcbSize >= fakeInput.header.dwSize)
+                        step = "Injecting ButtonUp - Prepare";
+                        if (_lastInjectedRawState != ForgeState.ButtonUp)
                         {
-                            Marshal.StructureToPtr(fakeInput, pData, false);
-                            _lastInjectedRawState = ForgeState.ButtonUp;
-                            return 1; 
+                            if (!EnsureNativePrepared((uint)RI_MOUSE_LEFT_BUTTON_UP)) return result;
+
+                            step = "Injecting ButtonUp - Copy Memory";
+                            lock (_nativeBufLock)
+                            {
+                                if (_nativeFakePacketPtr == IntPtr.Zero || _nativeFakePacketSize == 0) return result;
+                                if (pcbSize < (uint)_nativeFakePacketSize) return result;
+
+                                CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_nativeFakePacketSize);
+                                _lastInjectedRawState = ForgeState.ButtonUp;
+                                return 1;
+                            }
+                        }
+                        else
+                        {
+                            _rawState = ForgeState.Idle;
+                            _lastInjectedRawState = ForgeState.Idle;
                         }
                     }
-                    else
-                    {
-                        _rawState = ForgeState.Idle;
-                        _lastInjectedRawState = ForgeState.Idle;
-                    }
                 }
-            }
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetRawInputBuffer | Step: {step}]\n{ex}");
+                if (!calledOriginal) return _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
+                return result;
+            }
         }
 
-        private RAWINPUT CreateFakeRawInputPacket(int buttonFlag) {
-            RAWINPUT raw = new RAWINPUT();
-            raw.header.dwType = 0; // RIM_TYPEMOUSE
-            raw.header.dwSize = (uint)Marshal.SizeOf(typeof(RAWINPUT));
-            raw.header.hDevice = IntPtr.Zero; // Spoof a generic device
-            raw.header.wParam = IntPtr.Zero;
+        // =========================================================
+        // NATIVE STRUCT PACKING AND MEMORY MANAGEMENT
+        // =========================================================
 
-            // No movement, purely a button state change
-            raw.mouse.usFlags = 0; 
-            
-            // Put the click flag directly into ulButtons!
-            // Since usButtonFlags is the lower 16 bits of the union, this places the bytes perfectly.
-            raw.mouse.ulButtons = (uint)buttonFlag; 
-            
-            raw.mouse.ulRawButtons = 0;
-            raw.mouse.lLastX = 0;
-            raw.mouse.lLastY = 0;
-            raw.mouse.ulExtraInformation = 0;
+        private bool EnsureNativePrepared(uint buttonFlag)
+        {
+            try
+            {
+                lock (_deviceLock)
+                {
+                    if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0 || _rawInputHeaderSize == 0)
+                        return false;
+                }
 
-            return raw;
+                lock (_nativeBufLock)
+                {
+                    if (_nativeFakePacketPtr != IntPtr.Zero && _nativeFakePacketSize != _capturedPacketSize)
+                    {
+                        Marshal.FreeHGlobal(_nativeFakePacketPtr);
+                        _nativeFakePacketPtr = IntPtr.Zero;
+                    }
+
+                    if (_nativeFakePacketPtr == IntPtr.Zero)
+                    {
+                        int alignedSize = (int)((_capturedPacketSize + 7) & ~7);
+                        _nativeFakePacketPtr = Marshal.AllocHGlobal(alignedSize);
+                        _nativeFakePacketSize = (int)_capturedPacketSize;
+                        
+                        byte[] zeros = new byte[alignedSize];
+                        Marshal.Copy(zeros, 0, _nativeFakePacketPtr, alignedSize);
+                    }
+
+                    RAWINPUTHEADER header = new RAWINPUTHEADER
+                    {
+                        dwType = RIM_TYPEMOUSE,
+                        dwSize = _capturedPacketSize,
+                        hDevice = _capturedDevice,
+                        wParam = IntPtr.Zero
+                    };
+
+                    RAWMOUSE mouse = new RAWMOUSE
+                    {
+                        usFlags = 0, 
+                        ulButtons = buttonFlag,
+                        ulRawButtons = 0,
+                        lLastX = 0,
+                        lLastY = 0,
+                        ulExtraInformation = 0
+                    };
+
+                    // Write the structs to our unmanaged memory buffer
+                    Marshal.StructureToPtr(header, _nativeFakePacketPtr, false);
+
+                    IntPtr pMouse = new IntPtr(_nativeFakePacketPtr.ToInt64() + _rawInputHeaderSize);
+                    Marshal.StructureToPtr(mouse, pMouse, false);
+
+                    // ========================================================
+                    // DEBUG: READ AND DISPLAY THE RAW MEMORY BYTES
+                    // ========================================================
+                    byte[] debugBytes = new byte[_capturedPacketSize];
+                    Marshal.Copy(_nativeFakePacketPtr, debugBytes, 0, (int)_capturedPacketSize);
+
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                    sb.AppendLine($"Button Flag: {buttonFlag}");
+                    sb.AppendLine($"Packet Size: {_capturedPacketSize} bytes");
+                    sb.AppendLine($"Header Size: {_rawInputHeaderSize} bytes\n");
+                    
+                    for (int i = 0; i < debugBytes.Length; i++)
+                    {
+                        sb.Append($"{debugBytes[i]:X2} ");
+                        // Add a newline every 16 bytes for standard hex dump formatting
+                        if ((i + 1) % 16 == 0) sb.AppendLine();
+                    }
+
+                    // Pop the Win32 message box. 
+                    MessageBox(IntPtr.Zero, sb.ToString(), "Injected Fake RAWINPUT Packet", 0);
+                    // ========================================================
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in EnsureNativePrepared]\n{ex}");
+                return false;
+            }
+        }
+
+        private void FreeNativeFakePacket()
+        {
+            try
+            {
+                lock (_nativeBufLock)
+                {
+                    if (_nativeFakePacketPtr != IntPtr.Zero)
+                    {
+                        Marshal.FreeHGlobal(_nativeFakePacketPtr);
+                        _nativeFakePacketPtr = IntPtr.Zero;
+                        _nativeFakePacketSize = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in FreeNativeFakePacket]\n{ex}");
+            }
         }
 
         private void ScrubRawInputBuffer(IntPtr pData, int packetCount)
@@ -465,87 +816,137 @@ namespace InkybotHook
                 IntPtr currentPtr = pData;
                 for (int i = 0; i < packetCount; i++)
                 {
-                    uint dwType = (uint)Marshal.ReadInt32(currentPtr, 0);
-                    uint dwSize = (uint)Marshal.ReadInt32(currentPtr, 4);
+                    RAWINPUTHEADER header = Marshal.PtrToStructure<RAWINPUTHEADER>(currentPtr);
 
-                    if (dwType == 0) // RIM_TYPEMOUSE
+                    if (header.dwType == RIM_TYPEMOUSE)
                     {
-                        Marshal.WriteInt32(currentPtr, 36, 0); // Scrub X Delta
-                        Marshal.WriteInt32(currentPtr, 40, 0); // Scrub Y Delta
-                        Marshal.WriteInt16(currentPtr, 28, 0); // Scrub Physical Clicks
+                        try
+                        {
+                            long headerSize = (_rawInputHeaderSize != 0) ? _rawInputHeaderSize : 24;
+                            IntPtr pMouse = new IntPtr(currentPtr.ToInt64() + headerSize);
+
+                            RAWMOUSE mouse = Marshal.PtrToStructure<RAWMOUSE>(pMouse);
+                            
+                            mouse.usButtonFlags = 0; 
+                            mouse.lLastX = 0;        
+                            mouse.lLastY = 0;        
+
+                            Marshal.StructureToPtr(mouse, pMouse, false); 
+                        }
+                        catch (Exception innerEx)
+                        { 
+                            _server.ReportMessage($"[EXCEPTION in ScrubRawInputBuffer per-packet scrub]\n{innerEx}");
+                        }
                     }
 
-                    if (dwSize == 0) break; // Safety net to prevent infinite loops
+                    if (header.dwSize == 0) break;
 
-                    // CRITICAL FIX: Windows 64-bit requires 8-byte alignment!
-                    // We must round the pointer up to the nearest multiple of 8.
-                    long nextPtr = currentPtr.ToInt64() + dwSize;
+                    long nextPtr = currentPtr.ToInt64() + header.dwSize;
                     nextPtr = (nextPtr + 7) & ~7L; 
                     currentPtr = new IntPtr(nextPtr);
                 }
             }
-            catch { } // C# 4.0+ cannot catch Access Violations, which is why the math above is mandatory!
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in ScrubRawInputBuffer loop]\n{ex}");
+            }
         }
 
         // --- THE HARDWARE STATE HOOKS (MODIFIER BYPASS) ---
         private short HookedGetAsyncKeyState(int vKey)
         {
-            if (IsCursorOverrideActive)
+            try
             {
-                if (vKey == 16 || vKey == 17 || vKey == 18 || vKey == 91 || vKey == 92 || vKey == 20) return 0;
-
-                if (vKey == VK_LBUTTON || vKey == VK_RBUTTON)
+                if (IsCursorOverrideActive)
                 {
-                    // Sync strictly with the raw state machine!
-                    if (vKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
-                        return unchecked((short)0x8000); 
-                    return 0;
+                    if (vKey == 16 || vKey == 17 || vKey == 18 || vKey == 91 || vKey == 92 || vKey == 20) return 0;
+
+                    if (vKey == VK_LBUTTON || vKey == VK_RBUTTON)
+                    {
+                        if (vKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
+                            return unchecked((short)0x8000); 
+                        return 0;
+                    }
                 }
+                return _originalGetAsyncKeyState(vKey);
             }
-            return _originalGetAsyncKeyState(vKey);
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetAsyncKeyState]\n{ex}");
+                return _originalGetAsyncKeyState(vKey);
+            }
         }
 
         private short HookedGetKeyState(int nVirtKey)
         {
-            if (IsCursorOverrideActive)
+            try
             {
-                if (nVirtKey == 16 || nVirtKey == 17 || nVirtKey == 18 || nVirtKey == 91 || nVirtKey == 92 || nVirtKey == 20) return 0;
-
-                if (nVirtKey == VK_LBUTTON || nVirtKey == VK_RBUTTON)
+                if (IsCursorOverrideActive)
                 {
-                    if (nVirtKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
-                        return unchecked((short)0x8000);
-                    return 0;
+                    if (nVirtKey == 16 || nVirtKey == 17 || nVirtKey == 18 || nVirtKey == 91 || nVirtKey == 92 || nVirtKey == 20) return 0;
+
+                    if (nVirtKey == VK_LBUTTON || nVirtKey == VK_RBUTTON)
+                    {
+                        if (nVirtKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
+                            return unchecked((short)0x8000);
+                        return 0;
+                    }
                 }
+                return _originalGetKeyState(nVirtKey);
             }
-            return _originalGetKeyState(nVirtKey);
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedGetKeyState]\n{ex}");
+                return _originalGetKeyState(nVirtKey);
+            }
         }
 
         private bool HookedScreenToClient(IntPtr hWnd, ref POINT lpPoint)
         {
-            if (IsCursorOverrideActive)
+            try
             {
-                // 1. Overwrite whatever physical point the game provided with our fake screen point
-                lpPoint = GetFixedScreenPoint();
-                
-                // 2. Let Windows do the math to convert OUR fake screen point into a client point
+                if (IsCursorOverrideActive)
+                {
+                    lpPoint = GetFixedScreenPoint();
+                }
                 return _originalScreenToClient(hWnd, ref lpPoint);
             }
-            
-            return _originalScreenToClient(hWnd, ref lpPoint);
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedScreenToClient]\n{ex}");
+                return _originalScreenToClient(hWnd, ref lpPoint);
+            }
         }
 
         private bool HookedClientToScreen(IntPtr hWnd, ref POINT lpPoint)
         {
-            bool result = _originalClientToScreen(hWnd, ref lpPoint);
-            
-            if (IsCursorOverrideActive && result)
+            bool calledOriginal = false;
+            bool result = false;
+            try
             {
-                // No matter what client point they asked about, tell them the screen point is our fixed target
-                lpPoint = GetFixedScreenPoint();
+                result = _originalClientToScreen(hWnd, ref lpPoint);
+                calledOriginal = true;
+                
+                if (IsCursorOverrideActive && result)
+                {
+                    lpPoint = GetFixedScreenPoint();
+                }
+                
+                return result;
             }
-            
-            return result;
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in HookedClientToScreen]\n{ex}");
+                if (!calledOriginal) return _originalClientToScreen(hWnd, ref lpPoint);
+                return result;
+            }
+        }
+
+        // Call this on unload/uninject to free native buffer
+        private void CleanupFakePacketResources()
+        {
+            _stopAutomationThread = true;
+            FreeNativeFakePacket();
         }
     }
 }
