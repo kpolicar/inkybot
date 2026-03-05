@@ -8,6 +8,8 @@ namespace InkybotHook
 {
     public partial class InjectionEntryPoint
     {
+        // Synchronization event to ensure all hooks are installed before any hook logic runs
+        private readonly System.Threading.ManualResetEventSlim _allHooksInstalled = new System.Threading.ManualResetEventSlim(false);
         // =========================================================
         // 1. DELEGATES
         // =========================================================
@@ -246,6 +248,9 @@ namespace InkybotHook
             _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };
             _automationThread.Start();
 
+            // Signal that all hooks are now installed
+            _allHooksInstalled.Set();
+
             return hooks;
         }
 
@@ -298,6 +303,8 @@ namespace InkybotHook
 
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
+            // Wait for all hooks to be installed
+            _allHooksInstalled.Wait();
             try
             {
                 if (IsCursorOverrideActive)
@@ -316,6 +323,7 @@ namespace InkybotHook
 
         private bool HookedGetCursorInfo(ref CURSORINFO pci)
         {
+            _allHooksInstalled.Wait();
             bool calledOriginal = false;
             bool result = false;
             try
@@ -339,6 +347,7 @@ namespace InkybotHook
 
         private bool HookedGetPointerInfo(uint pointerId, ref POINTER_INFO pointerInfo)
         {
+            _allHooksInstalled.Wait();
             bool calledOriginal = false;
             bool result = false;
             try
@@ -363,14 +372,16 @@ namespace InkybotHook
         }
 
         private bool HookedIsIconic(IntPtr hWnd) 
-        { 
-            try { return false; } 
-            catch { return false; } 
+        {
+            _allHooksInstalled.Wait();
+            try { return false; }
+            catch { return false; }
         }
 
         // --- THE MESSAGE PUMP HOOKS (BACKGROUND UI DISPATCHER) ---
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
+            _allHooksInstalled.Wait();
             string step = "Init";
             bool calledOriginal = false;
             bool result = false;
@@ -454,6 +465,7 @@ namespace InkybotHook
 
         private int HookedGetMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax)
         {
+            _allHooksInstalled.Wait();
             bool calledOriginal = false;
             int result = 0;
             try
@@ -481,10 +493,11 @@ namespace InkybotHook
             {
                 bool isStandardMouse = (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST);
                 bool isPointerOrTouch = (msg.message >= WM_POINTERFIRST && msg.message <= WM_POINTERLAST);
+                bool isInputEvent = (msg.message == WM_INPUT);
                 
                 // If it is a physical mouse or touch event from the OS, completely shred it.
                 // We do not want the physical mouse interfering with our injected bot clicks.
-                if (isStandardMouse || isPointerOrTouch)
+                if (isStandardMouse || isPointerOrTouch || isInputEvent)
                 {
                     msg.message = WM_NULL; 
                 }
@@ -498,6 +511,7 @@ namespace InkybotHook
         // --- THE RAW INPUT HOOKS (3D WORLD DISPATCHER) ---
         private uint HookedGetRawInputData(IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
+            _allHooksInstalled.Wait();
             string step = "Init";
             bool calledOriginal = false;
             uint result = 0;
@@ -613,6 +627,7 @@ namespace InkybotHook
 
         private uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
+            _allHooksInstalled.Wait();
             string step = "Init";
             bool calledOriginal = false;
             uint result = 0;
@@ -855,6 +870,7 @@ namespace InkybotHook
         // --- THE HARDWARE STATE HOOKS (MODIFIER BYPASS) ---
         private short HookedGetAsyncKeyState(int vKey)
         {
+            _allHooksInstalled.Wait();
             try
             {
                 if (IsCursorOverrideActive)
@@ -879,6 +895,7 @@ namespace InkybotHook
 
         private short HookedGetKeyState(int nVirtKey)
         {
+            _allHooksInstalled.Wait();
             try
             {
                 if (IsCursorOverrideActive)
@@ -903,6 +920,7 @@ namespace InkybotHook
 
         private bool HookedScreenToClient(IntPtr hWnd, ref POINT lpPoint)
         {
+            _allHooksInstalled.Wait();
             try
             {
                 if (IsCursorOverrideActive)
@@ -920,6 +938,7 @@ namespace InkybotHook
 
         private bool HookedClientToScreen(IntPtr hWnd, ref POINT lpPoint)
         {
+            _allHooksInstalled.Wait();
             bool calledOriginal = false;
             bool result = false;
             try
