@@ -56,7 +56,7 @@ namespace InkybotHook
             {
                 while (!_server.ShutdownFlag)
                 {
-                    DrawDebugMarkerIfDue();
+                    //DrawDebugMarkerIfDue();
 
                     System.Threading.Thread.Sleep(1);
 
