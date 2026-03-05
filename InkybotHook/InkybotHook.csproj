@@ -47,7 +47,6 @@
         <Compile Include="InjectionEntryPoint.Coordinates.cs" />
         <Compile Include="InjectionEntryPoint.DebugVisuals.cs" />
         <Compile Include="InjectionEntryPoint.MouseHooks.cs" />
-        <Compile Include="InjectionEntryPoint.WndProc.cs" />
         <Compile Include="NativeMethods.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="ServerInterface.cs" />

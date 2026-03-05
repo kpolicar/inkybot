@@ -129,8 +129,6 @@ namespace InkybotHook
             var isIconicHook = TryInstallHook<IsIconicDelegate>("IsIconic", new IsIconicDelegate(HookedIsIconic), out _originalIsIconic);
             if (isIconicHook != null) hooks.Add(isIconicHook);
 
-            //hooks.AddRange(InstallMessageHooks()); 
-
             return hooks;
         }
 

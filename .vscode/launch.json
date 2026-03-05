@@ -15,7 +15,7 @@
             "preLaunchTask": "build"
         },
         {
-            "name": "Release Inkybot",
+            "name": "Launch Inkybot",
             "type": "clr",
             "request": "launch",
             "program": "${workspaceFolder}\\${config:inkybot.releasePath}\\Inkybot.exe",
@@ -25,7 +25,7 @@
             "internalConsoleOptions": "neverOpen",
             "stopAtEntry": false,
             "requireExactSource": false,
-            "preLaunchTask": "move-confused"
+            "preLaunchTask": "run-everything"
         }
     ]
 }
