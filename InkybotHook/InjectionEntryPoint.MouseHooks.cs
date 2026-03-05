@@ -125,10 +125,10 @@ namespace InkybotHook
         }
 
         // --- UPDATED AUTOMATION STATE VARIABLES ---
-        private enum ForgeState { Idle, Hover, ButtonDown, ButtonUp } // Added Hover
-        private ForgeState _rawState = ForgeState.Idle;
-        private ForgeState _msgState = ForgeState.Idle;
-        private ForgeState _lastInjectedRawState = ForgeState.Idle;
+        private enum ForgeState { Idle, Hover, ButtonDown, ButtonUp } 
+        private volatile ForgeState _rawState = ForgeState.Idle;
+        private volatile ForgeState _msgState = ForgeState.Idle;
+        private volatile ForgeState _lastInjectedRawState = ForgeState.Idle;
         private int _lastClickTime = 0;
         private IntPtr _mainHwnd = IntPtr.Zero; // Tracks the game's window handle
 
@@ -226,6 +226,10 @@ namespace InkybotHook
             {
                 pointerInfo.ptPixelLocation = GetFixedScreenPoint();
                 pointerInfo.ptPixelLocationRaw = GetFixedScreenPoint();
+
+                // CRITICAL: We must force a 'true' return so Unity doesn't crash 
+                // trying to parse the uninitialized struct from our fake injected ID!
+                return true;
             }
             return result;
         }
@@ -277,19 +281,19 @@ namespace InkybotHook
                     if (_msgState == ForgeState.Hover)
                     {
                         lpMsg.message = 0x0245; // WM_POINTERUPDATE
-                        lpMsg.message = WM_MOUSEMOVE; 
+                        //lpMsg.message = WM_MOUSEMOVE; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
                     }
                     else if (_msgState == ForgeState.ButtonDown)
                     {
                         lpMsg.message = 0x0246; // WM_POINTERDOWN
-                        lpMsg.message = WM_LBUTTONDOWN; 
+                        //lpMsg.message = WM_LBUTTONDOWN; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
                     }
                     else if (_msgState == ForgeState.ButtonUp)
                     {
                         lpMsg.message = 0x0247; // WM_POINTERUP
-                        lpMsg.message = WM_LBUTTONUP; 
+                        //lpMsg.message = WM_LBUTTONUP; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
                     }
 
@@ -353,25 +357,15 @@ namespace InkybotHook
 
             if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
             {
-                // Only modify if it's asking for the actual header/data (RID_INPUT = 0x10000003)
-                if (uiCommand == RID_INPUT)
+                if (uiCommand == RID_INPUT) 
                 {
-                    // 1. CRITICAL SAFETY FIX: Read only the header first!
-                    // This prevents out-of-bounds memory crashes if the packet is a smaller Keyboard event.
-                    RAWINPUTHEADER header = (RAWINPUTHEADER)Marshal.PtrToStructure(pData, typeof(RAWINPUTHEADER));
-                    
-                    // 2. Only cast to the full RAWINPUT struct if we are absolutely sure it is a mouse
-                    if (header.dwType == 0) // RIM_TYPEMOUSE
+                    uint dwType = (uint)Marshal.ReadInt32(pData, 0);
+                    if (dwType == 0) // RIM_TYPEMOUSE
                     {
-                        RAWINPUT raw = (RAWINPUT)Marshal.PtrToStructure(pData, typeof(RAWINPUT));
-                        
-                        // Neutralize physical hardware clicks
-                        raw.mouse.ulButtons = 0;
-                        raw.mouse.lLastX = 0;
-                        raw.mouse.lLastY = 0;
-                        
-                        // Write the scrubbed data back to memory
-                        Marshal.StructureToPtr(raw, pData, false);
+                        // Surgically scrub clicks without re-allocating memory
+                        Marshal.WriteInt32(pData, 36, 0);
+                        Marshal.WriteInt32(pData, 40, 0);
+                        Marshal.WriteInt16(pData, 28, 0);
                     }
                 }
             }
@@ -385,49 +379,44 @@ namespace InkybotHook
             if (!IsCursorOverrideActive) return result;
             if (pData == IntPtr.Zero) return result;
 
-            // 1. If physical inputs exist (or an error occurred), scrub and return early.
             if (result > 0 && result != unchecked((uint)-1))
             {
                 ScrubRawInputBuffer(pData, (int)result); 
                 return result; 
             }
 
-            // 2. ONLY inject if the buffer is exactly 0 (Empty and safe to write to)
+            // INJECT OUR SYNTHETIC CLICK SAFELY
             if (result == 0)
             {
                 if (_rawState == ForgeState.ButtonDown)
                 {
                     if (_lastInjectedRawState != ForgeState.ButtonDown)
                     {
-                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_DOWN);
-                        if (pcbSize >= fakeInput.header.dwSize)
+                        if (pcbSize >= 48) // 48 bytes is the size of RAWINPUT
                         {
-                            Marshal.StructureToPtr(fakeInput, pData, false);
+                            InjectFakeMousePacket(pData, RI_MOUSE_LEFT_BUTTON_DOWN);
                             _lastInjectedRawState = ForgeState.ButtonDown;
                             return 1; 
                         }
                     }
                     else
                     {
-                        // We successfully injected ButtonDown last frame. Advance to ButtonUp!
-                        _rawState = ForgeState.ButtonUp;
+                        _rawState = ForgeState.ButtonUp; 
                     }
                 }
                 else if (_rawState == ForgeState.ButtonUp)
                 {
                     if (_lastInjectedRawState != ForgeState.ButtonUp)
                     {
-                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_UP);
-                        if (pcbSize >= fakeInput.header.dwSize)
+                        if (pcbSize >= 48)
                         {
-                            Marshal.StructureToPtr(fakeInput, pData, false);
+                            InjectFakeMousePacket(pData, RI_MOUSE_LEFT_BUTTON_UP);
                             _lastInjectedRawState = ForgeState.ButtonUp;
                             return 1; 
                         }
                     }
                     else
                     {
-                        // Click sequence complete. Reset!
                         _rawState = ForgeState.Idle;
                         _lastInjectedRawState = ForgeState.Idle;
                     }
@@ -437,26 +426,19 @@ namespace InkybotHook
             return result;
         }
 
-        private RAWINPUT CreateFakeRawInputPacket(int buttonFlag) {
-            RAWINPUT raw = new RAWINPUT();
-            raw.header.dwType = 0; // RIM_TYPEMOUSE
-            raw.header.dwSize = (uint)Marshal.SizeOf(typeof(RAWINPUT));
-            raw.header.hDevice = IntPtr.Zero; // Spoof a generic device
-            raw.header.wParam = IntPtr.Zero;
+        // Replaces your CreateFakeRawInputPacket method entirely!
+        private void InjectFakeMousePacket(IntPtr pData, int buttonFlag)
+        {
+            // 1. Zero out the memory first
+            for (int i = 0; i < 48; i += 4) Marshal.WriteInt32(pData, i, 0);
 
-            // No movement, purely a button state change
-            raw.mouse.usFlags = 0; 
-            
-            // Put the click flag directly into ulButtons!
-            // Since usButtonFlags is the lower 16 bits of the union, this places the bytes perfectly.
-            raw.mouse.ulButtons = (uint)buttonFlag; 
-            
-            raw.mouse.ulRawButtons = 0;
-            raw.mouse.lLastX = 0;
-            raw.mouse.lLastY = 0;
-            raw.mouse.ulExtraInformation = 0;
+            // 2. Write Header
+            Marshal.WriteInt32(pData, 0, 0); // dwType = RIM_TYPEMOUSE
+            Marshal.WriteInt32(pData, 4, 48); // dwSize = 48
 
-            return raw;
+            // 3. Write Mouse Payload
+            Marshal.WriteInt16(pData, 24, 0); // usFlags
+            Marshal.WriteInt32(pData, 28, buttonFlag); // ulButtons
         }
 
         private void ScrubRawInputBuffer(IntPtr pData, int packetCount)
@@ -464,6 +446,8 @@ namespace InkybotHook
             try
             {
                 IntPtr currentPtr = pData;
+                int align = (IntPtr.Size == 8) ? 7 : 3; // 64-bit vs 32-bit padding
+
                 for (int i = 0; i < packetCount; i++)
                 {
                     uint dwType = (uint)Marshal.ReadInt32(currentPtr, 0);
@@ -471,21 +455,21 @@ namespace InkybotHook
 
                     if (dwType == 0) // RIM_TYPEMOUSE
                     {
+                        // Direct surgical writes. No dangerous Struct casts!
                         Marshal.WriteInt32(currentPtr, 36, 0); // Scrub X Delta
                         Marshal.WriteInt32(currentPtr, 40, 0); // Scrub Y Delta
-                        Marshal.WriteInt16(currentPtr, 28, 0); // Scrub Physical Clicks
+                        Marshal.WriteInt16(currentPtr, 28, 0); // Scrub Clicks
                     }
 
-                    if (dwSize == 0) break; // Safety net to prevent infinite loops
+                    if (dwSize == 0) break; // Safety net
 
-                    // CRITICAL FIX: Windows 64-bit requires 8-byte alignment!
-                    // We must round the pointer up to the nearest multiple of 8.
+                    // Perfectly align the pointer to prevent Access Violations
                     long nextPtr = currentPtr.ToInt64() + dwSize;
-                    nextPtr = (nextPtr + 7) & ~7L; 
+                    nextPtr = (nextPtr + align) & ~((long)align); 
                     currentPtr = new IntPtr(nextPtr);
                 }
             }
-            catch { } // C# 4.0+ cannot catch Access Violations, which is why the math above is mandatory!
+            catch { }
         }
 
         // --- THE HARDWARE STATE HOOKS (MODIFIER BYPASS) ---
