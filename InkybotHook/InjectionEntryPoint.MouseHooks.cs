@@ -128,6 +128,7 @@ namespace InkybotHook
         private enum ForgeState { Idle, Hover, ButtonDown, ButtonUp } // Added Hover
         private ForgeState _rawState = ForgeState.Idle;
         private ForgeState _msgState = ForgeState.Idle;
+        private ForgeState _lastInjectedRawState = ForgeState.Idle;
         private int _lastClickTime = 0;
         private IntPtr _mainHwnd = IntPtr.Zero; // Tracks the game's window handle
 
@@ -168,11 +169,12 @@ namespace InkybotHook
             var isIconicHook = TryInstallHook<IsIconicDelegate>("IsIconic", new IsIconicDelegate(HookedIsIconic), out _originalIsIconic);
             if (isIconicHook != null) hooks.Add(isIconicHook);
 
+            /*
             var screenToClientHook = TryInstallHook<ScreenToClientDelegate>("ScreenToClient", new ScreenToClientDelegate(HookedScreenToClient), out _originalScreenToClient);
             if (screenToClientHook != null) hooks.Add(screenToClientHook);
 
             var clientToScreenHook = TryInstallHook<ClientToScreenDelegate>("ClientToScreen", new ClientToScreenDelegate(HookedClientToScreen), out _originalClientToScreen);
-            if (clientToScreenHook != null) hooks.Add(clientToScreenHook);
+            if (clientToScreenHook != null) hooks.Add(clientToScreenHook);*/
 
             return hooks;
         }
@@ -275,16 +277,19 @@ namespace InkybotHook
                     if (_msgState == ForgeState.Hover)
                     {
                         lpMsg.message = 0x0245; // WM_POINTERUPDATE
+                        lpMsg.message = WM_MOUSEMOVE; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
                     }
                     else if (_msgState == ForgeState.ButtonDown)
                     {
                         lpMsg.message = 0x0246; // WM_POINTERDOWN
+                        lpMsg.message = WM_LBUTTONDOWN; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
                     }
                     else if (_msgState == ForgeState.ButtonUp)
                     {
                         lpMsg.message = 0x0247; // WM_POINTERUP
+                        lpMsg.message = WM_LBUTTONUP; 
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
                     }
 
@@ -351,13 +356,21 @@ namespace InkybotHook
                 // Only modify if it's asking for the actual header/data (RID_INPUT = 0x10000003)
                 if (uiCommand == RID_INPUT)
                 {
-                    RAWINPUT raw = (RAWINPUT)Marshal.PtrToStructure(pData, typeof(RAWINPUT));
-                    if (raw.header.dwType == 0) // Mouse
+                    // 1. CRITICAL SAFETY FIX: Read only the header first!
+                    // This prevents out-of-bounds memory crashes if the packet is a smaller Keyboard event.
+                    RAWINPUTHEADER header = (RAWINPUTHEADER)Marshal.PtrToStructure(pData, typeof(RAWINPUTHEADER));
+                    
+                    // 2. Only cast to the full RAWINPUT struct if we are absolutely sure it is a mouse
+                    if (header.dwType == 0) // RIM_TYPEMOUSE
                     {
+                        RAWINPUT raw = (RAWINPUT)Marshal.PtrToStructure(pData, typeof(RAWINPUT));
+                        
                         // Neutralize physical hardware clicks
                         raw.mouse.ulButtons = 0;
                         raw.mouse.lLastX = 0;
                         raw.mouse.lLastY = 0;
+                        
+                        // Write the scrubbed data back to memory
                         Marshal.StructureToPtr(raw, pData, false);
                     }
                 }
@@ -367,40 +380,57 @@ namespace InkybotHook
 
         private uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
-            // 1. Let the OS populate the buffer with real hardware data
             uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
 
             if (!IsCursorOverrideActive) return result;
-
-            // 2. If pData is Zero, Unity is just asking for the buffer size. Return normally.
             if (pData == IntPtr.Zero) return result;
 
-            // 3. Scrub physical clicks out of the real buffer so you don't accidentally fight the bot
+            // 1. If physical inputs exist (or an error occurred), scrub and return early.
             if (result > 0 && result != unchecked((uint)-1))
             {
-                // CAST TO INT to match your method signature!
                 ScrubRawInputBuffer(pData, (int)result); 
+                return result; 
             }
 
-            // 4. INJECT OUR SYNTHETIC CLICK
-            if (_msgState == ForgeState.ButtonDown || _msgState == ForgeState.ButtonUp)
+            // 2. ONLY inject if the buffer is exactly 0 (Empty and safe to write to)
+            if (result == 0)
             {
-                // Decide what hardware flag to send based on our state
-                int flag = (_msgState == ForgeState.ButtonDown) 
-                    ? RI_MOUSE_LEFT_BUTTON_DOWN 
-                    : RI_MOUSE_LEFT_BUTTON_UP;
-
-                RAWINPUT fakeInput = CreateFakeRawInputPacket(flag);
-
-                // Ensure Unity allocated enough space for at least 1 packet
-                if (pcbSize >= fakeInput.header.dwSize)
+                if (_rawState == ForgeState.ButtonDown)
                 {
-                    // Overwrite the first slot in the buffer with our fake hardware packet
-                    Marshal.StructureToPtr(fakeInput, pData, false);
-                    
-                    // If the original buffer was empty, we are adding 1 brand new packet.
-                    // If the buffer already had packets, we just overwrote the first one, so the count stays the same.
-                    if (result == 0) return 1; 
+                    if (_lastInjectedRawState != ForgeState.ButtonDown)
+                    {
+                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_DOWN);
+                        if (pcbSize >= fakeInput.header.dwSize)
+                        {
+                            Marshal.StructureToPtr(fakeInput, pData, false);
+                            _lastInjectedRawState = ForgeState.ButtonDown;
+                            return 1; 
+                        }
+                    }
+                    else
+                    {
+                        // We successfully injected ButtonDown last frame. Advance to ButtonUp!
+                        _rawState = ForgeState.ButtonUp;
+                    }
+                }
+                else if (_rawState == ForgeState.ButtonUp)
+                {
+                    if (_lastInjectedRawState != ForgeState.ButtonUp)
+                    {
+                        RAWINPUT fakeInput = CreateFakeRawInputPacket(RI_MOUSE_LEFT_BUTTON_UP);
+                        if (pcbSize >= fakeInput.header.dwSize)
+                        {
+                            Marshal.StructureToPtr(fakeInput, pData, false);
+                            _lastInjectedRawState = ForgeState.ButtonUp;
+                            return 1; 
+                        }
+                    }
+                    else
+                    {
+                        // Click sequence complete. Reset!
+                        _rawState = ForgeState.Idle;
+                        _lastInjectedRawState = ForgeState.Idle;
+                    }
                 }
             }
 
@@ -439,17 +469,23 @@ namespace InkybotHook
                     uint dwType = (uint)Marshal.ReadInt32(currentPtr, 0);
                     uint dwSize = (uint)Marshal.ReadInt32(currentPtr, 4);
 
-                    if (dwType == RIM_TYPEMOUSE)
+                    if (dwType == 0) // RIM_TYPEMOUSE
                     {
                         Marshal.WriteInt32(currentPtr, 36, 0); // Scrub X Delta
                         Marshal.WriteInt32(currentPtr, 40, 0); // Scrub Y Delta
                         Marshal.WriteInt16(currentPtr, 28, 0); // Scrub Physical Clicks
                     }
-                    if (dwSize > 0) currentPtr = IntPtr.Add(currentPtr, (int)dwSize);
-                    else break;
+
+                    if (dwSize == 0) break; // Safety net to prevent infinite loops
+
+                    // CRITICAL FIX: Windows 64-bit requires 8-byte alignment!
+                    // We must round the pointer up to the nearest multiple of 8.
+                    long nextPtr = currentPtr.ToInt64() + dwSize;
+                    nextPtr = (nextPtr + 7) & ~7L; 
+                    currentPtr = new IntPtr(nextPtr);
                 }
             }
-            catch { }
+            catch { } // C# 4.0+ cannot catch Access Violations, which is why the math above is mandatory!
         }
 
         // --- THE HARDWARE STATE HOOKS (MODIFIER BYPASS) ---
@@ -457,13 +493,12 @@ namespace InkybotHook
         {
             if (IsCursorOverrideActive)
             {
-                // Defeat Unity's Paranoid Modifier Checks
-                if (vKey == 16 || vKey == 17 || vKey == 18 || vKey == 91 || vKey == 92 || vKey == 20)
-                    return 0;
+                if (vKey == 16 || vKey == 17 || vKey == 18 || vKey == 91 || vKey == 92 || vKey == 20) return 0;
 
                 if (vKey == VK_LBUTTON || vKey == VK_RBUTTON)
                 {
-                    if (vKey == VK_LBUTTON && _rawState == ForgeState.ButtonUp|| _msgState == ForgeState.ButtonUp)
+                    // Sync strictly with the raw state machine!
+                    if (vKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
                         return unchecked((short)0x8000); 
                     return 0;
                 }
@@ -475,13 +510,11 @@ namespace InkybotHook
         {
             if (IsCursorOverrideActive)
             {
-                // Defeat Unity's Paranoid Modifier Checks
-                if (nVirtKey == 16 || nVirtKey == 17 || nVirtKey == 18 || nVirtKey == 91 || nVirtKey == 92 || nVirtKey == 20)
-                    return 0;
+                if (nVirtKey == 16 || nVirtKey == 17 || nVirtKey == 18 || nVirtKey == 91 || nVirtKey == 92 || nVirtKey == 20) return 0;
 
                 if (nVirtKey == VK_LBUTTON || nVirtKey == VK_RBUTTON)
                 {
-                    if (nVirtKey == VK_LBUTTON && _msgState == ForgeState.ButtonUp || _msgState == ForgeState.ButtonUp)
+                    if (nVirtKey == VK_LBUTTON && (_rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp))
                         return unchecked((short)0x8000);
                     return 0;
                 }
