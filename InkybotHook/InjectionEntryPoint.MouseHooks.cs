@@ -261,33 +261,33 @@ namespace InkybotHook
                     
                     // --- TRANSLATE SCREEN TO CLIENT COORDS ---
                     POINT target = GetFixedScreenPoint();
-                    _originalScreenToClient(targetHwnd, ref target); // Convert to window-relative!
-                    
-                    // Pack the relative X/Y into the lParam
-                    lpMsg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF));
-                    lpMsg.pt = GetFixedScreenPoint(); // pt struct remains screen-relative
+                    lpMsg.pt = target; 
                     lpMsg.time = (uint)Environment.TickCount;
 
-                    // --- THE 4-STEP STATE MACHINE ---
+                    // Pointer messages use Screen Coordinates in lParam
+                    lpMsg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF));
+
+                    // The wParam for the primary mouse pointer is usually ID 1 in the LOWORD. 
+                    // We use 1 to match the ID Unity expects for the mouse (as seen in your log).
+                    lpMsg.wParam = (IntPtr)1; 
+
+                    // --- THE 4-STEP STATE MACHINE (NOW USING POINTERS) ---
                     if (_msgState == ForgeState.Hover)
                     {
-                        lpMsg.message = WM_MOUSEMOVE;
-                        lpMsg.wParam = IntPtr.Zero;
+                        lpMsg.message = 0x0245; // WM_POINTERUPDATE
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
                     }
                     else if (_msgState == ForgeState.ButtonDown)
                     {
-                        lpMsg.message = WM_LBUTTONDOWN;
-                        lpMsg.wParam = (IntPtr)1; // MK_LBUTTON
+                        lpMsg.message = 0x0246; // WM_POINTERDOWN
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
                     }
                     else if (_msgState == ForgeState.ButtonUp)
                     {
-                        lpMsg.message = WM_LBUTTONUP;
-                        lpMsg.wParam = IntPtr.Zero;
+                        lpMsg.message = 0x0247; // WM_POINTERUP
                         if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
                     }
-                    
+
                     return true;
                 }
             }
@@ -335,7 +335,7 @@ namespace InkybotHook
             }
 
             // Shred everything else (physical clicks, raw input notifications, touch events)
-            if (isStandardMouse || isPointerOrTouch/* || msg.message == WM_INPUT*/)
+            if (isStandardMouse || isPointerOrTouch/* || msg.message == WM_INPUT*/) // todo by removing this, real clicks are coming through now 
             {
                 msg.message = WM_NULL; 
             }
@@ -345,59 +345,88 @@ namespace InkybotHook
         private uint HookedGetRawInputData(IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
             uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
-            if (IsCursorOverrideActive && result > 0 && result != unchecked((uint)-1) && pData != IntPtr.Zero && uiCommand == RID_INPUT)
+
+            if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
             {
-                ScrubRawInputBuffer(pData, 1);
+                // Only modify if it's asking for the actual header/data (RID_INPUT = 0x10000003)
+                if (uiCommand == RID_INPUT)
+                {
+                    RAWINPUT raw = (RAWINPUT)Marshal.PtrToStructure(pData, typeof(RAWINPUT));
+                    if (raw.header.dwType == 0) // Mouse
+                    {
+                        // Neutralize physical hardware clicks
+                        raw.mouse.ulButtons = 0;
+                        raw.mouse.lLastX = 0;
+                        raw.mouse.lLastY = 0;
+                        Marshal.StructureToPtr(raw, pData, false);
+                    }
+                }
             }
             return result;
         }
 
         private uint HookedGetRawInputBuffer(IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
-            CheckTimer();
-
-            // 1. The Size Allocation Trap Bypass
-            if (IsCursorOverrideActive && _rawState != ForgeState.Idle)
-            {
-                if (pData == IntPtr.Zero)
-                {
-                    pcbSize = 48; // Force Unity to allocate 48 bytes for our forged packet
-                    return 0;
-                }
-                if (pcbSize >= 48)
-                {
-                    short btnFlag = (_rawState == ForgeState.ButtonDown) ? (short)0x0001 : (short)0x0002;
-                    CreateFakeRawInputPacket(pData, btnFlag);
-                    
-                    if (_rawState == ForgeState.ButtonDown) _rawState = ForgeState.ButtonUp;
-                    else _rawState = ForgeState.Idle;
-                    
-                    return 1; // Deliver 1 synthetic packet directly into memory
-                }
-            }
-
-            // 2. Physical hardware scrubbing
+            // 1. Let the OS populate the buffer with real hardware data
             uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
-            if (IsCursorOverrideActive && result > 0 && result != unchecked((uint)-1) && pData != IntPtr.Zero)
+
+            if (!IsCursorOverrideActive) return result;
+
+            // 2. If pData is Zero, Unity is just asking for the buffer size. Return normally.
+            if (pData == IntPtr.Zero) return result;
+
+            // 3. Scrub physical clicks out of the real buffer so you don't accidentally fight the bot
+            if (result > 0 && result != unchecked((uint)-1))
             {
-                ScrubRawInputBuffer(pData, (int)result);
+                // CAST TO INT to match your method signature!
+                ScrubRawInputBuffer(pData, (int)result); 
             }
+
+            // 4. INJECT OUR SYNTHETIC CLICK
+            if (_msgState == ForgeState.ButtonDown || _msgState == ForgeState.ButtonUp)
+            {
+                // Decide what hardware flag to send based on our state
+                int flag = (_msgState == ForgeState.ButtonDown) 
+                    ? RI_MOUSE_LEFT_BUTTON_DOWN 
+                    : RI_MOUSE_LEFT_BUTTON_UP;
+
+                RAWINPUT fakeInput = CreateFakeRawInputPacket(flag);
+
+                // Ensure Unity allocated enough space for at least 1 packet
+                if (pcbSize >= fakeInput.header.dwSize)
+                {
+                    // Overwrite the first slot in the buffer with our fake hardware packet
+                    Marshal.StructureToPtr(fakeInput, pData, false);
+                    
+                    // If the original buffer was empty, we are adding 1 brand new packet.
+                    // If the buffer already had packets, we just overwrote the first one, so the count stays the same.
+                    if (result == 0) return 1; 
+                }
+            }
+
             return result;
         }
 
-        private void CreateFakeRawInputPacket(IntPtr pData, short buttonFlag)
-        {
-            Marshal.WriteInt32(pData, 0, (int)RIM_TYPEMOUSE);
-            Marshal.WriteInt32(pData, 4, 48); // Size of 64-bit struct
-            Marshal.WriteIntPtr(pData, 8, IntPtr.Zero);
-            Marshal.WriteIntPtr(pData, 16, IntPtr.Zero);
-            Marshal.WriteInt16(pData, 24, 0); 
-            Marshal.WriteInt16(pData, 28, buttonFlag); // 0x01 = LDown, 0x02 = LUp
-            Marshal.WriteInt16(pData, 30, 0);
-            Marshal.WriteInt32(pData, 32, 0);
-            Marshal.WriteInt32(pData, 36, 0); // X Delta
-            Marshal.WriteInt32(pData, 40, 0); // Y Delta
-            Marshal.WriteInt32(pData, 44, 0);
+        private RAWINPUT CreateFakeRawInputPacket(int buttonFlag) {
+            RAWINPUT raw = new RAWINPUT();
+            raw.header.dwType = 0; // RIM_TYPEMOUSE
+            raw.header.dwSize = (uint)Marshal.SizeOf(typeof(RAWINPUT));
+            raw.header.hDevice = IntPtr.Zero; // Spoof a generic device
+            raw.header.wParam = IntPtr.Zero;
+
+            // No movement, purely a button state change
+            raw.mouse.usFlags = 0; 
+            
+            // Put the click flag directly into ulButtons!
+            // Since usButtonFlags is the lower 16 bits of the union, this places the bytes perfectly.
+            raw.mouse.ulButtons = (uint)buttonFlag; 
+            
+            raw.mouse.ulRawButtons = 0;
+            raw.mouse.lLastX = 0;
+            raw.mouse.lLastY = 0;
+            raw.mouse.ulExtraInformation = 0;
+
+            return raw;
         }
 
         private void ScrubRawInputBuffer(IntPtr pData, int packetCount)
