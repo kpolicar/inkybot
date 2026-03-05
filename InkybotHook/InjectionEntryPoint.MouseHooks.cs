@@ -67,6 +67,7 @@ namespace InkybotHook
         private const uint WM_MOUSEFIRST = 0x0200;
         private const uint WM_MOUSELAST = 0x020E;
         private const uint WM_LBUTTONDOWN = 0x0201;
+        private const uint WM_MOUSEMOVE = 0x0200;
         private const uint WM_LBUTTONUP = 0x0202;
 
         private const uint WM_NCMOUSEFIRST = 0x00A0;
@@ -123,11 +124,12 @@ namespace InkybotHook
             public uint ButtonChangeType;
         }
 
-        // --- AUTOMATION STATE VARIABLES ---
-        private enum ForgeState { Idle, ButtonDown, ButtonUp }
+        // --- UPDATED AUTOMATION STATE VARIABLES ---
+        private enum ForgeState { Idle, Hover, ButtonDown, ButtonUp } // Added Hover
         private ForgeState _rawState = ForgeState.Idle;
         private ForgeState _msgState = ForgeState.Idle;
         private int _lastClickTime = 0;
+        private IntPtr _mainHwnd = IntPtr.Zero; // Tracks the game's window handle
 
         // =========================================================
         // 3. INSTALLATION
@@ -183,11 +185,10 @@ namespace InkybotHook
             if (!IsCursorOverrideActive) return;
 
             int now = Environment.TickCount;
-            // Execute automated click every 1000ms
             if (now - _lastClickTime >= 1000 && _rawState == ForgeState.Idle && _msgState == ForgeState.Idle)
             {
-                _rawState = ForgeState.ButtonDown;
-                _msgState = ForgeState.ButtonDown;
+                _rawState = ForgeState.ButtonDown; // Raw input doesn't need hover
+                _msgState = ForgeState.Hover;      // UI input MUST hover first
                 _lastClickTime = now;
             }
         }
@@ -229,34 +230,64 @@ namespace InkybotHook
 
         private bool HookedIsIconic(IntPtr hWnd) { return false; }
 
+
+
         // --- THE MESSAGE PUMP HOOKS (BACKGROUND UI DISPATCHER) ---
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
             CheckTimer();
+
             bool result = _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 
             if (IsCursorOverrideActive)
             {
+                // 1. Capture the window handle so we can do coordinate math
+                if (_mainHwnd == IntPtr.Zero && lpMsg.hwnd != IntPtr.Zero) 
+                {
+                    _mainHwnd = lpMsg.hwnd;
+                }
+
+                // 2. Filter physical mouse movements, BUT keep the position locked!
                 if (result) FilterMouseMessage(ref lpMsg);
 
-                // Active Background Dispatch: Overwrite empty messages with our click
+                // 3. Inject our sequence (Hover -> Down -> Up) into empty queues
                 if (_msgState != ForgeState.Idle && (!result || lpMsg.message == WM_NULL))
                 {
-                    lpMsg.hwnd = hWnd; 
-                    lpMsg.message = (_msgState == ForgeState.ButtonDown) ? WM_LBUTTONDOWN : WM_LBUTTONUP;
+                    // Fallback to active window if PeekMessage was called with a null hWnd
+                    IntPtr targetHwnd = (hWnd != IntPtr.Zero) ? hWnd : _mainHwnd;
+                    if (targetHwnd == IntPtr.Zero) return result; 
+
+                    lpMsg.hwnd = targetHwnd; 
                     
+                    // --- TRANSLATE SCREEN TO CLIENT COORDS ---
                     POINT target = GetFixedScreenPoint();
-                    lpMsg.pt = target;
-                    // Pack X and Y into lParam for standard UI processing
+                    _originalScreenToClient(targetHwnd, ref target); // Convert to window-relative!
+                    
+                    // Pack the relative X/Y into the lParam
                     lpMsg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF));
-                    lpMsg.wParam = (IntPtr)((_msgState == ForgeState.ButtonDown) ? 1 : 0);
+                    lpMsg.pt = GetFixedScreenPoint(); // pt struct remains screen-relative
                     lpMsg.time = (uint)Environment.TickCount;
 
-                    if ((wRemoveMsg & PM_REMOVE) != 0)
+                    // --- THE 4-STEP STATE MACHINE ---
+                    if (_msgState == ForgeState.Hover)
                     {
-                        if (_msgState == ForgeState.ButtonDown) _msgState = ForgeState.ButtonUp;
-                        else _msgState = ForgeState.Idle;
+                        lpMsg.message = WM_MOUSEMOVE;
+                        lpMsg.wParam = IntPtr.Zero;
+                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonDown;
                     }
+                    else if (_msgState == ForgeState.ButtonDown)
+                    {
+                        lpMsg.message = WM_LBUTTONDOWN;
+                        lpMsg.wParam = (IntPtr)1; // MK_LBUTTON
+                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.ButtonUp;
+                    }
+                    else if (_msgState == ForgeState.ButtonUp)
+                    {
+                        lpMsg.message = WM_LBUTTONUP;
+                        lpMsg.wParam = IntPtr.Zero;
+                        if ((wRemoveMsg & PM_REMOVE) != 0) _msgState = ForgeState.Idle;
+                    }
+                    
                     return true;
                 }
             }
@@ -276,13 +307,37 @@ namespace InkybotHook
         private void FilterMouseMessage(ref MSG msg)
         {
             bool isStandardMouse = (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST);
-            bool isNonClientMouse = (msg.message >= WM_NCMOUSEFIRST && msg.message <= WM_NCMOUSELAST);
             bool isPointerOrTouch = (msg.message >= WM_POINTERFIRST && msg.message <= WM_POINTERLAST);
-            bool isRawInput = (msg.message == WM_INPUT);
-
-            if (isStandardMouse || isNonClientMouse || isPointerOrTouch || isRawInput)
+            
+            // --- 1. HIJACK LEGACY MOUSE MOVEMENT ---
+            if (msg.message == 0x0200 /* WM_MOUSEMOVE */)
             {
-                msg.message = WM_NULL; // Blind the physical mouse
+                POINT target = GetFixedScreenPoint();
+                msg.pt = target; // Lock absolute screen coordinates
+
+                if (_mainHwnd != IntPtr.Zero)
+                {
+                    _originalScreenToClient(_mainHwnd, ref target); // Convert to client
+                    msg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF)); // Lock relative coordinates
+                }
+                return; 
+            }
+
+            // --- 2. HIJACK MODERN POINTER MOVEMENT ---
+            if (msg.message == 0x0245 /* WM_POINTERUPDATE */)
+            {
+                POINT target = GetFixedScreenPoint();
+                msg.pt = target; // Lock absolute screen coordinates
+                
+                // DO NOT CONVERT TO CLIENT! WM_POINTERUPDATE expects Screen Coordinates in the lParam.
+                msg.lParam = (IntPtr)((target.Y << 16) | (target.X & 0xFFFF)); 
+                return;
+            }
+
+            // Shred everything else (physical clicks, raw input notifications, touch events)
+            if (isStandardMouse || isPointerOrTouch/* || msg.message == WM_INPUT*/)
+            {
+                msg.message = WM_NULL; 
             }
         }
 
