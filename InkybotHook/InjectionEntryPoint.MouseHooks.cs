@@ -463,7 +463,8 @@ namespace InkybotHook
 
                 if (vKey == VK_LBUTTON || vKey == VK_RBUTTON)
                 {
-                    if (vKey == VK_LBUTTON && _rawState == ForgeState.ButtonUp) return unchecked((short)0x8000); 
+                    if (vKey == VK_LBUTTON && _rawState == ForgeState.ButtonUp|| _msgState == ForgeState.ButtonUp)
+                        return unchecked((short)0x8000); 
                     return 0;
                 }
             }
@@ -480,7 +481,8 @@ namespace InkybotHook
 
                 if (nVirtKey == VK_LBUTTON || nVirtKey == VK_RBUTTON)
                 {
-                    if (nVirtKey == VK_LBUTTON && _msgState == ForgeState.ButtonUp) return unchecked((short)0x8000);
+                    if (nVirtKey == VK_LBUTTON && _msgState == ForgeState.ButtonUp || _msgState == ForgeState.ButtonUp)
+                        return unchecked((short)0x8000);
                     return 0;
                 }
             }
