@@ -37,10 +37,10 @@ namespace Inkybot
             var oldParentHandle = IntPtr.Zero;
 
             var docked = hWndDocked;
-            EventHandler moveEventHandler = (sender, e) =>
-                Win32.MoveWindow(docked, 0, 0, destination.Width, destination.Height, true);
-            destination.SizeChanged += moveEventHandler;
-            moveEventHandler(new object(), new EventArgs());
+            //EventHandler moveEventHandler = (sender, e) =>
+            //    Win32.MoveWindow(docked, 0, 0, destination.Width, destination.Height, true);
+            //destination.SizeChanged += moveEventHandler;
+            //moveEventHandler(new object(), new EventArgs());
 
             return oldParentHandle;
         }
