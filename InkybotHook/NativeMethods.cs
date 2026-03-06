@@ -34,15 +34,17 @@ namespace InkybotHook
             public IntPtr wParam;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Explicit)]
         public struct RAWMOUSE
         {
-            public ushort usFlags;
-            public uint ulButtons;
-            public uint ulRawButtons;
-            public int lLastX;
-            public int lLastY;
-            public uint ulExtraInformation;
+            [FieldOffset(0)] public ushort usFlags;
+            [FieldOffset(4)] public uint ulButtons;
+            [FieldOffset(4)] public ushort usButtonFlags;
+            [FieldOffset(6)] public ushort usButtonData;
+            [FieldOffset(8)] public uint ulRawButtons;
+            [FieldOffset(12)] public int lLastX;
+            [FieldOffset(16)] public int lLastY;
+            [FieldOffset(20)] public uint ulExtraInformation;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -59,6 +61,21 @@ namespace InkybotHook
             public RAWMOUSE mouse;
         }
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
+
+        [DllImport("user32.dll")]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+
+        public const uint WM_LBUTTONDOWN = 0x0201;
+        public const uint WM_LBUTTONUP = 0x0202;
+        public const int MK_LBUTTON = 0x0001;
         #endregion
 
         #region P/Invoke
@@ -113,20 +130,29 @@ namespace InkybotHook
 
         public const int RID_INPUT = 0x10000003;
         public const int RIM_TYPEMOUSE = 0;
-        public const int RI_MOUSE_LEFT_BUTTON_DOWN   = 0x0001;
-        public const int RI_MOUSE_LEFT_BUTTON_UP     = 0x0002;
-        public const int RI_MOUSE_RIGHT_BUTTON_DOWN  = 0x0004;
-        public const int RI_MOUSE_RIGHT_BUTTON_UP    = 0x0008;
-        public const int RI_MOUSE_MIDDLE_BUTTON_DOWN = 0x0010;
+        public const uint RI_MOUSE_LEFT_BUTTON_DOWN   = 0x0001;
+        public const uint RI_MOUSE_LEFT_BUTTON_UP     = 0x0002;
+        public const uint RI_MOUSE_RIGHT_BUTTON_DOWN  = 0x0004;
+        public const uint RI_MOUSE_RIGHT_BUTTON_UP    = 0x0008;
+        public const uint RI_MOUSE_MIDDLE_BUTTON_DOWN = 0x0010;
         public const int RI_MOUSE_MIDDLE_BUTTON_UP   = 0x0020;
-        public const int RI_MOUSE_BUTTON_1_DOWN      = RI_MOUSE_LEFT_BUTTON_DOWN;
-        public const int RI_MOUSE_BUTTON_1_UP        = RI_MOUSE_LEFT_BUTTON_UP;
-        public const int RI_MOUSE_BUTTON_2_DOWN      = RI_MOUSE_RIGHT_BUTTON_DOWN;
-        public const int RI_MOUSE_BUTTON_2_UP        = RI_MOUSE_RIGHT_BUTTON_UP;
-        public const int RI_MOUSE_BUTTON_3_DOWN      = RI_MOUSE_MIDDLE_BUTTON_DOWN;
-        public const int RI_MOUSE_BUTTON_3_UP        = RI_MOUSE_MIDDLE_BUTTON_UP;
-        public const int RI_MOUSE_WHEEL              = 0x0400;
-        public const int RI_MOUSE_HWHEEL             = 0x0800;
+        public const uint RI_MOUSE_BUTTON_1_DOWN      = RI_MOUSE_LEFT_BUTTON_DOWN;
+        public const uint RI_MOUSE_BUTTON_1_UP        = RI_MOUSE_LEFT_BUTTON_UP;
+        public const uint RI_MOUSE_BUTTON_2_DOWN      = RI_MOUSE_RIGHT_BUTTON_DOWN;
+        public const uint RI_MOUSE_BUTTON_2_UP        = RI_MOUSE_RIGHT_BUTTON_UP;
+        public const uint RI_MOUSE_BUTTON_3_DOWN      = RI_MOUSE_MIDDLE_BUTTON_DOWN;
+        public const uint RI_MOUSE_BUTTON_3_UP        = RI_MOUSE_MIDDLE_BUTTON_UP;
+        public const uint RI_MOUSE_WHEEL              = 0x0400;
+        public const uint RI_MOUSE_HWHEEL             = 0x0800;
+
+        
+        // =========================================================
+        // 2. CONSTANTS & STRUCTS
+        // =========================================================
+        public const uint WM_NULL = 0x0000;
+        public const uint WM_INPUT = 0x00FF;
+        public const int GWLP_WNDPROC = -4;
+        public const int VK_LBUTTON = 0x01;
 
         #endregion
     }

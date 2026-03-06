@@ -40,7 +40,7 @@ namespace InkybotHook
             try
             {
                 _server.IsInstalled(EasyHook.RemoteHooking.GetCurrentProcessId());
-                installedHooks.AddRange(InstallMousePositionHooks());
+                installedHooks.AddRange(InstallHooks());
                 _server.SetState(HookState.HooksInstalled);
             }
             catch (Exception e)
