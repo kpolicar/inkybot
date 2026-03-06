@@ -1,68 +1,51 @@
-Case 1: You Physically Move the Mouse (The Shredder Flow)
-When you bump your real mouse, Windows generates hardware interrupts. Our goal is to completely blind the game to this so it doesn't fight your bot.
+# InkybotHook — Dofus Process Injection
 
-Hardware -> OS: You move the mouse. Windows puts a WM_MOUSEMOVE and a WM_INPUT message into the game's thread queue.
+## Architecture Overview
 
-Game -> PeekMessageW / GetMessageW: The game's engine wakes up and asks the OS for the next message.
+This DLL is injected into the Dofus (Unity) process via EasyHook. Two entry points exist:
 
-Your Hook -> FilterMouseMessage: Your hook intercepts the message before the game sees it.
+### Active: Simplified Entry Point (`InjectionEntryPoint.cs`)
 
-It recognizes WM_MOUSEMOVE or WM_POINTERUPDATE.
+A passive hook that supports the host-side PostMessage approach. Win32Input sends
+WM_LBUTTONDOWN/UP or WM_POINTERDOWN/UP messages from outside; the hook provides
+supporting services inside the process.
 
-It explicitly changes msg.message = WM_NULL (an empty, harmless message).
+**Hooked functions:**
 
-Game Processes Message: The game receives WM_NULL, ignores it, and updates nothing on the UI.
+| Hook | Purpose |
+|------|---------|
+| `GetCursorPos` | Returns fixed screen position from `ServerInterface.point` when override is active |
+| `IsIconic` | Always returns `false` so Dofus keeps rendering when backgrounded |
+| `DispatchMessageW` | Captures real pointer ID from WM_POINTER messages; overrides WM_MOUSEMOVE/WM_POINTERUPDATE coordinates to fixed position; logs synthetic click messages |
+| `GetKeyState` | Spoofs VK_LBUTTON as pressed when `IsClickActive` is true |
+| `GetAsyncKeyState` | Spoofs VK_LBUTTON as pressed when `IsClickActive` is true |
 
-Game -> GetRawInputData (or Buffer): If the OS sent a WM_INPUT message with a real physical handle, the game takes that handle and asks the OS for the raw bytes.
+**Detection:** On startup, calls `IsMouseInPointerEnabled()` from inside the Dofus process
+and exposes the result via `ServerInterface.IsPointerInputEnabled`. The host reads this
+to decide whether to send WM_POINTER or WM_LBUTTON messages.
 
-Your Hook -> GetRawInputData: Your hook calls the original OS function to grab the real bytes, then overwrites usButtonFlags, lLastX, and lLastY to 0.
+**Flow:**
+1. Win32Input.Click(x,y) sets cursor position via IPC, then PostMessages WM_POINTERDOWN/UP or WM_LBUTTONDOWN/UP
+2. Messages enter Dofus's message queue
+3. DispatchMessageW hook logs them and overrides move coordinates
+4. GetCursorPos returns the fixed position when game code queries cursor
+5. GetKeyState/GetAsyncKeyState report button pressed during simulated clicks
 
-Result: The game reads the buffer, sees 0 movement and 0 clicks, and the 3D camera stays perfectly still.
+### Reserved: Advanced Entry Point (`AdvancedInjectionEntryPoint*.cs`)
 
-Case 2: Injected UI Interaction (The WM_POINTER Flow)
-This flow interacts with the game's 2D elements (menus, inventory, dialogue buttons). It requires screen coordinates and high-level window messages.
+Excluded from build (commented out in .csproj). A more complex approach that:
+- Hooks 7 functions (PeekMessageW, TranslateMessage, DispatchMessageW, GetRawInputData, GetRawInputBuffer, GetAsyncKeyState, GetKeyState)
+- Runs its own automation thread that generates synthetic click events
+- Injects messages through three parallel channels:
+  1. **Stealth Hardware (WM_INPUT + MAGIC_RAW_HANDLE 0x1337)** — fabricates RAWINPUT packets
+  2. **Modern UI (WM_POINTER)** — sends pointer events with screen coordinates
+  3. **Legacy UI (WM_LBUTTON)** — sends button events with client coordinates
+- Subclasses all windows dynamically via SetWindowLongPtr
 
-Your Bot -> AutomationThreadLoop: The timer hits (or your IPC server sends a command). _msgState becomes Hover.
+To re-enable: uncomment the Advanced files in InkybotHook.csproj, add `: EasyHook.IEntryPoint`
+to the class declaration, and remove or rename the simplified InjectionEntryPoint.
 
-The Alarm Clock -> PostMessage: The thread posts WM_NULL to the game's background window. This forcefully wakes up the game's sleeping rendering thread.
+## Shared Components
 
-Game -> PeekMessageW: The game wakes up and asks for the next message.
-
-Your Hook -> State Machine: Your hook sees _msgState == Hover.
-
-It throws away whatever message the OS just provided.
-
-It overwrites the struct with msg.message = 0x0245 (WM_POINTERUPDATE).
-
-It overwrites msg.pt with your locked screen coordinates.
-
-It advances _msgState to ButtonDown.
-
-Game Processes Message: The game's UI engine thinks a touch/pen device just hovered over the coordinates.
-
-Repeat: On the next frames, steps 2-5 repeat automatically, injecting 0x0246 (WM_POINTERDOWN) and 0x0247 (WM_POINTERUP), completing a perfect background UI click.
-
-Case 3: Injected 3D World Interaction (The Magic Handle Flow)
-This flow interacts with the game's 3D environment (moving the character, rotating the camera, clicking a 3D model). It completely bypasses the OS and feeds memory structs directly to the game engine.
-
-Your Bot -> AutomationThreadLoop: _rawState becomes ButtonDown.
-
-The Magic Alarm -> PostMessage: The thread posts WM_INPUT directly to the background window, attaching the handle 0x1337 (MAGIC_RAW_HANDLE).
-
-Game -> PeekMessageW: The game wakes up, reads the WM_INPUT message, and extracts the 0x1337 handle.
-
-Game -> GetRawInputData(0x1337): The game asks the OS: "Give me the memory packet for handle 0x1337."
-
-Your Hook -> Magic Intercept: Your hook sees hRawInput == 0x1337. It does not call the OS (because the OS would return an error for a fake handle).
-
-It allocates unmanaged memory.
-
-It builds a perfect RAWINPUTHEADER and RAWMOUSE struct with the RI_MOUSE_LEFT_BUTTON_DOWN flag.
-
-It copies those structs into the game's pData pointer.
-
-It returns the exact byte size of the fake packet, telling the game it succeeded.
-
-Game Processes Raw Input: The game's 3D engine reads the memory, sees the Left Mouse Down flag, and registers a 3D click natively.
-
-Repeat: The state machine advances to ButtonUp and repeats the process on the next frame to release the click.
+- **ServerInterface.cs** — IPC bridge (MarshalByRefObject) between host and injected code
+- **NativeMethods.cs** — P/Invoke declarations and native structs (POINT, MSG, RAWINPUT, etc.)

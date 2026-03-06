@@ -47,6 +47,36 @@ namespace InkybotHook
         /// </summary>
         public IntPtr targetHwnd = IntPtr.Zero;
 
+        /// <summary>
+        /// Set by the injected hook: true if the Dofus process has enabled mouse-in-pointer mode.
+        /// Read by Win32Input to decide whether to send WM_POINTER or WM_LBUTTON messages.
+        /// </summary>
+        public bool IsPointerInputEnabled = false;
+
+        /// <summary>
+        /// The real OS pointer ID captured from WM_POINTER messages inside the Dofus process.
+        /// Used by Win32Input for sending WM_POINTER messages with a valid pointer ID.
+        /// </summary>
+        public uint CapturedPointerId = 0;
+
+        /// <summary>
+        /// Set by Win32Input to true while a simulated click is active (between down and up).
+        /// The hook uses this to spoof GetKeyState/GetAsyncKeyState for VK_LBUTTON.
+        /// </summary>
+        public volatile bool IsClickActive = false;
+
+        /// <summary>
+        /// Set by Win32Input to request the advanced hook to perform a click at the current cursor position.
+        /// The hook clears this after initiating the click sequence.
+        /// </summary>
+        public volatile bool ClickRequested = false;
+
+        /// <summary>
+        /// Set by the advanced hook to true once the click sequence (down + up) has completed.
+        /// Win32Input polls this to know when the click is done.
+        /// </summary>
+        public volatile bool ClickCompleted = false;
+
         public HookState State { get; private set; } = HookState.NotInitialized;
 
         public void SetState(HookState newState)

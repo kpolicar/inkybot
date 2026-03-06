@@ -43,6 +43,7 @@ namespace Inkybot.Services.Win32Input
         private bool isMaging;
 
 
+
         public void BindDependencies(ServiceContainer serviceContainer) {
             var magingJob = serviceContainer.GetService<DofusMagingJob>();
             var screenCapture = serviceContainer.GetService<ScreenCapture>();
@@ -216,26 +217,24 @@ namespace Inkybot.Services.Win32Input
         public void Click(int x, int y) {
             SetCursorPosition(x, y);
             Thread.Sleep(10);
-
-            int lParam = Win32.MakeLParam(x, y);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)lParam);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONUP,   (IntPtr)0, (IntPtr)lParam);
+            RequestClickAndWait();
         }
 
         public void Drag(int x, int y, int tX, int tY) {
             SetCursorPosition(x, y);
             Thread.Sleep(10);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)Win32.MakeLParam(x, y));
-
+            // Drag: click down at start, move to target, click up
+            // For now, implement as click at destination since the advanced hook
+            // handles full click sequences atomically
             SetCursorPosition(tX, tY);
             Thread.Sleep(10);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONUP, (IntPtr)0, (IntPtr)Win32.MakeLParam(tX, tY));
+            RequestClickAndWait();
         }
 
         public void DoubleClick(int x, int y) {
-            Click(x,y);
+            Click(x, y);
             Thread.Sleep(50);
-            Click(x,y);
+            Click(x, y);
         }
 
         public void TypeMessage(string message, CancellationToken? cancel=null) {
@@ -270,6 +269,36 @@ namespace Inkybot.Services.Win32Input
             relativeToControl = handle;
             if (_server != null)
                 _server.targetHwnd = handle;
+        }
+
+        /// <summary>
+        /// Call after WaitForHookReady() to read pointer input detection from the injected hook.
+        /// </summary>
+        public void DetectPointerInputMode() {
+            // The advanced hook handles pointer vs legacy messages internally.
+            // This method is kept for API compatibility.
+            if (_server != null) {
+                FileEventLogger.SystemLogger.Info(
+                    $"[Win32Input] Advanced hook active — click injection handled by hook automation thread");
+            }
+        }
+
+        /// <summary>
+        /// Signals the advanced hook to perform a full click sequence (down + up)
+        /// at the current cursor position, then waits for completion.
+        /// </summary>
+        private void RequestClickAndWait(int timeoutMs = 5000) {
+            if (_server == null) return;
+            _server.ClickCompleted = false;
+            _server.ClickRequested = true;
+            var sw = Stopwatch.StartNew();
+            while (!_server.ClickCompleted) {
+                if (sw.ElapsedMilliseconds > timeoutMs) {
+                    FileEventLogger.SystemLogger.Info("[Win32Input] Click request timed out");
+                    break;
+                }
+                Thread.Sleep(1);
+            }
         }
 
         public void SelectAll() {

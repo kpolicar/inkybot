@@ -31,6 +31,9 @@ namespace Inkybot
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass, string lpszWindow);
         
         
         [DllImport("user32.dll", SetLastError = true)]
@@ -57,6 +60,10 @@ namespace Inkybot
         public const int WM_CHAR = 0x0102;
         public const int WM_SYSKEYDOWN = 0x0104;
         public const int WM_SYSKEYUP = 0x0105;
+
+        public const int WM_POINTERUPDATE = 0x0245;
+        public const int WM_POINTERDOWN   = 0x0246;
+        public const int WM_POINTERUP     = 0x0247;
 
         public const int VK_RETURN = 0x0D;
         public const int VK_MENU = 0x12;

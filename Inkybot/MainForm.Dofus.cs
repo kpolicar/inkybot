@@ -150,12 +150,25 @@ namespace Inkybot
         }
 
 
+        private IntPtr FindUnityChildWindow(IntPtr hWndParent) {
+            var log = FileEventLogger.SystemLogger;
+            var hUnityWnd = Win32.FindWindowEx(hWndParent, IntPtr.Zero, "UnityWndProc", null);
+            if (hUnityWnd != IntPtr.Zero) {
+                log.Info($"[Dofus] Found UnityWndProc child window: 0x{hUnityWnd.ToInt64():X}");
+            } else {
+                log.Info("[Dofus] UnityWndProc child window not found, falling back to main Dofus window handle");
+                hUnityWnd = hWndParent;
+            }
+            return hUnityWnd;
+        }
+
         private void BindServicesToDockedWindow() {
             var screen = (WinScreenRecorderScreenCapture) Program.Services.GetService<ScreenCapture>();
             screen.BindTo(this.Handle, dofusClientPanel, sidebarPanel.Width, sidebarRightPanel.Width, this);
             
             var mouse = (Win32Input) Program.Services.GetService<Input>();
-            mouse.SetRelativeToHandle(hWndDocked);
+            mouse.SetRelativeToHandle(FindUnityChildWindow(hWndDocked));
+            mouse.DetectPointerInputMode();
             
             var actions = (MouseActionFactory) Program.Services.GetService<ActionFactory>();
             actions.SetRelativeToControl(dofusClientPanel);

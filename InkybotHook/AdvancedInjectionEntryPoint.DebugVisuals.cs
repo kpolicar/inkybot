@@ -3,7 +3,7 @@ using static InkybotHook.NativeMethods;
 
 namespace InkybotHook
 {
-    public partial class InjectionEntryPoint
+    public partial class AdvancedInjectionEntryPoint
     {
         private long _lastMarkerDrawTick = 0;
 
