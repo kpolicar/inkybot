@@ -5,21 +5,6 @@ namespace InkybotHook
 {
     public partial class AdvancedInjectionEntryPoint
     {
-        private long _lastMarkerDrawTick = 0;
-
-        /// <summary>
-        /// Draws the debug marker if enough time has elapsed (every ~500ms).
-        /// </summary>
-        private void DrawDebugMarkerIfDue()
-        {
-            if (!IsCursorOverrideActive) return;
-            long now = System.Diagnostics.Stopwatch.GetTimestamp();
-            long freq = System.Diagnostics.Stopwatch.Frequency;
-            if ((now - _lastMarkerDrawTick) < freq / 2) return;
-            _lastMarkerDrawTick = now;
-            DrawDebugMarker();
-        }
-
         private void DrawDebugMarker()
         {
             var sp = GetFixedScreenPoint();

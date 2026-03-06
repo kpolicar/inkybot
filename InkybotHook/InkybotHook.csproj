@@ -46,7 +46,11 @@
         <Compile Include="AdvancedInjectionEntryPoint.cs" />
         <Compile Include="AdvancedInjectionEntryPoint.Coordinates.cs" />
         <Compile Include="AdvancedInjectionEntryPoint.DebugVisuals.cs" />
+        <Compile Include="AdvancedInjectionEntryPoint.Delegates.cs" />
+        <Compile Include="AdvancedInjectionEntryPoint.MessagePumpHooks.cs" />
         <Compile Include="AdvancedInjectionEntryPoint.MouseHooks.cs" />
+        <Compile Include="AdvancedInjectionEntryPoint.PollingHooks.cs" />
+        <Compile Include="AdvancedInjectionEntryPoint.RawInputHooks.cs" />
         <!-- Shared -->
         <Compile Include="NativeMethods.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
