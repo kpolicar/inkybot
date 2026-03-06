@@ -20,7 +20,7 @@ namespace InkybotHook
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate bool IsIconicDelegate(IntPtr hWnd);
         private IsIconicDelegate _originalIsIconic;
-        
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode)]
         private delegate bool PeekMessageWDelegate(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
         private PeekMessageWDelegate _originalPeekMessageW;
@@ -213,6 +213,7 @@ namespace InkybotHook
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
             bool result = _originalGetCursorPos(out lpPoint);
+            return result;  
             if (_server.point.X != -1 && _server.point.Y != -1)
             {
                 // server.point contains screen coordinates (Win32Input converts client->screen before setting)
