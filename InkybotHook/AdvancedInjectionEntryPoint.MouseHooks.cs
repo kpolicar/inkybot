@@ -60,6 +60,36 @@ namespace InkybotHook
         private const int VK_LBUTTON = 0x01;
 
         // =========================================================
+        // COORDINATE HELPERS
+        // =========================================================
+        private POINT ResolveScreenPoint()
+        {
+            if (IsCursorOverrideActive)
+                return GetFixedScreenPoint();
+            GetCursorPosNative(out POINT pt);
+            return pt;
+        }
+
+        private (POINT screen, POINT client, IntPtr screenLParam, IntPtr clientLParam) ResolveMsgCoordinates()
+        {
+            POINT screenPt = ResolveScreenPoint();
+            POINT clientPt = screenPt;
+            ScreenToClientNative(_mainHwnd, ref clientPt);
+
+            IntPtr clientLParam = (IntPtr)((uint)((clientPt.Y << 16) | (clientPt.X & 0xFFFF)));
+            IntPtr screenLParam = (IntPtr)((uint)((screenPt.Y << 16) | (screenPt.X & 0xFFFF)));
+
+            return (screenPt, clientPt, screenLParam, clientLParam);
+        }
+
+        private (IntPtr pointerWParam, uint now) ResolvePointerParams()
+        {
+            uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
+            IntPtr pointerWParam = (IntPtr)((0x0016 << 16) | activePointerId);
+            return (pointerWParam, (uint)Environment.TickCount);
+        }
+
+        // =========================================================
         // AUTOMATION LOOP
         // =========================================================
         private void AutomationThreadLoop()
@@ -114,20 +144,8 @@ namespace InkybotHook
 
         private void EnqueueMouseMoveMessages()
         {
-            POINT screenPt;
-            if (IsCursorOverrideActive)
-                screenPt = GetFixedScreenPoint();
-            else
-                GetCursorPosNative(out screenPt);
-            POINT clientPt = screenPt;
-            ScreenToClientNative(_mainHwnd, ref clientPt);
-
-            IntPtr clientLParam = (IntPtr)((uint)((clientPt.Y << 16) | (clientPt.X & 0xFFFF)));
-            IntPtr screenLParam = (IntPtr)((uint)((screenPt.Y << 16) | (screenPt.X & 0xFFFF)));
-
-            uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
-            IntPtr pointerWParam = (IntPtr)((0x0016 << 16) | activePointerId);
-            uint now = (uint)Environment.TickCount;
+            var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
+            var (pointerWParam, now) = ResolvePointerParams();
 
             lock (_queueLock)
             {
@@ -140,20 +158,8 @@ namespace InkybotHook
 
         private void EnqueueClickPhaseMessages(uint pointerMsg, uint lbuttonMsg, IntPtr lbuttonWParam)
         {
-            POINT screenPt;
-            if (IsCursorOverrideActive)
-                screenPt = GetFixedScreenPoint();
-            else
-                GetCursorPosNative(out screenPt);
-            POINT clientPt = screenPt;
-            ScreenToClientNative(_mainHwnd, ref clientPt);
-
-            IntPtr clientLParam = (IntPtr)((uint)((clientPt.Y << 16) | (clientPt.X & 0xFFFF)));
-            IntPtr screenLParam = (IntPtr)((uint)((screenPt.Y << 16) | (screenPt.X & 0xFFFF)));
-
-            uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
-            IntPtr pointerWParam = (IntPtr)((0x0016 << 16) | activePointerId);
-            uint now = (uint)Environment.TickCount;
+            var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
+            var (pointerWParam, now) = ResolvePointerParams();
 
             lock (_queueLock)
             {
@@ -219,12 +225,6 @@ namespace InkybotHook
                     _nativeFakePacketSize = 0;
                 }
             }
-        }
-
-        private void CleanupFakePacketResources()
-        {
-            _stopAutomationThread = true;
-            FreeNativeFakePacket();
         }
     }
 }

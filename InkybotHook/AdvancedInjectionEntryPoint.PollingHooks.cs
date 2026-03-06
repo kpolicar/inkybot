@@ -6,6 +6,8 @@ namespace InkybotHook
 {
     public partial class AdvancedInjectionEntryPoint
     {
+        private static short SpoofLButton(short realState) => (short)(realState | unchecked((short)0x8000));
+
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
             if (_disposing) return _originalGetCursorPos(out lpPoint);
@@ -49,15 +51,14 @@ namespace InkybotHook
             if (_disposing) return _originalGetAsyncKeyState(vKey);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalGetAsyncKeyState(vKey);
                 LogFirstCall("GetAsyncKeyState");
+
                 short realState = _originalGetAsyncKeyState(vKey);
-                if (vKey == VK_LBUTTON && _rawState == ForgeState.ButtonDown)
-                {
-                    LogFirstCall("GetAsyncKeyState:Spoofed");
-                    return (short)(realState | unchecked((short)0x8000));
-                }
-                return realState;
+                if (vKey != VK_LBUTTON || _rawState != ForgeState.ButtonDown) return realState;
+
+                LogFirstCall("GetAsyncKeyState:Spoofed");
+                return SpoofLButton(realState);
             }
             catch (Exception ex)
             {
@@ -71,15 +72,14 @@ namespace InkybotHook
             if (_disposing) return _originalGetKeyState(nVirtKey);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalGetKeyState(nVirtKey);
                 LogFirstCall("GetKeyState");
+
                 short realState = _originalGetKeyState(nVirtKey);
-                if (nVirtKey == VK_LBUTTON && _rawState == ForgeState.ButtonDown)
-                {
-                    LogFirstCall("GetKeyState:Spoofed");
-                    return (short)(realState | unchecked((short)0x8000));
-                }
-                return realState;
+                if (nVirtKey != VK_LBUTTON || _rawState != ForgeState.ButtonDown) return realState;
+
+                LogFirstCall("GetKeyState:Spoofed");
+                return SpoofLButton(realState);
             }
             catch (Exception ex)
             {

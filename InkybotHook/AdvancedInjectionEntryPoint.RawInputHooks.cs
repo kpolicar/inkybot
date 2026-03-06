@@ -6,12 +6,16 @@ namespace InkybotHook
 {
     public partial class AdvancedInjectionEntryPoint
     {
+        private bool IsForgeActive => _rawState == ForgeState.ButtonDown || _rawState == ForgeState.ButtonUp;
+        private uint GetCurrentButtonFlag() => (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
+        private static bool IsValidRawResult(uint result) => result > 0 && result != unchecked((uint)-1);
+
         private uint HookedGetRawInputData(IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
             if (_disposing) return _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
                 LogFirstCall("GetRawInputData");
 
                 if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE && uiCommand == RID_INPUT)
@@ -20,11 +24,9 @@ namespace InkybotHook
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
                 TryCaptureDeviceInfo(pData, result, uiCommand, cbSizeHeader);
 
-                // Wipe real mouse input when cursor override is active
-                if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1) && uiCommand == RID_INPUT)
-                {
+                // Only reached for real (non-synthetic) packets — magic handle exits above
+                if (IsCursorOverrideActive && pData != IntPtr.Zero && IsValidRawResult(result) && uiCommand == RID_INPUT)
                     WipeMouseRawInput(pData);
-                }
 
                 return result;
             }
@@ -40,25 +42,25 @@ namespace InkybotHook
             if (_disposing) return _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
                 LogFirstCall("GetRawInputBuffer");
+
                 uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
                 if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
 
-                // Wipe real mouse input when cursor override is active
-                if (IsCursorOverrideActive && result > 0 && result != unchecked((uint)-1) && pData != IntPtr.Zero)
+                if (!IsValidRawResult(result) || pData == IntPtr.Zero)
                 {
-                    WipeMouseRawInputBuffer(pData, result);
+                    // No real packets — try injecting a synthetic one if we're mid-click
+                    if (result == 0 && _capturedDevice != IntPtr.Zero && pData != IntPtr.Zero)
+                        return TryInjectIntoEmptyBuffer(pData, ref pcbSize, result);
                     return result;
                 }
 
-                if (result > 0 && result != unchecked((uint)-1) && pData != IntPtr.Zero)
-                    return PatchBufferWithButtonFlags(pData, result);
+                // Real packets arrived — wipe mouse data if cursor is locked, then patch button flags
+                if (IsCursorOverrideActive)
+                    WipeMouseRawInputBuffer(pData, result);
 
-                if (result == 0 && _capturedDevice != IntPtr.Zero && pData != IntPtr.Zero)
-                    return TryInjectIntoEmptyBuffer(pData, ref pcbSize, result);
-
-                return result;
+                return PatchBufferWithButtonFlags(pData, result);
             }
             catch (Exception ex)
             {
@@ -109,23 +111,21 @@ namespace InkybotHook
             if (pData == IntPtr.Zero) { pcbSize = _capturedPacketSize; return 0; }
             if (pcbSize < _capturedPacketSize) { pcbSize = _capturedPacketSize; return unchecked((uint)-1); }
 
-            uint buttonFlag = (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
-            if (EnsureNativePrepared(buttonFlag))
+            uint buttonFlag = GetCurrentButtonFlag();
+            if (!EnsureNativePrepared(buttonFlag)) return unchecked((uint)-1);
+
+            lock (_nativeBufLock)
             {
-                lock (_nativeBufLock)
-                {
-                    CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
-                    _lastInjectedRawState = _rawState;
-                    QueueMessage($"[GetRawInputData] Fabricated RAWINPUT packet: buttonFlag=0x{buttonFlag:X}, device=0x{_capturedDevice.ToInt64():X}");
-                    return _capturedPacketSize;
-                }
+                CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
+                _lastInjectedRawState = _rawState;
+                QueueMessage($"[GetRawInputData] Fabricated RAWINPUT packet: buttonFlag=0x{buttonFlag:X}, device=0x{_capturedDevice.ToInt64():X}");
+                return _capturedPacketSize;
             }
-            return unchecked((uint)-1);
         }
 
         private void TryCaptureDeviceInfo(IntPtr pData, uint result, uint uiCommand, uint cbSizeHeader)
         {
-            if (pData == IntPtr.Zero || result == 0 || result == unchecked((uint)-1) || uiCommand != RID_INPUT) return;
+            if (pData == IntPtr.Zero || !IsValidRawResult(result) || result == 0 || uiCommand != RID_INPUT) return;
             if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
 
             RAWINPUTHEADER header = Marshal.PtrToStructure<RAWINPUTHEADER>(pData);
@@ -143,10 +143,10 @@ namespace InkybotHook
 
         private uint PatchBufferWithButtonFlags(IntPtr pData, uint packetCount)
         {
-            if (_rawState != ForgeState.ButtonDown && _rawState != ForgeState.ButtonUp) return packetCount;
+            if (!IsForgeActive) return packetCount;
 
             long currentPtr = pData.ToInt64();
-            uint buttonFlag = (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
+            uint buttonFlag = GetCurrentButtonFlag();
 
             for (int i = 0; i < packetCount; i++)
             {
@@ -166,24 +166,21 @@ namespace InkybotHook
 
         private uint TryInjectIntoEmptyBuffer(IntPtr pData, ref uint pcbSize, uint originalResult)
         {
-            if (_rawState != ForgeState.ButtonDown && _rawState != ForgeState.ButtonUp) return originalResult;
+            if (!IsForgeActive) return originalResult;
             if (_lastInjectedRawState == _rawState) return originalResult;
 
-            uint buttonFlag = (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
-            if (EnsureNativePrepared(buttonFlag))
+            uint buttonFlag = GetCurrentButtonFlag();
+            if (!EnsureNativePrepared(buttonFlag)) return originalResult;
+
+            lock (_nativeBufLock)
             {
-                lock (_nativeBufLock)
-                {
-                    if (pcbSize >= (uint)_nativeFakePacketSize)
-                    {
-                        CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_nativeFakePacketSize);
-                        _lastInjectedRawState = _rawState;
-                        QueueMessage($"[GetRawInputBuffer] Injected fake packet into empty buffer, buttonFlag=0x{buttonFlag:X}");
-                        return 1;
-                    }
-                }
+                if (pcbSize < (uint)_nativeFakePacketSize) return originalResult;
+
+                CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_nativeFakePacketSize);
+                _lastInjectedRawState = _rawState;
+                QueueMessage($"[GetRawInputBuffer] Injected fake packet into empty buffer, buttonFlag=0x{buttonFlag:X}");
+                return 1;
             }
-            return originalResult;
         }
     }
 }

@@ -7,13 +7,22 @@ namespace InkybotHook
 {
     public partial class AdvancedInjectionEntryPoint
     {
+        private static bool IsSyntheticRawInput(ref MSG lpMsg) =>
+            lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE;
+
+        private static bool IsMouseOrPointerMessage(uint msg) =>
+            msg == WM_INPUT ||
+            (msg >= WM_MOUSEMOVE && msg <= WM_LBUTTONUP) ||
+            (msg >= WM_POINTERUPDATE && msg <= WM_POINTERUP);
+
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
             if (_disposing) return _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
                 LogFirstCall("PeekMessageW");
+
                 bool result = _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 
                 if (lpMsg.hwnd != IntPtr.Zero)
@@ -33,7 +42,7 @@ namespace InkybotHook
             catch (Exception ex)
             {
                 if (!_disposing) QueueMessage($"[EXCEPTION in HookedPeekMessageW] {ex}");
-                return false;
+                return _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
             }
         }
 
@@ -42,13 +51,15 @@ namespace InkybotHook
             if (_disposing) return _originalTranslateMessage(ref lpMsg);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalTranslateMessage(ref lpMsg);
                 LogFirstCall("TranslateMessage");
-                if (lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE)
+
+                if (IsSyntheticRawInput(ref lpMsg))
                 {
                     QueueMessage("[TranslateMessage] Bypassed OS translation for synthetic WM_INPUT (MAGIC_RAW_HANDLE)");
                     return true;
                 }
+
                 return _originalTranslateMessage(ref lpMsg);
             }
             catch (Exception ex)
@@ -63,43 +74,14 @@ namespace InkybotHook
             if (_disposing) return _originalDispatchMessageW(ref lpMsg);
             try
             {
-                _allHooksInstalled.Wait();
+                if (!_allHooksInstalled.Wait(5000)) return _originalDispatchMessageW(ref lpMsg);
                 LogFirstCall("DispatchMessageW");
 
-                // Dispatch synthetic WM_INPUT to the correct WndProc
-                if (lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE)
-                {
-                    WndProcDelegate targetDelegate = null;
-                    IntPtr targetOrig = IntPtr.Zero;
+                if (IsSyntheticRawInput(ref lpMsg))
+                    return DispatchSyntheticInput(ref lpMsg);
 
-                    lock (_wndProcLock)
-                    {
-                        _wndProcDelegates.TryGetValue(lpMsg.hwnd, out targetDelegate);
-                        _originalWndProcs.TryGetValue(lpMsg.hwnd, out targetOrig);
-                    }
-
-                    if (targetDelegate != null)
-                    {
-                        QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via hook delegate");
-                        return targetDelegate(lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
-                    }
-                    else if (targetOrig != IntPtr.Zero)
-                    {
-                        QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via original WndProc");
-                        return CallWindowProc(targetOrig, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
-                    }
-                    QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
+                if (IsCursorOverrideActive && IsMouseOrPointerMessage(lpMsg.message))
                     return IntPtr.Zero;
-                }
-
-                // When cursor override is active, drop real mouse/pointer/raw input events
-                if (IsCursorOverrideActive &&
-                    (lpMsg.message == WM_INPUT ||
-                    (lpMsg.message >= WM_MOUSEMOVE && lpMsg.message <= WM_LBUTTONUP) ||
-                    (lpMsg.message >= WM_POINTERUPDATE && lpMsg.message <= WM_POINTERUP)))
-                {
-                    return IntPtr.Zero;
-                }
 
                 return _originalDispatchMessageW(ref lpMsg);
             }
@@ -110,6 +92,33 @@ namespace InkybotHook
             }
         }
 
+        private IntPtr DispatchSyntheticInput(ref MSG lpMsg)
+        {
+            WndProcDelegate targetDelegate = null;
+            IntPtr targetOrig = IntPtr.Zero;
+
+            lock (_wndProcLock)
+            {
+                _wndProcDelegates.TryGetValue(lpMsg.hwnd, out targetDelegate);
+                _originalWndProcs.TryGetValue(lpMsg.hwnd, out targetOrig);
+            }
+
+            if (targetDelegate != null)
+            {
+                QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via hook delegate");
+                return targetDelegate(lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
+            }
+
+            if (targetOrig != IntPtr.Zero)
+            {
+                QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via original WndProc");
+                return CallWindowProc(targetOrig, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
+            }
+
+            QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
+            return IntPtr.Zero;
+        }
+
         private IntPtr HookedWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             IntPtr originalProc = IntPtr.Zero;
@@ -118,7 +127,7 @@ namespace InkybotHook
                 _originalWndProcs.TryGetValue(hWnd, out originalProc);
             }
 
-            if (_disposing)
+            if (_disposing || originalProc == IntPtr.Zero)
             {
                 return originalProc != IntPtr.Zero
                     ? CallWindowProc(originalProc, hWnd, msg, wParam, lParam)
@@ -127,9 +136,7 @@ namespace InkybotHook
 
             try
             {
-                if (originalProc != IntPtr.Zero)
-                    return CallWindowProc(originalProc, hWnd, msg, wParam, lParam);
-                return DefWindowProc(hWnd, msg, wParam, lParam);
+                return CallWindowProc(originalProc, hWnd, msg, wParam, lParam);
             }
             catch (Exception ex)
             {
@@ -158,9 +165,7 @@ namespace InkybotHook
 
         private void TryLockOntoInputWindow(ref MSG lpMsg)
         {
-            bool isInputMsg = lpMsg.message == WM_INPUT || lpMsg.message == WM_MOUSEMOVE
-                || (lpMsg.message >= WM_POINTERUPDATE && lpMsg.message <= WM_POINTERUP);
-            if (!isInputMsg) return;
+            if (!IsMouseOrPointerMessage(lpMsg.message)) return;
 
             if (_mainHwnd != lpMsg.hwnd)
             {
@@ -168,14 +173,13 @@ namespace InkybotHook
                 QueueMessage($"[PeekMessageW] Locked onto active Input HWND: 0x{_mainHwnd.ToInt64():X}");
             }
 
-            if (lpMsg.message >= WM_POINTERUPDATE && lpMsg.message <= WM_POINTERUP)
+            if (lpMsg.message < WM_POINTERUPDATE || lpMsg.message > WM_POINTERUP) return;
+
+            uint extractedPointerId = (uint)(lpMsg.wParam.ToInt64() & 0xFFFF);
+            if (_capturedPointerId != extractedPointerId)
             {
-                uint extractedPointerId = (uint)(lpMsg.wParam.ToInt64() & 0xFFFF);
-                if (_capturedPointerId != extractedPointerId)
-                {
-                    _capturedPointerId = extractedPointerId;
-                    QueueMessage($"[PeekMessageW] Captured real OS Pointer ID: {_capturedPointerId}");
-                }
+                _capturedPointerId = extractedPointerId;
+                QueueMessage($"[PeekMessageW] Captured real OS Pointer ID: {_capturedPointerId}");
             }
         }
 
