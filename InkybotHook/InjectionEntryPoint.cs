@@ -82,6 +82,7 @@ namespace InkybotHook
 
             try
             {
+                CleanupFakePacketResources();
                 foreach (var hook in installedHooks)
                     hook.Dispose();
                 EasyHook.LocalHook.Release();

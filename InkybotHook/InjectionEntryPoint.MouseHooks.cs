@@ -54,6 +54,10 @@ namespace InkybotHook
         private delegate IntPtr GetCaptureDelegate();
         private GetCaptureDelegate _originalGetCapture;
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate bool GetCursorPosHookDelegate(out POINT lpPoint);
+        private GetCursorPosHookDelegate _originalGetCursorPos;
+
         private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         // =========================================================
@@ -166,6 +170,7 @@ namespace InkybotHook
             hooks.Add(TryInstallHook<SetCaptureDelegate>("SetCapture", new SetCaptureDelegate(HookedSetCapture), out _originalSetCapture));
             hooks.Add(TryInstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture), out _originalReleaseCapture));
             hooks.Add(TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture));
+            hooks.Add(TryInstallHook<GetCursorPosHookDelegate>("GetCursorPos", new GetCursorPosHookDelegate(HookedGetCursorPos), out _originalGetCursorPos));
 
             hooks.RemoveAll(item => item == null);
 
@@ -261,7 +266,7 @@ namespace InkybotHook
                             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
                         }
                     }
-                    else if (_rawState == ForgeState.ButtonUp && (now - _lastStateChangeTime >= 50))
+                    else if (_rawState == ForgeState.ButtonUp && (now - _lastStateChangeTime >= 100))
                     {
                         _rawState = ForgeState.Idle;
                         _lastStateChangeTime = now;
@@ -662,6 +667,17 @@ namespace InkybotHook
             return _originalGetCapture();
         }
 
+        private bool HookedGetCursorPos(out POINT lpPoint)
+        {
+            _allHooksInstalled.Wait();
+            if (IsCursorOverrideActive)
+            {
+                lpPoint = GetFixedScreenPoint();
+                return true;
+            }
+            return _originalGetCursorPos(out lpPoint);
+        }
+
         private void ProbeRawInputDevices()
         {
             try
@@ -726,9 +742,22 @@ namespace InkybotHook
         private void CleanupFakePacketResources()
         {
             _stopClickThread = true;
+
+            // Wait up to 1 second for any in-progress click to finish
+            int deadline = Environment.TickCount + 1000;
+            while (_rawState != ForgeState.Idle && (Environment.TickCount - deadline) < 0)
+                System.Threading.Thread.Sleep(5);
+
+            // Restore all subclassed windows to their original WndProc
+            lock (_wndProcLock)
+            {
+                foreach (var kvp in _originalWndProcs)
+                    SetWindowLongPtr(kvp.Key, GWLP_WNDPROC, kvp.Value);
+                _originalWndProcs.Clear();
+                _wndProcDelegates.Clear();
+            }
+
             FreeNativeFakePacket();
-            
-            // Optionally: Restore the subclassed windows via SetWindowLongPtr to their original delegates here
         }
     }
 }
