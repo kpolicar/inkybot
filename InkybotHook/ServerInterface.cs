@@ -47,6 +47,22 @@ namespace InkybotHook
         /// </summary>
         public IntPtr targetHwnd = IntPtr.Zero;
 
+        /// <summary>
+        /// Click request fields. Win32Input sets these via RequestClick(),
+        /// the hook thread reads and clears clickRequested.
+        /// Coordinates are in screen space.
+        /// </summary>
+        public volatile bool clickRequested = false;
+        public int clickScreenX;
+        public int clickScreenY;
+
+        public void RequestClick(int screenX, int screenY)
+        {
+            clickScreenX = screenX;
+            clickScreenY = screenY;
+            clickRequested = true;
+        }
+
         public HookState State { get; private set; } = HookState.NotInitialized;
 
         public void SetState(HookState newState)

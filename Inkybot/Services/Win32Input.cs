@@ -217,9 +217,13 @@ namespace Inkybot.Services.Win32Input
             SetCursorPosition(x, y);
             Thread.Sleep(10);
 
-            int lParam = Win32.MakeLParam(x, y);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONDOWN, (IntPtr)1, (IntPtr)lParam);
-            Win32.PostMessage(relativeToControl, (uint)Win32.WM_LBUTTONUP,   (IntPtr)0, (IntPtr)lParam);
+            // Convert client coords to screen coords for the hook
+            var pt = new ServerInterface.POINT { X = x, Y = y };
+            ClientToScreen(relativeToControl, ref pt);
+            _server.RequestClick(pt.X, pt.Y);
+
+            // Wait for the hook to complete the full click cycle (down + 50ms + up + 50ms)
+            Thread.Sleep(150);
         }
 
         public void Drag(int x, int y, int tX, int tY) {

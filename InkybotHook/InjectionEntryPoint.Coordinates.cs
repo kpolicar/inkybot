@@ -10,8 +10,7 @@ namespace InkybotHook
         /// Returns true when the host has set a valid fixed cursor position.
         /// </summary>
         private bool IsCursorOverrideActive =>
-           true;
-            //_server != null && _server.point.X != -1 && _server.point.Y != -1;
+           _server != null && _server.point.X != -1 && _server.point.Y != -1;
 
         /// <summary>
         /// Gets the fixed cursor position in screen coordinates by converting
@@ -19,8 +18,7 @@ namespace InkybotHook
         /// </summary>
         private POINT GetFixedScreenPoint()
         {
-            var pt = new POINT { X = 1870, Y = 15 };
-            //var pt = new POINT { X = _server.point.X, Y = _server.point.Y };
+            var pt = new POINT { X = _server.point.X, Y = _server.point.Y };
             try
             {
                 IntPtr hwnd = _server.targetHwnd;

@@ -86,8 +86,8 @@ namespace InkybotHook
         private volatile int _targetScreenX;
         private volatile int _targetScreenY;
 
-        private Thread _automationThread;
-        private volatile bool _stopAutomationThread = false;
+        private Thread _clickThread;
+        private volatile bool _stopClickThread = false;
 
         // =========================================================
         // 3. CONSTANTS & NATIVE IMPORTS
@@ -171,46 +171,46 @@ namespace InkybotHook
 
             ProbeRawInputDevices();
 
-            _stopAutomationThread = false;
-            _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };
-            _automationThread.Start();
+            _stopClickThread = false;
+            _clickThread = new Thread(ClickProcessorLoop) { IsBackground = true, Name = "Inkybot_ClickThread" };
+            _clickThread.Start();
 
             _allHooksInstalled.Set();
             return hooks;
         }
 
-        private void AutomationThreadLoop()
+        private void ClickProcessorLoop()
         {
-            while (!_stopAutomationThread)
+            while (!_stopClickThread)
             {
                 try
                 {
                     int now = Environment.TickCount;
 
-                    if (_rawState == ForgeState.Idle && (now - _lastStateChangeTime >= 1000))
+                    if (_rawState == ForgeState.Idle && _server.clickRequested)
                     {
+                        // Consume the click request
+                        int screenX = _server.clickScreenX;
+                        int screenY = _server.clickScreenY;
+                        _server.clickRequested = false;
+
+                        _targetScreenX = screenX;
+                        _targetScreenY = screenY;
+
                         _rawState = ForgeState.ButtonDown;
                         _lastStateChangeTime = now;
 
                         if (_mainHwnd != IntPtr.Zero)
                         {
-                            // Set mouse capture so the game knows it owns the mouse during the click
                             if (_originalSetCapture != null)
                                 _originalSetCapture(_mainHwnd);
 
-                            GetCursorPos(out POINT screenPt); // Get global screen position
-                            _targetScreenX = screenPt.X;
-                            _targetScreenY = screenPt.Y;
+                            POINT screenPt = new POINT { X = screenX, Y = screenY };
 
                             POINT clientPt = screenPt;
-                            ScreenToClient(_mainHwnd, ref clientPt); // Convert to window-relative position
+                            ScreenToClient(_mainHwnd, ref clientPt);
 
-                            // 1. Pack Client Coordinates for Legacy (LBUTTON)
-                            // Using (uint) cast to ensure clean bit-packing
                             IntPtr clientLParam = (IntPtr)((uint)((clientPt.Y << 16) | (clientPt.X & 0xFFFF)));
-
-                            // 2. Pack Screen Coordinates for Modern (POINTER)
-                            // WM_POINTER messages expect SCREEN coordinates in their lParam.
                             IntPtr screenLParam = (IntPtr)((uint)((screenPt.Y << 16) | (screenPt.X & 0xFFFF)));
 
                             lock (_queueLock)
@@ -218,20 +218,11 @@ namespace InkybotHook
                                 uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
                                 IntPtr pointerWParamDown = (IntPtr)((0x0016 << 16) | activePointerId);
 
-                                // Raw input move to prime the pipeline (absolute position, no button flags)
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_MOVE_HANDLE, time = (uint)now, pt = screenPt });
-
-                                // Move events to update game's internal hover/hit-test state
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParamDown, lParam = screenLParam, time = (uint)now, pt = screenPt });
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = screenPt });
-
-                                // Stealth Hardware: raw input click
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = (uint)now, pt = screenPt });
-
-                                // Modern UI: USES SCREEN COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERDOWN, wParam = pointerWParamDown, lParam = screenLParam, time = (uint)now, pt = screenPt });
-
-                                // Legacy UI: USES CLIENT COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_LBUTTONDOWN, wParam = (IntPtr)MK_LBUTTON, lParam = clientLParam, time = (uint)now, pt = clientPt });
                             }
                             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
@@ -244,46 +235,27 @@ namespace InkybotHook
 
                         if (_mainHwnd != IntPtr.Zero)
                         {
-                            // Release mouse capture on button up
                             if (_originalReleaseCapture != null)
                                 _originalReleaseCapture();
 
-                            GetCursorPos(out POINT screenPt); // Get global screen position
-                            _targetScreenX = screenPt.X;
-                            _targetScreenY = screenPt.Y;
+                            POINT screenPt = new POINT { X = _targetScreenX, Y = _targetScreenY };
 
                             POINT clientPt = screenPt;
-                            ScreenToClient(_mainHwnd, ref clientPt); // Convert to window-relative position
+                            ScreenToClient(_mainHwnd, ref clientPt);
 
-                            // 1. Pack Client Coordinates for Legacy (LBUTTON)
-                            // Using (uint) cast to ensure clean bit-packing
                             IntPtr clientLParam = (IntPtr)((uint)((clientPt.Y << 16) | (clientPt.X & 0xFFFF)));
-
-                            // 2. Pack Screen Coordinates for Modern (POINTER)
-                            // WM_POINTER messages expect SCREEN coordinates in their lParam.
                             IntPtr screenLParam = (IntPtr)((uint)((screenPt.Y << 16) | (screenPt.X & 0xFFFF)));
 
                             lock (_queueLock)
                             {
                                 uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
-                                
-                                // FIX: 0x0002 is INRANGE only. We drop INCONTACT (0x04) and FIRSTBUTTON (0x10).
                                 IntPtr pointerWParamUp = (IntPtr)((0x0002 << 16) | activePointerId);
 
-                                // Raw input move to prime the pipeline (no button flags)
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_MOVE_HANDLE, time = (uint)now, pt = screenPt });
-
-                                // Move events to keep cursor state consistent (using UP flags since the button is released)
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParamUp, lParam = screenLParam, time = (uint)now, pt = screenPt });
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = screenPt });
-
-                                // Stealth Hardware: raw input click
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = (uint)now, pt = screenPt });
-
-                                // Modern UI: USES SCREEN COORDINATES WITH CORRECTED UP FLAGS
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUP, wParam = pointerWParamUp, lParam = screenLParam, time = (uint)now, pt = screenPt });
-
-                                // Legacy UI: USES CLIENT COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_LBUTTONUP, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = clientPt });
                             }
                             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
@@ -297,10 +269,10 @@ namespace InkybotHook
                 }
                 catch (Exception ex)
                 {
-                    _server.ReportMessage($"[EXCEPTION in AutomationThreadLoop]\n{ex}");
+                    _server.ReportMessage($"[EXCEPTION in ClickProcessorLoop]\n{ex}");
                 }
 
-                Thread.Sleep(16);
+                Thread.Sleep(1);
             }
         }
 
@@ -318,22 +290,24 @@ namespace InkybotHook
                 {
                     lock (_wndProcLock)
                     {
-                        // 1. Subclass every new window dynamically
+                        // 1. Subclass every new UnityWndClass window dynamically
                         if (!_originalWndProcs.ContainsKey(lpMsg.hwnd))
                         {
-                            WndProcDelegate newDelegate = new WndProcDelegate(HookedWndProc);
-                            _wndProcDelegates[lpMsg.hwnd] = newDelegate;
-                            IntPtr orig = SetWindowLongPtr(lpMsg.hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(newDelegate));
-                            _originalWndProcs[lpMsg.hwnd] = orig;
-
-                            // --- NEW LOGGING CODE ---
                             System.Text.StringBuilder windowText = new System.Text.StringBuilder(256);
                             System.Text.StringBuilder className = new System.Text.StringBuilder(256);
                             GetWindowText(lpMsg.hwnd, windowText, windowText.Capacity);
                             GetClassName(lpMsg.hwnd, className, className.Capacity);
 
-                            string wName = string.IsNullOrEmpty(windowText.ToString()) ? "[No Name]" : windowText.ToString();
-                            _server.ReportMessage($"[LOG] Subclassed HWND: 0x{lpMsg.hwnd.ToInt64():X} | Name: '{wName}' | Class: '{className}'");
+                            if (className.ToString() == "UnityWndClass")
+                            {
+                                WndProcDelegate newDelegate = new WndProcDelegate(HookedWndProc);
+                                _wndProcDelegates[lpMsg.hwnd] = newDelegate;
+                                IntPtr orig = SetWindowLongPtr(lpMsg.hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(newDelegate));
+                                _originalWndProcs[lpMsg.hwnd] = orig;
+
+                                string wName = string.IsNullOrEmpty(windowText.ToString()) ? "[No Name]" : windowText.ToString();
+                                _server.ReportMessage($"[LOG] Subclassed HWND: 0x{lpMsg.hwnd.ToInt64():X} | Name: '{wName}' | Class: '{className}'");
+                            }
                         }
 
                         // 2. Lock onto the window actively receiving hardware inputs
@@ -726,7 +700,7 @@ namespace InkybotHook
         
         private void CleanupFakePacketResources()
         {
-            _stopAutomationThread = true;
+            _stopClickThread = true;
             FreeNativeFakePacket();
             
             // Optionally: Restore the subclassed windows via SetWindowLongPtr to their original delegates here
