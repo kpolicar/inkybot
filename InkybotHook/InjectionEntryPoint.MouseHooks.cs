@@ -41,6 +41,19 @@ namespace InkybotHook
         private delegate short GetKeyStateDelegate(int nVirtKey);
         private GetKeyStateDelegate _originalGetKeyState;
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate IntPtr SetCaptureDelegate(IntPtr hWnd);
+        private SetCaptureDelegate _originalSetCapture;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private delegate bool ReleaseCaptureDelegate();
+        private ReleaseCaptureDelegate _originalReleaseCapture;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate IntPtr GetCaptureDelegate();
+        private GetCaptureDelegate _originalGetCapture;
+
         private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         // =========================================================
@@ -70,6 +83,9 @@ namespace InkybotHook
         private Queue<MSG> _syntheticMessages = new Queue<MSG>();
         private readonly object _queueLock = new object();
 
+        private volatile int _targetScreenX;
+        private volatile int _targetScreenY;
+
         private Thread _automationThread;
         private volatile bool _stopAutomationThread = false;
 
@@ -77,6 +93,9 @@ namespace InkybotHook
         // 3. CONSTANTS & NATIVE IMPORTS
         // =========================================================
         private const int MAGIC_RAW_HANDLE = 0x1337;
+        private const int MAGIC_RAW_MOVE_HANDLE = 0x1338;
+        private const ushort MOUSE_MOVE_ABSOLUTE = 0x0001;
+        private const ushort MOUSE_VIRTUAL_DESKTOP = 0x0002;
         private const uint WM_NULL = 0x0000;
         private const uint WM_INPUT = 0x00FF;
         private const uint WM_MOUSEMOVE = 0x0200;
@@ -124,6 +143,11 @@ namespace InkybotHook
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
         private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern int GetSystemMetrics(int nIndex);
+        private const int SM_CXSCREEN = 0;
+        private const int SM_CYSCREEN = 1;
         
         // =========================================================
         // 4. INSTALLATION & AUTOMATION LOOP
@@ -139,8 +163,13 @@ namespace InkybotHook
             hooks.Add(TryInstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer), out _originalGetRawInputBuffer));
             hooks.Add(TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState));
             hooks.Add(TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState));
+            hooks.Add(TryInstallHook<SetCaptureDelegate>("SetCapture", new SetCaptureDelegate(HookedSetCapture), out _originalSetCapture));
+            hooks.Add(TryInstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture), out _originalReleaseCapture));
+            hooks.Add(TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture));
 
             hooks.RemoveAll(item => item == null);
+
+            ProbeRawInputDevices();
 
             _stopAutomationThread = false;
             _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };
@@ -165,7 +194,14 @@ namespace InkybotHook
 
                         if (_mainHwnd != IntPtr.Zero)
                         {
+                            // Set mouse capture so the game knows it owns the mouse during the click
+                            if (_originalSetCapture != null)
+                                _originalSetCapture(_mainHwnd);
+
                             GetCursorPos(out POINT screenPt); // Get global screen position
+                            _targetScreenX = screenPt.X;
+                            _targetScreenY = screenPt.Y;
+
                             POINT clientPt = screenPt;
                             ScreenToClient(_mainHwnd, ref clientPt); // Convert to window-relative position
 
@@ -182,12 +218,19 @@ namespace InkybotHook
                                 uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
                                 IntPtr pointerWParamDown = (IntPtr)((0x0016 << 16) | activePointerId);
 
-                                // Stealth Hardware
+                                // Raw input move to prime the pipeline (absolute position, no button flags)
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_MOVE_HANDLE, time = (uint)now, pt = screenPt });
+
+                                // Move events to update game's internal hover/hit-test state
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParamDown, lParam = screenLParam, time = (uint)now, pt = screenPt });
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = screenPt });
+
+                                // Stealth Hardware: raw input click
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = (uint)now, pt = screenPt });
-                                
+
                                 // Modern UI: USES SCREEN COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERDOWN, wParam = pointerWParamDown, lParam = screenLParam, time = (uint)now, pt = screenPt });
-                                
+
                                 // Legacy UI: USES CLIENT COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_LBUTTONDOWN, wParam = (IntPtr)MK_LBUTTON, lParam = clientLParam, time = (uint)now, pt = clientPt });
                             }
@@ -201,7 +244,14 @@ namespace InkybotHook
 
                         if (_mainHwnd != IntPtr.Zero)
                         {
+                            // Release mouse capture on button up
+                            if (_originalReleaseCapture != null)
+                                _originalReleaseCapture();
+
                             GetCursorPos(out POINT screenPt); // Get global screen position
+                            _targetScreenX = screenPt.X;
+                            _targetScreenY = screenPt.Y;
+
                             POINT clientPt = screenPt;
                             ScreenToClient(_mainHwnd, ref clientPt); // Convert to window-relative position
 
@@ -216,14 +266,23 @@ namespace InkybotHook
                             lock (_queueLock)
                             {
                                 uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
-                                IntPtr pointerWParamDown = (IntPtr)((0x0016 << 16) | activePointerId);
+                                
+                                // FIX: 0x0002 is INRANGE only. We drop INCONTACT (0x04) and FIRSTBUTTON (0x10).
+                                IntPtr pointerWParamUp = (IntPtr)((0x0002 << 16) | activePointerId);
 
-                                // Stealth Hardware
+                                // Raw input move to prime the pipeline (no button flags)
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_MOVE_HANDLE, time = (uint)now, pt = screenPt });
+
+                                // Move events to keep cursor state consistent (using UP flags since the button is released)
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParamUp, lParam = screenLParam, time = (uint)now, pt = screenPt });
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = screenPt });
+
+                                // Stealth Hardware: raw input click
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = (uint)now, pt = screenPt });
-                                
-                                // Modern UI: USES SCREEN COORDINATES
-                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUP, wParam = pointerWParamDown, lParam = screenLParam, time = (uint)now, pt = screenPt });
-                                
+
+                                // Modern UI: USES SCREEN COORDINATES WITH CORRECTED UP FLAGS
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUP, wParam = pointerWParamUp, lParam = screenLParam, time = (uint)now, pt = screenPt });
+
                                 // Legacy UI: USES CLIENT COORDINATES
                                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_LBUTTONUP, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)now, pt = clientPt });
                             }
@@ -326,10 +385,10 @@ namespace InkybotHook
         private bool HookedTranslateMessage(ref MSG lpMsg)
         {
             _allHooksInstalled.Wait();
-            if (lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE)
+            if (lpMsg.message == WM_INPUT && (lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE || lpMsg.lParam == (IntPtr)MAGIC_RAW_MOVE_HANDLE))
             {
                 // Bypass OS translation for fake packets
-                return true; 
+                return true;
             }
             return _originalTranslateMessage(ref lpMsg);
         }
@@ -337,7 +396,7 @@ namespace InkybotHook
         private IntPtr HookedDispatchMessageW(ref MSG lpMsg)
         {
             _allHooksInstalled.Wait();
-            if (lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE)
+            if (lpMsg.message == WM_INPUT && (lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE || lpMsg.lParam == (IntPtr)MAGIC_RAW_MOVE_HANDLE))
             {
                 WndProcDelegate targetDelegate = null;
                 IntPtr targetOrig = IntPtr.Zero;
@@ -383,20 +442,41 @@ namespace InkybotHook
             _allHooksInstalled.Wait();
             try
             {
-                if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE && uiCommand == RID_INPUT)
+                if ((hRawInput == (IntPtr)MAGIC_RAW_HANDLE || hRawInput == (IntPtr)MAGIC_RAW_MOVE_HANDLE) && uiCommand == RID_INPUT)
                 {
+                    if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
                     if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0) return unchecked((uint)-1);
                     if (pData == IntPtr.Zero) { pcbSize = _capturedPacketSize; return 0; }
                     if (pcbSize < _capturedPacketSize) { pcbSize = _capturedPacketSize; return unchecked((uint)-1); }
 
-                    uint buttonFlag = (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
+                    // Move handle = absolute position with no button flags, click handle = button down/up
+                    uint buttonFlag = 0;
+                    ushort mouseFlags = 0;
+                    int lastX = 0, lastY = 0;
 
-                    if (EnsureNativePrepared(buttonFlag))
+                    if (hRawInput == (IntPtr)MAGIC_RAW_MOVE_HANDLE)
+                    {
+                        mouseFlags = MOUSE_MOVE_ABSOLUTE | MOUSE_VIRTUAL_DESKTOP;
+                        int cxScreen = GetSystemMetrics(SM_CXSCREEN);
+                        int cyScreen = GetSystemMetrics(SM_CYSCREEN);
+                        if (cxScreen > 0 && cyScreen > 0)
+                        {
+                            lastX = (_targetScreenX * 65535) / cxScreen;
+                            lastY = (_targetScreenY * 65535) / cyScreen;
+                        }
+                    }
+                    else
+                    {
+                        buttonFlag = (_rawState == ForgeState.ButtonDown) ? RI_MOUSE_LEFT_BUTTON_DOWN : RI_MOUSE_LEFT_BUTTON_UP;
+                    }
+
+                    if (EnsureNativePrepared(buttonFlag, mouseFlags, lastX, lastY))
                     {
                         lock (_nativeBufLock)
                         {
                             CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
-                            _lastInjectedRawState = _rawState; 
+                            if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE)
+                                _lastInjectedRawState = _rawState;
                             return _capturedPacketSize;
                         }
                     }
@@ -486,7 +566,7 @@ namespace InkybotHook
         // =========================================================
         // 6. NATIVE STRUCT PACKING AND STATE HOOKS
         // =========================================================
-        private bool EnsureNativePrepared(uint buttonFlag)
+        private bool EnsureNativePrepared(uint buttonFlag, ushort mouseFlags = 0, int lastX = 0, int lastY = 0)
         {
             try
             {
@@ -505,13 +585,13 @@ namespace InkybotHook
                         int alignedSize = (int)((_capturedPacketSize + 7) & ~7);
                         _nativeFakePacketPtr = Marshal.AllocHGlobal(alignedSize);
                         _nativeFakePacketSize = (int)_capturedPacketSize;
-                        
+
                         byte[] zeros = new byte[alignedSize];
                         Marshal.Copy(zeros, 0, _nativeFakePacketPtr, alignedSize);
                     }
 
                     RAWINPUTHEADER header = new RAWINPUTHEADER { dwType = RIM_TYPEMOUSE, dwSize = _capturedPacketSize, hDevice = _capturedDevice, wParam = IntPtr.Zero };
-                    RAWMOUSE mouse = new RAWMOUSE { usFlags = 0, ulButtons = buttonFlag, ulRawButtons = 0, lLastX = 0, lLastY = 0, ulExtraInformation = 0 };
+                    RAWMOUSE mouse = new RAWMOUSE { usFlags = mouseFlags, ulButtons = buttonFlag, ulRawButtons = 0, lLastX = lastX, lLastY = lastY, ulExtraInformation = 0 };
 
                     Marshal.StructureToPtr(header, _nativeFakePacketPtr, false);
                     IntPtr pMouse = new IntPtr(_nativeFakePacketPtr.ToInt64() + _rawInputHeaderSize);
@@ -545,6 +625,72 @@ namespace InkybotHook
             return realState;
         }
         
+        private IntPtr HookedSetCapture(IntPtr hWnd)
+        {
+            _allHooksInstalled.Wait();
+            return _originalSetCapture(hWnd);
+        }
+
+        private bool HookedReleaseCapture()
+        {
+            _allHooksInstalled.Wait();
+            // During synthetic button-down, block the game from releasing capture
+            if (_rawState == ForgeState.ButtonDown)
+                return true;
+            return _originalReleaseCapture();
+        }
+
+        private IntPtr HookedGetCapture()
+        {
+            _allHooksInstalled.Wait();
+            // During synthetic button-down, tell the game it has capture
+            if (_rawState == ForgeState.ButtonDown && _mainHwnd != IntPtr.Zero)
+                return _mainHwnd;
+            return _originalGetCapture();
+        }
+
+        private void ProbeRawInputDevices()
+        {
+            try
+            {
+                _rawInputHeaderSize = (uint)Marshal.SizeOf<RAWINPUTHEADER>();
+
+                uint numDevices = 0;
+                uint cbSize = (uint)Marshal.SizeOf<RAWINPUTDEVICELIST>();
+                GetRawInputDeviceList(null, ref numDevices, cbSize);
+
+                if (numDevices == 0) return;
+
+                var devices = new RAWINPUTDEVICELIST[numDevices];
+                uint result = GetRawInputDeviceList(devices, ref numDevices, cbSize);
+                if (result == unchecked((uint)-1)) return;
+
+                for (int i = 0; i < result; i++)
+                {
+                    if (devices[i].dwType == RIM_TYPEMOUSE && devices[i].hDevice != IntPtr.Zero)
+                    {
+                        lock (_deviceLock)
+                        {
+                            _capturedDevice = devices[i].hDevice;
+                            _capturedPacketSize = (uint)Marshal.SizeOf<RAWINPUT>();
+                        }
+                        _server.ReportMessage($"[LOG] Probed mouse device: 0x{_capturedDevice.ToInt64():X}, packetSize={_capturedPacketSize}, headerSize={_rawInputHeaderSize}");
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _server.ReportMessage($"[EXCEPTION in ProbeRawInputDevices]\n{ex}");
+            }
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetRawInputDeviceList(
+            [Out] RAWINPUTDEVICELIST[] pRawInputDeviceList,
+            ref uint puiNumDevices,
+            uint cbSize);
+
         private void FreeNativeFakePacket()
         {
             lock (_nativeBufLock)
