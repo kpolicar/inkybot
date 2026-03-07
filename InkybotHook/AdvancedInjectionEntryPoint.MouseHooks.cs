@@ -14,7 +14,6 @@ namespace InkybotHook
         private IntPtr _originalWndProc = IntPtr.Zero;
         private WndProcDelegate _wndProcDelegate;
         private volatile bool _needsSubclass;
-
         private enum ForgeState { Idle, ButtonDown, ButtonUp }
         private volatile ForgeState _rawState = ForgeState.Idle;
         private volatile ForgeState _lastInjectedRawState = ForgeState.Idle;
@@ -42,6 +41,7 @@ namespace InkybotHook
         // CONSTANTS
         // =========================================================
         private const int MAGIC_RAW_HANDLE = 0x1337;
+        private const uint MAGIC_SYNTHETIC_TIME = 0xDEAD1337;
         private const uint WM_NULL = 0x0000;
         private const uint WM_INPUT = 0x00FF;
         private const uint WM_MOUSEMOVE = 0x0200;
@@ -109,7 +109,7 @@ namespace InkybotHook
                         _rawState = ForgeState.ButtonDown;
                         _lastStateChangeTime = now;
                         QueueMessage("[AutomationLoop] Click requested, State: Idle -> ButtonDown");
-                        if (IsCursorOverrideActive) DrawDebugMarker();
+                        //if (IsCursorOverrideActive) DrawDebugMarker();
                         if (_mainHwnd != IntPtr.Zero)
                         {
                             EnqueueMouseMoveMessages();
@@ -145,12 +145,12 @@ namespace InkybotHook
         private void EnqueueMouseMoveMessages()
         {
             var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
-            var (pointerWParam, now) = ResolvePointerParams();
+            var (pointerWParam, _) = ResolvePointerParams();
 
             lock (_queueLock)
             {
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParam, lParam = screenLParam, time = now, pt = screenPt });
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = now, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParam, lParam = screenLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
             }
             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
             QueueMessage($"[AutomationLoop] Enqueued mouse move at screen=({screenPt.X},{screenPt.Y}) client=({clientPt.X},{clientPt.Y})");
@@ -159,16 +159,16 @@ namespace InkybotHook
         private void EnqueueClickPhaseMessages(uint pointerMsg, uint lbuttonMsg, IntPtr lbuttonWParam)
         {
             var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
-            var (pointerWParam, now) = ResolvePointerParams();
+            var (pointerWParam, _) = ResolvePointerParams();
 
             lock (_queueLock)
             {
                 // Stealth Hardware
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = now, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
                 // Modern UI: screen coordinates
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = pointerMsg, wParam = pointerWParam, lParam = screenLParam, time = now, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = pointerMsg, wParam = pointerWParam, lParam = screenLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
                 // Legacy UI: client coordinates
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = lbuttonMsg, wParam = lbuttonWParam, lParam = clientLParam, time = now, pt = clientPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = lbuttonMsg, wParam = lbuttonWParam, lParam = clientLParam, time = MAGIC_SYNTHETIC_TIME, pt = clientPt });
             }
             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
             QueueMessage($"[AutomationLoop] Enqueued 3 messages at screen=({screenPt.X},{screenPt.Y}) client=({clientPt.X},{clientPt.Y})");

@@ -79,8 +79,11 @@ namespace InkybotHook
                 if (IsSyntheticRawInput(ref lpMsg))
                     return DispatchSyntheticInput(ref lpMsg);
 
-                if (IsCursorOverrideActive && IsMouseOrPointerMessage(lpMsg.message))
+                if (lpMsg.time != MAGIC_SYNTHETIC_TIME && IsCursorOverrideActive && IsMouseOrPointerMessage(lpMsg.message))
                     return IntPtr.Zero;
+
+                if (lpMsg.time == MAGIC_SYNTHETIC_TIME)
+                    lpMsg.time = (uint)Environment.TickCount;
 
                 return _originalDispatchMessageW(ref lpMsg);
             }
