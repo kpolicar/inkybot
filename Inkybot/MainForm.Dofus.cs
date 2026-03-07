@@ -152,11 +152,11 @@ namespace Inkybot
 
         private IntPtr FindUnityChildWindow(IntPtr hWndParent) {
             var log = FileEventLogger.SystemLogger;
-            var hUnityWnd = Win32.FindWindowEx(hWndParent, IntPtr.Zero, "UnityWndProc", null);
+            var hUnityWnd = Win32.FindWindowEx(hWndParent, IntPtr.Zero, "UnityWndClass", null);
             if (hUnityWnd != IntPtr.Zero) {
-                log.Info($"[Dofus] Found UnityWndProc child window: 0x{hUnityWnd.ToInt64():X}");
+                log.Info($"[Dofus] Found UnityWndClass child window: 0x{hUnityWnd.ToInt64():X}");
             } else {
-                log.Info("[Dofus] UnityWndProc child window not found, falling back to main Dofus window handle");
+                log.Info("[Dofus] UnityWndClass child window not found, falling back to main Dofus window handle");
                 hUnityWnd = hWndParent;
             }
             return hUnityWnd;

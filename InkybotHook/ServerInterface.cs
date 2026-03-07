@@ -36,7 +36,7 @@ namespace InkybotHook
         public bool ShutdownFlag = false;
 
         /// <summary>
-        /// The fixed cursor position in client coordinates relative to the target window.
+        /// The fixed cursor position in screen coordinates.
         /// A value of (-1, -1) means no override is active.
         /// </summary>
         public POINT point = new POINT { X = -1, Y = -1 };

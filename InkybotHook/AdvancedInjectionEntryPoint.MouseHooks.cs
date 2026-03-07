@@ -11,9 +11,6 @@ namespace InkybotHook
         // =========================================================
         // STATE
         // =========================================================
-        private IntPtr _originalWndProc = IntPtr.Zero;
-        private WndProcDelegate _wndProcDelegate;
-        private volatile bool _needsSubclass;
         private enum ForgeState { Idle, ButtonDown, ButtonUp }
         private volatile ForgeState _rawState = ForgeState.Idle;
         private volatile ForgeState _lastInjectedRawState = ForgeState.Idle;
@@ -51,8 +48,6 @@ namespace InkybotHook
         private const uint WM_LBUTTONDOWN = 0x0201;
         private const uint WM_LBUTTONUP = 0x0202;
         private const int MK_LBUTTON = 0x0001;
-        private const int GWLP_WNDPROC = -4;
-
         private const uint RID_INPUT = 0x10000003;
         private const uint RIM_TYPEMOUSE = 0;
         private const uint RI_MOUSE_LEFT_BUTTON_DOWN = 0x0001;
@@ -116,15 +111,17 @@ namespace InkybotHook
                             EnqueueClickPhaseMessages(WM_POINTERDOWN, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON);
                         }
                     }
-                    else if (_rawState == ForgeState.ButtonDown && elapsed >= 50)
+                    else if (_rawState == ForgeState.ButtonDown && elapsed >= 150)
                     {
                         _rawState = ForgeState.ButtonUp;
                         _lastStateChangeTime = now;
                         QueueMessage("[AutomationLoop] State: ButtonDown -> ButtonUp");
-                        if (_mainHwnd != IntPtr.Zero)
+                        if (_mainHwnd != IntPtr.Zero) {
+                            EnqueueMouseMoveMessages();
                             EnqueueClickPhaseMessages(WM_POINTERUP, WM_LBUTTONUP, IntPtr.Zero);
+                        }
                     }
-                    else if (_rawState == ForgeState.ButtonUp && elapsed >= 50)
+                    else if (_rawState == ForgeState.ButtonUp && elapsed >= 150)
                     {
                         _rawState = ForgeState.Idle;
                         _server.IsClickActive = false;

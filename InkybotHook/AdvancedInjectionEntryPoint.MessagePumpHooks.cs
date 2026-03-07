@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using static InkybotHook.NativeMethods;
 #pragma warning disable CS1690
 
@@ -70,14 +69,16 @@ namespace InkybotHook
                 if (!_allHooksInstalled.Wait(5000)) return _originalDispatchMessageW(ref lpMsg);
                 LogFirstCall("DispatchMessageW");
 
-                if (_needsSubclass && _mainHwnd != IntPtr.Zero)
-                {
-                    _needsSubclass = false;
-                    TrySubclassWindow(_mainHwnd);
-                }
-
+                // Synthetic WM_INPUT with fake HRAWINPUT must bypass DispatchMessageW
+                // (Windows validates the handle internally and would drop it)
                 if (IsSyntheticRawInput(ref lpMsg))
-                    return DispatchSyntheticInput(ref lpMsg);
+                {
+                    if (lpMsg.hwnd == IntPtr.Zero) return IntPtr.Zero;
+                    IntPtr wndProc = GetWindowLongPtrNative(lpMsg.hwnd, GWLP_WNDPROC);
+                    if (wndProc == IntPtr.Zero) return IntPtr.Zero;
+                    QueueMessage($"[DispatchMessageW] Dispatching synthetic WM_INPUT directly to WndProc for HWND 0x{lpMsg.hwnd.ToInt64():X}");
+                    return CallWindowProc(wndProc, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
+                }
 
                 if (lpMsg.time != MAGIC_SYNTHETIC_TIME && IsCursorOverrideActive && IsMouseOrPointerMessage(lpMsg.message))
                     return IntPtr.Zero;
@@ -92,72 +93,6 @@ namespace InkybotHook
                 if (!_disposing) QueueMessage($"[EXCEPTION in HookedDispatchMessageW] {ex}");
                 return _originalDispatchMessageW(ref lpMsg);
             }
-        }
-
-        private IntPtr DispatchSyntheticInput(ref MSG lpMsg)
-        {
-            if (lpMsg.hwnd != _mainHwnd || _mainHwnd == IntPtr.Zero)
-            {
-                QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
-                return IntPtr.Zero;
-            }
-
-            var del = _wndProcDelegate;
-            if (del != null)
-            {
-                QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via hook delegate");
-                return del(lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
-            }
-
-            IntPtr orig = _originalWndProc;
-            if (orig != IntPtr.Zero)
-            {
-                QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via original WndProc");
-                return CallWindowProc(orig, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
-            }
-
-            QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
-            return IntPtr.Zero;
-        }
-
-        private IntPtr HookedWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            IntPtr originalProc = _originalWndProc;
-
-            if (_disposing || originalProc == IntPtr.Zero)
-            {
-                return originalProc != IntPtr.Zero
-                    ? CallWindowProc(originalProc, hWnd, msg, wParam, lParam)
-                    : DefWindowProc(hWnd, msg, wParam, lParam);
-            }
-
-            try
-            {
-                return CallWindowProc(originalProc, hWnd, msg, wParam, lParam);
-            }
-            catch (Exception ex)
-            {
-                if (!_disposing) QueueMessage($"[EXCEPTION in HookedWndProc] {ex}");
-                return DefWindowProc(hWnd, msg, wParam, lParam);
-            }
-        }
-
-        private void TrySubclassWindow(IntPtr hwnd)
-        {
-            if (_originalWndProc != IntPtr.Zero) return;
-
-            WndProcDelegate newDelegate = new WndProcDelegate(HookedWndProc);
-            _wndProcDelegate = newDelegate;
-            IntPtr orig = SetWindowLongPtr(hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(newDelegate));
-            _originalWndProc = orig;
-
-            System.Text.StringBuilder windowText = new System.Text.StringBuilder(256);
-            System.Text.StringBuilder className = new System.Text.StringBuilder(256);
-            GetWindowText(hwnd, windowText, windowText.Capacity);
-            GetClassName(hwnd, className, className.Capacity);
-
-            string wName = string.IsNullOrEmpty(windowText.ToString()) ? "[No Name]" : windowText.ToString();
-            QueueMessage($"[DispatchMessageW] Subclassed HWND: 0x{hwnd.ToInt64():X} | Name: '{wName}' | Class: '{className}'");
         }
 
         private void TryCapturePointerId(ref MSG lpMsg)

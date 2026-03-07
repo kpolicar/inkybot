@@ -121,11 +121,11 @@ namespace InkybotHook
             if (targetHwnd != IntPtr.Zero)
             {
                 _mainHwnd = targetHwnd;
-                _needsSubclass = true;
+                QueueMessage($"[EasyHook:Target] Found target HWND: 0x{targetHwnd.ToInt64():X}");
             }
             else
             {
-                QueueMessage("[EasyHook:Target] Warning: could not find target HWND, window subclassing skipped");
+                QueueMessage("[EasyHook:Target] Warning: could not find target HWND");
             }
             _automationThread.Start();
 
@@ -139,15 +139,7 @@ namespace InkybotHook
             // 1. Stop automation thread
             _stopAutomationThread = true;
 
-            // 2. Restore subclassed window (must happen before DLL unload)
-            try
-            {
-                if (_originalWndProc != IntPtr.Zero && _mainHwnd != IntPtr.Zero)
-                    SetWindowLongPtr(_mainHwnd, GWLP_WNDPROC, _originalWndProc);
-            }
-            catch { }
-
-            // 3. Dispose EasyHook hooks (restores original function pointers)
+            // 2. Dispose EasyHook hooks (restores original function pointers)
             foreach (var hook in _installedHooks)
             {
                 try { hook.Dispose(); } catch { }
@@ -174,19 +166,29 @@ namespace InkybotHook
         private IntPtr FindTargetHwnd()
         {
             uint currentPid = (uint)EasyHook.RemoteHooking.GetCurrentProcessId();
-            IntPtr mainHwnd = IntPtr.Zero;
+            IntPtr unityHwnd = IntPtr.Zero;
 
             EnumWindows((hwnd, _) =>
             {
                 GetWindowThreadProcessId(hwnd, out uint pid);
-                if (pid == currentPid) { mainHwnd = hwnd; return false; }
+                if (pid != currentPid) return true;
+
+                // Check if this top-level window itself is UnityWndProc
+                System.Text.StringBuilder cls = new System.Text.StringBuilder(256);
+                GetClassName(hwnd, cls, cls.Capacity);
+                if (cls.ToString() == "UnityWndClass") { unityHwnd = hwnd; return false; }
+
+                // Check children
+                IntPtr child = FindWindowEx(hwnd, IntPtr.Zero, "UnityWndClass", null);
+                if (child != IntPtr.Zero) { unityHwnd = child; return false; }
+
                 return true;
             }, IntPtr.Zero);
 
-            if (mainHwnd == IntPtr.Zero) return IntPtr.Zero;
+            if (unityHwnd == IntPtr.Zero)
+                QueueMessage("[EasyHook:Target] No UnityWndClass window found in process");
 
-            IntPtr unityHwnd = FindWindowEx(mainHwnd, IntPtr.Zero, "UnityWndProc", null);
-            return unityHwnd != IntPtr.Zero ? unityHwnd : mainHwnd;
+            return unityHwnd;
         }
 
         // =========================================================

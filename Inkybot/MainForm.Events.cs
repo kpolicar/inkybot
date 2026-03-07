@@ -136,6 +136,8 @@ namespace Inkybot
         }
 
         private void statsButton_Click(object sender, EventArgs e) {
+            win32Input.Move(1651, 18);
+            win32Input.Click(1651, 18);
             if (!setupForm.Visible) setupForm.Show();
             else setupForm.Focus();
         }
