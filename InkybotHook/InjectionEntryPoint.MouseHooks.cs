@@ -445,9 +445,16 @@ namespace InkybotHook
                 if ((hRawInput == (IntPtr)MAGIC_RAW_HANDLE || hRawInput == (IntPtr)MAGIC_RAW_MOVE_HANDLE) && uiCommand == RID_INPUT)
                 {
                     if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
-                    if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0) return unchecked((uint)-1);
-                    if (pData == IntPtr.Zero) { pcbSize = _capturedPacketSize; return 0; }
-                    if (pcbSize < _capturedPacketSize) { pcbSize = _capturedPacketSize; return unchecked((uint)-1); }
+                    
+                    // Wait until we have safely captured a genuine device handle
+                    if (_capturedDevice == IntPtr.Zero) return unchecked((uint)-1);
+
+                    // Force a standard lean packet size (Header + RAWMOUSE payload)
+                    // This prevents Unity's strict stack buffer from rejecting the packet
+                    uint standardPacketSize = _rawInputHeaderSize + 24;
+
+                    if (pData == IntPtr.Zero) { pcbSize = standardPacketSize; return 0; }
+                    if (pcbSize < standardPacketSize) { pcbSize = standardPacketSize; return unchecked((uint)-1); }
 
                     // Move handle = absolute position with no button flags, click handle = button down/up
                     uint buttonFlag = 0;
@@ -474,10 +481,13 @@ namespace InkybotHook
                     {
                         lock (_nativeBufLock)
                         {
-                            CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
+                            // CRITICAL: Copy standardPacketSize, NOT _capturedPacketSize
+                            CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)standardPacketSize);
+                            
                             if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE)
                                 _lastInjectedRawState = _rawState;
-                            return _capturedPacketSize;
+                                
+                            return standardPacketSize; // Return the standard size to Unity
                         }
                     }
                     return unchecked((uint)-1);
@@ -494,6 +504,7 @@ namespace InkybotHook
                         lock (_deviceLock)
                         {
                             if (_capturedDevice == IntPtr.Zero) _capturedDevice = header.hDevice;
+                            // We still log the bloated hardware size for legitimate pass-throughs
                             if (_capturedPacketSize == 0 && header.dwSize != 0) _capturedPacketSize = header.dwSize;
                         }
                     }
@@ -574,7 +585,10 @@ namespace InkybotHook
 
                 lock (_nativeBufLock)
                 {
-                    if (_nativeFakePacketPtr != IntPtr.Zero && _nativeFakePacketSize != _capturedPacketSize)
+                    uint standardPacketSize = _rawInputHeaderSize + 24;
+                    int alignedSize = (int)((standardPacketSize + 7) & ~7);
+
+                    if (_nativeFakePacketPtr != IntPtr.Zero && _nativeFakePacketSize != standardPacketSize)
                     {
                         Marshal.FreeHGlobal(_nativeFakePacketPtr);
                         _nativeFakePacketPtr = IntPtr.Zero;
@@ -582,15 +596,15 @@ namespace InkybotHook
 
                     if (_nativeFakePacketPtr == IntPtr.Zero)
                     {
-                        int alignedSize = (int)((_capturedPacketSize + 7) & ~7);
                         _nativeFakePacketPtr = Marshal.AllocHGlobal(alignedSize);
-                        _nativeFakePacketSize = (int)_capturedPacketSize;
+                        _nativeFakePacketSize = (int)standardPacketSize;
 
                         byte[] zeros = new byte[alignedSize];
                         Marshal.Copy(zeros, 0, _nativeFakePacketPtr, alignedSize);
                     }
 
-                    RAWINPUTHEADER header = new RAWINPUTHEADER { dwType = RIM_TYPEMOUSE, dwSize = _capturedPacketSize, hDevice = _capturedDevice, wParam = IntPtr.Zero };
+                    // Pass standardPacketSize to dwSize
+                    RAWINPUTHEADER header = new RAWINPUTHEADER { dwType = RIM_TYPEMOUSE, dwSize = standardPacketSize, hDevice = _capturedDevice, wParam = IntPtr.Zero };
                     RAWMOUSE mouse = new RAWMOUSE { usFlags = mouseFlags, ulButtons = buttonFlag, ulRawButtons = 0, lLastX = lastX, lLastY = lastY, ulExtraInformation = 0 };
 
                     Marshal.StructureToPtr(header, _nativeFakePacketPtr, false);
@@ -657,7 +671,7 @@ namespace InkybotHook
 
                 uint numDevices = 0;
                 uint cbSize = (uint)Marshal.SizeOf<RAWINPUTDEVICELIST>();
-                GetRawInputDeviceList(null, ref numDevices, cbSize);
+                GetRawInputDeviceList(IntPtr.Zero, ref numDevices, cbSize);
 
                 if (numDevices == 0) return;
 
@@ -688,6 +702,12 @@ namespace InkybotHook
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetRawInputDeviceList(
             [Out] RAWINPUTDEVICELIST[] pRawInputDeviceList,
+            ref uint puiNumDevices,
+            uint cbSize);
+            
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetRawInputDeviceList(
+            IntPtr pRawInputDeviceList, // Accepts IntPtr.Zero
             ref uint puiNumDevices,
             uint cbSize);
 
