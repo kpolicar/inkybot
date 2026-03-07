@@ -300,8 +300,8 @@ namespace InkybotHook
                 {
                     lock (_wndProcLock)
                     {
-                        // 1. Subclass every new UnityWndClass window dynamically
-                        if (!_originalWndProcs.ContainsKey(lpMsg.hwnd))
+                        // 1. Subclass every new UnityWndClass window dynamically (skip if shutting down)
+                        if (!_stopClickThread && !_originalWndProcs.ContainsKey(lpMsg.hwnd))
                         {
                             System.Text.StringBuilder windowText = new System.Text.StringBuilder(256);
                             System.Text.StringBuilder className = new System.Text.StringBuilder(256);
