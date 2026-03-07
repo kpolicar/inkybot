@@ -11,9 +11,9 @@ namespace InkybotHook
         // =========================================================
         // STATE
         // =========================================================
-        private readonly Dictionary<IntPtr, IntPtr> _originalWndProcs = new Dictionary<IntPtr, IntPtr>();
-        private readonly Dictionary<IntPtr, WndProcDelegate> _wndProcDelegates = new Dictionary<IntPtr, WndProcDelegate>();
-        private readonly object _wndProcLock = new object();
+        private IntPtr _originalWndProc = IntPtr.Zero;
+        private WndProcDelegate _wndProcDelegate;
+        private volatile bool _needsSubclass;
 
         private enum ForgeState { Idle, ButtonDown, ButtonUp }
         private volatile ForgeState _rawState = ForgeState.Idle;

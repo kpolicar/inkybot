@@ -42,12 +42,6 @@ namespace InkybotHook
         public POINT point = new POINT { X = -1, Y = -1 };
 
         /// <summary>
-        /// The target window handle. Set this from the host so that the hook
-        /// can convert client coordinates to screen coordinates.
-        /// </summary>
-        public IntPtr targetHwnd = IntPtr.Zero;
-
-        /// <summary>
         /// Set by the injected hook: true if the Dofus process has enabled mouse-in-pointer mode.
         /// Read by Win32Input to decide whether to send WM_POINTER or WM_LBUTTON messages.
         /// </summary>

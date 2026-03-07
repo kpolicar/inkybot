@@ -25,14 +25,7 @@ namespace InkybotHook
 
                 bool result = _originalPeekMessageW(ref lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 
-                if (lpMsg.hwnd != IntPtr.Zero)
-                {
-                    lock (_wndProcLock)
-                    {
-                        TrySubclassWindow(lpMsg.hwnd);
-                        TryLockOntoInputWindow(ref lpMsg);
-                    }
-                }
+                TryCapturePointerId(ref lpMsg);
 
                 if (TryInjectSyntheticMessage(ref lpMsg, wRemoveMsg, result))
                     return true;
@@ -77,6 +70,12 @@ namespace InkybotHook
                 if (!_allHooksInstalled.Wait(5000)) return _originalDispatchMessageW(ref lpMsg);
                 LogFirstCall("DispatchMessageW");
 
+                if (_needsSubclass && _mainHwnd != IntPtr.Zero)
+                {
+                    _needsSubclass = false;
+                    TrySubclassWindow(_mainHwnd);
+                }
+
                 if (IsSyntheticRawInput(ref lpMsg))
                     return DispatchSyntheticInput(ref lpMsg);
 
@@ -94,25 +93,24 @@ namespace InkybotHook
 
         private IntPtr DispatchSyntheticInput(ref MSG lpMsg)
         {
-            WndProcDelegate targetDelegate = null;
-            IntPtr targetOrig = IntPtr.Zero;
-
-            lock (_wndProcLock)
+            if (lpMsg.hwnd != _mainHwnd || _mainHwnd == IntPtr.Zero)
             {
-                _wndProcDelegates.TryGetValue(lpMsg.hwnd, out targetDelegate);
-                _originalWndProcs.TryGetValue(lpMsg.hwnd, out targetOrig);
+                QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
+                return IntPtr.Zero;
             }
 
-            if (targetDelegate != null)
+            var del = _wndProcDelegate;
+            if (del != null)
             {
                 QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via hook delegate");
-                return targetDelegate(lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
+                return del(lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
             }
 
-            if (targetOrig != IntPtr.Zero)
+            IntPtr orig = _originalWndProc;
+            if (orig != IntPtr.Zero)
             {
                 QueueMessage($"[DispatchMessageW] Dispatched synthetic WM_INPUT to HWND 0x{lpMsg.hwnd.ToInt64():X} via original WndProc");
-                return CallWindowProc(targetOrig, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
+                return CallWindowProc(orig, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
             }
 
             QueueMessage("[DispatchMessageW] Synthetic WM_INPUT had no target WndProc, dropped");
@@ -121,11 +119,7 @@ namespace InkybotHook
 
         private IntPtr HookedWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            IntPtr originalProc = IntPtr.Zero;
-            lock (_wndProcLock)
-            {
-                _originalWndProcs.TryGetValue(hWnd, out originalProc);
-            }
+            IntPtr originalProc = _originalWndProc;
 
             if (_disposing || originalProc == IntPtr.Zero)
             {
@@ -147,12 +141,12 @@ namespace InkybotHook
 
         private void TrySubclassWindow(IntPtr hwnd)
         {
-            if (_originalWndProcs.ContainsKey(hwnd)) return;
+            if (_originalWndProc != IntPtr.Zero) return;
 
             WndProcDelegate newDelegate = new WndProcDelegate(HookedWndProc);
-            _wndProcDelegates[hwnd] = newDelegate;
+            _wndProcDelegate = newDelegate;
             IntPtr orig = SetWindowLongPtr(hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(newDelegate));
-            _originalWndProcs[hwnd] = orig;
+            _originalWndProc = orig;
 
             System.Text.StringBuilder windowText = new System.Text.StringBuilder(256);
             System.Text.StringBuilder className = new System.Text.StringBuilder(256);
@@ -160,19 +154,11 @@ namespace InkybotHook
             GetClassName(hwnd, className, className.Capacity);
 
             string wName = string.IsNullOrEmpty(windowText.ToString()) ? "[No Name]" : windowText.ToString();
-            QueueMessage($"[PeekMessageW] Subclassed HWND: 0x{hwnd.ToInt64():X} | Name: '{wName}' | Class: '{className}'");
+            QueueMessage($"[DispatchMessageW] Subclassed HWND: 0x{hwnd.ToInt64():X} | Name: '{wName}' | Class: '{className}'");
         }
 
-        private void TryLockOntoInputWindow(ref MSG lpMsg)
+        private void TryCapturePointerId(ref MSG lpMsg)
         {
-            if (!IsMouseOrPointerMessage(lpMsg.message)) return;
-
-            if (_mainHwnd != lpMsg.hwnd)
-            {
-                _mainHwnd = lpMsg.hwnd;
-                QueueMessage($"[PeekMessageW] Locked onto active Input HWND: 0x{_mainHwnd.ToInt64():X}");
-            }
-
             if (lpMsg.message < WM_POINTERUPDATE || lpMsg.message > WM_POINTERUP) return;
 
             uint extractedPointerId = (uint)(lpMsg.wParam.ToInt64() & 0xFFFF);

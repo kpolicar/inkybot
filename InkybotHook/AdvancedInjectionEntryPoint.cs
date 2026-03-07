@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -114,9 +114,21 @@ namespace InkybotHook
 
             _stopAutomationThread = false;
             _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };
-            _automationThread.Start();
 
             _allHooksInstalled.Set();
+
+            IntPtr targetHwnd = FindTargetHwnd();
+            if (targetHwnd != IntPtr.Zero)
+            {
+                _mainHwnd = targetHwnd;
+                _needsSubclass = true;
+            }
+            else
+            {
+                QueueMessage("[EasyHook:Target] Warning: could not find target HWND, window subclassing skipped");
+            }
+            _automationThread.Start();
+
             QueueMessage($"[EasyHook:Target] Installed {_installedHooks.Count} hooks");
         }
 
@@ -127,8 +139,13 @@ namespace InkybotHook
             // 1. Stop automation thread
             _stopAutomationThread = true;
 
-            // 2. Restore subclassed windows (must happen before DLL unload)
-            try { RestoreSubclassedWindows(); } catch { }
+            // 2. Restore subclassed window (must happen before DLL unload)
+            try
+            {
+                if (_originalWndProc != IntPtr.Zero && _mainHwnd != IntPtr.Zero)
+                    SetWindowLongPtr(_mainHwnd, GWLP_WNDPROC, _originalWndProc);
+            }
+            catch { }
 
             // 3. Dispose EasyHook hooks (restores original function pointers)
             foreach (var hook in _installedHooks)
@@ -151,17 +168,25 @@ namespace InkybotHook
             catch { }
         }
 
-        private void RestoreSubclassedWindows()
+        // =========================================================
+        // TARGET WINDOW DISCOVERY
+        // =========================================================
+        private IntPtr FindTargetHwnd()
         {
-            lock (_wndProcLock)
+            uint currentPid = (uint)EasyHook.RemoteHooking.GetCurrentProcessId();
+            IntPtr mainHwnd = IntPtr.Zero;
+
+            EnumWindows((hwnd, _) =>
             {
-                foreach (var kvp in _originalWndProcs)
-                {
-                    try { SetWindowLongPtr(kvp.Key, GWLP_WNDPROC, kvp.Value); } catch { }
-                }
-                _originalWndProcs.Clear();
-                _wndProcDelegates.Clear();
-            }
+                GetWindowThreadProcessId(hwnd, out uint pid);
+                if (pid == currentPid) { mainHwnd = hwnd; return false; }
+                return true;
+            }, IntPtr.Zero);
+
+            if (mainHwnd == IntPtr.Zero) return IntPtr.Zero;
+
+            IntPtr unityHwnd = FindWindowEx(mainHwnd, IntPtr.Zero, "UnityWndProc", null);
+            return unityHwnd != IntPtr.Zero ? unityHwnd : mainHwnd;
         }
 
         // =========================================================

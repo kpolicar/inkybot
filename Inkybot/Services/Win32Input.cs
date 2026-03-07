@@ -84,6 +84,8 @@ namespace Inkybot.Services.Win32Input
                 x = pt.X;
                 y = pt.Y;
             }
+            var log = FileEventLogger.SystemLogger;
+            log.Info($"[Host] Setting cursor fixed position to ({x}, {y})");
             _server.SetCursorFixedPosition(previousCursorPosition = new ServerInterface.POINT{X = x, Y = y});
         }
 
@@ -267,8 +269,6 @@ namespace Inkybot.Services.Win32Input
 
         public void SetRelativeToHandle(IntPtr handle) {
             relativeToControl = handle;
-            if (_server != null)
-                _server.targetHwnd = handle;
         }
 
         /// <summary>

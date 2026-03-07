@@ -120,6 +120,17 @@ namespace InkybotHook
         [DllImport("gdi32.dll")]
         public static extern IntPtr GetStockObject(int fnObject);
 
+        public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetRawInputData(
             IntPtr hRawInput,
