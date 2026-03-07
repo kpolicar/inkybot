@@ -279,6 +279,11 @@ namespace InkybotHook
         // =========================================================
         // 5. IMPLEMENTATIONS
         // =========================================================
+        private static bool IsRealMouseMessage(uint msg) =>
+            msg == WM_INPUT ||
+            (msg >= WM_MOUSEMOVE && msg <= WM_LBUTTONUP) ||
+            (msg >= WM_POINTERUPDATE && msg <= WM_POINTERUP);
+
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
             _allHooksInstalled.Wait();
@@ -331,6 +336,18 @@ namespace InkybotHook
                             }
                         }
                     }
+                }
+
+                // Drop real hardware mouse events when cursor override is active
+                if (result && IsCursorOverrideActive && IsRealMouseMessage(lpMsg.message))
+                {
+                    // If message was only peeked (not removed), consume it now from the OS queue
+                    if ((wRemoveMsg & 0x0001 /* PM_REMOVE */) == 0)
+                    {
+                        MSG dummy = default;
+                        _originalPeekMessageW(ref dummy, hWnd, wMsgFilterMin, wMsgFilterMax, 0x0001 /* PM_REMOVE */);
+                    }
+                    result = false;
                 }
 
                 // If the game's queue is empty (or it's just a WM_NULL wakeup), feed it our synthetic messages
@@ -467,6 +484,10 @@ namespace InkybotHook
                     return unchecked((uint)-1);
                 }
 
+                // Drop real hardware raw input data when cursor override is active
+                if (IsCursorOverrideActive)
+                    return unchecked((uint)-1);
+
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
 
                 if (pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1) && uiCommand == RID_INPUT)
@@ -495,6 +516,10 @@ namespace InkybotHook
             {
                 uint result = _originalGetRawInputBuffer(pData, ref pcbSize, cbSizeHeader);
                 if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
+
+                // Drop real hardware raw input when cursor override is active
+                if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
+                    return 0;
 
                 // 1. HARDWARE RACE CONDITION FIX (Buffer has physical events)
                 if (result > 0 && result != unchecked((uint)-1) && pData != IntPtr.Zero)
