@@ -61,6 +61,13 @@ namespace InkybotHook
             public RAWMOUSE mouse;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RAWINPUTDEVICELIST
+        {
+            public IntPtr hDevice;
+            public uint dwType;
+        }
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
 
@@ -138,6 +145,12 @@ namespace InkybotHook
             IntPtr pData,
             ref uint pcbSize,
             uint cbSizeHeader);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetRawInputDeviceList(
+            [Out] RAWINPUTDEVICELIST[] pRawInputDeviceList,
+            ref uint puiNumDevices,
+            uint cbSize);
 
         #endregion
 

@@ -31,6 +31,9 @@ namespace InkybotHook
         private Queue<MSG> _syntheticMessages = new Queue<MSG>();
         private readonly object _queueLock = new object();
 
+        private volatile int _targetScreenX;
+        private volatile int _targetScreenY;
+
         private Thread _automationThread;
         private volatile bool _stopAutomationThread = false;
 
@@ -38,7 +41,12 @@ namespace InkybotHook
         // CONSTANTS
         // =========================================================
         private const int MAGIC_RAW_HANDLE = 0x1337;
-        private const uint MAGIC_SYNTHETIC_TIME = 0xDEAD1337;
+        private const int MAGIC_RAW_MOVE_HANDLE = 0x1338;
+        private const ushort MOUSE_MOVE_ABSOLUTE = 0x0001;
+        private const ushort MOUSE_VIRTUAL_DESKTOP = 0x0002;
+        private const int SM_CXSCREEN = 0;
+        private const int SM_CYSCREEN = 1;
+        private const uint POINTER_MESSAGE_FLAG_PRIMARY = 0x2000;
         private const uint WM_NULL = 0x0000;
         private const uint WM_INPUT = 0x00FF;
         private const uint WM_MOUSEMOVE = 0x0200;
@@ -77,10 +85,13 @@ namespace InkybotHook
             return (screenPt, clientPt, screenLParam, clientLParam);
         }
 
-        private (IntPtr pointerWParam, uint now) ResolvePointerParams()
+        private (IntPtr pointerWParam, uint now) ResolvePointerParams(bool isDown)
         {
             uint activePointerId = _capturedPointerId == 0 ? 1 : _capturedPointerId;
-            IntPtr pointerWParam = (IntPtr)((0x0016 << 16) | activePointerId);
+            // DOWN: INRANGE(0x02) + INCONTACT(0x04) + FIRSTBUTTON(0x10) = 0x16
+            // UP:   INRANGE only (0x02)
+            uint flags = isDown ? 0x0016u : 0x0002u;
+            IntPtr pointerWParam = (IntPtr)((flags << 16) | POINTER_MESSAGE_FLAG_PRIMARY | activePointerId);
             return (pointerWParam, (uint)Environment.TickCount);
         }
 
@@ -111,7 +122,7 @@ namespace InkybotHook
                             EnqueueClickPhaseMessages(WM_POINTERDOWN, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON);
                         }
                     }
-                    else if (_rawState == ForgeState.ButtonDown && elapsed >= 150)
+                    else if (_rawState == ForgeState.ButtonDown && elapsed >= 50)
                     {
                         _rawState = ForgeState.ButtonUp;
                         _lastStateChangeTime = now;
@@ -121,7 +132,7 @@ namespace InkybotHook
                             EnqueueClickPhaseMessages(WM_POINTERUP, WM_LBUTTONUP, IntPtr.Zero);
                         }
                     }
-                    else if (_rawState == ForgeState.ButtonUp && elapsed >= 150)
+                    else if (_rawState == ForgeState.ButtonUp && elapsed >= 50)
                     {
                         _rawState = ForgeState.Idle;
                         _server.IsClickActive = false;
@@ -142,12 +153,14 @@ namespace InkybotHook
         private void EnqueueMouseMoveMessages()
         {
             var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
-            var (pointerWParam, _) = ResolvePointerParams();
+            _targetScreenX = screenPt.X;
+            _targetScreenY = screenPt.Y;
+            var (pointerWParam, _) = ResolvePointerParams(_rawState == ForgeState.ButtonDown);
 
             lock (_queueLock)
             {
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParam, lParam = screenLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParam, lParam = screenLParam, time = (uint)Environment.TickCount, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)Environment.TickCount, pt = screenPt });
             }
             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
             QueueMessage($"[AutomationLoop] Enqueued mouse move at screen=({screenPt.X},{screenPt.Y}) client=({clientPt.X},{clientPt.Y})");
@@ -156,25 +169,33 @@ namespace InkybotHook
         private void EnqueueClickPhaseMessages(uint pointerMsg, uint lbuttonMsg, IntPtr lbuttonWParam)
         {
             var (screenPt, clientPt, screenLParam, clientLParam) = ResolveMsgCoordinates();
-            var (pointerWParam, _) = ResolvePointerParams();
+            _targetScreenX = screenPt.X;
+            _targetScreenY = screenPt.Y;
+            bool isDown = (pointerMsg == WM_POINTERDOWN);
+            var (pointerWParam, _) = ResolvePointerParams(isDown);
 
             lock (_queueLock)
             {
-                // Stealth Hardware
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
+                // Raw move to prime the pipeline with absolute position
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_MOVE_HANDLE, time = (uint)Environment.TickCount, pt = screenPt });
+                // Move events for hover/hit-test
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_POINTERUPDATE, wParam = pointerWParam, lParam = screenLParam, time = (uint)Environment.TickCount, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_MOUSEMOVE, wParam = IntPtr.Zero, lParam = clientLParam, time = (uint)Environment.TickCount, pt = screenPt });
+                // Stealth Hardware: raw input click
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_INPUT, wParam = IntPtr.Zero, lParam = (IntPtr)MAGIC_RAW_HANDLE, time = (uint)Environment.TickCount, pt = screenPt });
                 // Modern UI: screen coordinates
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = pointerMsg, wParam = pointerWParam, lParam = screenLParam, time = MAGIC_SYNTHETIC_TIME, pt = screenPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = pointerMsg, wParam = pointerWParam, lParam = screenLParam, time = (uint)Environment.TickCount, pt = screenPt });
                 // Legacy UI: client coordinates
-                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = lbuttonMsg, wParam = lbuttonWParam, lParam = clientLParam, time = MAGIC_SYNTHETIC_TIME, pt = clientPt });
+                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = lbuttonMsg, wParam = lbuttonWParam, lParam = clientLParam, time = (uint)Environment.TickCount, pt = clientPt });
             }
             PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
-            QueueMessage($"[AutomationLoop] Enqueued 3 messages at screen=({screenPt.X},{screenPt.Y}) client=({clientPt.X},{clientPt.Y})");
+            QueueMessage($"[AutomationLoop] Enqueued 6 messages at screen=({screenPt.X},{screenPt.Y}) client=({clientPt.X},{clientPt.Y})");
         }
 
         // =========================================================
         // NATIVE STRUCT PACKING
         // =========================================================
-        private bool EnsureNativePrepared(uint buttonFlag)
+        private bool EnsureNativePrepared(uint buttonFlag, ushort mouseFlags = 0, int lastX = 0, int lastY = 0)
         {
             try
             {
@@ -199,7 +220,7 @@ namespace InkybotHook
                     }
 
                     RAWINPUTHEADER header = new RAWINPUTHEADER { dwType = RIM_TYPEMOUSE, dwSize = _capturedPacketSize, hDevice = _capturedDevice, wParam = IntPtr.Zero };
-                    RAWMOUSE mouse = new RAWMOUSE { usFlags = 0, ulButtons = buttonFlag, ulRawButtons = 0, lLastX = 0, lLastY = 0, ulExtraInformation = 0 };
+                    RAWMOUSE mouse = new RAWMOUSE { usFlags = mouseFlags, ulButtons = buttonFlag, ulRawButtons = 0, lLastX = lastX, lLastY = lastY, ulExtraInformation = 0 };
 
                     Marshal.StructureToPtr(header, _nativeFakePacketPtr, false);
                     IntPtr pMouse = new IntPtr(_nativeFakePacketPtr.ToInt64() + _rawInputHeaderSize);

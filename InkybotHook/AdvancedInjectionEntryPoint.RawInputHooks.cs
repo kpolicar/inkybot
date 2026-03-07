@@ -18,8 +18,8 @@ namespace InkybotHook
                 if (!_allHooksInstalled.Wait(5000)) return _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
                 LogFirstCall("GetRawInputData");
 
-                if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE && uiCommand == RID_INPUT)
-                    return HandleMagicRawInput(pData, ref pcbSize);
+                if ((hRawInput == (IntPtr)MAGIC_RAW_HANDLE || hRawInput == (IntPtr)MAGIC_RAW_MOVE_HANDLE) && uiCommand == RID_INPUT)
+                    return HandleMagicRawInput(hRawInput, pData, ref pcbSize, cbSizeHeader);
 
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
                 TryCaptureDeviceInfo(pData, result, uiCommand, cbSizeHeader);
@@ -105,20 +105,41 @@ namespace InkybotHook
             }
         }
 
-        private uint HandleMagicRawInput(IntPtr pData, ref uint pcbSize)
+        private uint HandleMagicRawInput(IntPtr hRawInput, IntPtr pData, ref uint pcbSize, uint cbSizeHeader)
         {
+            if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
             if (_capturedDevice == IntPtr.Zero || _capturedPacketSize == 0) return unchecked((uint)-1);
             if (pData == IntPtr.Zero) { pcbSize = _capturedPacketSize; return 0; }
             if (pcbSize < _capturedPacketSize) { pcbSize = _capturedPacketSize; return unchecked((uint)-1); }
 
-            uint buttonFlag = GetCurrentButtonFlag();
-            if (!EnsureNativePrepared(buttonFlag)) return unchecked((uint)-1);
+            uint buttonFlag = 0;
+            ushort mouseFlags = 0;
+            int lastX = 0, lastY = 0;
+
+            if (hRawInput == (IntPtr)MAGIC_RAW_MOVE_HANDLE)
+            {
+                mouseFlags = MOUSE_MOVE_ABSOLUTE | MOUSE_VIRTUAL_DESKTOP;
+                int cxScreen = GetSystemMetrics(SM_CXSCREEN);
+                int cyScreen = GetSystemMetrics(SM_CYSCREEN);
+                if (cxScreen > 0 && cyScreen > 0)
+                {
+                    lastX = (_targetScreenX * 65535) / cxScreen;
+                    lastY = (_targetScreenY * 65535) / cyScreen;
+                }
+            }
+            else
+            {
+                buttonFlag = GetCurrentButtonFlag();
+            }
+
+            if (!EnsureNativePrepared(buttonFlag, mouseFlags, lastX, lastY)) return unchecked((uint)-1);
 
             lock (_nativeBufLock)
             {
                 CopyMemory(pData, _nativeFakePacketPtr, (UIntPtr)_capturedPacketSize);
-                _lastInjectedRawState = _rawState;
-                QueueMessage($"[GetRawInputData] Fabricated RAWINPUT packet: buttonFlag=0x{buttonFlag:X}, device=0x{_capturedDevice.ToInt64():X}");
+                if (hRawInput == (IntPtr)MAGIC_RAW_HANDLE)
+                    _lastInjectedRawState = _rawState;
+                QueueMessage($"[GetRawInputData] Fabricated RAWINPUT packet: handle=0x{hRawInput.ToInt64():X}, buttonFlag=0x{buttonFlag:X}, device=0x{_capturedDevice.ToInt64():X}");
                 return _capturedPacketSize;
             }
         }
@@ -162,6 +183,42 @@ namespace InkybotHook
             }
             QueueMessage($"[GetRawInputBuffer] Patched {packetCount} real packets with buttonFlag=0x{buttonFlag:X}");
             return packetCount;
+        }
+
+        private void ProbeRawInputDevices()
+        {
+            try
+            {
+                _rawInputHeaderSize = (uint)Marshal.SizeOf<RAWINPUTHEADER>();
+
+                uint numDevices = 0;
+                uint cbSize = (uint)Marshal.SizeOf<RAWINPUTDEVICELIST>();
+                GetRawInputDeviceList(null, ref numDevices, cbSize);
+
+                if (numDevices == 0) return;
+
+                var devices = new RAWINPUTDEVICELIST[numDevices];
+                uint result = GetRawInputDeviceList(devices, ref numDevices, cbSize);
+                if (result == unchecked((uint)-1)) return;
+
+                for (int i = 0; i < result; i++)
+                {
+                    if (devices[i].dwType == RIM_TYPEMOUSE && devices[i].hDevice != IntPtr.Zero)
+                    {
+                        lock (_deviceLock)
+                        {
+                            _capturedDevice = devices[i].hDevice;
+                            _capturedPacketSize = (uint)Marshal.SizeOf<RAWINPUT>();
+                        }
+                        QueueMessage($"[ProbeRawInputDevices] Probed mouse device: 0x{_capturedDevice.ToInt64():X}, packetSize={_capturedPacketSize}, headerSize={_rawInputHeaderSize}");
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                QueueMessage($"[EXCEPTION in ProbeRawInputDevices] {ex}");
+            }
         }
 
         private uint TryInjectIntoEmptyBuffer(IntPtr pData, ref uint pcbSize, uint originalResult)

@@ -6,22 +6,18 @@ namespace InkybotHook
 {
     public partial class AdvancedInjectionEntryPoint
     {
-        private static short SpoofLButton(short realState) => (short)(realState | unchecked((short)0x8000));
-
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
             if (_disposing) return _originalGetCursorPos(out lpPoint);
             try
             {
-                bool result = _originalGetCursorPos(out lpPoint);
                 if (IsCursorOverrideActive)
                 {
-                    var fixedPt = GetFixedScreenPoint();
-                    lpPoint.X = fixedPt.X;
-                    lpPoint.Y = fixedPt.Y;
+                    lpPoint = GetFixedScreenPoint();
                     LogFirstCall("GetCursorPos:Override");
+                    return true;
                 }
-                return result;
+                return _originalGetCursorPos(out lpPoint);
             }
             catch (Exception ex)
             {
@@ -54,11 +50,12 @@ namespace InkybotHook
                 if (!_allHooksInstalled.Wait(5000)) return _originalGetAsyncKeyState(vKey);
                 LogFirstCall("GetAsyncKeyState");
 
-                short realState = _originalGetAsyncKeyState(vKey);
-                if (vKey != VK_LBUTTON || _rawState != ForgeState.ButtonDown) return realState;
-
-                LogFirstCall("GetAsyncKeyState:Spoofed");
-                return SpoofLButton(realState);
+                if (vKey == VK_LBUTTON && _rawState == ForgeState.ButtonDown)
+                {
+                    LogFirstCall("GetAsyncKeyState:Spoofed");
+                    return unchecked((short)0x8000);
+                }
+                return _originalGetAsyncKeyState(vKey);
             }
             catch (Exception ex)
             {
@@ -75,16 +72,68 @@ namespace InkybotHook
                 if (!_allHooksInstalled.Wait(5000)) return _originalGetKeyState(nVirtKey);
                 LogFirstCall("GetKeyState");
 
-                short realState = _originalGetKeyState(nVirtKey);
-                if (nVirtKey != VK_LBUTTON || _rawState != ForgeState.ButtonDown) return realState;
-
-                LogFirstCall("GetKeyState:Spoofed");
-                return SpoofLButton(realState);
+                if (nVirtKey == VK_LBUTTON && _rawState == ForgeState.ButtonDown)
+                {
+                    LogFirstCall("GetKeyState:Spoofed");
+                    return unchecked((short)0x8000);
+                }
+                return _originalGetKeyState(nVirtKey);
             }
             catch (Exception ex)
             {
                 if (!_disposing) QueueMessage($"[EXCEPTION in HookedGetKeyState] {ex}");
                 return _originalGetKeyState(nVirtKey);
+            }
+        }
+
+        private IntPtr HookedSetCapture(IntPtr hWnd)
+        {
+            if (_disposing) return _originalSetCapture(hWnd);
+            try
+            {
+                if (!_allHooksInstalled.Wait(5000)) return _originalSetCapture(hWnd);
+                LogFirstCall("SetCapture");
+                if (IsCursorOverrideActive) return IntPtr.Zero;
+                return _originalSetCapture(hWnd);
+            }
+            catch (Exception ex)
+            {
+                if (!_disposing) QueueMessage($"[EXCEPTION in HookedSetCapture] {ex}");
+                return _originalSetCapture(hWnd);
+            }
+        }
+
+        private bool HookedReleaseCapture()
+        {
+            if (_disposing) return _originalReleaseCapture();
+            try
+            {
+                if (!_allHooksInstalled.Wait(5000)) return _originalReleaseCapture();
+                LogFirstCall("ReleaseCapture");
+                if (IsCursorOverrideActive) return true;
+                return _originalReleaseCapture();
+            }
+            catch (Exception ex)
+            {
+                if (!_disposing) QueueMessage($"[EXCEPTION in HookedReleaseCapture] {ex}");
+                return _originalReleaseCapture();
+            }
+        }
+
+        private IntPtr HookedGetCapture()
+        {
+            if (_disposing) return _originalGetCapture();
+            try
+            {
+                if (!_allHooksInstalled.Wait(5000)) return _originalGetCapture();
+                LogFirstCall("GetCapture");
+                if (IsCursorOverrideActive && _mainHwnd != IntPtr.Zero) return _mainHwnd;
+                return _originalGetCapture();
+            }
+            catch (Exception ex)
+            {
+                if (!_disposing) QueueMessage($"[EXCEPTION in HookedGetCapture] {ex}");
+                return _originalGetCapture();
             }
         }
     }

@@ -7,12 +7,7 @@ namespace InkybotHook
     public partial class AdvancedInjectionEntryPoint
     {
         private static bool IsSyntheticRawInput(ref MSG lpMsg) =>
-            lpMsg.message == WM_INPUT && lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE;
-
-        private static bool IsMouseOrPointerMessage(uint msg) =>
-            msg == WM_INPUT ||
-            (msg >= WM_MOUSEMOVE && msg <= WM_LBUTTONUP) ||
-            (msg >= WM_POINTERUPDATE && msg <= WM_POINTERUP);
+            lpMsg.message == WM_INPUT && (lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE || lpMsg.lParam == (IntPtr)MAGIC_RAW_MOVE_HANDLE);
 
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
@@ -79,12 +74,6 @@ namespace InkybotHook
                     QueueMessage($"[DispatchMessageW] Dispatching synthetic WM_INPUT directly to WndProc for HWND 0x{lpMsg.hwnd.ToInt64():X}");
                     return CallWindowProc(wndProc, lpMsg.hwnd, lpMsg.message, lpMsg.wParam, lpMsg.lParam);
                 }
-
-                if (lpMsg.time != MAGIC_SYNTHETIC_TIME && IsCursorOverrideActive && IsMouseOrPointerMessage(lpMsg.message))
-                    return IntPtr.Zero;
-
-                if (lpMsg.time == MAGIC_SYNTHETIC_TIME)
-                    lpMsg.time = (uint)Environment.TickCount;
 
                 return _originalDispatchMessageW(ref lpMsg);
             }

@@ -93,6 +93,9 @@ namespace InkybotHook
             ("GetRawInputBuffer",() => _originalGetRawInputBuffer= InstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer))),
             ("GetAsyncKeyState", () => _originalGetAsyncKeyState  = InstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState))),
             ("GetKeyState",      () => _originalGetKeyState       = InstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState))),
+            ("SetCapture",       () => _originalSetCapture        = InstallHook<SetCaptureDelegate>("SetCapture", new SetCaptureDelegate(HookedSetCapture))),
+            ("ReleaseCapture",   () => _originalReleaseCapture    = InstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture))),
+            ("GetCapture",       () => _originalGetCapture        = InstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture))),
         };
 
         // =========================================================
@@ -111,6 +114,8 @@ namespace InkybotHook
                     QueueMessage($"[EasyHook:Target] Failed to install hook {def.Name}: {e.Message}");
                 }
             }
+
+            ProbeRawInputDevices();
 
             _stopAutomationThread = false;
             _automationThread = new Thread(AutomationThreadLoop) { IsBackground = true, Name = "Inkybot_AutomationThread" };

@@ -36,6 +36,16 @@ namespace InkybotHook
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate short GetKeyStateDelegate(int nVirtKey);
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate IntPtr SetCaptureDelegate(IntPtr hWnd);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private delegate bool ReleaseCaptureDelegate();
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate IntPtr GetCaptureDelegate();
+
         // =========================================================
         // ORIGINAL FUNCTION POINTERS (set during hook installation)
         // =========================================================
@@ -48,6 +58,9 @@ namespace InkybotHook
         private GetRawInputBufferDelegate _originalGetRawInputBuffer;
         private GetAsyncKeyStateDelegate _originalGetAsyncKeyState;
         private GetKeyStateDelegate _originalGetKeyState;
+        private SetCaptureDelegate _originalSetCapture;
+        private ReleaseCaptureDelegate _originalReleaseCapture;
+        private GetCaptureDelegate _originalGetCapture;
 
         // =========================================================
         // P/INVOKE DECLARATIONS (used across hook implementations)
@@ -70,6 +83,9 @@ namespace InkybotHook
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
         private static extern IntPtr GetWindowLongPtrNative(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int GetSystemMetrics(int nIndex);
 
         private const int GWLP_WNDPROC = -4;
     }
