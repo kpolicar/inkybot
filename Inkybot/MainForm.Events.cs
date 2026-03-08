@@ -17,6 +17,7 @@ using Inkybot.Domain;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Inkybot.Services;
+using Inkybot.Services.Win32Input;
 using Debug = System.Diagnostics.Debug;
 using Timer = System.Windows.Forms.Timer;
 
@@ -195,6 +196,7 @@ namespace Inkybot
         }
 
         private void statisticsButton_Click(object sender, EventArgs e) {
+            OnClickInsert();
             if (auth.User != null && !auth.User.canViewStatistics) {
                 var text = !auth.User.onUnlimitedPlan && !auth.User.onStandardPlan
                     ? resources.GetString("popup.error_notavailable_unlimitedstandard_plan")

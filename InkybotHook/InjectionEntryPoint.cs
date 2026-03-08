@@ -1,32 +1,32 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Threading;
+using static InkybotHook.NativeMethods;
+#pragma warning disable CS1690
 
 namespace InkybotHook
 {
-    
-    public class InjectionEntryPoint: EasyHook.IEntryPoint
+    public partial class InjectionEntryPoint : EasyHook.IEntryPoint
     {
-        ServerInterface _server = null;
+        private readonly ServerInterface _server;
 
-        Queue<string> _messageQueue = new Queue<string>();
-
-        private bool _hasLoggedFirstCursorIntercept = false;
+        private readonly ManualResetEventSlim _allHooksInstalled = new ManualResetEventSlim(false);
+        private Thread _inputThread;
+        private volatile bool _stopInputThread = false;
 
         public InjectionEntryPoint(
             EasyHook.RemoteHooking.IContext context,
-            string channelName) {
+            string channelName)
+        {
             try
             {
                 _server = EasyHook.RemoteHooking.IpcConnectClient<ServerInterface>(channelName);
-                // If Ping fails then the Run method will be not be called
                 _server.Ping();
             }
             catch (Exception e)
             {
-                // IPC connection failed - Run() will not be called by EasyHook
-                throw new Exception("[EasyHook] Failed to connect IPC channel '" + channelName + "': " + e.Message, e);
+                throw new Exception("[EasyHook:Target] Failed to connect IPC channel '" + channelName + "': " + e.Message, e);
             }
         }
 
@@ -34,88 +34,17 @@ namespace InkybotHook
             EasyHook.RemoteHooking.IContext context,
             string channelName)
         {
-            EasyHook.LocalHook getCursorPosHook = null;
-            EasyHook.LocalHook isIconicHook = null;
+            var installedHooks = new List<EasyHook.LocalHook>();
 
             try
             {
-                // Injection is now complete and the server interface is connected
                 _server.IsInstalled(EasyHook.RemoteHooking.GetCurrentProcessId());
-
-                // Install hooks
-                IntPtr targetFunction;
-                try
-                {
-                    targetFunction = EasyHook.LocalHook.GetProcAddress("user32.dll", "GetCursorPos");
-                }
-                catch (Exception e)
-                {
-                    _server.ReportMessage("[EasyHook] Failed to find GetCursorPos in user32.dll: " + e.Message);
-                    _server.SetState(HookState.Failed);
-                    return;
-                }
-
-                try
-                {
-                    getCursorPosHook = EasyHook.LocalHook.Create(
-                        targetFunction,
-                        new GetCursorPosDelegate(HookedGetCursorPos),
-                        this);
-                    _originalGetCursorPos = Marshal.GetDelegateForFunctionPointer<GetCursorPosDelegate>(targetFunction);
-                }
-                catch (Exception e)
-                {
-                    _server.ReportMessage("[EasyHook] Failed to create GetCursorPos hook: " + e.Message);
-                    _server.SetState(HookState.Failed);
-                    return;
-                }
-
-                IntPtr isIconicTarget;
-                try
-                {
-                    isIconicTarget = EasyHook.LocalHook.GetProcAddress("user32.dll", "IsIconic");
-                }
-                catch (Exception e)
-                {
-                    _server.ReportMessage("[EasyHook] Failed to find IsIconic in user32.dll: " + e.Message);
-                    _server.SetState(HookState.Failed);
-                    return;
-                }
-
-                try
-                {
-                    isIconicHook = EasyHook.LocalHook.Create(
-                        isIconicTarget,
-                        new IsIconicDelegate(HookedIsIconic),
-                        this);
-                    _originalIsIconic = Marshal.GetDelegateForFunctionPointer<IsIconicDelegate>(isIconicTarget);
-                }
-                catch (Exception e)
-                {
-                    _server.ReportMessage("[EasyHook] Failed to create IsIconic hook: " + e.Message);
-                    _server.SetState(HookState.Failed);
-                    return;
-                }
-
-                // Activate hooks on all threads except the current thread
-                try
-                {
-                    getCursorPosHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                    isIconicHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                }
-                catch (Exception e)
-                {
-                    _server.ReportMessage("[EasyHook] Failed to set thread ACL for hooks: " + e.Message);
-                    _server.SetState(HookState.Failed);
-                    return;
-                }
-
-                _server.ReportMessage("[EasyHook] GetCursorPos and IsIconic hooks installed successfully");
+                installedHooks.AddRange(InstallHooks());
                 _server.SetState(HookState.HooksInstalled);
             }
             catch (Exception e)
             {
-                _server.ReportMessage("[EasyHook] Unexpected error during hook setup: " + e.ToString());
+                _server.ReportMessage("[EasyHook:Target] Unexpected error during hook setup: " + e.ToString());
                 _server.SetState(HookState.Failed);
                 return;
             }
@@ -124,100 +53,90 @@ namespace InkybotHook
 
             try
             {
-                // Loop until IPC fails
                 while (!_server.ShutdownFlag)
                 {
-                    System.Threading.Thread.Sleep(50);
-
-                    string[] queued = null;
-
-                    lock (_messageQueue)
-                    {
-                        queued = _messageQueue.ToArray();
-                        _messageQueue.Clear();
-                    }
-
-                    if (queued != null && queued.Length > 0)
-                    {
-                        _server.ReportMessages(queued);
-                    }
-                    else
-                    {
-                        _server.Ping();
-                    }
+                    Thread.Sleep(1);
+                    _server.Ping();
                 }
-
-                _server.ReportMessage("[EasyHook] Shutdown flag received, cleaning up hooks");
+                _server.ReportMessage("[EasyHook:Target] Shutdown flag received, cleaning up hooks");
             }
-            catch
-            {
-                // Ping() or ReportMessages() will raise an exception if host is unreachable
-                // Can't log via _server since it's disconnected - this is expected on app exit
-            }
+            catch { }
 
-            // Remove hooks
             try
             {
-                getCursorPosHook?.Dispose();
-                isIconicHook?.Dispose();
+                CleanupResources();
+                foreach (var hook in installedHooks)
+                    hook.Dispose();
                 EasyHook.LocalHook.Release();
-                _server.ReportMessage("[EasyHook] Hooks disposed and released");
+                _server.ReportMessage("[EasyHook:Target] Hooks disposed and released");
                 _server.SetState(HookState.Disposed);
             }
-            catch
-            {
-                // Host may already be gone, swallow
-            }
+            catch { }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
+        // =============================================================
+        // HOOK INSTALLATION
+        // =============================================================
+
+        private List<EasyHook.LocalHook> InstallHooks()
         {
-            public int X;
-            public int Y;
+            var hooks = new List<EasyHook.LocalHook>();
+
+            hooks.Add(TryInstallHook<PeekMessageWDelegate>("PeekMessageW", new PeekMessageWDelegate(HookedPeekMessageW), out _originalPeekMessageW));
+            hooks.Add(TryInstallHook<TranslateMessageDelegate>("TranslateMessage", new TranslateMessageDelegate(HookedTranslateMessage), out _originalTranslateMessage));
+            hooks.Add(TryInstallHook<DispatchMessageWDelegate>("DispatchMessageW", new DispatchMessageWDelegate(HookedDispatchMessageW), out _originalDispatchMessageW));
+            hooks.Add(TryInstallHook<GetRawInputDataDelegate>("GetRawInputData", new GetRawInputDataDelegate(HookedGetRawInputData), out _originalGetRawInputData));
+            hooks.Add(TryInstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer), out _originalGetRawInputBuffer));
+            hooks.Add(TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState));
+            hooks.Add(TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState));
+            hooks.Add(TryInstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture), out _originalReleaseCapture));
+            hooks.Add(TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture));
+            hooks.Add(TryInstallHook<GetCursorPosHookDelegate>("GetCursorPos", new GetCursorPosHookDelegate(HookedGetCursorPos), out _originalGetCursorPos));
+
+            hooks.RemoveAll(item => item == null);
+
+            ProbeRawInputDevices();
+
+            _stopInputThread = false;
+            _inputThread = new Thread(InputProcessorLoop) { IsBackground = true, Name = "Inkybot_InputThread" };
+            _inputThread.Start();
+
+            _allHooksInstalled.Set();
+            return hooks;
         }
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate bool GetCursorPosDelegate(out POINT lpPoint);
-        private GetCursorPosDelegate _originalGetCursorPos;
-        
-        public bool HookedGetCursorPos(out POINT lpPoint)
+
+        private void CleanupResources()
+        {
+            _stopInputThread = true;
+
+            int deadline = Environment.TickCount + 1000;
+            while (_rawState != ForgeState.Idle && (Environment.TickCount - deadline) < 0)
+                Thread.Sleep(5);
+
+            FreeFakePacketBuffer();
+        }
+
+        // =============================================================
+        // HELPERS
+        // =============================================================
+
+        private EasyHook.LocalHook TryInstallHook<TOriginal>(
+            string functionName, Delegate hookedMethod, out TOriginal original)
+            where TOriginal : class
         {
             try
             {
-                // Call the original function
-                if (_server.point.X == -1 && _server.point.Y == -1)
-                    return _originalGetCursorPos(out lpPoint);
-
-                lpPoint.X = _server.point.X;
-                lpPoint.Y = _server.point.Y;
-
-                if (!_hasLoggedFirstCursorIntercept)
-                {
-                    _hasLoggedFirstCursorIntercept = true;
-                    try
-                    {
-                        _server.ReportMessage($"[EasyHook] First cursor position intercept: ({lpPoint.X}, {lpPoint.Y})");
-                    }
-                    catch { /* IPC may fail, don't crash target */ }
-                }
-
-                return true;
+                var targetFunction = EasyHook.LocalHook.GetProcAddress("user32.dll", functionName);
+                var hook = EasyHook.LocalHook.Create(targetFunction, hookedMethod, this);
+                original = Marshal.GetDelegateForFunctionPointer<TOriginal>(targetFunction);
+                hook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                return hook;
             }
-            catch
+            catch (Exception)
             {
-                // Fallback to original to avoid crashing the target process
-                return _originalGetCursorPos(out lpPoint);
+                original = null;
+                return null;
             }
         }
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate bool IsIconicDelegate(IntPtr hWnd);
-        private IsIconicDelegate _originalIsIconic;
-
-        public bool HookedIsIconic(IntPtr hWnd)
-        {
-            return false;
-        }
-
     }
 }

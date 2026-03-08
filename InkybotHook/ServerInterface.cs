@@ -1,34 +1,5 @@
-﻿// RemoteFileMonitor (File: FileMonitorHook\ServerInterface.cs)
-//
-// Copyright (c) 2017 Justin Stenning
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-// Please visit https://easyhook.github.io for more information
-// about the project, latest updates and other tutorials.
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace InkybotHook
 {
@@ -64,28 +35,57 @@ namespace InkybotHook
 
         public bool ShutdownFlag = false;
 
+        /// <summary>
+        /// The fixed cursor position in client coordinates relative to the target window.
+        /// A value of (-1, -1) means no override is active.
+        /// </summary>
         public POINT point = new POINT { X = -1, Y = -1 };
 
-        public HookState State { get; private set; } = HookState.NotInitialized;
+        /// <summary>
+        /// The target window handle. Set this from the host so that the hook
+        /// can convert client coordinates to screen coordinates.
+        /// </summary>
+        public IntPtr targetHwnd = IntPtr.Zero;
 
-        private bool _hasLoggedFirstCursorChange = false;
+        /// <summary>
+        /// Click request fields. Win32Input sets these via RequestClick(),
+        /// the hook thread reads and clears clickRequested.
+        /// Coordinates are in screen space.
+        /// </summary>
+        public volatile bool clickRequested = false;
+        public int clickScreenX;
+        public int clickScreenY;
+
+        public void RequestClick(int screenX, int screenY)
+        {
+            clickScreenX = screenX;
+            clickScreenY = screenY;
+            clickRequested = true;
+        }
+
+        public volatile bool keyRequested = false;
+        public char keyChar;
+
+        public void RequestKey(char c)
+        {
+            keyChar = c;
+            keyRequested = true;
+        }
+
+        public HookState State { get; private set; } = HookState.NotInitialized;
 
         public void SetState(HookState newState)
         {
             var oldState = State;
             State = newState;
-            Logger?.Invoke($"[EasyHook] State changed: {oldState} -> {newState}");
+            Logger?.Invoke($"[EasyHook:Target] State changed: {oldState} -> {newState}");
         }
 
         public void IsInstalled(int clientPID) {
-            ReportMessage($"[EasyHook] Hook DLL injected into process {clientPID}");
+            ReportMessage($"[EasyHook:Target] Hook DLL injected into process {clientPID}");
             SetState(HookState.Injected);
         }
 
-        /// <summary>
-        /// Output the message to the console.
-        /// </summary>
-        /// <param name="messages"></param>
         public void ReportMessages(string[] messages) {
             for (int i = 0; i < messages.Length; i++) {
                 ReportMessage(messages[i]);
@@ -93,25 +93,19 @@ namespace InkybotHook
         }
 
         public void SetCursorFixedPosition(POINT point) {
-            this.point = point;
-
-            if (!_hasLoggedFirstCursorChange && point.X != -1 && point.Y != -1)
+            if (point.X != this.point.X || point.Y != this.point.Y)
             {
-                _hasLoggedFirstCursorChange = true;
-                Logger?.Invoke($"[EasyHook] First cursor position override applied: ({point.X}, {point.Y})");
+                Logger?.Invoke($"[EasyHook:Host] Cursor position -> ({point.X}, {point.Y})");
             }
+            this.point = point;
         }
 
         public void ReportMessage(string message) {
             Logger?.Invoke(message);
         }
 
-        /// <summary>
-        /// Report exception
-        /// </summary>
-        /// <param name="e"></param>
         public void ReportException(Exception e) {
-            Logger?.Invoke("[EasyHook] Target process error: " + e.ToString());
+            Logger?.Invoke("[EasyHook:Target] Target process error: " + e.ToString());
         }
 
         /// <summary>

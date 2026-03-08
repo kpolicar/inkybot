@@ -50,22 +50,25 @@ namespace Inkybot
             }
 
             parentHandle = WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
-            FileEventLogger.SystemLogger.Info("Dofus window title: " + pDofus!.MainWindowTitle);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
             
             Win32Input.SetTargetProcessId(pDofus.Id);
 
             Task.Run(async () => {
-                Task.Delay(5000);
-                this.BeginInvoke(new Action(() =>
-                {
-                    try {
-                        BindServicesToDockedWindow();
-                    } catch (Exception e) {
-                        Debug.WriteLine(e);
-                    }
-                }));
-                
+                try {
+                    Win32Input.Init();
+                    await Win32Input.WaitForHookReady();
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        try {
+                            BindServicesToDockedWindow();
+                        } catch (Exception e) {
+                            Debug.WriteLine(e);
+                        }
+                    }));
+                } catch (Exception e) {
+                    Debug.WriteLine(e);
+                }
             });
             
             // m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
@@ -138,11 +141,7 @@ namespace Inkybot
         }
 
         private void OnClickInsert() {
-            var inp = new Win32Input();
-            inp.SetRelativeToHandle(pDofus!.MainWindowHandle);
-            var x=1088;
-            var y=344;
-            inp.Click(x,y);
+            actions.Execute(actionFactory.InventorySelectEquipmentAction());
         }
 
         private void OnDofusProcessSelected(object sender, ProcessEventArgs e) {
