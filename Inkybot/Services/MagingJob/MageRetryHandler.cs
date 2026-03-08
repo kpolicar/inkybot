@@ -60,6 +60,12 @@ namespace Inkybot.Services
 
                     onWarning(new MagingJobErrorEventArgs(exception, additionalInfo));
                     Thread.Sleep(1000);
+
+                    if (session.ManuallyStopped) {
+                        result.StopMage = true;
+                        break;
+                    }
+
                     session.IsMaging = true;
                 }
             }

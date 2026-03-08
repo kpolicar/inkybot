@@ -13,6 +13,7 @@ namespace Inkybot.Services
         public bool IsPreparing { get; set; }
         public bool IsRestarting { get; set; }
         public bool IsMaging { get; set; }
+        public bool ManuallyStopped { get; set; }
         public bool HasStartedFired { get; set; }
 
         // Tracked values

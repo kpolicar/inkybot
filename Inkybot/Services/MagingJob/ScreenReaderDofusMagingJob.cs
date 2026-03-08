@@ -93,6 +93,7 @@ namespace Inkybot.Services
         public void StopMage() {
             if (!session.IsMaging) return;
 
+            session.ManuallyStopped = true;
             session.IsMaging = false;
             session.ChangeTimeout.Reset();
             Stopped?.Invoke(this, EventArgs.Empty);
