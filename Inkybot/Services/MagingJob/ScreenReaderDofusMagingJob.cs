@@ -28,8 +28,8 @@ namespace Inkybot.Services
         public event EventHandler<MagingJobErrorEventArgs>? Error;
         public event EventHandler<MagingJobErrorEventArgs>? Warning;
 
-        private ScreenReaderDataProvider dataProvider = null!;
-        private ConfigManager configManager = null!;
+        private IMagingDataProvider dataProvider = null!;
+        private IMagingConfigManager configManager = null!;
         private DofusMagingAIContract magus = null!;
         private ServiceContainer serviceContainer = null!;
         private MageQueueManager mageQueue = null!;
@@ -41,9 +41,9 @@ namespace Inkybot.Services
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             mageQueue = serviceContainer.GetService<MageQueueManager>();
-            configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
+            configManager = (IMagingConfigManager) serviceContainer.GetService<MageConfigManager>();
             var magingAiManager = serviceContainer.GetService<MagingAIServiceManager>();
-            dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
+            dataProvider = (IMagingDataProvider) serviceContainer.GetService<DofusDataProvider>();
             this.serviceContainer = serviceContainer;
 
             configManager.ConfigModified += OnConfigModified;

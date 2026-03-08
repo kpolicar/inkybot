@@ -29,7 +29,7 @@ namespace Inkybot.Services
         public event EventHandler<PresetEventArgs>? AppliedPreset;
         public StatConfigProviderContract StatConfig = null!;
         public MageConfigProviderContract MageConfig = null!;
-        public UserSettingsConfigManager UserSettings = null!;
+        public UserSettingsConfigManager UserSettings { get; private set; } = null!;
 
         public MageConfig? Config {
             get;

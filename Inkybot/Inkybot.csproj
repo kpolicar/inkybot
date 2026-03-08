@@ -271,6 +271,9 @@
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Contracts\DofusDataProvider.cs" />
+        <Compile Include="Contracts\IMagingDataProvider.cs" />
+        <Compile Include="Contracts\IMagingConfigManager.cs" />
+        <Compile Include="Contracts\IActionExecutor.cs" />
         <Compile Include="Contracts\ScreenCapture.cs" />
         <Compile Include="Contracts\Input.cs" />
         <Compile Include="Domain\Server.cs" />

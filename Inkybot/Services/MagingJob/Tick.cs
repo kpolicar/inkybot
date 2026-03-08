@@ -4,9 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Inkybot.Actions;
+using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
@@ -22,10 +24,10 @@ namespace Inkybot.Services
     internal class Tick
     {
         private readonly MageSession session;
-        private readonly ScreenReaderDataProvider dataProvider;
-        private readonly DofusMagingAI magus;
+        private readonly IMagingDataProvider dataProvider;
+        private readonly DofusMagingAIContract magus;
         private readonly ActionHandler actions;
-        private readonly ConfigManager configManager;
+        private readonly IMagingConfigManager configManager;
 
         public event EventHandler SuccessfulCombine;
         public event EventHandler<MagingJobStartedEventArgs> SensitiveMage;
@@ -33,10 +35,10 @@ namespace Inkybot.Services
 
         public Tick(
             MageSession session,
-            ScreenReaderDataProvider dataProvider,
-            DofusMagingAI magus,
+            IMagingDataProvider dataProvider,
+            DofusMagingAIContract magus,
             ActionHandler actions,
-            ConfigManager configManager) {
+            IMagingConfigManager configManager) {
             this.session = session;
             this.dataProvider = dataProvider;
             this.magus = magus;
@@ -69,7 +71,7 @@ namespace Inkybot.Services
         }
 
         private IAction ResolveAndExecuteAction() {
-            if (ShouldResetMinMaxScan())
+            if (session.ShouldResetMinMaxScan())
                 dataProvider.ResetMinMaxScan();
 
             var item = dataProvider.Item();
@@ -101,13 +103,11 @@ namespace Inkybot.Services
             return action;
         }
 
-        private bool ShouldResetMinMaxScan() => session.ShouldResetMinMaxScan();
-
         private void WaitForCombineResult() {
             while (true) {
                 EnforceChangeTimeout();
 
-                dataProvider.Scan!.PrefetchForHistoryCheck();
+                dataProvider.PrefetchForHistoryCheck();
                 var itemHistory = dataProvider.History();
 
                 if (Helpers.History.HasChanged(itemHistory, session.PreviousHistory)) {

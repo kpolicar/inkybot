@@ -1,20 +1,23 @@
 using System;
 using System.Threading;
+using Inkybot.Actions;
+using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Events;
+using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 
 namespace Inkybot.Services
 {
     internal abstract class MageExecutor : HasDependencies
     {
         protected MageSession session;
-        protected ScreenReaderDataProvider dataProvider;
-        protected DofusMagingAI magus;
+        protected IMagingDataProvider dataProvider;
+        protected DofusMagingAIContract magus;
         protected ActionHandler actions;
         protected ActionFactory actionFactory;
-        protected ConfigManager configManager;
+        protected IMagingConfigManager configManager;
         protected MageQueueManager mageQueue;
 
         public event EventHandler SuccessfulCombineTick;
@@ -27,14 +30,24 @@ namespace Inkybot.Services
         public virtual void BindDependencies(ServiceContainer serviceContainer) {
             actions = serviceContainer.GetService<ActionHandler>();
             actionFactory = serviceContainer.GetService<ActionFactory>();
-            configManager = (ConfigManager) serviceContainer.GetService<MageConfigManager>();
-            dataProvider = (ScreenReaderDataProvider) serviceContainer.GetService<DofusDataProvider>();
+            configManager = (IMagingConfigManager) serviceContainer.GetService<MageConfigManager>();
+            dataProvider = (IMagingDataProvider) serviceContainer.GetService<DofusDataProvider>();
             mageQueue = serviceContainer.GetService<MageQueueManager>();
         }
 
-        public void Init(MageSession session, DofusMagingAI magus) {
+        public void Init(MageSession session, DofusMagingAIContract magus) {
             this.session = session;
             this.magus = magus;
+            actions.ActionExecuted += OnActionExecuted;
+        }
+
+        private void OnActionExecuted(object sender, ActionExecutedEventArgs e) {
+            if (e.action is Finish)
+                session.IsMaging = false;
+        }
+
+        public void Cleanup() {
+            actions.ActionExecuted -= OnActionExecuted;
         }
 
         public abstract bool Execute();
