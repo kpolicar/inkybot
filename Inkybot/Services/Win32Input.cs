@@ -71,7 +71,6 @@ namespace Inkybot.Services.Win32Input
 
 
         private void SetCursorPosition(int x, int y) {
-            Init();
             if (x != -1 || y != -1) {
                 // Convert client-relative coordinates to screen coordinates using
                 // ClientToScreen so that window borders/title bar are accounted for.
@@ -123,6 +122,8 @@ namespace Inkybot.Services.Win32Input
             if (isInitialized) return;
             lock (_initLock) {
                 if (isInitialized) return;
+                // Don't start a new injection while one is already in-flight
+                if (_server != null && _server.State == HookState.Injecting) return;
 
                 var log = FileEventLogger.SystemLogger;
                 log.Info("[EasyHook:Host] Init() starting...");
