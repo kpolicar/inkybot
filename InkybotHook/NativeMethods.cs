@@ -5,7 +5,9 @@ namespace InkybotHook
 {
     public static class NativeMethods
     {
-        #region Structs
+        // =============================================================
+        // STRUCTS
+        // =============================================================
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -48,13 +50,6 @@ namespace InkybotHook
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RAWINPUTMOUSE
-        {
-            public RAWINPUTHEADER header;
-            public RAWMOUSE mouse;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public struct RAWINPUT
         {
             public RAWINPUTHEADER header;
@@ -68,27 +63,100 @@ namespace InkybotHook
             public uint dwType;
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
+        // =============================================================
+        // WINDOW MESSAGES
+        // =============================================================
 
-        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static extern int GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
+        public const uint WM_NULL          = 0x0000;
+        public const uint WM_INPUT         = 0x00FF;
+        public const uint WM_KEYDOWN       = 0x0100;
+        public const uint WM_KEYUP         = 0x0101;
+        public const uint WM_CHAR          = 0x0102;
+        public const uint WM_MOUSEMOVE     = 0x0200;
+        public const uint WM_LBUTTONDOWN   = 0x0201;
+        public const uint WM_LBUTTONUP     = 0x0202;
+        public const uint WM_POINTERUPDATE = 0x0245;
+        public const uint WM_POINTERDOWN   = 0x0246;
+        public const uint WM_POINTERUP     = 0x0247;
+
+        // =============================================================
+        // VIRTUAL KEYS & MOUSE FLAGS
+        // =============================================================
+
+        public const int VK_LBUTTON  = 0x01;
+        public const int MK_LBUTTON  = 0x0001;
+        public const uint PM_REMOVE  = 0x0001;
+
+        // =============================================================
+        // RAW INPUT
+        // =============================================================
+
+        public const uint RID_INPUT                    = 0x10000003;
+        public const uint RIM_TYPEMOUSE                = 0;
+        public const ushort MOUSE_MOVE_ABSOLUTE        = 0x0001;
+        public const ushort MOUSE_VIRTUAL_DESKTOP      = 0x0002;
+        public const uint RI_MOUSE_LEFT_BUTTON_DOWN    = 0x0001;
+        public const uint RI_MOUSE_LEFT_BUTTON_UP      = 0x0002;
+
+        // =============================================================
+        // SYSTEM METRICS
+        // =============================================================
+
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
+
+        // =============================================================
+        // GDI
+        // =============================================================
+
+        public const int PS_SOLID = 0;
+        public const int R2_NOT   = 6;
+
+        // =============================================================
+        // P/INVOKE — user32.dll
+        // =============================================================
 
         [DllImport("user32.dll")]
-        public static extern bool GetCursorPos(out POINT lpPoint);
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
         [DllImport("user32.dll")]
         public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
 
-        public const uint WM_LBUTTONDOWN = 0x0201;
-        public const uint WM_LBUTTONUP = 0x0202;
-        public const int MK_LBUTTON = 0x0001;
-        #endregion
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
 
-        #region P/Invoke
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
+        public static extern IntPtr SetCapture(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetRawInputData(
+            IntPtr hRawInput, uint uiCommand, IntPtr pData, ref uint pcbSize, uint cbSizeHeader);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetRawInputDeviceList(
+            [Out] RAWINPUTDEVICELIST[] pRawInputDeviceList, ref uint puiNumDevices, uint cbSize);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetRawInputDeviceList(
+            IntPtr pRawInputDeviceList, ref uint puiNumDevices, uint cbSize);
+
+        // =============================================================
+        // P/INVOKE — kernel32.dll
+        // =============================================================
+
+        [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, UIntPtr size);
+
+        // =============================================================
+        // P/INVOKE — GDI (gdi32.dll + user32.dll)
+        // =============================================================
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetDC(IntPtr hWnd);
@@ -119,54 +187,5 @@ namespace InkybotHook
 
         [DllImport("gdi32.dll")]
         public static extern IntPtr GetStockObject(int fnObject);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint GetRawInputData(
-            IntPtr hRawInput,
-            uint uiCommand,
-            IntPtr pData,
-            ref uint pcbSize,
-            uint cbSizeHeader);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint GetRawInputDeviceList(
-            [Out] RAWINPUTDEVICELIST[] pRawInputDeviceList,
-            ref uint puiNumDevices,
-            uint cbSize);
-
-        #endregion
-
-        #region Constants
-
-        public const int PS_SOLID = 0;
-        public const int R2_NOT   = 6;
-
-        public const int RID_INPUT = 0x10000003;
-        public const int RIM_TYPEMOUSE = 0;
-        public const uint RI_MOUSE_LEFT_BUTTON_DOWN   = 0x0001;
-        public const uint RI_MOUSE_LEFT_BUTTON_UP     = 0x0002;
-        public const uint RI_MOUSE_RIGHT_BUTTON_DOWN  = 0x0004;
-        public const uint RI_MOUSE_RIGHT_BUTTON_UP    = 0x0008;
-        public const uint RI_MOUSE_MIDDLE_BUTTON_DOWN = 0x0010;
-        public const int RI_MOUSE_MIDDLE_BUTTON_UP   = 0x0020;
-        public const uint RI_MOUSE_BUTTON_1_DOWN      = RI_MOUSE_LEFT_BUTTON_DOWN;
-        public const uint RI_MOUSE_BUTTON_1_UP        = RI_MOUSE_LEFT_BUTTON_UP;
-        public const uint RI_MOUSE_BUTTON_2_DOWN      = RI_MOUSE_RIGHT_BUTTON_DOWN;
-        public const uint RI_MOUSE_BUTTON_2_UP        = RI_MOUSE_RIGHT_BUTTON_UP;
-        public const uint RI_MOUSE_BUTTON_3_DOWN      = RI_MOUSE_MIDDLE_BUTTON_DOWN;
-        public const uint RI_MOUSE_BUTTON_3_UP        = RI_MOUSE_MIDDLE_BUTTON_UP;
-        public const uint RI_MOUSE_WHEEL              = 0x0400;
-        public const uint RI_MOUSE_HWHEEL             = 0x0800;
-
-        
-        // =========================================================
-        // 2. CONSTANTS & STRUCTS
-        // =========================================================
-        public const uint WM_NULL = 0x0000;
-        public const uint WM_INPUT = 0x00FF;
-        public const int GWLP_WNDPROC = -4;
-        public const int VK_LBUTTON = 0x01;
-
-        #endregion
     }
 }

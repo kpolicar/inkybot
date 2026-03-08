@@ -28,7 +28,7 @@ namespace Inkybot.Services
             private static Task? previousTickDeferredExecutionTask;
             private const int MaxHistoryChangedChecks = 5;
             private static int HistoryChangedChecksCount = 0;
-            private const int MaxStatsChangedChecks = 3;
+            private const int MaxStatsChangedChecks = 15;
             private static int StatsChangedChecksCount = 0;
             private const int MaxStatsShouldHaveChangedChecks = 3;
             internal static int shouldveBeenDifferentCount = 0;
@@ -92,7 +92,7 @@ namespace Inkybot.Services
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{StatsChangedChecksCount} out of ${MaxStatsChangedChecks}"));
                     job.dataProvider.FetchData();
 
-                    Thread.Sleep(500);
+                    Thread.Sleep(50);
                     return;
                 }
 

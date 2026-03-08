@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Concurrent;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using static InkybotHook.NativeMethods;
-#pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class
+#pragma warning disable CS1690
 
 namespace InkybotHook
 {
-    /// <summary>
-    /// EasyHook entry point — connects IPC, installs hooks, runs the message loop, and cleans up.
-    /// </summary>
     public partial class InjectionEntryPoint : EasyHook.IEntryPoint
     {
         private readonly ServerInterface _server;
-        private readonly Queue<string> _messageQueue = new Queue<string>();
-        private readonly ConcurrentDictionary<string, byte> _loggedFirstCalls = new ConcurrentDictionary<string, byte>();
+
+        private readonly ManualResetEventSlim _allHooksInstalled = new ManualResetEventSlim(false);
+        private Thread _inputThread;
+        private volatile bool _stopInputThread = false;
 
         public InjectionEntryPoint(
             EasyHook.RemoteHooking.IContext context,
@@ -56,25 +55,8 @@ namespace InkybotHook
             {
                 while (!_server.ShutdownFlag)
                 {
-                    //DrawDebugMarkerIfDue();
-
-                    System.Threading.Thread.Sleep(1);
-
-                    string[] queued = null;
-                    lock (_messageQueue)
-                    {
-                        queued = _messageQueue.ToArray();
-                        _messageQueue.Clear();
-                    }
-
-                    if (queued != null && queued.Length > 0)
-                    {
-                        _server.ReportMessages(queued);
-                    }
-                    else
-                    {
-                        _server.Ping();
-                    }
+                    Thread.Sleep(1);
+                    _server.Ping();
                 }
                 _server.ReportMessage("[EasyHook:Target] Shutdown flag received, cleaning up hooks");
             }
@@ -82,7 +64,7 @@ namespace InkybotHook
 
             try
             {
-                CleanupFakePacketResources();
+                CleanupResources();
                 foreach (var hook in installedHooks)
                     hook.Dispose();
                 EasyHook.LocalHook.Release();
@@ -92,21 +74,51 @@ namespace InkybotHook
             catch { }
         }
 
-        private void LogFirstCall(string hookName)
+        // =============================================================
+        // HOOK INSTALLATION
+        // =============================================================
+
+        private List<EasyHook.LocalHook> InstallHooks()
         {
-            if (_loggedFirstCalls.TryAdd(hookName, 0))
-            {
-                QueueMessage("[EasyHook:Target] First call intercepted: " + hookName);
-            }
+            var hooks = new List<EasyHook.LocalHook>();
+
+            hooks.Add(TryInstallHook<PeekMessageWDelegate>("PeekMessageW", new PeekMessageWDelegate(HookedPeekMessageW), out _originalPeekMessageW));
+            hooks.Add(TryInstallHook<TranslateMessageDelegate>("TranslateMessage", new TranslateMessageDelegate(HookedTranslateMessage), out _originalTranslateMessage));
+            hooks.Add(TryInstallHook<DispatchMessageWDelegate>("DispatchMessageW", new DispatchMessageWDelegate(HookedDispatchMessageW), out _originalDispatchMessageW));
+            hooks.Add(TryInstallHook<GetRawInputDataDelegate>("GetRawInputData", new GetRawInputDataDelegate(HookedGetRawInputData), out _originalGetRawInputData));
+            hooks.Add(TryInstallHook<GetRawInputBufferDelegate>("GetRawInputBuffer", new GetRawInputBufferDelegate(HookedGetRawInputBuffer), out _originalGetRawInputBuffer));
+            hooks.Add(TryInstallHook<GetAsyncKeyStateDelegate>("GetAsyncKeyState", new GetAsyncKeyStateDelegate(HookedGetAsyncKeyState), out _originalGetAsyncKeyState));
+            hooks.Add(TryInstallHook<GetKeyStateDelegate>("GetKeyState", new GetKeyStateDelegate(HookedGetKeyState), out _originalGetKeyState));
+            hooks.Add(TryInstallHook<ReleaseCaptureDelegate>("ReleaseCapture", new ReleaseCaptureDelegate(HookedReleaseCapture), out _originalReleaseCapture));
+            hooks.Add(TryInstallHook<GetCaptureDelegate>("GetCapture", new GetCaptureDelegate(HookedGetCapture), out _originalGetCapture));
+            hooks.Add(TryInstallHook<GetCursorPosHookDelegate>("GetCursorPos", new GetCursorPosHookDelegate(HookedGetCursorPos), out _originalGetCursorPos));
+
+            hooks.RemoveAll(item => item == null);
+
+            ProbeRawInputDevices();
+
+            _stopInputThread = false;
+            _inputThread = new Thread(InputProcessorLoop) { IsBackground = true, Name = "Inkybot_InputThread" };
+            _inputThread.Start();
+
+            _allHooksInstalled.Set();
+            return hooks;
         }
 
-        private void QueueMessage(string message)
+        private void CleanupResources()
         {
-            lock (_messageQueue)
-            {
-                _messageQueue.Enqueue(message);
-            }
+            _stopInputThread = true;
+
+            int deadline = Environment.TickCount + 1000;
+            while (_rawState != ForgeState.Idle && (Environment.TickCount - deadline) < 0)
+                Thread.Sleep(5);
+
+            FreeFakePacketBuffer();
         }
+
+        // =============================================================
+        // HELPERS
+        // =============================================================
 
         private EasyHook.LocalHook TryInstallHook<TOriginal>(
             string functionName, Delegate hookedMethod, out TOriginal original)
