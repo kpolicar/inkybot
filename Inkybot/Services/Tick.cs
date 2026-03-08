@@ -92,7 +92,7 @@ namespace Inkybot.Services
                     job.Warning?.Invoke(this, new MagingJobErrorEventArgs(exception, $"Attempt #{StatsChangedChecksCount} out of ${MaxStatsChangedChecks}"));
                     job.dataProvider.FetchData();
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                     return;
                 }
 
