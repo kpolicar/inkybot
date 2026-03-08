@@ -12,7 +12,7 @@ namespace InkybotHook
         /// </summary>
         private void DrawDebugMarkerIfDue()
         {
-            if (!IsCursorOverrideActive) return;
+            if (!IsInputOverriden) return;
             long now = System.Diagnostics.Stopwatch.GetTimestamp();
             long freq = System.Diagnostics.Stopwatch.Frequency;
             if ((now - _lastMarkerDrawTick) < freq / 2) return;

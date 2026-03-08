@@ -98,9 +98,13 @@ namespace InkybotHook
         // =========================================================
         private const int MAGIC_RAW_HANDLE = 0x1337;
         private const int MAGIC_RAW_MOVE_HANDLE = 0x1338;
+        private const int MAGIC_KEY_HANDLE = 0x1339;
         private const ushort MOUSE_MOVE_ABSOLUTE = 0x0001;
         private const ushort MOUSE_VIRTUAL_DESKTOP = 0x0002;
         private const uint WM_NULL = 0x0000;
+        private const uint WM_KEYDOWN = 0x0100;
+        private const uint WM_KEYUP   = 0x0101;
+        private const uint WM_CHAR    = 0x0102;
         private const uint WM_INPUT = 0x00FF;
         private const uint WM_MOUSEMOVE = 0x0200;
         private const uint WM_POINTERUPDATE = 0x0245;
@@ -271,6 +275,22 @@ namespace InkybotHook
                         _rawState = ForgeState.Idle;
                         _lastStateChangeTime = now;
                     }
+                    else if (_rawState == ForgeState.Idle && !_server.clickRequested && _server.keyRequested)
+                    {
+                        char c = _server.keyChar;
+                        _server.keyRequested = false;
+
+                        if (_mainHwnd != IntPtr.Zero)
+                        {
+                            lock (_queueLock)
+                            {
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_KEYDOWN, wParam = (IntPtr)c, lParam = (IntPtr)MAGIC_KEY_HANDLE, time = (uint)now });
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_CHAR,    wParam = (IntPtr)c, lParam = IntPtr.Zero,                time = (uint)now });
+                                _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_KEYUP,   wParam = (IntPtr)c, lParam = (IntPtr)MAGIC_KEY_HANDLE, time = (uint)now });
+                            }
+                            PostMessage(_mainHwnd, WM_NULL, IntPtr.Zero, IntPtr.Zero);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -288,6 +308,9 @@ namespace InkybotHook
             msg == WM_INPUT ||
             (msg >= WM_MOUSEMOVE && msg <= WM_LBUTTONUP) ||
             (msg >= WM_POINTERUPDATE && msg <= WM_POINTERUP);
+
+        private static bool IsRealKeyMessage(uint msg) =>
+            msg == WM_KEYDOWN || msg == WM_KEYUP || msg == WM_CHAR;
 
         private bool HookedPeekMessageW(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
         {
@@ -343,10 +366,21 @@ namespace InkybotHook
                     }
                 }
 
-                // Drop real hardware mouse events when cursor override is active
-                if (result && IsCursorOverrideActive && IsRealMouseMessage(lpMsg.message))
+                // Drop real hardware mouse events when input is overridden
+                if (result && IsInputOverriden && IsRealMouseMessage(lpMsg.message))
                 {
                     // If message was only peeked (not removed), consume it now from the OS queue
+                    if ((wRemoveMsg & 0x0001 /* PM_REMOVE */) == 0)
+                    {
+                        MSG dummy = default;
+                        _originalPeekMessageW(ref dummy, hWnd, wMsgFilterMin, wMsgFilterMax, 0x0001 /* PM_REMOVE */);
+                    }
+                    result = false;
+                }
+
+                // Drop real hardware key events when input is overridden
+                if (result && IsInputOverriden && IsRealKeyMessage(lpMsg.message))
+                {
                     if ((wRemoveMsg & 0x0001 /* PM_REMOVE */) == 0)
                     {
                         MSG dummy = default;
@@ -363,7 +397,6 @@ namespace InkybotHook
                         if ((wRemoveMsg & 0x0001 /* PM_REMOVE */) != 0)
                         {
                             lpMsg = _syntheticMessages.Dequeue(); // Pop it out
-                            _server.ReportMessage($"[LOG] Injected from Queue -> MSG: 0x{lpMsg.message:X}");
                         }
                         else
                         {
@@ -383,7 +416,12 @@ namespace InkybotHook
             _allHooksInstalled.Wait();
             if (lpMsg.message == WM_INPUT && (lpMsg.lParam == (IntPtr)MAGIC_RAW_HANDLE || lpMsg.lParam == (IntPtr)MAGIC_RAW_MOVE_HANDLE))
             {
-                // Bypass OS translation for fake packets
+                // Bypass OS translation for fake mouse packets
+                return true;
+            }
+            if ((lpMsg.message == WM_KEYDOWN || lpMsg.message == WM_KEYUP) && lpMsg.lParam == (IntPtr)MAGIC_KEY_HANDLE)
+            {
+                // Bypass OS translation for synthetic key messages (we inject WM_CHAR directly)
                 return true;
             }
             return _originalTranslateMessage(ref lpMsg);
@@ -490,7 +528,7 @@ namespace InkybotHook
                 }
 
                 // Drop real hardware raw input data when cursor override is active
-                if (IsCursorOverrideActive)
+                if (IsInputOverriden)
                     return unchecked((uint)-1);
 
                 uint result = _originalGetRawInputData(hRawInput, uiCommand, pData, ref pcbSize, cbSizeHeader);
@@ -523,7 +561,7 @@ namespace InkybotHook
                 if (_rawInputHeaderSize == 0 && cbSizeHeader != 0) _rawInputHeaderSize = cbSizeHeader;
 
                 // Drop real hardware raw input when cursor override is active
-                if (IsCursorOverrideActive && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
+                if (IsInputOverriden && pData != IntPtr.Zero && result > 0 && result != unchecked((uint)-1))
                     return 0;
 
                 // 1. HARDWARE RACE CONDITION FIX (Buffer has physical events)
@@ -670,7 +708,7 @@ namespace InkybotHook
         private bool HookedGetCursorPos(out POINT lpPoint)
         {
             _allHooksInstalled.Wait();
-            if (IsCursorOverrideActive)
+            if (IsInputOverriden)
             {
                 lpPoint = GetFixedScreenPoint();
                 return true;

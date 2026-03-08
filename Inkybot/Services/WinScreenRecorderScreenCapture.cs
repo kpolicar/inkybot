@@ -50,11 +50,10 @@ namespace Inkybot
                 {
                     int checkNumber = 11 - blankChecksRemaining;
                     blankChecksRemaining--;
-                    FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] Blank frame detected (check {checkNumber} of 10)");
-                    
+
                     if (IsBlankImage((Bitmap)result))
                     {
-                        FileEventLogger.SystemLogger.Warn("[WinScreenRecorderScreenCapture] Switching permanently to PrintWindow fallback.");
+                        FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] Blank frame detected (check {checkNumber} of 10). Switching permanently to PrintWindow fallback.");
                         result.Dispose();
                         useFallback = true;
                         gpuCapture.Dispose();

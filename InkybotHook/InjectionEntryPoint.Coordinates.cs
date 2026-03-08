@@ -7,9 +7,9 @@ namespace InkybotHook
     public partial class InjectionEntryPoint
     {
         /// <summary>
-        /// Returns true when the host has set a valid fixed cursor position.
+        /// Returns true when the host has set a valid fixed cursor position (input is being overridden).
         /// </summary>
-        private bool IsCursorOverrideActive =>
+        private bool IsInputOverriden =>
            _server != null && _server.point.X != -1 && _server.point.Y != -1;
 
         /// <summary>

@@ -18,7 +18,8 @@ namespace Inkybot.Services.Win32Input
     {
         private static ServerInterface _server;
         private static Int32 targetPID = 0;
-        public static bool isInitialized = false;
+        private static volatile bool isInitialized = false;
+        private static readonly object _initLock = new object();
         
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -70,9 +71,7 @@ namespace Inkybot.Services.Win32Input
 
 
         private void SetCursorPosition(int x, int y) {
-            if (!isInitialized) {
-                Init();
-            }
+            Init();
             if (x != -1 || y != -1) {
                 // Convert client-relative coordinates to screen coordinates using
                 // ClientToScreen so that window borders/title bar are accounted for.
@@ -121,95 +120,94 @@ namespace Inkybot.Services.Win32Input
         }
 
         public static void Init() {
-            var log = FileEventLogger.SystemLogger;
+            if (isInitialized) return;
+            lock (_initLock) {
+                if (isInitialized) return;
 
-            if (isInitialized) {
-                log.Info("[EasyHook:Host] Init() skipped — already initialized");
-                return;
-            }
+                var log = FileEventLogger.SystemLogger;
+                log.Info("[EasyHook:Host] Init() starting...");
 
-            log.Info("[EasyHook:Host] Init() starting...");
+                // Wire up IPC logging callback to SystemLogger
+                ServerInterface.Logger = message => log.Info(message);
+                
+                // Will contain the name of the IPC server channel
+                string channelName = null;
+                _server = new ServerInterface();
 
-            // Wire up IPC logging callback to SystemLogger
-            ServerInterface.Logger = message => log.Info(message);
-            
-            // Will contain the name of the IPC server channel
-            string channelName = null;
-            _server = new ServerInterface();
-
-            if (targetPID <= 0)
-            {
-                log.Error($"[EasyHook:Host] Cannot initialize hook: target process ID is not set (was {targetPID})");
-                throw new Exception("Could not initialize input handler");
-            }
-
-            // Create the IPC server
-            try
-            {
-                EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
-                _server.SetState(HookState.IpcCreated);
-                log.Info($"[EasyHook:Host] IPC server created on channel: {channelName}");
-            }
-            catch (Exception e)
-            {
-                log.Error(e, "[EasyHook:Host] Failed to create IPC server");
-                _server.SetState(HookState.Failed);
-                return;
-            }
-
-            // Get the full path to the assembly we want to inject into the target process
-            string assemblyPath = AppContext.BaseDirectory;
-            string injectionLibrary = Path.Combine(assemblyPath, "InkybotHook.dll");
-
-            if (!File.Exists(injectionLibrary))
-            {
-                log.Error($"[EasyHook:Host] Injection library not found at: {injectionLibrary}");
-                _server.SetState(HookState.Failed);
-                return;
-            }
-
-            try
-            {
-                if (targetPID > 0)
+                if (targetPID <= 0)
                 {
-                    log.Info($"[EasyHook:Host] Injecting hook DLL into process {targetPID} (library: {injectionLibrary})");
-                    _server.SetState(HookState.Injecting);
-
-                    EasyHook.RemoteHooking.Inject(
-                        targetPID,          // ID of process to inject into
-                        injectionLibrary,   // 32-bit library to inject (if target is 32-bit)
-                        injectionLibrary,   // 64-bit library to inject (if target is 64-bit)
-                        channelName         // the parameters to pass into injected library
-                    );
-
-                    isInitialized = true;
-                    log.Info($"[EasyHook:Host] Injection call completed successfully for process {targetPID}");
+                    log.Error($"[EasyHook:Host] Cannot initialize hook: target process ID is not set (was {targetPID})");
+                    throw new Exception("Could not initialize input handler");
                 }
-            }
-            catch (System.IO.FileNotFoundException e)
-            {
-                log.Error(e, "[EasyHook:Host] Injection DLL or dependency not found");
-                _server.SetState(HookState.Failed);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                log.Error(e, $"[EasyHook:Host] Insufficient privileges to inject into process {targetPID}. Try running as administrator");
-                _server.SetState(HookState.Failed);
-            }
-            catch (System.ComponentModel.Win32Exception e)
-            {
-                log.Error(e, $"[EasyHook:Host] Win32 error during injection (code {e.NativeErrorCode}): target process may have exited or be protected");
-                _server.SetState(HookState.Failed);
-            }
-            catch (ApplicationException e)
-            {
-                log.Error(e, "[EasyHook:Host] EasyHook injection failed (possible architecture mismatch or target process issue)");
-                _server.SetState(HookState.Failed);
-            }
-            catch (Exception e)
-            {
-                log.Error(e, $"[EasyHook:Host] Unexpected error during injection into process {targetPID}");
-                _server.SetState(HookState.Failed);
+
+                // Create the IPC server
+                try
+                {
+                    EasyHook.RemoteHooking.IpcCreateServer<InkybotHook.ServerInterface>(ref channelName, System.Runtime.Remoting.WellKnownObjectMode.Singleton, _server);
+                    _server.SetState(HookState.IpcCreated);
+                    log.Info($"[EasyHook:Host] IPC server created on channel: {channelName}");
+                }
+                catch (Exception e)
+                {
+                    log.Error(e, "[EasyHook:Host] Failed to create IPC server");
+                    _server.SetState(HookState.Failed);
+                    return;
+                }
+
+                // Get the full path to the assembly we want to inject into the target process
+                string assemblyPath = AppContext.BaseDirectory;
+                string injectionLibrary = Path.Combine(assemblyPath, "InkybotHook.dll");
+
+                if (!File.Exists(injectionLibrary))
+                {
+                    log.Error($"[EasyHook:Host] Injection library not found at: {injectionLibrary}");
+                    _server.SetState(HookState.Failed);
+                    return;
+                }
+
+                try
+                {
+                    if (targetPID > 0)
+                    {
+                        log.Info($"[EasyHook:Host] Injecting hook DLL into process {targetPID} (library: {injectionLibrary})");
+                        _server.SetState(HookState.Injecting);
+
+                        EasyHook.RemoteHooking.Inject(
+                            targetPID,          // ID of process to inject into
+                            injectionLibrary,   // 32-bit library to inject (if target is 32-bit)
+                            injectionLibrary,   // 64-bit library to inject (if target is 64-bit)
+                            channelName         // the parameters to pass into injected library
+                        );
+
+                        isInitialized = true;
+                        log.Info($"[EasyHook:Host] Injection call completed successfully for process {targetPID}");
+                    }
+                }
+                catch (System.IO.FileNotFoundException e)
+                {
+                    log.Error(e, "[EasyHook:Host] Injection DLL or dependency not found");
+                    _server.SetState(HookState.Failed);
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    log.Error(e, $"[EasyHook:Host] Insufficient privileges to inject into process {targetPID}. Try running as administrator");
+                    _server.SetState(HookState.Failed);
+                }
+                catch (System.ComponentModel.Win32Exception e)
+                {
+                    log.Error(e, $"[EasyHook:Host] Win32 error during injection (code {e.NativeErrorCode}): target process may have exited or be protected");
+                    _server.SetState(HookState.Failed);
+                }
+                catch (ApplicationException e)
+                {
+                    log.Error(e, "[EasyHook:Host] EasyHook injection failed (possible architecture mismatch or target process issue)");
+                    _server.SetState(HookState.Failed);
+                }
+                catch (Exception e)
+                {
+                    log.Error(e, $"[EasyHook:Host] Unexpected error during injection into process {targetPID}");
+                    _server.SetState(HookState.Failed);
+                }
             }
         }
 
@@ -245,9 +243,11 @@ namespace Inkybot.Services.Win32Input
         public void TypeMessage(string message, CancellationToken? cancel=null) {
             foreach (var character in message) {
                 cancel?.ThrowIfCancellationRequested();
-                Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYDOWN, (IntPtr)character, IntPtr.Zero);
-                Win32.PostMessage(relativeToControl, (uint)Win32.WM_CHAR,    (IntPtr)character, IntPtr.Zero);
-                Win32.PostMessage(relativeToControl, (uint)Win32.WM_KEYUP,   (IntPtr)character, IntPtr.Zero);
+                _server.RequestKey(character);
+                while (_server.keyRequested) {
+                    cancel?.ThrowIfCancellationRequested();
+                    Thread.Sleep(1);
+                }
                 Thread.Sleep(100);
             }
         }

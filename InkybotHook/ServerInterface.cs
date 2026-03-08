@@ -63,6 +63,15 @@ namespace InkybotHook
             clickRequested = true;
         }
 
+        public volatile bool keyRequested = false;
+        public char keyChar;
+
+        public void RequestKey(char c)
+        {
+            keyChar = c;
+            keyRequested = true;
+        }
+
         public HookState State { get; private set; } = HookState.NotInitialized;
 
         public void SetState(HookState newState)
