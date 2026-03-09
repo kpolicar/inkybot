@@ -182,7 +182,7 @@ namespace Inkybot.Services
 
             var elapsed = session.ChangeTimeout.ElapsedMilliseconds;
             var timedOut = elapsed > 15000
-                || (!session.PreviousCombineWasExoAttempt && elapsed > 5000);
+                || (!session.PreviousCombineWasExoAttempt && elapsed > 2000);
 
             if (!timedOut) return;
 
@@ -191,7 +191,7 @@ namespace Inkybot.Services
                 ? "\"" + runeAction.Rune.DisplayName + "\" "
                 : "";
             throw new ChangeCheckTimeoutException(
-                "Rune combination was expected to perform within 5 seconds, but did not. " +
+                "Rune combination was expected to perform within 2 seconds, but did not. " +
                 $"This may be the result of a poor internet connection or you may have run out of {additional}runes.");
         }
     }

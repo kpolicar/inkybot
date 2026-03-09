@@ -1,6 +1,7 @@
 using System;
 using NLog;
 using System.Threading;
+using Inkybot.Actions;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Events;
@@ -48,20 +49,25 @@ namespace Inkybot.Services
                     onError(new MagingJobErrorEventArgs(exception));
                     break;
                 } catch (Exception exception) {
-                    // If the bot ran successful ticks since the last attempt,
+                    // If the bot completed successful ticks before failing,
                     // it recovered — reset the failure counter.
-                    if (session.Ticks > ticksBefore)
+                    // (session.Ticks includes the failing tick, so we need > ticksBefore + 1)
+                    if (session.Ticks > ticksBefore + 1)
                         consecutiveFailures = 0;
 
                     consecutiveFailures++;
                     session.UnsuccessfulCombineTicks++;
-                    LogException(exception);
 
                     var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
                         ? "Please try running Inkybot as an administrator."
                         : "";
 
                     if (!Properties.Settings.Default.autoRestartBot || consecutiveFailures >= MaxAttempts) {
+                        // If we timed out MaxAttempts times in a row, it's almost certainly
+                        // because we ran out of that rune.
+                        if (exception is ChangeCheckTimeoutException && session.PreviousAction is CombineRune combineRune)
+                            exception = new OutOfRunesException(combineRune.Rune);
+
                         dataProvider.SaveScan();
                         onError(new MagingJobErrorEventArgs(exception, additionalInfo));
                         result.AutoShutdown = true;
@@ -103,19 +109,6 @@ namespace Inkybot.Services
         private static void SaveScanOnItemError(Exception exception, IMagingDataProvider dataProvider) {
             if (exception is ItemHasChangedException || exception is ItemHasNotChangedException)
                 dataProvider.SaveScan();
-        }
-
-        private static void LogException(Exception exception) {
-            if (exception is AggregateException aggregateException) {
-                Log.Debug("Aggregate exception!");
-                foreach (var inner in aggregateException.InnerExceptions) {
-                    Log.Debug(inner.Message);
-                    Log.Debug(inner.StackTrace);
-                }
-            } else {
-                Log.Debug(exception.Message);
-                Log.Debug(exception.StackTrace);
-            }
         }
     }
 }
