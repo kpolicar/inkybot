@@ -120,19 +120,24 @@ namespace Inkybot.Services
         }
 
         private void DoMage() {
-            var executor = mageQueue.Empty
-                ? (MageExecutor) new SingleItemMageExecutor()
-                : new QueueMageExecutor();
+            var autoShutdown = false;
+            try {
+                var executor = mageQueue.Empty
+                    ? (MageExecutor) new SingleItemMageExecutor()
+                    : new QueueMageExecutor();
 
-            executor.BindDependencies(serviceContainer);
-            executor.Init(session, magus);
-            BindExecutorEvents(executor);
+                executor.BindDependencies(serviceContainer);
+                executor.Init(session, magus);
+                BindExecutorEvents(executor);
 
-            var autoShutdown = executor.Execute();
-            StopMage();
-
-            Finished?.Invoke(this,
-                new MagingJobFinishedEventArgs(session.PreviousItem!, configManager.Config!, autoShutdown));
+                autoShutdown = executor.Execute();
+            } finally {
+                session.IsMaging = false;
+                session.ChangeTimeout.Reset();
+                Stopped?.Invoke(this, EventArgs.Empty);
+                Finished?.Invoke(this,
+                    new MagingJobFinishedEventArgs(session.PreviousItem, configManager.Config!, autoShutdown));
+            }
         }
 
         private void BindExecutorEvents(MageExecutor executor) {

@@ -39,6 +39,7 @@ namespace Inkybot.Services
 
             magingJob.Started += OnMagingStarted;
             magingJob.Stopped += OnMagingStopped;
+            magingJob.Finished += OnMagingStopped;
 
             var actionHandler = serviceContainer.GetService<ActionHandler>();
             actionHandler.ActionExecuted += OnActionExecuted;
@@ -59,6 +60,7 @@ namespace Inkybot.Services
         }
 
         private void Start() {
+            if (running) return;
             running = true;
             thread = new Thread(ScanLoop) { IsBackground = true, Name = "KamasTracker" };
             thread.Start();
