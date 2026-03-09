@@ -54,5 +54,9 @@ namespace Inkybot.Services
         public IAction InventoryClearSelectionAction() {
             return new InventoryClearSelectionAction(targetControl);
         }
+
+        public IAction MoveToInventoryHover() {
+            return new MoveToInventoryHover(targetControl);
+        }
     }
 }

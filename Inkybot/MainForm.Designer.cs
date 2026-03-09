@@ -49,7 +49,7 @@ namespace Inkybot
             this.shutdownToastValueLabel = new System.Windows.Forms.Label();
             this.shutdownToastPanelCloseButton = new System.Windows.Forms.Button();
             this.exoAttemptsValueResetButton = new System.Windows.Forms.Button();
-            //this.kamasSpentValueResetButton = new System.Windows.Forms.Button();
+            this.kamasSpentValueResetButton = new System.Windows.Forms.Button();
             this.resetTooltip = new System.Windows.Forms.ToolTip();
             this.sidebarPanel = new System.Windows.Forms.Panel();
             this.sidebarRightPanel = new System.Windows.Forms.Panel();
@@ -62,8 +62,8 @@ namespace Inkybot
             this.exoAttemptsLabel = new System.Windows.Forms.Label();
             this.nextInQueueLabel = new System.Windows.Forms.Label();
             this.exoAttemptsValueLabel = new System.Windows.Forms.Label();
-            //this.kamasSpentLabel = new System.Windows.Forms.Label();
-            //this.kamasSpentValueLabel = new System.Windows.Forms.Label();
+            this.kamasSpentLabel = new System.Windows.Forms.Label();
+            this.kamasSpentValueLabel = new System.Windows.Forms.Label();
             this.secondaryButtonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.helpButton = new System.Windows.Forms.Button();
             this.hallOfFameButton = new System.Windows.Forms.Button();
@@ -71,7 +71,7 @@ namespace Inkybot
             this.debugScreenshotButton = new System.Windows.Forms.Button();
             this.debugButton = new System.Windows.Forms.Button();
             this.mageInfoPanel = new System.Windows.Forms.Panel();
-            //this.kamasSpentValuePanel = new System.Windows.Forms.Panel();
+            this.kamasSpentValuePanel = new System.Windows.Forms.Panel();
             this.exoAttemptsValuePanel = new System.Windows.Forms.Panel();
             this.queuePanel = new System.Windows.Forms.Panel();
             this.sinkValueLabel = new System.Windows.Forms.Label();
@@ -218,11 +218,11 @@ namespace Inkybot
             //
             // kamasSpentValuePanel
             //
-            //resources.ApplyResources(this.kamasSpentValuePanel, "kamasSpentValuePanel");
-            //this.kamasSpentValuePanel.BackColor = System.Drawing.Color.Transparent;
-            //this.kamasSpentValuePanel.Controls.Add(this.kamasSpentValueResetButton);
-            //this.kamasSpentValuePanel.Controls.Add(this.kamasSpentValueLabel);
-            //this.kamasSpentValuePanel.Name = "kamasSpentValuePanel";
+            resources.ApplyResources(this.kamasSpentValuePanel, "kamasSpentValuePanel");
+            this.kamasSpentValuePanel.BackColor = System.Drawing.Color.Transparent;
+            this.kamasSpentValuePanel.Controls.Add(this.kamasSpentValueResetButton);
+            this.kamasSpentValuePanel.Controls.Add(this.kamasSpentValueLabel);
+            this.kamasSpentValuePanel.Name = "kamasSpentValuePanel";
             // 
             // buttonsPanel
             // 
@@ -242,17 +242,17 @@ namespace Inkybot
             //
             // kamasSpentValueResetButton
             //
-            //resources.ApplyResources(this.kamasSpentValueResetButton, "kamasSpentValueResetButton");
-            //this.kamasSpentValueResetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
-            //this.kamasSpentValueResetButton.Name = "kamasSpentValueResetButton";
-            //this.kamasSpentValueResetButton.FlatAppearance.BorderSize = 0;
-            //this.kamasSpentValueResetButton.ForeColor = System.Drawing.SystemColors.Control;
-            //this.kamasSpentValueResetButton.UseVisualStyleBackColor = false;
-            //this.kamasSpentValueResetButton.Dock = DockStyle.Right;
-            //this.kamasSpentValueResetButton.Padding = System.Windows.Forms.Padding.Empty;
-            //this.kamasSpentValueResetButton.Margin = System.Windows.Forms.Padding.Empty;
-            //this.kamasSpentValueResetButton.Click += new System.EventHandler(this.kamasSpentValueResetButton_Click);
-            //this.kamasSpentValueResetButton.Paint += new System.Windows.Forms.PaintEventHandler(this.OnKamasSpentValueResetButtonPaint);
+            resources.ApplyResources(this.kamasSpentValueResetButton, "kamasSpentValueResetButton");
+            this.kamasSpentValueResetButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
+            this.kamasSpentValueResetButton.Name = "kamasSpentValueResetButton";
+            this.kamasSpentValueResetButton.FlatAppearance.BorderSize = 0;
+            this.kamasSpentValueResetButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.kamasSpentValueResetButton.UseVisualStyleBackColor = false;
+            this.kamasSpentValueResetButton.Dock = DockStyle.Right;
+            this.kamasSpentValueResetButton.Padding = System.Windows.Forms.Padding.Empty;
+            this.kamasSpentValueResetButton.Margin = System.Windows.Forms.Padding.Empty;
+            this.kamasSpentValueResetButton.Click += new System.EventHandler(this.kamasSpentValueResetButton_Click);
+            this.kamasSpentValueResetButton.Paint += new System.Windows.Forms.PaintEventHandler(this.OnKamasSpentValueResetButtonPaint);
             // 
             // exoAttemptsValueResetButton
             // 
@@ -273,7 +273,7 @@ namespace Inkybot
             resetTooltip.AutomaticDelay = 50;
             resetTooltip.AutoPopDelay = int.MaxValue;
             resetTooltip.ShowAlways = true;
-            //resetTooltip.SetToolTip(this.kamasSpentValueResetButton, resources.GetString("kamasSpentValueResetButton.TooltipText"));
+            resetTooltip.SetToolTip(this.kamasSpentValueResetButton, resources.GetString("kamasSpentValueResetButton.TooltipText"));
             resetTooltip.SetToolTip(this.exoAttemptsValueResetButton, resources.GetString("exoAttemptsValueResetButton.TooltipText"));
             // 
             // toggleMageButton
@@ -320,15 +320,15 @@ namespace Inkybot
             //
             // kamasSpentLabel
             //
-            //resources.ApplyResources(this.kamasSpentLabel, "kamasSpentLabel");
-            //this.kamasSpentLabel.ForeColor = System.Drawing.SystemColors.Control;
-            //this.kamasSpentLabel.Name = "kamasSpentLabel";
+            resources.ApplyResources(this.kamasSpentLabel, "kamasSpentLabel");
+            this.kamasSpentLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.kamasSpentLabel.Name = "kamasSpentLabel";
             //
             // kamasSpentValueLabel
             //
-            //resources.ApplyResources(this.kamasSpentValueLabel, "kamasSpentValueLabel");
-            //this.kamasSpentValueLabel.ForeColor = System.Drawing.SystemColors.Control;
-            //this.kamasSpentValueLabel.Name = "kamasSpentValueLabel";
+            resources.ApplyResources(this.kamasSpentValueLabel, "kamasSpentValueLabel");
+            this.kamasSpentValueLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.kamasSpentValueLabel.Name = "kamasSpentValueLabel";
             // 
             // exoAttemptsLabel
             // 
@@ -418,8 +418,8 @@ namespace Inkybot
             this.mageInfoPanel.BackColor = System.Drawing.Color.Transparent;
             this.mageInfoPanel.Controls.Add(this.sinkValueLabel);
             this.mageInfoPanel.Controls.Add(this.sinkLabel);
-            //this.mageInfoPanel.Controls.Add(this.kamasSpentValuePanel);
-            //this.mageInfoPanel.Controls.Add(this.kamasSpentLabel);
+            this.mageInfoPanel.Controls.Add(this.kamasSpentValuePanel);
+            this.mageInfoPanel.Controls.Add(this.kamasSpentLabel);
             this.mageInfoPanel.Controls.Add(this.exoAttemptsValuePanel);
             this.mageInfoPanel.Controls.Add(this.exoAttemptsLabel);
             this.mageInfoPanel.Name = "mageInfoPanel";
@@ -550,11 +550,11 @@ namespace Inkybot
         private System.Windows.Forms.Label exoAttemptsLabel;
         private System.Windows.Forms.Label exoAttemptsValueLabel;
         private System.Windows.Forms.Button exoAttemptsValueResetButton;
-        //private System.Windows.Forms.Label kamasSpentLabel;
-        //private System.Windows.Forms.Label kamasSpentValueLabel;
-        //private System.Windows.Forms.Button kamasSpentValueResetButton;
+        private System.Windows.Forms.Label kamasSpentLabel;
+        private System.Windows.Forms.Label kamasSpentValueLabel;
+        private System.Windows.Forms.Button kamasSpentValueResetButton;
 
-        //private System.Windows.Forms.Panel kamasSpentValuePanel;
+        private System.Windows.Forms.Panel kamasSpentValuePanel;
         private System.Windows.Forms.Panel exoAttemptsValuePanel;
 
         private System.Windows.Forms.Button debugScreenshotButton;

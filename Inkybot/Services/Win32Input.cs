@@ -220,9 +220,6 @@ namespace Inkybot.Services.Win32Input
             var pt = new ServerInterface.POINT { X = x, Y = y };
             ClientToScreen(relativeToControl, ref pt);
             _server.RequestClick(pt.X, pt.Y);
-
-            // Wait for the hook to complete the full click cycle (down + 50ms + up + 50ms)
-            Thread.Sleep(150);
         }
 
         public void Drag(int x, int y, int tX, int tY) {
@@ -255,6 +252,12 @@ namespace Inkybot.Services.Win32Input
 
         public void Move(int x, int y) {
             SetCursorPosition(x, y);
+        }
+
+        public void WaitForInputDone() {
+            if (!isInitialized || _server == null) return;
+            while (_server.inputBusy)
+                Thread.Sleep(1);
         }
 
         public void ReleaseCursor() {

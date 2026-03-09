@@ -35,10 +35,6 @@ namespace Inkybot.Actions
                 
                 Input.Click(pos.X, pos.Y);
                 Thread.Sleep(5);
-                Task.Run(async () => {
-                    await Task.Delay(80);
-                    Input.Move(combineButtonPosition.X, combineButtonPosition.Y);
-                });
                 return;
             }
 

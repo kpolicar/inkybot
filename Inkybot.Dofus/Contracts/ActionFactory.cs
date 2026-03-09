@@ -41,5 +41,7 @@ namespace Inkybot.Dofus.Contracts
         IAction SelectItemFromQueue();
         
         IAction RemoveItemFromMagingTable();
+        
+        IAction MoveToInventoryHover();
     }
 }

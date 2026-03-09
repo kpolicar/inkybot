@@ -39,6 +39,9 @@ namespace Inkybot.Services
         private MageSession session = new MageSession();
         private BalanceTracker balanceTracker;
 
+        internal MageSession Session => session;
+        internal BalanceTracker BalanceTracker => balanceTracker;
+
         public void BindDependencies(ServiceContainer serviceContainer) {
             mageQueue = serviceContainer.GetService<MageQueueManager>();
             configManager = (IMagingConfigManager) serviceContainer.GetService<MageConfigManager>();
@@ -83,6 +86,9 @@ namespace Inkybot.Services
                 Preparing?.Invoke(this, EventArgs.Empty);
             } catch (Exception exception) {
                 Error?.Invoke(this, new MagingJobErrorEventArgs(exception));
+                session.IsMaging = false;
+                session.ChangeTimeout.Reset();
+                Stopped?.Invoke(this, EventArgs.Empty);
             }
         }
 

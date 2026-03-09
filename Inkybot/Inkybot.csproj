@@ -120,6 +120,7 @@
         <Compile Include="Actions\Finish.cs" />
         <Compile Include="Actions\InputAction.cs" />
         <Compile Include="Actions\CombineRune.cs" />
+        <Compile Include="Actions\MoveToInventoryHover.cs" />
         <Compile Include="Actions\InventoryClearSelectionAction.cs" />
         <Compile Include="Actions\InventorySelectResourcesAction.cs" />
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
@@ -357,6 +358,7 @@
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\MagingJob\BalanceTracker.cs" />
+        <Compile Include="Services\MagingJob\KamasTrackingJob.cs" />
         <Compile Include="Services\MagingJob\ScreenReaderDofusMagingJob.cs" />
         <Compile Include="Services\MagingJob\MageSession.cs" />
         <Compile Include="Services\MagingJob\MagePreparation.cs" />

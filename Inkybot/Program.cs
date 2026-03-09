@@ -82,6 +82,7 @@ namespace Inkybot
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
             { typeof(ApiNotifier), new ApiNotifier() },
             { typeof(MageQueueManager), new MageQueueManager() },
+            { typeof(KamasTrackingJob), new KamasTrackingJob() },
         };
         
         /// <summary>

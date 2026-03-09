@@ -53,11 +53,13 @@ namespace InkybotHook
         /// Coordinates are in screen space.
         /// </summary>
         public volatile bool clickRequested = false;
+        public volatile bool inputBusy = false;
         public int clickScreenX;
         public int clickScreenY;
 
         public void RequestClick(int screenX, int screenY)
         {
+            inputBusy = true;
             clickScreenX = screenX;
             clickScreenY = screenY;
             clickRequested = true;
@@ -68,6 +70,7 @@ namespace InkybotHook
 
         public void RequestKey(char c)
         {
+            inputBusy = true;
             keyChar = c;
             keyRequested = true;
         }

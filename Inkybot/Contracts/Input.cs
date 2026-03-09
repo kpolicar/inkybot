@@ -11,5 +11,6 @@ namespace Inkybot.Contracts
         void SelectAll();
         void TypeMessage(string message, CancellationToken? cancel=null);
         void Move(int x, int y);
+        void WaitForInputDone();
     }
 }

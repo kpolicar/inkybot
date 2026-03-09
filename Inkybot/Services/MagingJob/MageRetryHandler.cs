@@ -52,6 +52,7 @@ namespace Inkybot.Services
                         : "";
 
                     if (!Properties.Settings.Default.autoRestartBot || attempt >= MaxAttempts - 1) {
+                        dataProvider.SaveScan();
                         onError(new MagingJobErrorEventArgs(exception, additionalInfo));
                         result.AutoShutdown = true;
                         result.StopMage = true;

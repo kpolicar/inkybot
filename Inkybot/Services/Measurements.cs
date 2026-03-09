@@ -147,14 +147,20 @@ namespace Inkybot.Services
         };
         
         public static Responsive.Measurement InventoryAverageItemValueBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(1302, 796, 1390, 808),
+            Rectangle = Rect.FromCoords(1355, 795, 1431, 814),
+            Width = 1694,
+            Height = 1009
+        };
+        
+        public static Responsive.Measurement InventoryItemHoverInside => new Responsive.Measurement {
+            Rectangle = Rect.FromCoords(1453, 545, 1453, 545),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement InventorySelectResourcesCategory => new Responsive.Measurement {
             Rectangle = Rect.FromCoords(1101, 342, 1101, 342),
-            Width = 1694,
+            Width = 1694,   
             Height = 1009
         };
 

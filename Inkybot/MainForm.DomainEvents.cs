@@ -28,7 +28,7 @@ namespace Inkybot
             magingJob.Stopped += OnMagingStopped;
             magingJob.Finished += OnMagingFinished;
             magingJob.SinkChanged += OnMagingSinkChanged;
-            //magingJob.BalanceSpent += OnMagingBalanceSpent;
+            magingJob.BalanceSpent += OnMagingBalanceSpent;
             analytics.ExoAttempt += OnExoAttempt;
         }
 
@@ -41,15 +41,15 @@ namespace Inkybot
             }));
         }
 
-        //private void OnMagingBalanceSpent(object sender, BalanceChangedEventArgs e) {
-        //    BeginInvoke(new MethodInvoker(delegate {
-        //        if (e.Balance >= 10000) {
-        //            kamasSpentValueLabel.Text = Math.Round(e.Balance / 1000000d, 2).ToString(CultureInfo.InvariantCulture) + "mk";
-        //        } else {
-        //            kamasSpentValueLabel.Text = e.Balance.ToString(CultureInfo.InvariantCulture) + "k";
-        //        }
-        //    }));
-        //}
+        private void OnMagingBalanceSpent(object sender, BalanceChangedEventArgs e) {
+            BeginInvoke(new MethodInvoker(delegate {
+                if (e.Balance >= 10000) {
+                    kamasSpentValueLabel.Text = Math.Round(e.Balance / 1000000d, 2).ToString(CultureInfo.InvariantCulture) + "mk";
+                } else {
+                    kamasSpentValueLabel.Text = e.Balance.ToString(CultureInfo.InvariantCulture) + "k";
+                }
+            }));
+        }
 
         private void OnSensitiveMage(object sender, MagingJobStartedEventArgs e) {
             StartMageExoOverConfirmDialog();
@@ -230,8 +230,8 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 exoAttemptsLabel.Show();
                 exoAttemptsValueLabel.Show();
-                //kamasSpentLabel.Show();
-                //kamasSpentValueLabel.Show();
+                kamasSpentLabel.Show();
+                kamasSpentValueLabel.Show();
                 toggleMageButton.Text = resources.GetString("toggleMageButton.TextStop");
                 mageInfoPanel.Show();
             }));

@@ -124,6 +124,7 @@ namespace InkybotHook
         {
             _rawState = ForgeState.Idle;
             _lastStateChangeTime = now;
+            _server.inputBusy = false;
         }
 
         // =============================================================
@@ -135,7 +136,7 @@ namespace InkybotHook
             char c = _server.keyChar;
             _server.keyRequested = false;
 
-            if (_mainHwnd == IntPtr.Zero) return;
+            if (_mainHwnd == IntPtr.Zero) { _server.inputBusy = false; return; }
 
             lock (_queueLock)
             {
@@ -144,6 +145,7 @@ namespace InkybotHook
                 _syntheticMessages.Enqueue(new MSG { hwnd = _mainHwnd, message = WM_KEYUP,   wParam = (IntPtr)c, lParam = (IntPtr)MAGIC_KEY_HANDLE, time = (uint)now });
             }
             WakeGameMessageLoop();
+            _server.inputBusy = false;
         }
 
         // =============================================================
