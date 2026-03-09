@@ -140,10 +140,6 @@ namespace Inkybot
             }
         }
 
-        private void OnClickInsert() {
-            actions.Execute(actionFactory.InventorySelectEquipmentAction());
-        }
-
         private void OnDofusProcessSelected(object sender, ProcessEventArgs e) {
             pDofus = e.Process;
         }

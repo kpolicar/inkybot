@@ -196,7 +196,6 @@ namespace Inkybot
         }
 
         private void statisticsButton_Click(object sender, EventArgs e) {
-            OnClickInsert();
             if (auth.User != null && !auth.User.canViewStatistics) {
                 var text = !auth.User.onUnlimitedPlan && !auth.User.onStandardPlan
                     ? resources.GetString("popup.error_notavailable_unlimitedstandard_plan")
