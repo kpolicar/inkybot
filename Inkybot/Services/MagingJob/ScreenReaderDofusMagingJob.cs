@@ -165,6 +165,10 @@ namespace Inkybot.Services
             var configChangedMidRun = e.Changed && (!session.IsPreparing || session.IsRestarting);
             if (!configChangedMidRun) return;
 
+            // During a restart's preparation phase, config changes are expected
+            // (the bot is re-reading the item from screen and recalibrating).
+            if (session.IsRestarting && session.IsPreparing) return;
+
             if (session.IsRestarting && session.PreviousItem != null)
                 throw new ItemHasChangedException(session.PreviousItem);
 

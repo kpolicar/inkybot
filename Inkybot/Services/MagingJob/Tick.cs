@@ -12,6 +12,7 @@ using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
+using NLog;
 
 namespace Inkybot.Services
 {
@@ -28,6 +29,8 @@ namespace Inkybot.Services
         private readonly DofusMagingAIContract magus;
         private readonly ActionHandler actions;
         private readonly IMagingConfigManager configManager;
+
+        private static readonly Logger Log = LogManager.GetLogger("ocr");
 
         public event EventHandler SuccessfulCombine;
         public event EventHandler<MagingJobStartedEventArgs> SensitiveMage;
@@ -104,11 +107,15 @@ namespace Inkybot.Services
         }
 
         private void WaitForCombineResult() {
+            var pollCount = 0;
+            Log.Debug("History baseline (previous):\r\n" + string.Join("\r\n", session.PreviousHistory ?? new string[0]) + "\r\n");
             while (true) {
                 EnforceChangeTimeout();
 
                 dataProvider.PrefetchForHistoryCheck();
                 var itemHistory = dataProvider.History();
+
+                Log.Debug($"History poll #{++pollCount}:\r\n" + string.Join("\r\n", itemHistory) + "\r\n");
 
                 if (Helpers.History.HasChanged(itemHistory, session.PreviousHistory)) {
                     Debug.WriteLine("history has changed");

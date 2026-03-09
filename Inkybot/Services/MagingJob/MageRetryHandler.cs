@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics;
+using NLog;
 using System.Threading;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
@@ -10,6 +10,7 @@ namespace Inkybot.Services
 {
     internal static class MageRetryHandler
     {
+        private static readonly Logger Log = LogManager.GetLogger("mage");
         private const int MaxAttempts = 3;
 
         public struct Result
@@ -27,12 +28,15 @@ namespace Inkybot.Services
 
             var result = new Result();
             var wasRestarting = session.IsRestarting;
+            var consecutiveFailures = 0;
 
-            for (var attempt = 0; attempt < MaxAttempts; attempt++) {
-                if (attempt > 0) {
-                    Debug.WriteLine("Restarting mage, attempt " + attempt);
+            while (consecutiveFailures < MaxAttempts) {
+                if (consecutiveFailures > 0) {
+                    Log.Info("Restarting mage, attempt " + consecutiveFailures);
                     session.IsRestarting = true;
                 }
+
+                var ticksBefore = session.Ticks;
 
                 try {
                     result.AutoShutdown = action();
@@ -44,6 +48,12 @@ namespace Inkybot.Services
                     onError(new MagingJobErrorEventArgs(exception));
                     break;
                 } catch (Exception exception) {
+                    // If the bot ran successful ticks since the last attempt,
+                    // it recovered — reset the failure counter.
+                    if (session.Ticks > ticksBefore)
+                        consecutiveFailures = 0;
+
+                    consecutiveFailures++;
                     session.UnsuccessfulCombineTicks++;
                     LogException(exception);
 
@@ -51,7 +61,7 @@ namespace Inkybot.Services
                         ? "Please try running Inkybot as an administrator."
                         : "";
 
-                    if (!Properties.Settings.Default.autoRestartBot || attempt >= MaxAttempts - 1) {
+                    if (!Properties.Settings.Default.autoRestartBot || consecutiveFailures >= MaxAttempts) {
                         dataProvider.SaveScan();
                         onError(new MagingJobErrorEventArgs(exception, additionalInfo));
                         result.AutoShutdown = true;
@@ -60,7 +70,6 @@ namespace Inkybot.Services
                     }
 
                     onWarning(new MagingJobErrorEventArgs(exception, additionalInfo));
-                    Thread.Sleep(1000);
 
                     if (session.ManuallyStopped) {
                         result.StopMage = true;
@@ -98,14 +107,14 @@ namespace Inkybot.Services
 
         private static void LogException(Exception exception) {
             if (exception is AggregateException aggregateException) {
-                Debug.WriteLine("Aggregate exception!");
+                Log.Debug("Aggregate exception!");
                 foreach (var inner in aggregateException.InnerExceptions) {
-                    Debug.WriteLine(inner.Message);
-                    Debug.WriteLine(inner.StackTrace);
+                    Log.Debug(inner.Message);
+                    Log.Debug(inner.StackTrace);
                 }
             } else {
-                Debug.WriteLine(exception.Message);
-                Debug.WriteLine(exception.StackTrace);
+                Log.Debug(exception.Message);
+                Log.Debug(exception.StackTrace);
             }
         }
     }
