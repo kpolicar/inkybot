@@ -50,9 +50,9 @@ namespace Inkybot
             public const string GrantSecret = "***REMOVED***";
         #endif
         
-        public const string VersionNumber = "23";
-        public const string Version = "v3.1";
-        public const string VersionEndpoint = "v3.1";
+        public const string VersionNumber = "24";
+        public const string Version = "v3.2";
+        public const string VersionEndpoint = "v3.2";
 
         public static string InstanceIdentifier {
             private set;

@@ -85,7 +85,7 @@
             "command": "powershell",
             "args": [
                 "-Command",
-                "$zipPath = '${workspaceFolder}\\Inkybot_v3.1.zip'; if (Test-Path $zipPath) { Remove-Item $zipPath -Force }; 7z a -pinkybot -tzip $zipPath '${workspaceFolder}\\${config:inkybot.releasePath}\\*'"
+                "$zipPath = '${workspaceFolder}\\Inkybot_v3.2.zip'; if (Test-Path $zipPath) { Remove-Item $zipPath -Force }; 7z a -pinkybot -tzip $zipPath '${workspaceFolder}\\${config:inkybot.releasePath}\\*'"
             ],
             "dependsOn": "move-confused",
             "presentation": {
@@ -100,7 +100,7 @@
             "command": "powershell",
             "args": [
                 "-Command",
-                "$zipPath = '${workspaceFolder}\\Inkybot_v3.1.zip'; scp $zipPath root@inkybot:~/Inkybot_v3.1.zip; ssh root@inkybot 'docker cp ~/Inkybot_v3.1.zip inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.1.zip && rm ~/Inkybot_v3.1.zip'; Remove-Item $zipPath -Force; Write-Host 'Published Inkybot_v3.1.zip to inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.1.zip'"
+                "$zipPath = '${workspaceFolder}\\Inkybot_v3.2.zip'; scp $zipPath root@inkybot:~/Inkybot_v3.2.zip; ssh root@inkybot 'docker cp ~/Inkybot_v3.2.zip inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.2.zip && rm ~/Inkybot_v3.2.zip'; Remove-Item $zipPath -Force; Write-Host 'Published Inkybot_v3.2.zip to inkybot-app:/var/www/html/storage/app/public/Inkybot_v3.2.zip'"
             ],
             "dependsOn": "zip-release",
             "presentation": {
@@ -123,7 +123,7 @@
             "label": "🚀 RUN FULL PROJECT",
             "dependsOn": [
                 "launch-dofus",
-                "run-release", 
+                "run-release",
             ],
             "dependsOrder": "parallel",
             "problemMatcher": [],
