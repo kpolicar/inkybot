@@ -90,6 +90,20 @@ namespace Inkybot
         /// </summary>
         [STAThread]
         public static void Main() {
+            if (!Helpers.System.IsRunnningAsAdmin()) {
+                try {
+                    var startInfo = new ProcessStartInfo {
+                        FileName = Application.ExecutablePath,
+                        Verb = "runas",
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
+                } catch (Win32Exception) {
+                    // User declined UAC prompt
+                }
+                return;
+            }
+
             var random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
