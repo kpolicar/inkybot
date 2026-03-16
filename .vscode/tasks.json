@@ -9,6 +9,11 @@
                 "restore",
                 "${workspaceFolder}\\Inkybot.sln"
             ],
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe"
+                }
+            },
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -30,6 +35,11 @@
                 "isDefault": true
             },
             "dependsOn": "restore",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe"
+                }
+            },
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -47,6 +57,11 @@
                 "/restore"
             ],
             "dependsOn": "restore",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe"
+                }
+            },
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"

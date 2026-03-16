@@ -101,8 +101,11 @@ namespace Inkybot
                 await Task.Delay(1000);
                 
                 if (pDofus != null) {
-                    var prefs = DetectUserGame.ReadDofusPreferences();
-                    if (prefs != DetectUserGame.DofusPreferences.Ideal) {
+                    var allPrefs = DetectUserGame.ReadAllDofusPreferences();
+                    var nonIdeal = allPrefs
+                        .Where(p => p.prefs != DetectUserGame.DofusPreferences.Ideal)
+                        .ToArray();
+                    if (nonIdeal.Length > 0) {
                         pDofus = null;
                         foreach (var p in dofusProcesses) {
                             try { p.Kill(); } catch { /* ignore */ }
@@ -110,32 +113,30 @@ namespace Inkybot
                         waitingForm.Invoke(new MethodInvoker(() => {
                             waitingForm.ShowErrorMessage(
                                 "Dofus was terminated to adjust UI preferences.\nPlease restart it via the Ankama Launcher.");
-                        waitingForm.UpdateProcessList(Array.Empty<Process>());
+                            waitingForm.UpdateProcessList(Array.Empty<Process>());
                         }));
-                        await PatchDofusPreferencesToIdeal();
+                        await PatchDofusPreferencesToIdeal(nonIdeal.Select(p => p.path).ToArray());
                     }
                 }
             } while (pDofus == null);
         }
 
-        private static async Task PatchDofusPreferencesToIdeal() {
+        private static async Task PatchDofusPreferencesToIdeal(string[] paths) {
             var ideal = DetectUserGame.DofusPreferences.Ideal;
-            var localLow = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\LocalLow");
-            var prefsPath = Path.Combine(localLow, @"Ankama\Dofus\RELEASE\Shared\dofus.json");
             for (var i = 0; i < 50; i++) {
-                try {
-                    var json = JObject.Parse(File.ReadAllText(prefsPath));
-                    json["uiScale"]!["value"]                      = ideal.uiScale.value;
-                    json["renderingScale"]!["value"]!["value"]     = ideal.renderingScale.value.value;
-                    json["renderingScale"]!["value"]!["isMute"]    = ideal.renderingScale.value.isMute;
-                    json["dofusQuality"]!["value"]                 = ideal.dofusQuality.value;
-                    json["windowResolutionMode"]!["value"]         = ideal.windowResolutionMode.value;
-                    json["windowDisplayMode"]!["value"]            = ideal.windowDisplayMode.value;
-                    json["globalFontSize"]!["value"]               = ideal.globalFontSize.value;
-                    File.WriteAllText(prefsPath, json.ToString());
-                } catch { /* ignore */ }
+                foreach (var prefsPath in paths) {
+                    try {
+                        var json = JObject.Parse(File.ReadAllText(prefsPath));
+                        json["uiScale"]!["value"]                      = ideal.uiScale.value;
+                        json["renderingScale"]!["value"]!["value"]     = ideal.renderingScale.value.value;
+                        json["renderingScale"]!["value"]!["isMute"]    = ideal.renderingScale.value.isMute;
+                        json["dofusQuality"]!["value"]                 = ideal.dofusQuality.value;
+                        json["windowResolutionMode"]!["value"]         = ideal.windowResolutionMode.value;
+                        json["windowDisplayMode"]!["value"]            = ideal.windowDisplayMode.value;
+                        json["globalFontSize"]!["value"]               = ideal.globalFontSize.value;
+                        File.WriteAllText(prefsPath, json.ToString());
+                    } catch { /* ignore - file may be empty or locked */ }
+                }
                 await Task.Delay(100);
             }
         }
