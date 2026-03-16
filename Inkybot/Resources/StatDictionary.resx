@@ -118,16 +118,16 @@
         <value>Pushback Damage</value>
     </data>
     <data name="spell_damage" xml:space="preserve">
-        <value>Spell Damage</value>
+        <value>% Spell Damage</value>
     </data>
     <data name="weapon_damage" xml:space="preserve">
-        <value>Weapon Damage</value>
+        <value>% Weapon Damage</value>
     </data>
     <data name="ranged_damage" xml:space="preserve">
-        <value>Ranged Damage</value>
+        <value>% Ranged Damage</value>
     </data>
     <data name="melee_damage" xml:space="preserve">
-        <value>Melee Damage</value>
+        <value>% Melee Damage</value>
     </data>
     
     <data name="neutral_resistance" xml:space="preserve">
@@ -167,10 +167,10 @@
         <value>Pushback Resistance</value>
     </data>
     <data name="ranged_resistance" xml:space="preserve">
-        <value>Ranged Resistance</value>
+        <value>% Ranged Resistance</value>
     </data>
     <data name="melee_resistance" xml:space="preserve">
-        <value>Melee Resistance</value>
+        <value>% Melee Resistance</value>
     </data>
 
     <data name="hunting_weapon" xml:space="preserve">

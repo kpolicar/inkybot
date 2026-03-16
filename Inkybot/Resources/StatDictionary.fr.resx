@@ -111,16 +111,16 @@
         <value>Dommage Poussée</value>
     </data>
     <data name="spell_damage" xml:space="preserve">
-        <value>Dommages aux sorts</value>
+        <value>% Dommages aux sorts</value>
     </data>
     <data name="weapon_damage" xml:space="preserve">
-        <value>Dommages d'armes</value>
+        <value>% Dommages d'armes</value>
     </data>
     <data name="ranged_damage" xml:space="preserve">
-        <value>Dommages distance</value>
+        <value>% Dommages distance</value>
     </data>
     <data name="melee_damage" xml:space="preserve">
-        <value>Dommages mêlée</value>
+        <value>% Dommages mêlée</value>
     </data>
 
     <data name="neutral_resistance" xml:space="preserve">
@@ -160,10 +160,10 @@
         <value>Résistances Poussée</value>
     </data>
     <data name="ranged_resistance" xml:space="preserve">
-        <value>Résistance Distance</value>
+        <value>% Résistance Distance</value>
     </data>
     <data name="melee_resistance" xml:space="preserve">
-        <value>Résistance mêlée</value>
+        <value>% Résistance mêlée</value>
     </data>
 
     <data name="hunting_weapon" xml:space="preserve">
