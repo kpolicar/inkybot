@@ -19,12 +19,15 @@ namespace Inkybot
 
         private WinGraphicsCaptureScreenCapture gpuCapture = null!;
         private Win32ScreenCapture printWindowCapture = null!;
+        private Form mainForm = null!;
 
         private bool useFallback = false;
         private int blankChecksRemaining = 10;
 
         public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm)
         {
+            this.mainForm = mainForm;
+
             gpuCapture = new WinGraphicsCaptureScreenCapture();
             gpuCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
 
@@ -56,7 +59,7 @@ namespace Inkybot
                         FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] Blank frame detected (check {checkNumber} of 10). Switching permanently to PrintWindow fallback.");
                         result.Dispose();
                         useFallback = true;
-                        gpuCapture.Dispose();
+                        mainForm.Invoke((MethodInvoker)delegate { gpuCapture.Dispose(); });
                         Thread.Sleep(250);
                         result = printWindowCapture.CaptureWindow();
                     }
@@ -95,7 +98,10 @@ namespace Inkybot
 
         public void Dispose()
         {
-            gpuCapture?.Dispose();
+            if (gpuCapture != null && mainForm != null && mainForm.InvokeRequired)
+                mainForm.Invoke((MethodInvoker)delegate { gpuCapture.Dispose(); });
+            else
+                gpuCapture?.Dispose();
             printWindowCapture?.Dispose();
         }
     }
