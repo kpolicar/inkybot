@@ -67,10 +67,17 @@ namespace Inkybot.Api
             otlpTarget.Resources.Add(new NLog.Targets.TargetPropertyWithContext("user.name", "${gdc:UserName}"));
             otlpTarget.Resources.Add(new NLog.Targets.TargetPropertyWithContext("service.instance.id", "${gdc:InstanceIdentifier}"));
 
+            var bufferedOtlp = new NLog.Targets.Wrappers.BufferingTargetWrapper(otlpTarget) {
+                Name = "bufferedOtlp",
+                BufferSize = 200,
+                FlushTimeout = 30000,
+                SlidingTimeout = false,
+            };
+
             var config = NLog.LogManager.Configuration;
-            config.AddTarget(otlpTarget);
-            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, otlpTarget, "mage");
-            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, otlpTarget, "system");
+            config.AddTarget(bufferedOtlp);
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, bufferedOtlp, "mage");
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, bufferedOtlp, "system");
             NLog.LogManager.ReconfigExistingLoggers();
 
             while (_bufferedSystemLogs.TryDequeue(out var logEvent)) {
