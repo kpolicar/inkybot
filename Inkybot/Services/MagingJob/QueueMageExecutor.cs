@@ -9,6 +9,7 @@ namespace Inkybot.Services
     {
         public override bool Execute() {
             var autoShutdown = false;
+            session.IsMaging = true;
 
             while (!mageQueue.Empty && session.IsMaging) {
                 PrepareInventoryForNextItem();
@@ -18,7 +19,6 @@ namespace Inkybot.Services
                 autoShutdown = result.AutoShutdown || session.PreviousAction is Finish;
 
                 var shouldContinue = !result.StopMage
-                    && !result.AutoShutdown
                     && session.PreviousAction is Finish
                     && !mageQueue.Empty;
 
@@ -31,8 +31,10 @@ namespace Inkybot.Services
         }
 
         protected override void BeforePrepare() {
-            actions.Execute(actionFactory.SelectItemFromQueue());
-            Thread.Sleep(1000);
+            if (!session.IsRestarting) {
+                actions.Execute(actionFactory.SelectItemFromQueue());
+                Thread.Sleep(1000);
+            }
         }
 
         protected override void AfterPrepare(Item item) {
