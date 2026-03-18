@@ -43,12 +43,7 @@ namespace Inkybot.Services
             }
 
             protected override TesseractEngine CreateEngine() {
-                var eng = new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "eng-numbers",
-                    EngineMode.TesseractOnly);
-                eng.SetVariable("debug", "0");
-                return eng;
+                return CreateTesseractEngine("eng-numbers", EngineMode.TesseractOnly);
             }
 
             public override event EventHandler<TesseractPageProcessed>? PageProcessed;
@@ -151,12 +146,20 @@ namespace Inkybot.Services
             }
 
             protected virtual TesseractEngine CreateEngine() {
-                var eng = new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
-                    EngineMode.Default);
-                eng.SetVariable("debug", "0");
-                return eng;
+                return CreateTesseractEngine(CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName, EngineMode.Default);
+            }
+
+            protected TesseractEngine CreateTesseractEngine(string lang, EngineMode mode) {
+                var tessdataPath = Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract");
+                try {
+                    var eng = new TesseractEngine(tessdataPath, lang, mode);
+                    FileEventLogger.SystemLogger.Info("Tesseract engine initialized: " + lang + " from " + tessdataPath);
+                    eng.SetVariable("debug", "0");
+                    return eng;
+                } catch (Exception ex) {
+                    FileEventLogger.SystemLogger.Error(ex, "Failed to initialize Tesseract engine (" + lang + ") from " + tessdataPath + ": " + ex.Message);
+                    throw;
+                }
             }
 
             protected TesseractEngine AcquireEngine() {
@@ -266,12 +269,7 @@ namespace Inkybot.Services
             }
 
             protected override TesseractEngine CreateEngine() {
-                var eng = new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName,
-                    EngineMode.Default);
-                eng.SetVariable("debug", "0");
-                return eng;
+                return CreateTesseractEngine(CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName, EngineMode.Default);
             }
         }
 
@@ -288,11 +286,9 @@ namespace Inkybot.Services
                 });
             }
 
-            protected override TesseractEngine CreateEngine() =>
-                new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "digits",
-                    EngineMode.Default);
+            protected override TesseractEngine CreateEngine() {
+                return CreateTesseractEngine("digits", EngineMode.Default);
+            }
         }
 
         public class PositiveNumberScreenScanner : ScreenScanner
@@ -308,11 +304,9 @@ namespace Inkybot.Services
                 });
             }
             
-            protected override TesseractEngine CreateEngine() =>
-                new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "digits",
-                    EngineMode.Default);
+            protected override TesseractEngine CreateEngine() {
+                return CreateTesseractEngine("digits", EngineMode.Default);
+            }
         }
 
         public class SinkScanner : ScreenScanner
@@ -328,11 +322,9 @@ namespace Inkybot.Services
                 });
             }
             
-            protected override TesseractEngine CreateEngine() =>
-                new TesseractEngine(
-                    Path.Combine(AppContext.BaseDirectory, @"Resources\Tesseract"),
-                    "digits",
-                    EngineMode.Default);
+            protected override TesseractEngine CreateEngine() {
+                return CreateTesseractEngine("digits", EngineMode.Default);
+            }
         }
 
         public class KamasScanner : ScreenScanner
