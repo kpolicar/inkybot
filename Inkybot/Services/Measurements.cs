@@ -129,19 +129,19 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement StatValuesBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(636, 318, 824, 832),
+            Rectangle = Rect.FromCoords(635, 314, 824, 846),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement StatMinBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(496, 318, 524, 832),
+            Rectangle = Rect.FromCoords(496, 314, 527, 846),
             Width = 1694,
             Height = 1009
         };
-        
+
         public static Responsive.Measurement StatMaxBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(554, 318, 581, 832),
+            Rectangle = Rect.FromCoords(554, 314, 587, 846),
             Width = 1694,
             Height = 1009
         };

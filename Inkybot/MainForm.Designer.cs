@@ -103,10 +103,11 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.dofusClientPanel, "dofusClientPanel");
             this.dofusClientPanel.Name = "dofusClientPanel";
-            this.dofusClientPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            this.dofusClientPanel.Size = new Size(1694, 1010); // TODO: THIS IS FIXED
+            //this.dofusClientPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            this.dofusClientPanel.Dock = DockStyle.Fill;
+            //this.dofusClientPanel.Size = new Size(1694, 1010);
             this.dofusClientPanel.BackColor = Color.Black;
-            this.dofusClientPanel.AutoSize = false;
+            this.dofusClientPanel.AutoSize = true;
             // 
             // toastPanel
             // 
@@ -508,13 +509,13 @@ namespace Inkybot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.toastPanel);
             this.Controls.Add(this.shutdownToastPanel);
-            this.Controls.Add(this.sidebarPanel);
-            this.Controls.Add(this.sidebarRightPanel);
             this.Controls.Add(this.dofusClientPanel);
+            this.Controls.Add(this.sidebarRightPanel);
+            this.Controls.Add(this.sidebarPanel);
             this.BackColor = Color.Black;
             this.HelpButton = true;
-            this.MinimumSize = new System.Drawing.Size(1650, 900);
-            this.MaximumSize = new System.Drawing.Size(1920, 1080);
+            //this.MinimumSize = new System.Drawing.Size(1650, 900);
+            //this.MaximumSize = new System.Drawing.Size(1920, 1080);
             this.Name = "MainForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);

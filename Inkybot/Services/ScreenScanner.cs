@@ -71,12 +71,16 @@ namespace Inkybot.Services
                 var m = new MagickFactory();
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
 
-                var slices = magickImage.CropToTiles(magickImage.Width, magickImage.Height/13);
+                double sliceHeight = 1.0 * magickImage.Height / 14;
 
                 IEnumerable<string> textLines = new string[] {};
 
-                var i = 0;
-                foreach (var slice in slices) {
+                for (var i = 0; i < 14; i++) {
+                    int y = (int)Math.Round(i * sliceHeight);
+                    int h = (int)Math.Round((i + 1) * sliceHeight) - y;
+
+                    var slice = (MagickImage)magickImage.Clone();
+                    slice.Crop(new MagickGeometry(0, y, magickImage.Width, (uint)h));
                     slice.ResetPage();
                     slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/10), Gravity.North);
 
@@ -84,6 +88,7 @@ namespace Inkybot.Services
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
 
                     var sliceBmp = canvas.ToBitmap();
+                    sliceBmp.Save(Path.Combine(AppContext.BaseDirectory, @"debug\images", $"slice_{i}.bmp"), System.Drawing.Imaging.ImageFormat.Bmp);
 
                     var ocrSw = System.Diagnostics.Stopwatch.StartNew();
                     var ocrPage = ProcessImage(engine, sliceBmp);
@@ -108,7 +113,6 @@ namespace Inkybot.Services
                     }
 
                     ocrPage.Dispose();
-                    i++;
                 }
 
                 Profiler.Record("OCR", "MinMax.total", totalSw.ElapsedMilliseconds);

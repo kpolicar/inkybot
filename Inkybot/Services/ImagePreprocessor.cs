@@ -163,8 +163,10 @@ namespace Inkybot.Services
                 Log("Resize(Lanczos)");
                 image.MedianFilter(2);
                 Log("MedianFilter");
-                image.AutoThreshold(AutoThresholdMethod.OTSU);
-                Log("OTSU");
+                image.WhiteThreshold(new Percentage(60));
+                Log("WhiteThreshold");
+                //image.AutoThreshold(AutoThresholdMethod.OTSU);
+                //Log("OTSU");
             }
         }
 

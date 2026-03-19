@@ -28,7 +28,7 @@ namespace Inkybot.Helpers
     public static class Responsive
     {
         
-        private static double perfectRatio => 0.56;
+        private static double perfectRatio => 0.5625;
         // const double perfectRatio = 0.8;
 
         public struct RatioRect
@@ -70,8 +70,6 @@ namespace Inkybot.Helpers
         public static Rectangle ResponsiveRectangle(Measurement measurement, int width, int height) {
             var r = measurement.Rectangle;
             var statsRect = PointsToRatioRect(r.X1, r.Y1, r.X2, r.Y2, measurement.Width, measurement.Height);
-
-            (width, height) = (1694, 1010);
             return RatioRectToScreenRect(statsRect, width, height);
         }
 
