@@ -132,15 +132,16 @@ namespace Inkybot.Services
                 if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
                     lang = CultureInfo.CurrentUICulture;
 
+                    var rowDetector = Program.Services.GetService<RowSpacingDetector>();
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(300));
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(300));
                     statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
                         new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
-                    statMinsScanner = new MinMaxScreenScanner(Measurements.StatMinBounds, SplitStatTextLines,
+                    statMinsScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatMinBounds, SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
-                    statMaxesScanner = new MinMaxScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
+                    statMaxesScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatMaxBounds, SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);

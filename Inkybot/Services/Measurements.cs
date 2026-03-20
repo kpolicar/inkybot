@@ -11,27 +11,44 @@ namespace Inkybot.Services
         const int StatLineCount = 13;
 
         private static UserSettingsConfigManager config = null!;
+        private static RowSpacingDetector rowSpacingDetector = null!;
 
         public static void BindDependencies(ServiceContainer serviceContainer) {
             config = serviceContainer.GetService<UserSettingsConfigManager>();
+            rowSpacingDetector = serviceContainer.GetService<RowSpacingDetector>();
+        }
+
+        /// <summary>
+        /// Returns the full bounds clamped to exactly 13 rows height.
+        /// </summary>
+        public static Responsive.Measurement StatColumnBounds(Responsive.Measurement measurement) {
+            var rowHeight = rowSpacingDetector?.ReferenceRowHeight ?? (1.0 * measurement.Rectangle.Height / StatLineCount);
+            var r = measurement.Rectangle;
+            return new Responsive.Measurement {
+                Height = measurement.Height,
+                Width = measurement.Width,
+                Rectangle = new Rect(r.X1, r.Y1, r.Width, (int)(rowHeight * StatLineCount))
+            };
         }
 
         public static IEnumerable<Responsive.Measurement> SplitBoundsToStatNumber(Responsive.Measurement measurement) {
+            var rowHeight = rowSpacingDetector?.ReferenceRowHeight ?? (1.0 * measurement.Rectangle.Height / StatLineCount);
             for (var i = 0; i < StatLineCount; i++) {
                 var r = measurement.Rectangle;
                 yield return new Responsive.Measurement {
                     Height = measurement.Height,
                     Width = measurement.Width,
-                    Rectangle = new Rect(r.X1, r.Y1 + (r.Height / StatLineCount) * i, r.Width, r.Height / StatLineCount)
+                    Rectangle = new Rect(r.X1, r.Y1 + (int)(rowHeight * i), r.Width, (int)rowHeight)
                 };
             }
         }
 
         public static Responsive.Measurement RuneBoxBounds(int column, int row) {
+            var rowHeight = rowSpacingDetector?.ReferenceRowHeight ?? 40.5;
             var x1 = 910 + column * 41;
-            var y1 = 318 + (int) (row * 40.5);
+            var y1 = 318 + (int) (row * rowHeight);
             var x2 = 938 + column * 41;
-            var y2 = 342 + (int) (row * 40.5);
+            var y2 = 342 + (int) (row * rowHeight);
 
             return new Responsive.Measurement {
                 Rectangle = Rect.FromCoords(x1, y1, x2, y2),
@@ -57,10 +74,11 @@ namespace Inkybot.Services
             Responsive.Measurement measurement) {
             var b = measurement.Rectangle;
             var n = StatLineCount;
+            var rowHeight = rowSpacingDetector?.ReferenceRowHeight ?? (1.0 * b.Height / n);
 
             var measurements = new Responsive.Measurement[n];
             for (int i = 0; i < n; ++i) {
-                var smallerRect = new Rect(b.X1, b.Y1 + (int) (1f * b.Height / n * i), b.Width / 3, b.Height / n);
+                var smallerRect = new Rect(b.X1, b.Y1 + (int)(rowHeight * i), b.Width / 3, (int)rowHeight);
                 var m = new Responsive.Measurement {
                     Rectangle = smallerRect,
                     Height = measurement.Height,

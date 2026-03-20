@@ -83,6 +83,7 @@ namespace Inkybot
             { typeof(ApiNotifier), new ApiNotifier() },
             { typeof(MageQueueManager), new MageQueueManager() },
             { typeof(KamasTrackingJob), new KamasTrackingJob() },
+            { typeof(Helpers.RowSpacingDetector), new Helpers.RowSpacingDetector() },
         };
         
         /// <summary>

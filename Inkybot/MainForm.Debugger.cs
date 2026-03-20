@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
@@ -17,25 +17,59 @@ namespace Inkybot
     public partial class MainForm
     {
         private ConcurrentDictionary<Control, Responsive.Measurement> ocrIndicators = new ConcurrentDictionary<Control, Responsive.Measurement>();
-        
+        private readonly List<(Control control, int column, int row)> runeIndicators = new List<(Control, int, int)>();
+        private Control statMinIndicator = null!;
+        private Control statMaxIndicator = null!;
+        private Control statValuesIndicator = null!;
+
         private bool debugging;
         //private static Gma.System.MouseKeyHook.IKeyboardMouseEvents m_GlobalHook;
         private Control latestHistoryOcrIndicatorControl = null!;
+        private System.Windows.Forms.Timer _rowDetectionDebounceTimer = null!;
 
         private void InitOcrIndicators() {
-            RegisterOcrIndicator(Measurements.StatMinBounds);
-            RegisterOcrIndicator(Measurements.StatMaxBounds);
-            RegisterOcrIndicator(Measurements.StatValuesBounds);
+            statMinIndicator = RegisterOcrIndicator(Measurements.StatColumnBounds(Measurements.StatMinBounds));
+            statMaxIndicator = RegisterOcrIndicator(Measurements.StatColumnBounds(Measurements.StatMaxBounds));
+            statValuesIndicator = RegisterOcrIndicator(Measurements.StatColumnBounds(Measurements.StatValuesBounds));
+
             RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             RegisterOcrIndicator(Measurements.InventorySearchTextBox);
             RegisterOcrIndicator(Program.Lang.TwoLetterISOLanguageName == "fr" ? Measurements.SinkFrMeasurement : Measurements.SinkMeasurement);
 
-            foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
-                RegisterOcrIndicator(runeBoundingBox);
+            for (var col = 0; col < 3; col++) {
+                for (var row = 0; row < 13; row++) {
+                    var control = RegisterOcrIndicator(Measurements.RuneBoxBounds(col, row));
+                    runeIndicators.Add((control, col, row));
+                }
             }
-            
+
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
             screenReader.LatestHistoryBoundsChanged += OnLatestHistoryProcessed;
+
+            var rowDetector = Program.Services.GetService<RowSpacingDetector>();
+            rowDetector.RowHeightChanged += OnRowHeightChanged;
+
+            _rowDetectionDebounceTimer = new System.Windows.Forms.Timer { Interval = 750 };
+            _rowDetectionDebounceTimer.Tick += OnRowDetectionDebounceTimerTick;
+        }
+
+        private void OnRowHeightChanged(object sender, EventArgs e) {
+            BeginInvoke(new MethodInvoker(() => {
+                foreach (var (control, col, row) in runeIndicators) {
+                    var m = Measurements.RuneBoxBounds(col, row);
+                    ocrIndicators[control] = m;
+                    if (debugging) FitOcrIndicatorRectangle(control, m);
+                }
+                UpdateStatColumnIndicator(statMinIndicator, Measurements.StatMinBounds);
+                UpdateStatColumnIndicator(statMaxIndicator, Measurements.StatMaxBounds);
+                UpdateStatColumnIndicator(statValuesIndicator, Measurements.StatValuesBounds);
+            }));
+        }
+
+        private void UpdateStatColumnIndicator(Control control, Responsive.Measurement fullBounds) {
+            var clamped = Measurements.StatColumnBounds(fullBounds);
+            ocrIndicators[control] = clamped;
+            if (debugging) FitOcrIndicatorRectangle(control, clamped);
         }
 
         private void OnLatestHistoryProcessed(object sender, ScanBoundsChanged e) {
@@ -127,6 +161,24 @@ namespace Inkybot
                     FitOcrIndicatorRectangle(ocrIndicatorControl.Key, ocrIndicatorControl.Value);
                 }
             }));
+
+            // Debounce: restart 750ms timer to trigger row height re-detection
+            _rowDetectionDebounceTimer.Stop();
+            _rowDetectionDebounceTimer.Start();
+        }
+
+        private void OnRowDetectionDebounceTimerTick(object sender, EventArgs e) {
+            _rowDetectionDebounceTimer.Stop();
+            new Thread(() => {
+                try {
+                    using var scan = new ScreenReaderDataProvider.DofusScreenScan(
+                        Program.Services, Measurements.HistoryBounds, false, true);
+                    scan.CaptureScreenshot();
+                    scan.MinMaxStats().Wait();
+                } catch (Exception ex) {
+                    Debug.WriteLine("Row detection on resize failed: " + ex.Message);
+                }
+            }).Start();
         }
 
         private void DisableDebugging() {
@@ -144,7 +196,8 @@ namespace Inkybot
             mousePositionLabel.Hide();
             debugScreenshotButton.Hide();
             ResizeEnd -= onWindowResize;
-            
+            _rowDetectionDebounceTimer.Stop();
+
             HideOcrIndicators();
         }
 

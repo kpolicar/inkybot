@@ -26,8 +26,11 @@ namespace Inkybot.Services
     {
         public class MinMaxScreenScanner : ScreenScanner
         {
-            public MinMaxScreenScanner(Responsive.Measurement regionOfInterest, Func<string, string[]>? split = null, ImagePreprocessor? preprocessor = null, PageSegMode segMode = PageSegMode.SingleBlock)
+            private readonly RowSpacingDetector _rowDetector;
+
+            public MinMaxScreenScanner(RowSpacingDetector rowDetector, Responsive.Measurement regionOfInterest, Func<string, string[]>? split = null, ImagePreprocessor? preprocessor = null, PageSegMode segMode = PageSegMode.SingleBlock)
                 : base(regionOfInterest, split, preprocessor, segMode) {
+                _rowDetector = rowDetector;
                 SetVariables(engine => {
                     engine.SetVariable("tessedit_char_whitelist", "0123456789-%");
                     engine.SetVariable("load_system_dawg", "0");
@@ -71,11 +74,12 @@ namespace Inkybot.Services
                 var m = new MagickFactory();
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
 
-                double sliceHeight = 1.0 * magickImage.Height / 14;
+                int sliceCount = _rowDetector.GetRowCount(image, bounds.Height);
+                double sliceHeight = _rowDetector.GetRowHeight(image);
 
                 IEnumerable<string> textLines = new string[] {};
 
-                for (var i = 0; i < 14; i++) {
+                for (var i = 0; i < sliceCount; i++) {
                     int y = (int)Math.Round(i * sliceHeight);
                     int h = (int)Math.Round((i + 1) * sliceHeight) - y;
 
