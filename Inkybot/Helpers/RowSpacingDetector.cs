@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Threading;
 
 namespace Inkybot.Helpers
 {
@@ -9,6 +10,8 @@ namespace Inkybot.Helpers
         private int _cachedHeight;
         private int _cachedRowCount;
         private double _cachedRowHeight;
+        private bool _hasDetected;
+        private readonly ManualResetEventSlim _detectedEvent = new ManualResetEventSlim(false);
 
         private const int MaxRows = 20;
         private const int MinRows = 10;
@@ -20,7 +23,7 @@ namespace Inkybot.Helpers
         private const double DefaultReferenceRowHeight = 1.0 * ReferenceStatColumnHeight / DefaultRows; // ~40.92
 
         /// <summary>
-        /// The detected row height converted to reference-space (1694x1009).
+        /// The detected row height (full period) converted to reference-space (1694x1009).
         /// Use this in Measurements instead of hardcoded row spacing values.
         /// </summary>
         public double ReferenceRowHeight { get; private set; } = DefaultReferenceRowHeight;
@@ -51,13 +54,26 @@ namespace Inkybot.Helpers
             var cropHeight = originalCropHeight > 0 ? originalCropHeight : image.Height;
             var pixelRowHeight = rowHeight * cropHeight / image.Height; // undo any preprocessing resize
             var newRefHeight = pixelRowHeight * ReferenceStatColumnHeight / cropHeight;
-            if (Math.Abs(newRefHeight - ReferenceRowHeight) > 0.5)
+            if (!_hasDetected || Math.Abs(newRefHeight - ReferenceRowHeight) > 0.5)
             {
+                _hasDetected = true;
                 ReferenceRowHeight = newRefHeight;
+                _detectedEvent.Set();
                 RowHeightChanged?.Invoke(this, EventArgs.Empty);
+            }
+            else if (!_detectedEvent.IsSet)
+            {
+                _detectedEvent.Set();
             }
 
             return _cachedRowCount;
+        }
+
+        /// <summary>
+        /// Blocks until at least one detection has completed (called by min/max scanners).
+        /// </summary>
+        public void WaitForDetection(int timeoutMs = 5000) {
+            _detectedEvent.Wait(timeoutMs);
         }
 
         public double GetRowHeight(Bitmap image)

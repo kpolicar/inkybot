@@ -74,19 +74,33 @@ namespace Inkybot.Services
                 var m = new MagickFactory();
                 MagickImage magickImage = new MagickImage(m.Image.Create(image));
 
-                int sliceCount = _rowDetector.GetRowCount(image, bounds.Height);
-                double sliceHeight = _rowDetector.GetRowHeight(image);
+                // Trigger detection (updates ReferenceRowHeight if dimensions changed)
+                _rowDetector.GetRowCount(image, bounds.Height);
+
+                // Derive slice height from the same ReferenceRowHeight the indicators use,
+                // scaled from reference space (1694x1009) to preprocessed image space
+                const double ReferenceColumnHeight = 846 - 314; // 532
+                double sliceHeight = _rowDetector.ReferenceRowHeight * image.Height / ReferenceColumnHeight;
+                int sliceCount = 13;
+
+                // 2px inset in reference space, scaled to preprocessed image space
+                double insetY = 2.0 * image.Height / ReferenceColumnHeight;
+                double refColumnWidth = regionOfInterest.Rectangle.Width;
+                double insetX = 2.0 * image.Width / refColumnWidth;
 
                 IEnumerable<string> textLines = new string[] {};
 
                 for (var i = 0; i < sliceCount; i++) {
-                    int y = (int)Math.Round(i * sliceHeight);
-                    int h = (int)Math.Round((i + 1) * sliceHeight) - y;
+                    int y = (int)Math.Round(i * sliceHeight + insetY);
+                    int h = (int)Math.Round((i + 1) * sliceHeight - insetY) - y;
+                    int x = (int)Math.Round(insetX);
+                    int w = (int)(magickImage.Width - insetX * 2);
+                    if (h < 1) h = 1;
+                    if (w < 1) w = 1;
 
                     var slice = (MagickImage)magickImage.Clone();
-                    slice.Crop(new MagickGeometry(0, y, magickImage.Width, (uint)h));
+                    slice.Crop(new MagickGeometry(x, y, (uint)w, (uint)h));
                     slice.ResetPage();
-                    slice.Crop(new MagickGeometry(0, (int)slice.Height/6, slice.Width, slice.Height/2+slice.Height/10), Gravity.North);
 
                     using var canvas = new MagickImage(MagickColors.White, slice.Width + 150, slice.Height + 150);
                     canvas.Composite(slice, 75, 75, CompositeOperator.Over);
@@ -131,8 +145,8 @@ namespace Inkybot.Services
 
             private readonly ConcurrentBag<TesseractEngine> _enginePool = new();
             private readonly SemaphoreSlim _engineAvailable = new(2, 2);
-            private Responsive.Measurement regionOfInterest;
-            private Func<string, string[]>? split;
+            protected Responsive.Measurement regionOfInterest;
+            protected Func<string, string[]>? split;
 
             public ImagePreprocessor preprocessor {
                 private set;
@@ -278,6 +292,27 @@ namespace Inkybot.Services
 
             protected override TesseractEngine CreateEngine() {
                 return CreateTesseractEngine(CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName, EngineMode.Default);
+            }
+        }
+
+        public class StatValuesScreenScanner : TextScreenScanner
+        {
+            private readonly RowSpacingDetector _rowDetector;
+            private readonly Responsive.Measurement _fullBounds;
+
+            public StatValuesScreenScanner(RowSpacingDetector rowDetector, Responsive.Measurement regionOfInterest,
+                Func<string, string[]>? split = null,
+                ImagePreprocessor? preprocessor = null,
+                PageSegMode segMode = PageSegMode.SingleBlock)
+                : base(regionOfInterest, split, preprocessor, segMode) {
+                _rowDetector = rowDetector;
+                _fullBounds = regionOfInterest;
+            }
+
+            public override string[] ScanRegion(Image screenshot, int screenshotHeight, TesseractEngine engine, bool saveToDisk = false) {
+                _rowDetector.WaitForDetection();
+                SetRegion(Measurements.StatColumnBounds(_fullBounds));
+                return base.ScanRegion(screenshot, screenshotHeight, engine, saveToDisk);
             }
         }
 

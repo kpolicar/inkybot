@@ -137,12 +137,17 @@ namespace Inkybot.Services
                         new ResizeImagePreprocessor(300));
                     latestHistoryScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(300));
-                    statValuesScanner = new TextScreenScanner(Measurements.StatValuesBounds, SplitStatTextLines,
+                    statValuesScanner = new StatValuesScreenScanner(rowDetector, Measurements.StatValuesBounds, SplitStatTextLines,
                         new StatValuesImagePreprocessor(userSettings, 300), PageSegMode.SparseText);
-                    statMinsScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatMinBounds, SplitStatTextLines,
+                    statMinsScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatColumnBounds(Measurements.StatMinBounds), SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
-                    statMaxesScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatMaxBounds, SplitStatTextLines,
+                    statMaxesScanner = new MinMaxScreenScanner(rowDetector, Measurements.StatColumnBounds(Measurements.StatMaxBounds), SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
+
+                    rowDetector.RowHeightChanged += (s, e) => {
+                        statMinsScanner.SetRegion(Measurements.StatColumnBounds(Measurements.StatMinBounds));
+                        statMaxesScanner.SetRegion(Measurements.StatColumnBounds(Measurements.StatMaxBounds));
+                    };
                     runeScanner =
                         new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
@@ -174,6 +179,8 @@ namespace Inkybot.Services
             }
 
             public async Task<string[]> MinMaxStats() {
+                statMinsScanner!.SetRegion(Measurements.StatColumnBounds(Measurements.StatMinBounds));
+                statMaxesScanner!.SetRegion(Measurements.StatColumnBounds(Measurements.StatMaxBounds));
 
                 var minstask = statMinsScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
                 var maxesTask = statMaxesScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
@@ -251,7 +258,7 @@ namespace Inkybot.Services
             }
 
             public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
-                var runeBounds = Measurements.RuneBoxBounds(column, row);
+                var runeBounds = Measurements.RuneBoxBounds(column, row, inset: 2);
                 runeScanner!.SetRegion(runeBounds);
                 var scanned = await runeScanner.ScanRegionAsync(screenshot, screenshotHeight);
                 var result = scanned.First();

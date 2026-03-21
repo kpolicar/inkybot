@@ -125,9 +125,13 @@ namespace Inkybot
             debugButton.Text = resources.GetString("debugButton.TextStop");
             
             ShowOcrIndicators();
-            
+
             OnResizeBegin(EventArgs.Empty);
             OnResizeEnd(EventArgs.Empty);
+
+            // Trigger immediate row height detection so indicators are accurate from the start
+            _rowDetectionDebounceTimer.Stop();
+            _rowDetectionDebounceTimer.Start();
 
             #if DEBUG
             var m_GlobalHook = Gma.System.MouseKeyHook.Hook.GlobalEvents();
@@ -141,7 +145,8 @@ namespace Inkybot
             var height = dofusClientPanel.Height;
             
             var rect = Responsive.ResponsiveRectangle(measurements, width, height);
-            int padding = indicatorControl is EnqueueRectangle ? 2 : 6;
+            int padding = indicatorControl is EnqueueRectangle ? 2
+                : IsRowIndicator(indicatorControl) ? 0 : 6;
             rect.X -= padding;
             rect.Y -= padding;
             rect.X += dofusClientPanel.Location.X;
@@ -153,6 +158,12 @@ namespace Inkybot
                 rect.Width = rect.Height;
             }
             indicatorControl.Bounds = rect;
+        }
+
+        private bool IsRowIndicator(Control c) {
+            if (c == statMinIndicator || c == statMaxIndicator || c == statValuesIndicator) return true;
+            foreach (var (control, _, _) in runeIndicators) if (control == c) return true;
+            return false;
         }
 
         private void onWindowResize(object sender, EventArgs e) {

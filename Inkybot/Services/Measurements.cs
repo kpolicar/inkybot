@@ -38,20 +38,18 @@ namespace Inkybot.Services
                 yield return new Responsive.Measurement {
                     Height = measurement.Height,
                     Width = measurement.Width,
-                    Rectangle = new Rect(r.X1, r.Y1 + (int)(rowHeight * i), r.Width, (int)rowHeight)
+                    Rectangle = new Rect(r.X1, 314 + (int)(rowHeight * i), r.Width, (int)rowHeight)
                 };
             }
         }
 
-        public static Responsive.Measurement RuneBoxBounds(int column, int row) {
+        public static Responsive.Measurement RuneBoxBounds(int column, int row, int inset = 0) {
             var rowHeight = rowSpacingDetector?.ReferenceRowHeight ?? 40.5;
-            var x1 = 910 + column * 41;
-            var y1 = 318 + (int) (row * rowHeight);
-            var x2 = 938 + column * 41;
-            var y2 = 342 + (int) (row * rowHeight);
+            var x1 = 910 + column * 41 + inset;
+            var y1 = 314 + (int)(row * rowHeight) + inset;
 
             return new Responsive.Measurement {
-                Rectangle = Rect.FromCoords(x1, y1, x2, y2),
+                Rectangle = new Rect(x1, y1, 938 - 910 - inset * 2, (int)rowHeight - inset * 2),
                 Width = 1694,
                 Height = 1009
             };
@@ -147,19 +145,19 @@ namespace Inkybot.Services
         };
 
         public static Responsive.Measurement StatValuesBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(635, 314, 824, 846),
+            Rectangle = Rect.FromCoords(633, 314, 822, 846),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement StatMinBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(496, 314, 527, 846),
+            Rectangle = Rect.FromCoords(494, 314, 525, 846),
             Width = 1694,
             Height = 1009
         };
 
         public static Responsive.Measurement StatMaxBounds => new Responsive.Measurement {
-            Rectangle = Rect.FromCoords(554, 314, 587, 846),
+            Rectangle = Rect.FromCoords(552, 314, 585, 846),
             Width = 1694,
             Height = 1009
         };
