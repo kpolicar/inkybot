@@ -51,7 +51,7 @@ namespace Inkybot.Services
                 return;
             var fallenUnconfiguredStats =
                 Config.StatsConfig
-                    .Where(statConfig => statConfig.Value.Target == 0 && (!item.HasStat(statConfig.Key) || item.Stats[statConfig.Key]!.Exo))
+                    .Where(statConfig => statConfig.Value.Target == 0 && (!item.HasStat(statConfig.Key) || (item.Stats[statConfig.Key]!.Exo && item.Stats[statConfig.Key]!.Value <= 0)))
                     .Select(statConfig => statConfig.Key)
                     .ToArray();
 
