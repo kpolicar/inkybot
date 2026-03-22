@@ -9,6 +9,7 @@ using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Exceptions;
 using Inkybot.Services;
+using NLog;
 
 namespace Inkybot
 {
@@ -17,6 +18,8 @@ namespace Inkybot
     /// </summary>
     public class Win32ScreenCapture : ScreenCapture, IDisposable, HasDependencies
     {
+        private static readonly Logger Log = LogManager.GetLogger("system");
+
         private IntPtr handle;
         private Form mainForm;
         private Panel dofusClientPanel;
@@ -32,6 +35,8 @@ namespace Inkybot
         private RECT latestRawRect;
         private RECT latestVisibleRect;
         private bool startedByCaptureWindow;
+        private bool _firstValidFrameLogged = false;
+        private readonly Stopwatch _invalidFrameLogThrottle = Stopwatch.StartNew();
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
@@ -70,6 +75,7 @@ namespace Inkybot
 
         public void StartCapturing() {
             if (running) return;
+            Log.Info($"[Win32Capture] Starting background capture thread for handle 0x{handle:X}.");
             startedByCaptureWindow = false;
             running = true;
             captureThread = new Thread(CaptureLoop) { IsBackground = true, Name = "ScreenCapture" };
@@ -78,6 +84,7 @@ namespace Inkybot
 
         public void StopCapturing() {
             if (!running) return;
+            Log.Info("[Win32Capture] Stopping background capture thread.");
             running = false;
             captureThread?.Join(3000);
             captureThread = null;
@@ -85,6 +92,7 @@ namespace Inkybot
                 latestFrame?.Dispose();
                 latestFrame = null;
             }
+            _firstValidFrameLogged = false;
         }
 
         private void CaptureLoop() {
@@ -181,8 +189,12 @@ namespace Inkybot
             }
 
             if (frame == null) {
+                Log.Info("[Win32Capture] No background frame available — taking frame inline.");
                 (frame, rawRect, visibleRect) = TakeFrameInline();
             }
+
+            if (!_firstValidFrameLogged)
+                LogPixelStats(frame);
 
             int rawWidth  = rawRect.Right  - rawRect.Left;
             int rawHeight = rawRect.Bottom - rawRect.Top;
@@ -207,6 +219,42 @@ namespace Inkybot
                 StopCapturing();
 
             return result;
+        }
+
+        private void LogPixelStats(Bitmap bmp) {
+            const int gridSize = 5; // 5x5 = 25 sample points
+            var lumas = new int[gridSize * gridSize];
+            long sum = 0;
+
+            for (int row = 0; row < gridSize; row++) {
+                for (int col = 0; col < gridSize; col++) {
+                    int px = (int)((col + 0.5f) / gridSize * bmp.Width);
+                    int py = (int)((row + 0.5f) / gridSize * bmp.Height);
+                    var c = bmp.GetPixel(px, py);
+                    int luma = (c.R + c.G + c.B) / 3;
+                    lumas[row * gridSize + col] = luma;
+                    sum += luma;
+                }
+            }
+
+            int total = lumas.Length;
+            double mean = (double)sum / total;
+            double variance = 0;
+            foreach (var l in lumas) variance += (l - mean) * (l - mean);
+            double stddev = Math.Sqrt(variance / total);
+
+            const double validThreshold = 10.0;
+            bool isValid = stddev >= validThreshold;
+
+            if (isValid) {
+                _firstValidFrameLogged = true;
+                Log.Info($"[Win32Capture] First valid frame ({bmp.Width}x{bmp.Height}): " +
+                         $"sum={sum}, mean={mean:F1}, stddev={stddev:F1} — looks like real content.");
+            } else if (_invalidFrameLogThrottle.ElapsedMilliseconds >= 1000) {
+                _invalidFrameLogThrottle.Restart();
+                Log.Warn($"[Win32Capture] Frame content looks invalid ({bmp.Width}x{bmp.Height}): " +
+                         $"sum={sum}, mean={mean:F1}, stddev={stddev:F1} (threshold={validThreshold}).");
+            }
         }
 
         public void Dispose() {

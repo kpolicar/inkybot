@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Contracts;
 using Inkybot.Exceptions;
+using NLog;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Windows.Graphics.Capture;
@@ -21,6 +22,8 @@ namespace Inkybot
 {
     public class WinGraphicsCaptureScreenCapture : ScreenCapture, IDisposable
     {
+        private static readonly Logger Log = LogManager.GetLogger("system");
+
         private IntPtr handle;
         private Form mainForm;
         private Panel dofusClientPanel;
@@ -40,6 +43,8 @@ namespace Inkybot
         private bool isCapturing = false;
         private volatile bool hasFirstFrame = false;
         private readonly Stopwatch frameThrottle = Stopwatch.StartNew();
+        private bool _firstValidFrameLogged = false;
+        private readonly Stopwatch _invalidFrameLogThrottle = Stopwatch.StartNew();
 
         public void BindTo(IntPtr handle, Panel dofusClientPanel, int xOffsetLeft, int xOffsetRight, Form mainForm)
         {
@@ -49,13 +54,21 @@ namespace Inkybot
             this.xOffsetLeft = xOffsetLeft;
             this.xOffsetRight = xOffsetRight;
 
-            if (handle == IntPtr.Zero) return;
+            if (handle == IntPtr.Zero) {
+                Log.Warn("[WinGraphicsCapture] BindTo called with IntPtr.Zero — capture will not start.");
+                return;
+            }
+
+            Log.Info($"[WinGraphicsCapture] Initializing for handle 0x{handle:X}...");
 
             d3dDevice = new Device(SharpDX.Direct3D.DriverType.Hardware, DeviceCreationFlags.BgraSupport);
             winrtDevice = CreateWinRTDevice(d3dDevice);
 
             captureItem = CreateCaptureItemForWindow(mainForm.Handle);
-            captureItem.Closed += (s, e) => isCapturing = false;
+            captureItem.Closed += (s, e) => {
+                Log.Warn("[WinGraphicsCapture] Capture item closed (window detached or closed).");
+                isCapturing = false;
+            };
 
             var textureDesc = new Texture2DDescription
             {
@@ -88,6 +101,7 @@ namespace Inkybot
             }
 
             session.StartCapture();
+            Log.Info($"[WinGraphicsCapture] Session started. Capture item size: {captureItem.Size.Width}x{captureItem.Size.Height}.");
         }
 
         private void OnFrameArrived(Direct3D11CaptureFramePool sender, object args)
@@ -102,9 +116,11 @@ namespace Inkybot
                 if (frame.ContentSize.Width != stagingTexture.Description.Width ||
                     frame.ContentSize.Height != stagingTexture.Description.Height)
                 {
+                    Log.Info($"[WinGraphicsCapture] Frame size changed to {frame.ContentSize.Width}x{frame.ContentSize.Height} — recreating staging texture.");
                     lock (frameLock)
                     {
                         hasFirstFrame = false;
+                        _firstValidFrameLogged = false;
                         stagingTexture?.Dispose();
                         stagingTexture = new Texture2D(d3dDevice, new Texture2DDescription
                         {
@@ -147,6 +163,9 @@ namespace Inkybot
 
             while (!hasFirstFrame && totalSw.ElapsedMilliseconds < 2000) Thread.Sleep(10);
 
+            if (!hasFirstFrame)
+                Log.Warn("[WinGraphicsCapture] Timed out waiting for first frame after 2s — capture may not be delivering frames.");
+
             Bitmap result;
             lock (frameLock)
             {
@@ -163,6 +182,9 @@ namespace Inkybot
                         dataBox.DataPointer))
                     {
                         Profiler.Record("Capture", "gpu_to_cpu_map", copySw.ElapsedMilliseconds);
+
+                        if (!_firstValidFrameLogged)
+                            LogPixelStats(rawBmp);
 
                         var cropSw = Stopwatch.StartNew();
                         int yOff = yOffset();
@@ -187,6 +209,42 @@ namespace Inkybot
             return result;
         }
 
+        private void LogPixelStats(Bitmap bmp) {
+            const int gridSize = 5; // 5x5 = 25 sample points
+            var lumas = new int[gridSize * gridSize];
+            long sum = 0;
+
+            for (int row = 0; row < gridSize; row++) {
+                for (int col = 0; col < gridSize; col++) {
+                    int px = (int)((col + 0.5f) / gridSize * bmp.Width);
+                    int py = (int)((row + 0.5f) / gridSize * bmp.Height);
+                    var c = bmp.GetPixel(px, py);
+                    int luma = (c.R + c.G + c.B) / 3;
+                    lumas[row * gridSize + col] = luma;
+                    sum += luma;
+                }
+            }
+
+            int total = lumas.Length;
+            double mean = (double)sum / total;
+            double variance = 0;
+            foreach (var l in lumas) variance += (l - mean) * (l - mean);
+            double stddev = Math.Sqrt(variance / total);
+
+            const double validThreshold = 10.0;
+            bool isValid = stddev >= validThreshold;
+
+            if (isValid) {
+                _firstValidFrameLogged = true;
+                Log.Info($"[WinGraphicsCapture] First valid frame ({bmp.Width}x{bmp.Height}): " +
+                         $"sum={sum}, mean={mean:F1}, stddev={stddev:F1} — looks like real content.");
+            } else if (_invalidFrameLogThrottle.ElapsedMilliseconds >= 1000) {
+                _invalidFrameLogThrottle.Restart();
+                Log.Warn($"[WinGraphicsCapture] Frame content looks invalid ({bmp.Width}x{bmp.Height}): " +
+                         $"sum={sum}, mean={mean:F1}, stddev={stddev:F1} (threshold={validThreshold}).");
+            }
+        }
+
         public int yOffset()
         {
             int borderHeight = 0;
@@ -199,6 +257,7 @@ namespace Inkybot
 
         public void Dispose()
         {
+            Log.Info("[WinGraphicsCapture] Disposing.");
             isCapturing = false;
             session?.Dispose();        session = null!;
             framePool?.Dispose();      framePool = null!;
