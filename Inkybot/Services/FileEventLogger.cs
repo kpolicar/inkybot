@@ -45,20 +45,46 @@ namespace Inkybot.Services
 
         private void BindToMagingJob() {
             var magingJob =  (DofusMagingJob) Program.Services.GetService(typeof(DofusMagingJob));
+            var screenReaderMagingJob = (ScreenReaderDofusMagingJob) magingJob;
             var actionHandler = (ActionHandler) Program.Services.GetService(typeof(ActionHandler));
             var config =  (ConfigManager) Program.Services.GetService(typeof(MageConfigManager));
-            
-            magingJob.Started += (sender, args) => 
+
+            magingJob.Started += (sender, args) => {
                 MagingLogger.Info("Maging started.");
-            magingJob.Finished += (sender, args) => 
+                MetricsLogger.Track("run_started", new {
+                    run_id = screenReaderMagingJob.Session.RunId
+                });
+            };
+            magingJob.Finished += (sender, args) => {
+                var session = screenReaderMagingJob.Session;
                 MagingLogger.Info("Maging stopped.");
-            magingJob.Error += (sender, args) => 
+                MetricsLogger.Track("run_finished", new {
+                    run_id = session.RunId,
+                    reason = session.ManuallyStopped ? "manual_stop" : args.AutoShutdown ? "auto_shutdown" : "finished",
+                    total_combines = session.Ticks,
+                    duration_ms = session.RunDuration.ElapsedMilliseconds,
+                    had_any_combine = session.Ticks > 0
+                });
+            };
+            magingJob.Error += (sender, args) => {
                 MagingLogger.Error(args.exception, $"Maging error occured: {FormatException(args.exception)}");
-            magingJob.Warning += (sender, args) => 
+                MetricsLogger.Track("run_error", new {
+                    run_id = screenReaderMagingJob.Session.RunId,
+                    error_type = args.exception.GetType().Name,
+                    error_message = args.exception.Message
+                });
+            };
+            magingJob.Warning += (sender, args) => {
                 MagingLogger.Warn(args.exception, $"Unexpected result occured during maging: {FormatException(args.exception)}");
-            magingJob.SinkChanged += (sender, args) => 
+                MetricsLogger.Track("run_warning", new {
+                    run_id = screenReaderMagingJob.Session.RunId,
+                    warning_type = args.exception.GetType().Name,
+                    warning_message = args.exception.Message
+                });
+            };
+            magingJob.SinkChanged += (sender, args) =>
                 MagingLogger.Info("Sink has changed: " + Math.Round(args.Sink, 2));
-            magingJob.RuneQuantityChanged += (sender, args) => 
+            magingJob.RuneQuantityChanged += (sender, args) =>
                 MagingLogger.Info($"Rune quantity changed: {args.Rune}, new: {args.Quantity}, old: {args.OldQuantity}");
             config.ConfigModified += (sender, args) =>
                 MagingLogger.Info("Mage config has changed.");
@@ -68,8 +94,21 @@ namespace Inkybot.Services
                 MagingLogger.Debug("Previous config:\n"+(args.PreviousConfig?.ToString() ?? "-"));
                 MagingLogger.Debug("Item:\n"+args.Item);
             };
-            actionHandler.ActionExecuted += (sender, args) => 
+            actionHandler.ActionExecuted += (sender, args) => {
                 MagingLogger.Info("Action executed: " + FormatAction(args.action));
+                if (args.action is CombineRune combine) {
+                    MetricsLogger.Track("combine_executed", new {
+                        run_id = screenReaderMagingJob.Session.RunId,
+                        stat = combine.Rune.Stat.Identifier,
+                        rune_type = combine.Rune.Type.ToString().ToLower(),
+                        is_exo = combine.Exo
+                    });
+                } else if (args.action is Finish) {
+                    MetricsLogger.Track("finish_action", new {
+                        run_id = screenReaderMagingJob.Session.RunId
+                    });
+                }
+            };
         }
 
         private string FormatAction(IAction action) {

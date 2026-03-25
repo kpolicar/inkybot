@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using Inkybot.Actions;
@@ -9,6 +10,10 @@ namespace Inkybot.Services
 {
     internal class MageSession
     {
+        // Run identifier
+        public readonly string RunId = Guid.NewGuid().ToString("N").Substring(0, 16);
+        public readonly Stopwatch RunDuration = Stopwatch.StartNew();
+
         // Lifecycle
         public bool IsPreparing { get; set; }
         public bool IsRestarting { get; set; }

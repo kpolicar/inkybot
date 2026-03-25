@@ -339,6 +339,7 @@
             <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
         <Compile Include="Services\FileEventLogger.cs" />
+        <Compile Include="Services\MetricsLogger.cs" />
         <Compile Include="Services\DofusStandardStatsMagingAI.cs" />
         <Compile Include="Services\ImagePreprocessor.cs">
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>

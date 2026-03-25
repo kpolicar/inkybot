@@ -149,6 +149,7 @@ namespace Inkybot
         }
 
         private void OnClearQueueButtonClick(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_queue_cleared");
             mageQueueGroupBoxesPanel.HorizontalScroll.Maximum = 0;
             mageQueueGroupBoxesPanel.HorizontalScroll.Enabled = false;
             mageQueueGroupBoxesPanel.HorizontalScroll.Visible = false;

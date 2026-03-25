@@ -217,6 +217,7 @@ namespace Inkybot
 
         private void ConfigForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {
             if (e.ColumnIndex < 1 || e.ColumnIndex > 7 || e.RowIndex < 0) return;
+            MetricsLogger.Track("ui_config_modified");
             var row = statsDataGridView.Rows[e.RowIndex];
             var cell = row.Cells[e.ColumnIndex];
 
@@ -252,29 +253,45 @@ namespace Inkybot
             SetConfigRowTooltipsAndChangeStyles(row);
         }
 
-        private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) =>
+        private void ConfigForm_OnRestoreHighSinkStatsCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "restoreHighSinkStats", new_value = restoreHighSinkStatsCheckbox.Checked });
             userSettingsConfigManager.RestoreHighSinkStats = restoreHighSinkStatsCheckbox.Checked;
-        
-        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) =>
-            userSettingsConfigManager.AutoRestartBot = autoRestartBotCheckbox.Checked;
-        
-        private void ConfigForm_OnAutoStartNewSessionCheckboxCheckedChanged(object sender, EventArgs e) =>
-            userSettingsConfigManager.AutoStartNewSession = autoStartNewSessionCheckbox.Checked;
-        
-        private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
-            userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
-        
-        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged(object sender, EventArgs e) =>
-            userSettingsConfigManager.EnableRuneChecking = enableRuneCheckingCheckbox.Checked;
+        }
 
-        private void ConfigForm_OnPublishExosCheckboxCheckedChanged(object sender, EventArgs e) =>
+        private void ConfigForm_OnAutoRestartBotCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "autoRestartBot", new_value = autoRestartBotCheckbox.Checked });
+            userSettingsConfigManager.AutoRestartBot = autoRestartBotCheckbox.Checked;
+        }
+
+        private void ConfigForm_OnAutoStartNewSessionCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "autoStartNewSession", new_value = autoStartNewSessionCheckbox.Checked });
+            userSettingsConfigManager.AutoStartNewSession = autoStartNewSessionCheckbox.Checked;
+        }
+
+        private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "showWarnings", new_value = showWarningsCheckbox.Checked });
+            userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
+        }
+
+        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "enableRuneChecking", new_value = enableRuneCheckingCheckbox.Checked });
+            userSettingsConfigManager.EnableRuneChecking = enableRuneCheckingCheckbox.Checked;
+        }
+
+        private void ConfigForm_OnPublishExosCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "publishExos", new_value = publishExosCheckbox.Checked });
             userSettingsConfigManager.PublishExos = publishExosCheckbox.Checked;
-        
-        private void ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+        }
+
+        private void ConfigForm_OnEnableKamasCalculationCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "enableKamasCalculation", new_value = enableKamasCalculationCheckbox.Checked });
             userSettingsConfigManager.EnableKamasCalculation = enableKamasCalculationCheckbox.Checked;
-        
-        private void ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged(object sender, EventArgs e) =>
+        }
+
+        private void ConfigForm_OnEnableMageQueueingCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "enableSafeMageQueueing", new_value = enableSafeMageQueueingCheckbox.Checked });
             userSettingsConfigManager.EnableSafeMageQueueing = enableSafeMageQueueingCheckbox.Checked;
+        }
 
         private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
             cancelEventArgs.Cancel = true;
@@ -282,6 +299,7 @@ namespace Inkybot
         }
 
         private void scriptChangeButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_custom_script_changed");
             if (auth.User != null && !auth.User.canUseCustomMagingAI) {
                 var text = !auth.User.onUnlimitedPlan && !auth.User.onStandardPlan
                     ? resources.GetString("popup.error_notavailable_unlimitedstandard_plan")
@@ -327,6 +345,7 @@ namespace Inkybot
         }
 
         private void scriptResetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_custom_script_reset");
             magingAiManager.UseBuiltInAIScript();
         }
 
@@ -361,6 +380,9 @@ namespace Inkybot
         }
 
         private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_form_advanced_toggled", new {
+                state = showAdvancedOptionsButton.Text == "+" ? "shown" : "hidden"
+            });
             if (showAdvancedOptionsButton.Text == "+") {
                 showAdvancedOptionsButton.Text = "-";
                 tooltip.SetToolTip(
@@ -379,8 +401,10 @@ namespace Inkybot
                 statsDataGridView.Columns[7].Visible = !statsDataGridView.Columns[7].Visible;
         }
 
-        private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) =>
+        private void autoShutdownComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_auto_shutdown_changed", new { value = autoShutdownComboBox.SelectedValue });
             AutoShutdownDelay = (int) autoShutdownComboBox.SelectedValue;
+        }
 
         private int changes;
         private void customResizeRatioNumericUpDown_ValueChanged(object sender, EventArgs e) {
@@ -444,11 +468,12 @@ namespace Inkybot
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
-
+            MetricsLogger.Track("ui_preset_loaded", new { form = "config" });
             Task.Run(() => userSettingsConfigManager.ApplyConfigPreset(index - 1));
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_preset_saved", new { form = "config" });
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
 
@@ -484,9 +509,10 @@ namespace Inkybot
         }
 
         private void deletePresetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_preset_deleted", new { form = "config" });
             var index = presetsComboBox.SelectedIndex;
             if (index <= 0) return;
-            
+
             var existingPresets = userSettingsConfigManager.ConfigPresets.Presets.ToList();
             existingPresets.RemoveAt(index-1);
             userSettingsConfigManager.ConfigPresets = new ConfigPresets() {

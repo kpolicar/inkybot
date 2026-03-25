@@ -123,6 +123,7 @@ namespace Inkybot
             // setupForm.Size = new Size(720, 640);
             // MinimumSize = new Size(1920, 1080);
             // Size = new Size(1280, 720);
+            MetricsLogger.Track(magingJob.IsMaging ? "ui_mage_stop_clicked" : "ui_mage_start_clicked");
             toastPanel.Hide();
             StopAutoShutdownCounter();
 
@@ -132,15 +133,18 @@ namespace Inkybot
         }
 
         private void helpButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_help_opened");
             Process.Start(Server.UsageInstructions);
         }
 
         private void statsButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_setup_form_opened");
             if (!setupForm.Visible) setupForm.Show();
             else setupForm.Focus();
         }
 
         private void configButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_config_form_opened");
             if (!configForm.Visible) configForm.Show();
             else configForm.Focus();
         }
@@ -150,6 +154,7 @@ namespace Inkybot
         }
 
         private void debugScreenshotButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_debug_screenshot");
             var takeScreenshot = new ThreadStart(TakeScreenshotsAndOpenFolder);
             
             new Thread(takeScreenshot).Start();
@@ -192,6 +197,7 @@ namespace Inkybot
         }
 
         private void hallOfFameButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_hall_of_fame_opened");
             Process.Start(Server.HallOfFameUrl);
         }
 
@@ -209,6 +215,7 @@ namespace Inkybot
                 return;
             }
             
+            MetricsLogger.Track("ui_statistics_form_opened");
             if (!statisticsForm.Visible) statisticsForm.Show();
             else statisticsForm.Focus();
         }
@@ -251,6 +258,7 @@ namespace Inkybot
 
         private void EnqueueRectangle_AddToQueue(object sender, ControlEventArgs eventArgs) {
             if (auth.User?.canUseMageQueue ?? false) {
+                MetricsLogger.Track("ui_queue_item_added");
                 var rectangle = (eventArgs.Control as EnqueueRectangle)!;
                 Task.Run(() => mageQueue.Enqueue(rectangle, queueControls[rectangle]));
             } else {
@@ -259,11 +267,13 @@ namespace Inkybot
         }
 
         private void EnqueueRectangle_RemoveFromQueue(object sender, ControlEventArgs eventArgs) {
+            MetricsLogger.Track("ui_queue_item_removed");
             var rectangle = (eventArgs.Control as EnqueueRectangle)!;
             mageQueue.Remove(rectangle);
         }
 
         private void showMageQueueButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_mage_queue_opened");
             Task.Run(async () => {
                 if (config.UserSettings.EnableSafeMageQueueing) {
                     actions.Execute(actionFactory.InventorySelectAllAction(), true);
@@ -308,11 +318,13 @@ namespace Inkybot
         }
 
         private void kamasSpentValueResetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_kamas_counter_reset");
             (magingJob as ScreenReaderDofusMagingJob)?.ResetBalance();
             kamasSpentValueLabel.Text = resources.GetString("kamasSpentValueLabel.Text");
         }
 
         private void exoAttemptsValueResetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_exo_counter_reset");
             BeginInvoke(new MethodInvoker(() => {
                 exoAttemptsValueLabel.Text = "0";
             }));

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Inkybot.Api;
 using Inkybot.Contracts;
+using Inkybot.Services;
 using Inkybot.Domain;
 using Inkybot.Events;
 
@@ -80,6 +81,7 @@ namespace Inkybot
         }
 
         private void refreshButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_statistics_refreshed");
             try {
                 webBrowser.Navigate(LocalizedUrl, "", new byte[] { }, Header);
             } catch (Exception) {

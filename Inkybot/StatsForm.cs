@@ -333,8 +333,9 @@ namespace Inkybot
             var stat = statRow.Stat;
             if (!stat.Mageable)
                 return;
+            MetricsLogger.Track("ui_stats_target_changed");
             var newValue = Numbers.Parse(cell.Value.ToString());
-            
+
             if (e.ColumnIndex == 2)
                 configManager.ChangeStatConfigTarget(stat, newValue ?? 0);
             else if (e.ColumnIndex == 3) {
@@ -388,8 +389,9 @@ namespace Inkybot
             } catch (UserForbiddenException) {
                 return;
             }
-            
+
             var stat = Stat.Stats.Values.First(stat => stat.DisplayName == exoStatComboBox.Text);
+            MetricsLogger.Track("ui_exo_added", new { stat = stat.Identifier });
             
             var perResStats = new [] {
                 Stat.PerAirResistance, Stat.PerEarthResistance, Stat.PerFireResistance,
@@ -435,13 +437,15 @@ namespace Inkybot
         }
 
         private void clearExosButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_exos_cleared");
             configManager.RemoveExos();
         }
 
         private void addPresetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_preset_saved", new { form = "setup" });
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
-            
+
             var config1 = configManager.Config!.StatsConfig.StandardStatsConfigs
                 .Select(statConfig =>
                     new ItemStatConfigAdapter(statConfig.Key, statConfig.Value).ToSerializable())
@@ -475,7 +479,7 @@ namespace Inkybot
         private void presetsComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             var index = presetsComboBox.SelectedIndex;
             if (index == 0) return;
-            
+            MetricsLogger.Track("ui_preset_loaded", new { form = "setup" });
             try {
                 configManager.ApplyPreset(index-1);
             } catch (UserForbiddenException) {
@@ -499,9 +503,10 @@ namespace Inkybot
             }));
 
         private void deletePresetButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_preset_deleted", new { form = "setup" });
             var index = presetsComboBox.SelectedIndex;
             if (index <= 0) return;
-            
+
             var existingPresets = configManager.UserSettings.Presets.Presets.ToList();
             existingPresets.RemoveAt(index-1);
             configManager.UserSettings.Presets = new ItemPresets {
@@ -515,6 +520,9 @@ namespace Inkybot
         }
 
         private void showAdvancedOptionsButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_setup_form_advanced_toggled", new {
+                state = showAdvancedOptionsButton.Text == "+" ? "shown" : "hidden"
+            });
             if (auth.User?.is_free_trial ?? false) {
                 MessageBox.Show(
                     resources.GetString("popup.error_notavailable_freetrial"),
@@ -541,6 +549,7 @@ namespace Inkybot
         }
 
         private void refreshButton_Click(object sender, EventArgs e) {
+            MetricsLogger.Track("ui_refresh_stats");
             RefreshStats();
         }
 

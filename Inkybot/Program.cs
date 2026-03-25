@@ -128,6 +128,16 @@ namespace Inkybot
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new MageQueueForm());
             var form = new MainForm();
+            var sessionStopwatch = Stopwatch.StartNew();
+            MetricsLogger.Track("session_started", new {
+                version = Version,
+                locale = Lang.TwoLetterISOLanguageName
+            });
+            Application.ApplicationExit += (s, e) => {
+                MetricsLogger.Track("session_ended", new {
+                    uptime_ms = sessionStopwatch.ElapsedMilliseconds
+                });
+            };
             Application.ApplicationExit += OnAppClosing;
             Application.Run(form);
         }
