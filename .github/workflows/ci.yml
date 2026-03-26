@@ -6,40 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
-
-      - name: Restore packages
-        run: nuget restore Inkybot.sln
-
-      - name: Copy EasyHook native files
-        shell: pwsh
-        run: |
-          $src = Join-Path $env:USERPROFILE ".nuget\packages\easyhook\2.7.7097\contentFiles\any\net40"
-          Copy-Item "$src\*" -Destination Inkybot\ -Force
-          Copy-Item "$src\*" -Destination InkybotHook\ -Force
-
-      - name: Build
-        run: msbuild Inkybot.sln /p:Configuration=Release /p:Platform="Any CPU" /m
-
-      - name: Move obfuscated output
-        shell: cmd
-        run: |
-          if exist Inkybot\bin\Release\confused (
-            xcopy /y /e Inkybot\bin\Release\confused\* Inkybot\bin\Release\
-            rmdir /s /q Inkybot\bin\Release\confused
-          )
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Inkybot-${{ github.run_number }}
-          path: Inkybot/bin/Release/
-          retention-days: 14
+    uses: ./.github/workflows/build.yml
+    with:
+      artifact-name: Inkybot-${{ github.run_number }}
+      retention-days: 14
