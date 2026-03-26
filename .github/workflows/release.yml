@@ -51,20 +51,27 @@ jobs:
           generate_release_notes: true
           tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', steps.version.outputs.VERSION) || github.ref_name }}
 
-      - name: Deploy to host
+      - name: Upload to host
         if: vars.DEPLOY_ENABLED == 'true'
-        shell: bash
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          SSH="ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-          SCP="scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new"
-          ZIP="Inkybot_v${{ steps.version.outputs.VERSION }}.zip"
-          $SCP "$ZIP" "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:~/$ZIP"
-          $SSH "docker cp ~/$ZIP inkybot-app:/var/www/html/storage/app/public/$ZIP && rm ~/$ZIP"
-          rm -f ~/.ssh/deploy_key
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: Inkybot_v${{ steps.version.outputs.VERSION }}.zip
+          target: ~/
+
+      - name: Deploy to container
+        if: vars.DEPLOY_ENABLED == 'true'
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            ZIP="Inkybot_v${{ steps.version.outputs.VERSION }}.zip"
+            docker cp ~/$ZIP inkybot-app:/var/www/html/storage/app/public/$ZIP
+            rm ~/$ZIP
 
       - name: Setup ORAS
         if: vars.PUBLISH_TO_GHCR == 'true'
