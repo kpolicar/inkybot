@@ -49,19 +49,27 @@ jobs:
           generate_release_notes: true
           tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', steps.version.outputs.VERSION) || github.ref_name }}
 
-      - name: Deploy to host
+      - name: Upload to host
         if: vars.DEPLOY_ENABLED == 'true'
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: appleboy/scp-action@v0.1.7
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: Inkybot_v${{ steps.version.outputs.VERSION }}.zip
+          target: ~/
 
-      - name: Upload and deploy
+      - name: Deploy to container
         if: vars.DEPLOY_ENABLED == 'true'
-        run: |
-          ZIP="Inkybot_v${{ steps.version.outputs.VERSION }}.zip"
-          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          scp "$ZIP" ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:~/"$ZIP"
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "docker cp ~/$ZIP inkybot-app:/var/www/html/storage/app/public/$ZIP && rm ~/$ZIP"
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            ZIP="Inkybot_v${{ steps.version.outputs.VERSION }}.zip"
+            docker cp ~/$ZIP inkybot-app:/var/www/html/storage/app/public/$ZIP
+            rm ~/$ZIP
 
       - name: Setup ORAS
         if: vars.PUBLISH_TO_GHCR == 'true'
