@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore packages
+        run: nuget restore Inkybot.sln
+
+      - name: Build
+        run: msbuild Inkybot.sln /p:Configuration=Release /p:Platform="Any CPU" /m
+
+      - name: Move obfuscated output
+        shell: cmd
+        run: |
+          if exist Inkybot\bin\Release\confused (
+            xcopy /y /e Inkybot\bin\Release\confused\* Inkybot\bin\Release\
+            rmdir /s /q Inkybot\bin\Release\confused
+          )
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Inkybot-${{ github.run_number }}
+          path: Inkybot/bin/Release/
+          retention-days: 14
