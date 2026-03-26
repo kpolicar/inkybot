@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "browser-use": {
+      "command": "/home/claude/Projects/browser-use/.venv/bin/python",
+      "args": ["/home/claude/Projects/inkybot/browser_use_patched.py"],
+      "env": {
+        "BROWSER_USE_HEADLESS": "true"
+      }
+    }
+  }
+}
