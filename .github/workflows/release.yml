@@ -38,6 +38,13 @@ jobs:
       - name: Restore packages
         run: nuget restore Inkybot.sln
 
+      - name: Copy EasyHook native files
+        shell: pwsh
+        run: |
+          $src = Join-Path $env:USERPROFILE ".nuget\packages\easyhook\2.7.7097\contentFiles\any\net40"
+          Copy-Item "$src\*" -Destination Inkybot\ -Force
+          Copy-Item "$src\*" -Destination InkybotHook\ -Force
+
       - name: Build
         run: msbuild Inkybot.sln /p:Configuration=Release /p:Platform="Any CPU" /m
 
