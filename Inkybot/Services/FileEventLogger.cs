@@ -60,13 +60,14 @@ namespace Inkybot.Services
                 MagingLogger.Info("Maging stopped.");
                 MetricsLogger.Track("run_finished", new {
                     run_id = session.RunId,
-                    reason = session.ManuallyStopped ? "manual_stop" : args.AutoShutdown ? "auto_shutdown" : "finished",
+                    reason = ResolveRunFinishedReason(session, args.AutoShutdown),
                     total_combines = session.Ticks,
                     duration_ms = session.RunDuration.ElapsedMilliseconds,
                     had_any_combine = session.Ticks > 0
                 });
             };
             magingJob.Error += (sender, args) => {
+                screenReaderMagingJob.Session.LastError = args.exception;
                 MagingLogger.Error(args.exception, $"Maging error occured: {FormatException(args.exception)}");
                 MetricsLogger.Track("run_error", new {
                     run_id = screenReaderMagingJob.Session.RunId,
@@ -108,6 +109,26 @@ namespace Inkybot.Services
                         run_id = screenReaderMagingJob.Session.RunId
                     });
                 }
+            };
+        }
+
+        private static string ResolveRunFinishedReason(MageSession session, bool autoShutdown) {
+            if (session.ManuallyStopped) return "manual_stop";
+            if (session.LastError != null) return ErrorToReason(session.LastError);
+            if (autoShutdown) return "auto_shutdown";
+            return "finished";
+        }
+
+        private static string ErrorToReason(Exception error) {
+            return error switch {
+                OutOfRunesException => "out_of_runes",
+                NoItemToMageFoundException => "no_item_found",
+                ItemDoesNotMatchPresetException => "item_mismatch",
+                ItemHasChangedException => "item_changed",
+                ItemHasNotChangedException => "item_not_changed",
+                OperationCanceledException => "cancelled",
+                UserForbiddenException => "user_forbidden",
+                _ => "error"
             };
         }
 

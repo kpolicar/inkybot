@@ -32,6 +32,9 @@ namespace Inkybot.Services
         public bool PreviousCombineWasExoAttempt;
         public Rune PreviousCheckHadRunOutOfRunes;
 
+        // Error tracking
+        public Exception LastError;
+
         // Counters
         public int Ticks;
         public int UnsuccessfulCombineTicks;
