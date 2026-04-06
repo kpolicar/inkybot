@@ -23,6 +23,30 @@ namespace Inkybot
         private Process? pDofus;
         private IntPtr hWndDocked;
         private IntPtr parentHandle;
+        private Mutex? dofusClaim;
+
+        private static bool IsDofusProcessClaimed(int processId) {
+            try {
+                using (Mutex.OpenExisting($@"Global\Inkybot_DofusPID_{processId}"))
+                    return true;
+            } catch (WaitHandleCannotBeOpenedException) {
+                return false;
+            } catch (AbandonedMutexException) {
+                return false;
+            }
+        }
+
+        private void ClaimDofusProcess(int processId) {
+            dofusClaim = new Mutex(true, $@"Global\Inkybot_DofusPID_{processId}");
+        }
+
+        private void ReleaseDofusClaim() {
+            if (dofusClaim != null) {
+                try { dofusClaim.ReleaseMutex(); } catch { }
+                dofusClaim.Dispose();
+                dofusClaim = null;
+            }
+        }
 
         private bool InitializeDofusClient() {
             if (pDofus != null && !pDofus.HasExited) {
@@ -51,7 +75,8 @@ namespace Inkybot
 
             parentHandle = WindowHelpers.DockProcess(pDofus!, dofusClientPanel, ref hWndDocked);
             WindowHelpers.RemoveWindowBorders(hWndDocked);
-            
+            ClaimDofusProcess(pDofus.Id);
+
             Win32Input.SetTargetProcessId(pDofus.Id);
 
             Task.Run(async () => {
@@ -89,6 +114,7 @@ namespace Inkybot
                 var processes = Process.GetProcesses();
                 var dofusProcesses = processes
                     .Where(process => process.ProcessName.IndexOf("dofus", StringComparison.OrdinalIgnoreCase) >= 0 && process.MainWindowTitle != "")
+                    .Where(process => !IsDofusProcessClaimed(process.Id))
                     .ToArray();
 
                 if (dofusProcesses.Length == 1) {
@@ -110,6 +136,9 @@ namespace Inkybot
                         foreach (var p in dofusProcesses) {
                             try { p.Kill(); } catch { /* ignore */ }
                         }
+                        // Note: dofusProcesses is already filtered to exclude
+                        // processes claimed by other Inkybot instances (see above),
+                        // so this only kills unclaimed processes.
                         waitingForm.Invoke(new MethodInvoker(() => {
                             waitingForm.ShowErrorMessage(
                                 "Dofus was terminated to adjust UI preferences.\nPlease restart it via the Ankama Launcher.");

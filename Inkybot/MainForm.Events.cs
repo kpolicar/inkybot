@@ -35,6 +35,7 @@ namespace Inkybot
             Closing += (sender, args) => {
                 magingJob.StopMage();
                 StopDebugging();
+                ReleaseDofusClaim();
                 if (pDofus != null) {
                     WindowHelpers.RestoreWindowBorders(hWndDocked);
                     WindowHelpers.UndockProcess(pDofus.MainWindowHandle, parentHandle);
