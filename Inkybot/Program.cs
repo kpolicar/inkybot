@@ -270,7 +270,7 @@ namespace Inkybot
                         $"restoreHighSinkStatImmediately={s.restoreHighSinkStatImmediately}, " +
                         $"autoRestartBot={s.autoRestartBot}, autoStartNewSession={s.autoStartNewSession}, " +
                         $"showUserWarnings={s.showUserWarnings}, enableSafeMageQueueing={s.enableSafeMageQueueing}, " +
-                        $"enableRuneChecking={s.enableRuneChecking}, kamasCalculation={s.kamasCalculation}, " +
+                        $"kamasCalculation={s.kamasCalculation}, " +
                         $"publishExos={s.publishExos}");
         }
 

@@ -47,7 +47,6 @@ namespace Inkybot.Services
 
             configManager.EnforceConfigSetForItem(item);
             configManager.RemoveFallenUnconfiguredStats(item);
-            session.Runes = dataProvider.Runes();
 
             session.PreviousItem = (previousItem != null && item.Equals(previousItem)) ? previousItem : null;
             return item;

@@ -88,7 +88,7 @@ namespace Inkybot
             this.customResizeRatioPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.dataGridViewSidebarPanel = new System.Windows.Forms.Panel();
             this.bottomPanel = new System.Windows.Forms.Panel();
-            this.enableRuneCheckingCheckbox = new System.Windows.Forms.CheckBox();
+
             this.enableKamasCalculationCheckbox = new System.Windows.Forms.CheckBox();
             this.autoStartNewSessionCheckbox = new System.Windows.Forms.CheckBox();
             this.userSettingsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -280,19 +280,7 @@ namespace Inkybot
             this.autoShutdownComboBox.DisplayMember = "Value";
             this.autoShutdownComboBox.TabIndex = 3;
 
-            // 
-            // enableRuneCheckingCheckbox
-            // 
-            resources.ApplyResources(this.enableRuneCheckingCheckbox, "enableRuneCheckingCheckbox");
-            this.enableRuneCheckingCheckbox.ForeColor = System.Drawing.SystemColors.Control;
-            this.enableRuneCheckingCheckbox.Name = "enableRuneCheckingCheckbox";
-            this.enableRuneCheckingCheckbox.UseVisualStyleBackColor = true;
-            this.enableRuneCheckingCheckbox.Visible = false;
-            this.enableRuneCheckingCheckbox.CheckedChanged += new System.EventHandler(this.ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged);
-            this.enableRuneCheckingCheckbox.Dock = DockStyle.Fill;
-            this.enableRuneCheckingCheckbox.AutoEllipsis = true;
-
-            // 
+            //
             // enableKamasCalculationCheckbox
             // 
             resources.ApplyResources(this.enableKamasCalculationCheckbox, "enableKamasCalculationCheckbox");
@@ -401,7 +389,6 @@ namespace Inkybot
             this.userSettingsPanel.Controls.Add(this.showWarningsCheckbox);
             this.userSettingsPanel.Controls.Add(this.enableKamasCalculationCheckbox);
             //this.userSettingsPanel.Controls.Add(this.autoRestartBotCheckbox);
-            //this.userSettingsPanel.Controls.Add(this.enableRuneCheckingCheckbox);
             this.userSettingsPanel.Controls.Add(this.enableSafeMageQueueingCheckbox);
             this.userSettingsPanel.Controls.Add(this.automaticShutdownPanel);
             this.userSettingsPanel.Controls.Add(this.customResizeRatioPanel);
@@ -608,7 +595,7 @@ namespace Inkybot
         private System.Windows.Forms.CheckBox autoStartNewSessionCheckbox;
         private System.Windows.Forms.CheckBox showWarningsCheckbox;
         private System.Windows.Forms.CheckBox publishExosCheckbox;
-        private System.Windows.Forms.CheckBox enableRuneCheckingCheckbox;
+
         private System.Windows.Forms.CheckBox enableSafeMageQueueingCheckbox;
         private System.Windows.Forms.CheckBox restoreHighSinkStatsCheckbox;
         private System.Windows.Forms.CheckBox enableKamasCalculationCheckbox;

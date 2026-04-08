@@ -33,7 +33,6 @@ namespace Inkybot.Services
             private static MinMaxScreenScanner? statMinsScanner;
             private static MinMaxScreenScanner? statMaxesScanner;
             private static ScreenScanner? sinkScanner;
-            private static ScreenScanner? runeScanner;
             private static ScreenScanner? averageItemPriceScanner;
 
             private static CultureInfo? lang;
@@ -73,7 +72,6 @@ namespace Inkybot.Services
                     statValuesScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     statMinsScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     statMaxesScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
-                    runeScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     averageItemPriceScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                     sinkScanner!.Saved += (_, e) => Saved?.Invoke(this, e);
                 }
@@ -142,8 +140,6 @@ namespace Inkybot.Services
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                     statMaxesScanner = new MinMaxScreenScanner(Measurements.StatMaxBounds, SplitStatTextLines,
                         new MinMaxImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
-                    runeScanner =
-                        new PositiveNumberScreenScanner(default, null, new RuneImagePreprocessor(), PageSegMode.SingleChar);
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
                             new ResizeImagePreprocessor(350), PageSegMode.SingleWord);
@@ -249,47 +245,6 @@ namespace Inkybot.Services
                 }).ToArray();
             }
 
-            public async Task<RuneQuantityScan> RuneQuantity(int column, int row) {
-                var runeBounds = Measurements.RuneBoxBounds(column, row);
-                runeScanner!.SetRegion(runeBounds);
-                var scanned = await runeScanner.ScanRegionAsync(screenshot, screenshotHeight);
-                var result = scanned.First();
-                
-                int runeQuantity;
-                var hasRune = int.TryParse(result, out runeQuantity);
-                runeQuantity = hasRune ? runeQuantity : 0;
-                
-                return new RuneQuantityScan {
-                    Column = column,
-                    Row = row,
-                    Quantity = runeQuantity,
-                };
-            }
-
-            public RuneQuantityScan[] RunesQuantities() {
-                var runeBoxes = Measurements.RuneBoundsIndividualMeasurements;
-
-                var scanIndex = 0;
-                return runeBoxes.Select(runeBox => {
-                    runeScanner!.SetRegion(runeBox);
-                    var scanned = runeScanner.ScanRegionAsync(screenshot, screenshotHeight).Result;
-                    var result = scanned.FirstOrDefault() ?? "";
-
-                    int runeQuantity;
-                    var hasRune = int.TryParse(result, out runeQuantity);
-                    runeQuantity = hasRune ? runeQuantity : 0;
-                    
-                    var scan = new RuneQuantityScan {
-                        Column = scanIndex / 13,
-                        Row = scanIndex % 13,
-                        Quantity = runeQuantity,
-                    };
-                    
-                    scanIndex++;
-                    return scan;
-                }).ToArray();
-            }
-
             public async Task<string[]> History() {
                 if (_prefetchedHistoryTask != null) return await _prefetchedHistoryTask;
                 return await historyScanner!.ScanRegionAsync(screenshot, screenshotHeight, saveToDisk);
@@ -371,7 +326,6 @@ namespace Inkybot.Services
                     statValuesScanner!.Saved -= Saved;
                     statMinsScanner!.Saved -= Saved;
                     statMaxesScanner!.Saved -= Saved;
-                    runeScanner!.Saved -= Saved;
                     averageItemPriceScanner!.Saved -= Saved;
                 }
                 latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;
@@ -409,7 +363,6 @@ namespace Inkybot.Services
                     statValuesScanner!.Saved -= Saved;
                     statMinsScanner!.Saved -= Saved;
                     statMaxesScanner!.Saved -= Saved;
-                    runeScanner!.Saved -= Saved;
                     averageItemPriceScanner!.Saved -= Saved;
                 }
                 latestHistoryScanner!.PageProcessed -= OnLatestHistoryPageProcessed;

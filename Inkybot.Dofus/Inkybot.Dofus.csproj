@@ -78,7 +78,6 @@
         <Compile Include="Rune.cs" />
         <Compile Include="Stat.cs" />
         <Compile Include="StatConfig.cs" />
-        <Compile Include="UserRune.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inkybot.Design\Inkybot.Design.csproj">

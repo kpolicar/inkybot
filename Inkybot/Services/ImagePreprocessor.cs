@@ -11,20 +11,6 @@ namespace Inkybot.Services
 {
     public partial class ScreenReaderDataProvider
     {
-        public class RuneImagePreprocessor : ResizeImagePreprocessor
-        {
-            public RuneImagePreprocessor() : base(300) {
-            }
-            
-            protected override void PreprocessingSteps(MagickImage image) {
-                image.ColorSpace = ColorSpace.Gray;
-                image.Alpha(AlphaOption.Remove);
-                image.ColorThreshold(new MagickColor(230, 230, 230), new MagickColor(255, 255, 255));
-                image.Negate();
-                PreprocessResizeImage(image);
-            }
-        }
-
         public class ResizeImagePreprocessor : ImagePreprocessor
         {
             protected int originalResizePercentage;

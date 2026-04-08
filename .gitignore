@@ -223,3 +223,6 @@ project.lock.json
 
 tessdata/
 !tessdata/config
+
+# Environment secrets
+.env

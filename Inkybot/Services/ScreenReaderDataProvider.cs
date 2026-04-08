@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
-using Inkybot.Domain;
 using Inkybot.Events;
-using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 using MageConfig = Inkybot.Dofus.MageConfig;
@@ -125,28 +122,6 @@ namespace Inkybot.Services
             FetchedItem?.Invoke(this, new ItemEventArgs(item));
 
             return previousScannedItem = item;
-        }
-
-        public UserRunes Runes() {
-            var item = Item();
-            var scanResults = Scan!.RunesQuantities();
-
-            var userRunes = new DofusStatUserRunesOcrResultAdapter(item, scanResults).ToUserRunes();
-
-            return userRunes
-                .ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value);
-        }
-
-        public UserRune RuneQuantity(Rune rune) {
-            var row = previousScannedItem!.Stats
-                .Select((Value, Index) => new { Value, Index })
-                .Single(p => p.Value.Stat == rune.Stat)
-                .Index;
-            
-            var column = (int) rune.Type;
-            var runeQuantityScan = Scan!.RuneQuantity(column, row).Result;
-            
-            return new UserRune(rune, runeQuantityScan.Quantity);
         }
 
         public bool IsSupportedItem(Item item) {

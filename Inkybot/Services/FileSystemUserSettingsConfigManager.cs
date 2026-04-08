@@ -84,14 +84,6 @@ namespace Inkybot.Services
             get => Properties.Settings.Default.enableSafeMageQueueing;
         }
 
-        public bool EnableRuneChecking {
-            set {
-                Properties.Settings.Default.enableRuneChecking = value;
-                Properties.Settings.Default.Save();
-            }
-            get => Properties.Settings.Default.enableRuneChecking;
-        }
-
         public ItemPresets Presets {
             set {
                 Properties.Settings.Default.presets = value;

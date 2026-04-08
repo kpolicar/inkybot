@@ -33,7 +33,7 @@ namespace Inkybot
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);
             }
-            
+
             latestHistoryOcrIndicatorControl = RegisterOcrIndicator(screenReader.LatestHistoryBounds);
             screenReader.LatestHistoryBoundsChanged += OnLatestHistoryProcessed;
         }

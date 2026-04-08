@@ -6,13 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inkybot.Adapters;
 using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
-using Inkybot.Domain;
 using Inkybot.Events;
-using Inkybot.Extensions;
 using Inkybot.Helpers;
 using Inkybot.Resources;
 using Inkybot.Services;
@@ -89,7 +86,6 @@ namespace Inkybot
             autoRestartBotCheckbox.Checked = userSettingsConfigManager.AutoRestartBot;
             showWarningsCheckbox.Checked = userSettingsConfigManager.ShowUserWarnings;
             publishExosCheckbox.Checked = userSettingsConfigManager.PublishExos;
-            enableRuneCheckingCheckbox.Checked = userSettingsConfigManager.EnableRuneChecking;
             enableKamasCalculationCheckbox.Checked = userSettingsConfigManager.EnableKamasCalculation;
             enableSafeMageQueueingCheckbox.Checked = userSettingsConfigManager.EnableSafeMageQueueing;
             autoStartNewSessionCheckbox.Checked = userSettingsConfigManager.AutoStartNewSession;
@@ -271,11 +267,6 @@ namespace Inkybot
         private void ConfigForm_OnShowWarningsCheckboxCheckboxCheckedChanged(object sender, EventArgs e) {
             MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "showWarnings", new_value = showWarningsCheckbox.Checked });
             userSettingsConfigManager.ShowUserWarnings = showWarningsCheckbox.Checked;
-        }
-
-        private void ConfigForm_OnEnableRuneCheckingCheckboxCheckedChanged(object sender, EventArgs e) {
-            MetricsLogger.Track("ui_config_checkbox_toggled", new { checkbox_name = "enableRuneChecking", new_value = enableRuneCheckingCheckbox.Checked });
-            userSettingsConfigManager.EnableRuneChecking = enableRuneCheckingCheckbox.Checked;
         }
 
         private void ConfigForm_OnPublishExosCheckboxCheckedChanged(object sender, EventArgs e) {

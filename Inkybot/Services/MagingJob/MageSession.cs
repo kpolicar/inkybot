@@ -4,7 +4,6 @@ using System.Linq;
 using Inkybot.Actions;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Domain;
-using Inkybot.Domain;
 
 namespace Inkybot.Services
 {
@@ -30,18 +29,13 @@ namespace Inkybot.Services
         public string[] PreviousHistory;
         public Item PreviousItem;
         public bool PreviousCombineWasExoAttempt;
-        public Rune PreviousCheckHadRunOutOfRunes;
 
         // Error tracking
         public Exception LastError;
 
         // Counters
         public int Ticks;
-        public int UnsuccessfulCombineTicks;
         public Stopwatch ChangeTimeout = new Stopwatch();
-
-        // Item info
-        public UserRunes Runes;
 
         public bool ShouldResetMinMaxScan() {
             var previousWasExo = (PreviousAction as CombineRune)?.Exo ?? false;
@@ -57,7 +51,6 @@ namespace Inkybot.Services
             PreviousAction = null;
             PreviousHistory = null;
             PreviousItem = null;
-            // PreviousCheckHadRunOutOfRunes is intentionally preserved across items
         }
     }
 }

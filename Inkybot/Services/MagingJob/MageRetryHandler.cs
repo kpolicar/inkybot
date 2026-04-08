@@ -56,7 +56,6 @@ namespace Inkybot.Services
                         consecutiveFailures = 0;
 
                     consecutiveFailures++;
-                    session.UnsuccessfulCombineTicks++;
 
                     var additionalInfo = !Helpers.System.IsRunnningAsAdmin()
                         ? "Please try running Inkybot as an administrator."

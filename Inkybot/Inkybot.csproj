@@ -128,7 +128,6 @@
         <Compile Include="Adapters\DofusHistoryOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusOcrResultAdapter.cs" />
         <Compile Include="Adapters\DofusStatsOcrResultAdapter.cs" />
-        <Compile Include="Adapters\DofusStatUserRunesOcrResultAdapter.cs" />
         <Compile Include="Adapters\OcrResultAdapter.cs" />
         <Compile Include="Adapters\ItemStatConfigAdapter.cs" />
         <Compile Include="Adapters\StatConfigAdapter.cs" />
@@ -246,7 +245,6 @@
         <Compile Include="Exceptions\UserForbiddenException.cs" />
         <Compile Include="Exceptions\UserTrialHasExpiredException.cs" />
         <Compile Include="Extensions\DataGridViewRowCollection.cs" />
-        <Compile Include="Extensions\IEnumerable.cs" />
         <Compile Include="Extensions\ListExtensions.cs" />
         <Compile Include="Extensions\StringExtensions.cs" />
         <Compile Include="FirstTimeInfoForm.cs">
@@ -357,9 +355,6 @@
         <Compile Include="Services\PrioritizedItemMageResolve.cs">
             <DependentUpon>DofusMagingAI.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\RuneQuantityScan.cs">
-            <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
-        </Compile>
         <Compile Include="Services\MagingJob\BalanceTracker.cs" />
         <Compile Include="Services\MagingJob\KamasTrackingJob.cs" />
         <Compile Include="Services\MagingJob\ScreenReaderDofusMagingJob.cs" />
@@ -377,7 +372,6 @@
         <Compile Include="Services\ScreenScanner.cs">
             <DependentUpon>ScreenReaderDataProvider.cs</DependentUpon>
         </Compile>
-        <Compile Include="Services\UserRunes.cs" />
         <Compile Include="StatisticsForm.cs">
             <SubType>Form</SubType>
         </Compile>

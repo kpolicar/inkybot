@@ -9,7 +9,6 @@ using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
-using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using NLog;
@@ -67,7 +66,6 @@ namespace Inkybot.Services
                 ReadSink();
 
                 SuccessfulCombine?.Invoke(this, EventArgs.Empty);
-                session.UnsuccessfulCombineTicks = 0;
             }
 
             return TickResult.Continue;
@@ -89,11 +87,6 @@ namespace Inkybot.Services
             var action = magus.ResolveAction(item);
 
             if (action is CombineRune combine) {
-                if (session.UnsuccessfulCombineTicks >= 5)
-                    throw new OutOfRunesException(combine.Rune);
-
-                EnforceHasRunesForCombine(combine);
-
                 if (combine.Exo)
                     session.PreviousHistory = dataProvider.History();
 
@@ -158,22 +151,6 @@ namespace Inkybot.Services
         private void EnforceSameItemAsPreviousTick(Item item) {
             if (session.PreviousItem != null && !item.MatchesStandardStatsStructure(session.PreviousItem))
                 throw new ItemHasChangedException(item);
-        }
-
-        private void EnforceHasRunesForCombine(CombineRune combine) {
-            if (session.Runes == null || !session.Runes.TryGetValue(combine.Rune.Stat, out var userRunes))
-                return;
-
-            var userRune = userRunes.First(r => r.Rune == combine.Rune);
-
-            var ranOutTwiceInARow = userRune.Quantity == 0
-                && session.PreviousCheckHadRunOutOfRunes == userRune.Rune
-                && configManager.UserSettings.EnableRuneChecking;
-
-            if (ranOutTwiceInARow)
-                throw new OutOfRunesException(userRune.Rune);
-
-            session.PreviousCheckHadRunOutOfRunes = userRune.Quantity == 0 ? userRune.Rune : null;
         }
 
         private void EnforceChangeTimeout() {
