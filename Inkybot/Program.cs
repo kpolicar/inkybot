@@ -227,6 +227,11 @@ namespace Inkybot
 
         private static void SetAppLocale() {
             var gameSettings = DetectUserGame.ReadSettings();
+            var detectedGameLanguage =
+                gameSettings != null && DetectUserGame.HasValidAndSupportedLanguage(gameSettings)
+                    ? gameSettings.language.value
+                    : DefaultLocale;
+
             var locale =
                 gameSettings != null
                     && DetectUserGame.HasValidAndSupportedLanguage(gameSettings)
@@ -240,7 +245,7 @@ namespace Inkybot
             Lang =
                 Thread.CurrentThread.CurrentCulture =
                 Thread.CurrentThread.CurrentUICulture =
-                CultureInfo.CurrentCulture = 
+                CultureInfo.CurrentCulture =
                 CultureInfo.CurrentUICulture =
                 CultureInfo.DefaultThreadCurrentCulture =
                 CultureInfo.DefaultThreadCurrentUICulture =
@@ -250,6 +255,11 @@ namespace Inkybot
             Resources.MagingDictionary.Culture = Lang;
             Resources.RuneDictionary.Culture = Lang;
             Resources.StatDictionary.Culture = Lang;
+
+            var gameLangCulture = detectedGameLanguage == Properties.Resources.FrenchLocaleCode
+                ? new CultureInfo(Properties.Resources.FrenchLocaleCode)
+                : new CultureInfo(Properties.Resources.EnglishLocaleCode);
+            GameLanguageDetector.Initialize(gameLangCulture);
         }
 
         private static void LogSystemInfo() {

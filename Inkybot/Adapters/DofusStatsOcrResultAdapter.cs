@@ -66,9 +66,9 @@ namespace Inkybot.Adapters
         }
 
         private (Match segmentedStatLine, bool isWeaponEffectStatLine) SegmentItemStatLine(string statLine) {
-            var segments = Regex.Match(statLine, Properties.Regex.ItemStatLinePattern);
+            var segments = Regex.Match(statLine, GameLanguageDetector.Current.ItemStatLinePattern);
             if (!segments.Success)
-                return (Regex.Match(statLine, Properties.Regex.ItemWeaponEffectStatLinePattern), true);
+                return (Regex.Match(statLine, GameLanguageDetector.Current.ItemWeaponEffectStatLinePattern), true);
             
             return (segments, false);
         }

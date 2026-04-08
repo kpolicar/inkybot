@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
 using ImageMagick.Factories;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Exceptions;
 using Inkybot.Helpers;
@@ -146,7 +147,7 @@ namespace Inkybot.Services
             }
 
             protected virtual TesseractEngine CreateEngine() {
-                return CreateTesseractEngine(CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName, EngineMode.Default);
+                return CreateTesseractEngine(GameLanguageDetector.Current.TesseractLanguage, EngineMode.Default);
             }
 
             protected TesseractEngine CreateTesseractEngine(string lang, EngineMode mode) {
@@ -269,7 +270,7 @@ namespace Inkybot.Services
             }
 
             protected override TesseractEngine CreateEngine() {
-                return CreateTesseractEngine(CultureInfo.CurrentUICulture.ThreeLetterISOLanguageName, EngineMode.Default);
+                return CreateTesseractEngine(GameLanguageDetector.Current.TesseractLanguage, EngineMode.Default);
             }
         }
 

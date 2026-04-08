@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Inkybot.Controls;
+using Inkybot.Domain;
 using Inkybot.Events;
 using Inkybot.Helpers;
 using Inkybot.Services;
@@ -28,7 +29,7 @@ namespace Inkybot
             RegisterOcrIndicator(Measurements.StatValuesBounds);
             RegisterOcrIndicator(Measurements.InventoryAverageItemValueBounds);
             RegisterOcrIndicator(Measurements.InventorySearchTextBox);
-            RegisterOcrIndicator(Program.Lang.TwoLetterISOLanguageName == "fr" ? Measurements.SinkFrMeasurement : Measurements.SinkMeasurement);
+            RegisterOcrIndicator(GameLanguageDetector.Current.SinkMeasurement);
 
             foreach (var runeBoundingBox in Measurements.RuneBoundsIndividualMeasurements) {
                 RegisterOcrIndicator(runeBoundingBox);

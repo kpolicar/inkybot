@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Inkybot.Dofus;
+using Inkybot.Domain;
 using Inkybot.Exceptions;
 
 namespace Inkybot.Adapters
@@ -20,7 +21,7 @@ namespace Inkybot.Adapters
                 try {
                     var changes = SegmentMageHistoryEntry(mageEntry);
                     var sinkHasChanged =
-                        Regex.IsMatch(mageEntry, Regex.Unescape(Properties.Regex.SinkHasChangedPattern));
+                        Regex.IsMatch(mageEntry, Regex.Unescape(GameLanguageDetector.Current.SinkHasChangedPattern));
 
                     var statChanges = changes
                         .Cast<Match>()
@@ -29,7 +30,7 @@ namespace Inkybot.Adapters
 
                     if (statChanges.Length == 0 && !sinkHasChanged) {
                         var isFailureResult =
-                            Regex.IsMatch(mageEntry, Regex.Unescape(Properties.Regex.FailurePattern));
+                            Regex.IsMatch(mageEntry, Regex.Unescape(GameLanguageDetector.Current.FailurePattern));
                         if (!isFailureResult)
                             throw new CouldNotSegmentMageHistoryLineException("Unrecognizable mage history record");
                         return MageHistoryRecord.Failure;
@@ -62,7 +63,7 @@ namespace Inkybot.Adapters
         }
 
         private MatchCollection SegmentMageHistoryEntry(string historyLine) {
-            var segments = Regex.Matches(historyLine, Properties.Regex.HistoryEntryPattern);
+            var segments = Regex.Matches(historyLine, GameLanguageDetector.Current.HistoryEntryPattern);
             return segments;
         }
 

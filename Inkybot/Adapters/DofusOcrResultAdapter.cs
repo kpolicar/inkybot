@@ -21,7 +21,11 @@ namespace Inkybot.Adapters
         protected Stat GetStatFromName(string name) {
             try {
                 name = SpellCorrectStatName(name);
-                return Stat.Stats.Values.First(stat => stat.DisplayName == name);
+                var gameDict = GameLanguageDetector.Current.StatDictionary;
+                return Stat.Stats.Values.First(stat =>
+                    stat.Mageable
+                        ? gameDict.GetString(stat.Identifier) == name
+                        : stat.Identifier == name);
             } catch (Exception exception) {
                 throw new CouldNotResolveStatNameException($"Error occured trying to resolve stat name \"{name}\"", exception);
             }

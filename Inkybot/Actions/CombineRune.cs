@@ -49,7 +49,7 @@ namespace Inkybot.Actions
             Thread.Sleep(500);
             
             Cancel?.ThrowIfCancellationRequested();
-            Input.TypeMessage(Rune.DisplayName, Cancel);
+            Input.TypeMessage(GameLanguageDetector.Current.GetRuneDisplayName(Rune), Cancel);
             Thread.Sleep(2000);
             
             Cancel?.ThrowIfCancellationRequested();

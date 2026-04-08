@@ -190,6 +190,8 @@
             <DependentUpon>WaitingForDofusForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Domain\Dictionary.cs" />
+        <Compile Include="Domain\GameLanguageContext.cs" />
+        <Compile Include="Domain\GameLanguageDetector.cs" />
         <Compile Include="Domain\ItemHistoryAnalyzer.cs" />
         <Compile Include="Domain\Release.cs">
             <DependentUpon>DetectUserGame.cs</DependentUpon>
@@ -225,6 +227,7 @@
         <Compile Include="Exceptions\CouldNotResolveStatValueException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentMageHistoryLineException.cs" />
         <Compile Include="Exceptions\CouldNotSegmentStatLineException.cs" />
+        <Compile Include="Exceptions\GameLanguageChangedException.cs" />
         <Compile Include="Exceptions\ChangeCheckTimeoutException.cs" />
         <Compile Include="Exceptions\DofusProcessDetachedException.cs" />
         <Compile Include="Exceptions\ExoAfterExoAttemptException.cs" />

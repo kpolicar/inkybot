@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Inkybot.Events;
 using Inkybot.Contracts;
 using Inkybot.Design;
+using Inkybot.Domain;
 using Inkybot.Helpers;
 using Tesseract;
 using Debug = System.Diagnostics.Debug;
@@ -127,8 +128,16 @@ namespace Inkybot.Services
             }
 
             private void Init() {
-                if (lang == null || !lang.Equals(CultureInfo.CurrentUICulture)) {
-                    lang = CultureInfo.CurrentUICulture;
+                if (lang == null || !lang.Equals(GameLanguageDetector.Current.Culture)) {
+                    historyScanner?.Dispose();
+                    latestHistoryScanner?.Dispose();
+                    statValuesScanner?.Dispose();
+                    statMinsScanner?.Dispose();
+                    statMaxesScanner?.Dispose();
+                    averageItemPriceScanner?.Dispose();
+                    sinkScanner?.Dispose();
+
+                    lang = GameLanguageDetector.Current.Culture;
 
                     historyScanner = new TextScreenScanner(Measurements.HistoryBounds, SplitHistoryTextLines,
                         new ResizeImagePreprocessor(300));
@@ -143,7 +152,7 @@ namespace Inkybot.Services
                     averageItemPriceScanner =
                         new KamasScanner(Measurements.InventoryAverageItemValueBounds, null,
                             new ResizeImagePreprocessor(350), PageSegMode.SingleWord);
-                    sinkScanner = new SinkScanner(Program.Lang.TwoLetterISOLanguageName == "fr" ? Measurements.SinkFrMeasurement : Measurements.SinkMeasurement, SplitStatTextLines,
+                    sinkScanner = new SinkScanner(GameLanguageDetector.Current.SinkMeasurement, SplitStatTextLines,
                         new SinkScannerImagePreprocessor(userSettings, 350), PageSegMode.SingleLine);
                 }
                 
@@ -158,7 +167,7 @@ namespace Inkybot.Services
             }
 
             private string[] SplitHistoryTextLines(string text) {
-                return Regex.Split(text, Regex.Unescape(Properties.Regex.HistorySplitPattern))
+                return Regex.Split(text, Regex.Unescape(GameLanguageDetector.Current.HistorySplitPattern))
                     .Where(s => s != string.Empty)
                     .Select(result => result.Replace("\n", " "))
                     .ToArray();

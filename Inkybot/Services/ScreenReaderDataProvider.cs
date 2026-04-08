@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Inkybot.Contracts;
 using Inkybot.Design;
 using Inkybot.Dofus;
+using Inkybot.Domain;
 using Inkybot.Events;
+using Inkybot.Exceptions;
 using Inkybot.Helpers;
 using Debug = System.Diagnostics.Debug;
 using MageConfig = Inkybot.Dofus.MageConfig;
@@ -116,7 +119,29 @@ namespace Inkybot.Services
                 .ToArray();
             
             ScannedStats?.Invoke(this, new ScannedRegionEventArgs(statsResult));
-            
+
+            if (!GameLanguageDetector.IsLocked) {
+                var statNames = statsResult
+                    .Select(line => {
+                        var m = Regex.Match(line, GameLanguageDetector.Current.ItemStatLinePattern);
+                        if (!m.Success) {
+                            var other = GameLanguageDetector.Current == GameLanguageDetector.EnglishContext
+                                ? GameLanguageDetector.FrenchContext
+                                : GameLanguageDetector.EnglishContext;
+                            m = Regex.Match(line, other.ItemStatLinePattern);
+                        }
+                        return m;
+                    })
+                    .Where(m => m.Success)
+                    .Select(m => m.Groups[4].Value.Trim())
+                    .ToArray();
+
+                if (GameLanguageDetector.DetectAndLock(statNames)) {
+                    throw new GameLanguageChangedException(
+                        $"Game language detected as {GameLanguageDetector.Current.Culture.TwoLetterISOLanguageName}, re-scanning with correct OCR engine");
+                }
+            }
+
             var stats = new DofusStatsOcrResultAdapter(statsResult).ToItemStats();
             var item = new Item(stats);
             FetchedItem?.Invoke(this, new ItemEventArgs(item));
