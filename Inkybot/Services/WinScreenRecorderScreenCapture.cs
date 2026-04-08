@@ -28,11 +28,19 @@ namespace Inkybot
         {
             this.mainForm = mainForm;
 
-            gpuCapture = new WinGraphicsCaptureScreenCapture();
-            gpuCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
-
             printWindowCapture = new Win32ScreenCapture();
             printWindowCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
+
+            try
+            {
+                gpuCapture = new WinGraphicsCaptureScreenCapture();
+                gpuCapture.BindTo(handle, dofusClientPanel, xOffsetLeft, xOffsetRight, mainForm);
+            }
+            catch (Exception ex)
+            {
+                FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] GPU capture init failed: {ex.Message}. Using PrintWindow fallback.");
+                useFallback = true;
+            }
         }
 
         public Image CaptureWindow()
@@ -47,9 +55,20 @@ namespace Inkybot
             }
             else
             {
-                result = gpuCapture.CaptureWindow();
+                try
+                {
+                    result = gpuCapture.CaptureWindow();
+                }
+                catch (Exception ex)
+                {
+                    FileEventLogger.SystemLogger.Warn($"[WinScreenRecorderScreenCapture] GPU capture failed: {ex.Message}. Switching permanently to PrintWindow fallback.");
+                    useFallback = true;
+                    try { mainForm.Invoke((MethodInvoker)delegate { gpuCapture.Dispose(); }); } catch { }
+                    Thread.Sleep(250);
+                    result = printWindowCapture.CaptureWindow();
+                }
 
-                if (blankChecksRemaining > 0)
+                if (!useFallback && blankChecksRemaining > 0)
                 {
                     int checkNumber = 11 - blankChecksRemaining;
                     blankChecksRemaining--;
