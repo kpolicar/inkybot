@@ -185,25 +185,21 @@ namespace Inkybot
             // 
             resources.ApplyResources(this.PaRuneThresholdColumn, "PaRuneThresholdColumn");
             this.PaRuneThresholdColumn.Name = "PaRuneThresholdColumn";
-            this.PaRuneThresholdColumn.Visible = false;
-            // 
+            //
             // RaRuneThresholdColumn
-            // 
+            //
             resources.ApplyResources(this.RaRuneThresholdColumn, "RaRuneThresholdColumn");
             this.RaRuneThresholdColumn.Name = "RaRuneThresholdColumn";
-            this.RaRuneThresholdColumn.Visible = false;
-            // 
+            //
             // MaxSmRuneCanHitColumn
-            // 
+            //
             resources.ApplyResources(this.MaxSmRuneCanHitColumn, "MaxSmRuneCanHitColumn");
             this.MaxSmRuneCanHitColumn.Name = "MaxSmRuneCanHitColumn";
-            this.MaxSmRuneCanHitColumn.Visible = false;
-            // 
+            //
             // MaxPaRuneCanHitColumn
-            // 
+            //
             resources.ApplyResources(this.MaxPaRuneCanHitColumn, "MaxPaRuneCanHitColumn");
             this.MaxPaRuneCanHitColumn.Name = "MaxPaRuneCanHitColumn";
-            this.MaxPaRuneCanHitColumn.Visible = false;
             // 
             // restoreHighSinkStatsCheckbox
             // 
@@ -370,7 +366,7 @@ namespace Inkybot
             this.showAdvancedOptionsButton.Name = "showAdvancedOptionsButton";
             this.showAdvancedOptionsButton.UseVisualStyleBackColor = false;
             this.showAdvancedOptionsButton.Location = new Point(0, 0);
-            this.showAdvancedOptionsButton.Text = "+";
+            this.showAdvancedOptionsButton.Text = "-";
             this.showAdvancedOptionsButton.Padding = System.Windows.Forms.Padding.Empty;
             this.showAdvancedOptionsButton.Margin = System.Windows.Forms.Padding.Empty;
             this.showAdvancedOptionsButton.Click += new System.EventHandler(this.showAdvancedOptionsButton_Click);

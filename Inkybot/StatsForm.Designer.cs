@@ -104,7 +104,7 @@ namespace Inkybot
             resources.ApplyResources(this.MinColumn, "MinColumn");
             this.MinColumn.Name = "MinColumn";
             this.MinColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.MinColumn.Visible = false;
+            // advanced columns shown by default
             // 
             // ValueColumn
             // 
@@ -118,7 +118,7 @@ namespace Inkybot
             resources.ApplyResources(this.PriorityColumn, "PriorityColumn");
             this.PriorityColumn.Name = "PriorityColumn";
             this.PriorityColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.PriorityColumn.Visible = false;
+            // advanced columns shown by default
             // 
             // StatColumn
             // 
@@ -304,7 +304,7 @@ namespace Inkybot
             this.showAdvancedOptionsButton.Name = "showAdvancedOptionsButton";
             this.showAdvancedOptionsButton.UseVisualStyleBackColor = false;
             this.showAdvancedOptionsButton.Location = new Point(0, 0);
-            this.showAdvancedOptionsButton.Text = "+";
+            this.showAdvancedOptionsButton.Text = "-";
             this.showAdvancedOptionsButton.Padding = System.Windows.Forms.Padding.Empty;
             this.showAdvancedOptionsButton.Margin = System.Windows.Forms.Padding.Empty;
             this.showAdvancedOptionsButton.Click += new System.EventHandler(this.showAdvancedOptionsButton_Click);
