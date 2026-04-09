@@ -30,6 +30,13 @@ namespace Inkybot
 
             LoadPersistedScripts();
             UpdateStatusIndicator();
+
+            // Set splitter distance once the control is sized (avoids InvalidOperationException during init)
+            this.Layout += (s, e) => {
+                if (splitContainer.Width > 0 && splitContainer.SplitterDistance < 10) {
+                    splitContainer.SplitterDistance = splitContainer.Width / 2;
+                }
+            };
         }
 
         private void sendButton_Click(object sender, EventArgs e) {

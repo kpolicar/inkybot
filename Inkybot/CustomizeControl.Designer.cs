@@ -42,12 +42,11 @@ namespace Inkybot
             // splitContainer
             //
             this.splitContainer.Dock = DockStyle.Fill;
-            this.splitContainer.SplitterDistance = 300;
             this.splitContainer.SplitterWidth = 3;
             this.splitContainer.Panel1.Controls.Add(this.chatPanel);
             this.splitContainer.Panel2.Controls.Add(this.codePanel);
-            this.splitContainer.Panel1MinSize = 200;
-            this.splitContainer.Panel2MinSize = 200;
+            this.splitContainer.Panel1MinSize = 100;
+            this.splitContainer.Panel2MinSize = 100;
             this.splitContainer.BackColor = Color.FromArgb(20, 20, 20);
             //
             // chatPanel
