@@ -51,6 +51,8 @@ namespace Inkybot
 
         private void SettingsForm_VisibleChanged(object sender, EventArgs e) {
             if (Visible) {
+                if (Owner != null && Icon == null)
+                    Icon = Owner.Icon;
                 itemTab.RefreshStats();
             }
         }

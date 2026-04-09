@@ -16,7 +16,6 @@ namespace Inkybot
         }
 
         private void InitializeComponent() {
-            this.resources = new System.ComponentModel.ComponentResourceManager(typeof(MageQueueForm));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.itemTabPage = new System.Windows.Forms.TabPage();
             this.runesTabPage = new System.Windows.Forms.TabPage();
@@ -79,7 +78,7 @@ namespace Inkybot
             this.MaximizeBox = false;
             this.Name = "SettingsForm";
             this.Text = "Setup";
-            this.Icon = (System.Drawing.Icon) resources.GetObject("$this.Icon");
+            this.ShowIcon = true;
             this.Closing += new CancelEventHandler(this.SettingsForm_Closing);
             this.VisibleChanged += new System.EventHandler(this.SettingsForm_VisibleChanged);
             this.tabControl.ResumeLayout(false);
@@ -88,7 +87,7 @@ namespace Inkybot
 
         protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e) {
             base.OnPaintBackground(e);
-            // Paint the TabControl background area dark (WinForms draws it white by default)
+            if (tabControl == null) return;
             using (var brush = new SolidBrush(Color.FromArgb(20, 20, 20)))
                 e.Graphics.FillRectangle(brush, tabControl.Bounds);
         }
@@ -112,7 +111,6 @@ namespace Inkybot
                 e.Graphics.DrawString(tabPage.Text, tabControl.Font, brush, tabRect, format);
         }
 
-        private System.ComponentModel.ComponentResourceManager resources;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage itemTabPage;
         private System.Windows.Forms.TabPage runesTabPage;
