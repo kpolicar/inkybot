@@ -86,7 +86,7 @@ namespace Inkybot
             Invoke(new MethodInvoker(delegate {
                 toggleMageButton.Enabled = true;
                 debugScreenshotButton.Enabled = true;
-                if (configForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
+                if (settingsForm.AutoShutdownDelay > 0 && !HasManuallyStoppedMaging && e.AutoShutdown)
                     StartAutoShutdownCounter();
                 EnableDebugging();
                 HasManuallyStoppedMaging = false;

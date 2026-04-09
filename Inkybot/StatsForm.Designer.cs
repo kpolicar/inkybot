@@ -348,17 +348,12 @@ namespace Inkybot
             // StatsForm
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (30)))), ((int) (((byte) (30)))), ((int) (((byte) (30)))));
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.helpPanel);
             this.Controls.Add(this.actionsPanel);
-            this.MinimumSize = new Size(512, 384);
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
             this.Name = "StatsForm";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.StatsForm_Closing);
-            this.VisibleChanged += new System.EventHandler(this.StatsForm_VisibleChanged);
+            this.Dock = DockStyle.Fill;
             ((System.ComponentModel.ISupportInitialize) (this.statsDataGridView)).EndInit();
             this.helpPanel.ResumeLayout(false);
             this.helpPanel.PerformLayout();

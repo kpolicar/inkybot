@@ -111,8 +111,7 @@ namespace Inkybot
             if (!Visible && magingJob.IsMaging)
                 magingJob.StopMage();
             if (!Visible) {
-                setupForm.Hide();
-                configForm.Hide();
+                settingsForm.Hide();
                 statisticsForm.Hide();
             }
         }
@@ -140,14 +139,8 @@ namespace Inkybot
 
         private void statsButton_Click(object sender, EventArgs e) {
             MetricsLogger.Track("ui_setup_form_opened");
-            if (!setupForm.Visible) setupForm.Show();
-            else setupForm.Focus();
-        }
-
-        private void configButton_Click(object sender, EventArgs e) {
-            MetricsLogger.Track("ui_config_form_opened");
-            if (!configForm.Visible) configForm.Show();
-            else configForm.Focus();
+            if (!settingsForm.Visible) settingsForm.Show();
+            else settingsForm.Focus();
         }
 
         private void toastPanelCloseButton_Click(object sender, EventArgs e) {
@@ -238,14 +231,14 @@ namespace Inkybot
         private void OnAutoShutdownTimer(object sender, EventArgs e) {
             autoShutdownTimeElapsed += autoShutdownTimer.Interval;
             RefreshAutoShutdownLabels();
-            var timeLeft = configForm.AutoShutdownDelay - autoShutdownTimeElapsed;
+            var timeLeft = settingsForm.AutoShutdownDelay - autoShutdownTimeElapsed;
             if (timeLeft <= 0) {
                 Application.Exit();
             }
         }
 
         private void RefreshAutoShutdownLabels() {
-            var timeLeft = configForm.AutoShutdownDelay - autoShutdownTimeElapsed;
+            var timeLeft = settingsForm.AutoShutdownDelay - autoShutdownTimeElapsed;
             var timeLeftInSeconds = timeLeft / 1000;
             
             shutdownToastValueLabel.Text = timeLeftInSeconds >= 60
@@ -305,8 +298,7 @@ namespace Inkybot
 
         private void MainForm_Loaded(object sender, EventArgs e) {
             _ = mageQueueForm.Handle;
-            _ = configForm.Handle;
-            _ = setupForm.Handle;
+            _ = settingsForm.Handle;
         }
 
         private void EnqueueRectangle_Edit(object sender, ControlEventArgs e) {

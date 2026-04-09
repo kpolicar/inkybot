@@ -22,7 +22,7 @@ using StatConfigProviderContract = Inkybot.Dofus.Contracts.StatConfigProvider;
 
 namespace Inkybot
 {
-    public partial class ConfigForm : Form
+    public partial class ConfigForm : UserControl
     {
         private FileSystemUserSettingsConfigManager userSettingsConfigManager;
         private MagingAIServiceManager magingAiManager;
@@ -33,6 +33,14 @@ namespace Inkybot
             private set;
             get;
         } = -1;
+
+        public StatsForm SetupForm;
+
+        /// <summary>
+        /// The panel containing all preference checkboxes, auto-shutdown and resize ratio controls.
+        /// Exposed so SettingsForm can reparent it to the Preferences tab.
+        /// </summary>
+        internal TableLayoutPanel UserSettingsPanel => userSettingsPanel;
 
         public ConfigForm(StatsForm setupForm) {
             InitializeComponent();
@@ -45,13 +53,11 @@ namespace Inkybot
             configProvider =
                 (StatConfigProvider) Program.Services.GetService<StatConfigProviderContract>();
             auth = Program.Services.GetService<AuthManager>();
-            
+
             SuspendLayout();
             PrepareControls();
             ResumeLayout();
         }
-        
-        public StatsForm SetupForm;
 
         public void PrepareControls() {
             var config = userSettingsConfigManager.Config();
@@ -284,11 +290,6 @@ namespace Inkybot
             userSettingsConfigManager.EnableSafeMageQueueing = enableSafeMageQueueingCheckbox.Checked;
         }
 
-        private void ConfigForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
-            cancelEventArgs.Cancel = true;
-            Hide();
-        }
-
         private void scriptChangeButton_Click(object sender, EventArgs e) {
             MetricsLogger.Track("ui_custom_script_changed");
             if (auth.User != null && !auth.User.canUseCustomMagingAI) {
@@ -401,7 +402,7 @@ namespace Inkybot
         private void customResizeRatioNumericUpDown_ValueChanged(object sender, EventArgs e) {
             userSettingsConfigManager.CustomResizeMultiplier = customResizeRatioNumericUpDown.Value;
             changes++;
-            if (SetupForm.Visible) {
+            if (SetupForm != null) {
                 Task.Run(async () => {
                     await Task.Delay(600);
                     if (--changes <= 0)

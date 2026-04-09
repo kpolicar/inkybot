@@ -237,7 +237,6 @@ namespace Inkybot
             resources.ApplyResources(this.primaryButtonsPanel, "primaryButtonsPanel");
             this.primaryButtonsPanel.Controls.Add(this.toggleMageButton);
             this.primaryButtonsPanel.Controls.Add(this.setupButton);
-            this.primaryButtonsPanel.Controls.Add(this.configButton);
             this.primaryButtonsPanel.Name = "primaryButtonsPanel";
             //
             // kamasSpentValueResetButton
@@ -390,7 +389,6 @@ namespace Inkybot
             this.configButton.ForeColor = System.Drawing.SystemColors.Control;
             this.configButton.Name = "configButton";
             this.configButton.UseVisualStyleBackColor = false;
-            this.configButton.Click += new System.EventHandler(this.configButton_Click);
             // 
             // debugScreenshotButton
             // 

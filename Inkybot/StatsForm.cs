@@ -29,7 +29,7 @@ using MageConfig = Inkybot.Dofus.MageConfig;
 
 namespace Inkybot
 {
-    public partial class StatsForm : Form
+    public partial class StatsForm : UserControl
     {
         public event EventHandler<ExceptionEventArgs>? Error;
         private readonly ScreenReaderDataProvider dataProvider;
@@ -47,7 +47,7 @@ namespace Inkybot
             auth = Program.Services.GetService<AuthManager>();
             actionsPanel.Hide();
             helpPanel.Hide();
-            
+
             SuspendLayout();
             PrepareControls();
             ResumeLayout();
@@ -278,11 +278,6 @@ namespace Inkybot
             return row;
         }
 
-        private void StatsForm_VisibleChanged(object sender, EventArgs e) {
-            if (!Visible) return;
-            RefreshStats();
-        }
-        
         public void RefreshStats() {
             if (magingJob.IsMaging)
                 return;
@@ -318,11 +313,6 @@ namespace Inkybot
                 selectPresetPanel.Enabled = true;
                 refreshButton.Enabled = true;
             }));
-        }
-
-        private void StatsForm_Closing(object sender, CancelEventArgs cancelEventArgs) {
-            cancelEventArgs.Cancel = true;
-            Hide();
         }
 
         private void StatsForm_OnChangeValue(object sender, DataGridViewCellEventArgs e) {

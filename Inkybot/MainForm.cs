@@ -16,13 +16,12 @@ namespace Inkybot
 {
     public partial class MainForm : Form
     {
-        private StatsForm setupForm;
+        private SettingsForm settingsForm;
         private AnalyticsReporter analytics;
         private ApiClient api = null!;
         private MageQueueManager mageQueue;
         private DofusMagingJob magingJob;
         private ScreenReaderDataProvider screenReader;
-        private ConfigForm configForm;
         private AuthManager auth = null!;
         private ConfigManager config;
         private StatisticsForm statisticsForm;
@@ -56,9 +55,8 @@ namespace Inkybot
 
             Shown += MainForm_OnLoad;
 
-            setupForm = new StatsForm();
-            setupForm.Error += OnError;
-            configForm = new ConfigForm(setupForm);
+            settingsForm = new SettingsForm();
+            settingsForm.Error += OnError;
             magingJob.Error += OnError;
             statisticsForm = new StatisticsForm();
             mageQueueForm = new MageQueueForm();

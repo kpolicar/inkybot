@@ -101,6 +101,14 @@ namespace Inkybot.Services
             }
             get => Properties.Settings.Default.configPresets;
         }
+
+        public GeneratedScripts GeneratedScripts {
+            set {
+                Properties.Settings.Default.generatedScripts = value;
+                Properties.Settings.Default.Save();
+            }
+            get => Properties.Settings.Default.generatedScripts ?? new GeneratedScripts();
+        }
         
         public StatConfig Config(Stat stat) {
             var config = (Inkybot.Resources.StatConfig) Properties.Settings.Default[stat.Identifier];

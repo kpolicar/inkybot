@@ -250,7 +250,19 @@ namespace Inkybot.Properties {
                 this["configPresets"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<GeneratedScripts xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema""></GeneratedScripts>")]
+        public global::Inkybot.Resources.GeneratedScripts generatedScripts {
+            get {
+                return ((global::Inkybot.Resources.GeneratedScripts)(this["generatedScripts"]));
+            }
+            set {
+                this["generatedScripts"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<StatConfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""                                 xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">                         <ChangeToPaRuneThreshold>0</ChangeToPaRuneThreshold>                         <ChangeToRaRuneThreshold>0</ChangeToRaRuneThreshold>                         <MaxValueSmRuneCanHit>0</MaxValueSmRuneCanHit>                         <MaxValuePaRuneCanHit>0</MaxValuePaRuneCanHit>                     </StatConfig>")]
