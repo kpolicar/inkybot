@@ -41,6 +41,10 @@ namespace Inkybot
 
 
         private async void button1_Click(object sender, EventArgs e) {
+            await PerformLogin();
+        }
+
+        private async Task PerformLogin() {
             errorMessage.Text = "";
             button1.Enabled = false;
             try {
@@ -133,6 +137,12 @@ namespace Inkybot
             } catch (Exception) {
                 // ignored
             }
+
+            // Offline mode: log in automatically so the user never has to touch this dialog.
+            // auth.Login / api.User are instant mocks, so this closes the dialog with
+            // DialogResult.OK right away (still showing FirstTimeInfoForm on a first run).
+            if (Program.OfflineMode)
+                await PerformLogin();
         }
 
         private void linkLabel1_LinkClicked_1(object sender, EventArgs eventArgs) {

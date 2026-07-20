@@ -54,7 +54,7 @@ namespace Inkybot.Api
 
         private static bool otlpEnabled;
         private static void EnableOtlpLogging() {
-            if (otlpEnabled) return;
+            if (!Program.TelemetryEnabled || otlpEnabled) return;
             otlpEnabled = true;
 
             var otlpTarget = new NLog.Targets.OtlpTarget {
@@ -119,7 +119,13 @@ namespace Inkybot.Api
             }
         }
 
-        public async Task<ApiConnection?> Login(string username, string password) {
+        // Raises ConnectionChanged so offline/mock subclasses (which cannot invoke a base-class
+        // event directly) can swap the connection without a network login.
+        protected void RaiseConnectionChanged(ApiConnection? connection) {
+            ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(connection));
+        }
+
+        public virtual async Task<ApiConnection?> Login(string username, string password) {
             var client = new HttpClient();
             var url =  $"{Server.AuthUrl}/token";
 
@@ -136,10 +142,10 @@ namespace Inkybot.Api
 
             var content = new StringContent(encrypted);
             var response = await client.PostAsync(url, content);
-            
+
             if (!response.IsSuccessStatusCode)
                 return null;
-            
+
             var result = await GetResultFromEncryptedResponse(response);
             var authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
             var connection = new ApiConnection(authDetails);

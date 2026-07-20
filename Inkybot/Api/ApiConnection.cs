@@ -48,7 +48,7 @@ namespace Inkybot.Api
             RefreshTask = RefreshToken();
         }
 
-        public async Task<bool> RefreshToken() {
+        public virtual async Task<bool> RefreshToken() {
             var client = new HttpClient();
             var url = $"{Server.AuthUrl}/token";
 
@@ -61,13 +61,13 @@ namespace Inkybot.Api
                 {"_passport_token_name", Program.InstanceIdentifier},
             };
             AuthCheckRequestAttempts++;
-            
+
             try {
                 var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
 
                 var content = new StringContent(encrypted);
                 var response = await client.PostAsync(url, content);
-                
+
                 response.EnsureSuccessStatusCode();
 
                 var result = await GetResultFromEncryptedResponse(response);
@@ -81,7 +81,7 @@ namespace Inkybot.Api
                 }
                 return false;
             }
-            
+
             AuthCheckRequestAttempts = 0;
             return true;
         }

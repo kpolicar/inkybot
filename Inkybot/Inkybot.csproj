@@ -139,6 +139,10 @@
             <Link>Api\ApiClient.cs</Link>
         </Compile>
         <Compile Include="Api\ApiNotifier.cs" />
+        <Compile Include="Api\OfflineMockData.cs" />
+        <Compile Include="Api\OfflineApiClient.cs" />
+        <Compile Include="Api\OfflineApiConnection.cs" />
+        <Compile Include="Api\OfflineApiAuthManager.cs" />
         <Compile Include="Api\Resources\AuthDetails.cs" />
         <Compile Include="Api\Resources\FreeTrial.cs" />
         <Compile Include="Api\Resources\User.cs" />

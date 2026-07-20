@@ -54,6 +54,15 @@ namespace Inkybot
         public const string Version = "v3.2";
         public const string VersionEndpoint = "v3.2";
 
+        // Master switch for OpenObserve/OTLP telemetry. The backend has been removed,
+        // so this is off by default. Flip to true to resume shipping logs exactly as before.
+        public const bool TelemetryEnabled = false;
+
+        // Run fully offline against the mocked backend (OfflineApiAuthManager/OfflineApiClient
+        // and auto-login) because inkybot.me is permanently down. Set to false to go back to the
+        // real ApiAuthManager/ApiClient and the manual login flow with zero further changes.
+        public const bool OfflineMode = true;
+
         public static string InstanceIdentifier {
             private set;
             get;
@@ -69,7 +78,7 @@ namespace Inkybot
             { typeof(ScreenCapture), new WinScreenRecorderScreenCapture() },
             { typeof(Input), new Win32Input() },
             { typeof(ActionFactory), new MouseActionFactory() },
-            { typeof(AuthManager), new ApiAuthManager() },
+            { typeof(AuthManager), OfflineMode ? (object) new OfflineApiAuthManager() : new ApiAuthManager() },
             { typeof(DofusMagingJobContract), new ScreenReaderDofusMagingJob() },
             { typeof(DofusMagingAIContract), new DofusMagingAI() },
             { typeof(StatConfigProviderContract), new StatConfigProvider() },
@@ -78,7 +87,7 @@ namespace Inkybot
             { typeof(AnalyticsReporter), new ApiAnalyticsReporter() },
             { typeof(MageConfigManager), new ConfigManager() },
             { typeof(ActionHandler), new ActionHandler() },
-            { typeof(ApiClient), new ApiClient() },
+            { typeof(ApiClient), OfflineMode ? (object) new OfflineApiClient() : new ApiClient() },
             { typeof(MagingAIServiceManager), new MagingAIServiceManager() },
             { typeof(ApiNotifier), new ApiNotifier() },
             { typeof(MageQueueManager), new MageQueueManager() },
