@@ -8,6 +8,7 @@ using Inkybot.Contracts;
 using Inkybot.Dofus;
 using Inkybot.Dofus.Contracts;
 using Inkybot.Dofus.Domain;
+using Inkybot.Domain;
 using DofusMagingAIContract = Inkybot.Dofus.Contracts.DofusMagingAI;
 using Inkybot.Events;
 using Inkybot.Exceptions;
