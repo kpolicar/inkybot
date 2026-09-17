@@ -226,3 +226,13 @@ tessdata/
 
 # Environment secrets
 .env
+.env.*
+!.env.example
+appsettings.*.json
+secrets.json
+id_*
+*.pem
+*.key
+*.sql
+*.dump
+auth.json
