@@ -16,14 +16,13 @@ Windows desktop bot that automates "maging" (re-rolling an item's stats with run
 
 ## How it works
 
+The maging loop reads the table, decides, clicks, and verifies the result on screen before moving on.
+
 ```mermaid
 flowchart LR
     A[Capture the docked Dofus window] --> B[OCR: item stats, attempt log, sink]
     B --> C{Maging AI: which rune, or done?}
-    C -->|apply rune| D
-    subgraph G[Inside Dofus.exe]
-        D[InkybotHook forges the click]
-    end
+    C -->|apply rune| D[Click the rune, through the hook]
     D --> E[Poll attempt log until it changes, re-read sink]
     E --> A
     C -->|done| F[Take item off the table, notify, next in queue]
@@ -32,7 +31,25 @@ flowchart LR
 - **Verify-on-screen tick loop.** Each `Tick` on a background thread reads the screen, resolves one action, clicks, then polls the game's attempt log until a line changes. Three timeouts on one rune means out of runes; a changed stat layout aborts.
 - **Screen reading.** Fixed regions are cropped from a Windows.Graphics.Capture frame (Win32 `PrintWindow` after blank frames), cleaned with Magick.NET and read by Tesseract 5 with SymSpell correction. Sink and stats are prefetched while the log is polled.
 - **Decisions.** Ten deterministic resolvers (`Services/*ItemMageResolve.cs`) run in order: safe combines toward targets, perfection only when spare sink covers the hard minimums, over-mage only to reach a minimum, exo last. Stat points carry sink weights (Vitality 0.2, AP 100): it is a budget planner.
-- **Input.** `InkybotHook` (EasyHook) detours `PeekMessageW`, raw-input, cursor and key-state APIs inside Dofus and feeds it synthetic message bursts, because Unity ignores plain `SendInput`. The app runs elevated and normalises the game's UI scale so OCR regions line up.
+
+Clicking is the hard part. Dofus reads raw input and pointer messages, so `SendInput` does nothing; instead a DLL is injected into the game and feeds it synthetic input from the inside.
+
+```mermaid
+flowchart TB
+    R["Inkybot: RequestClick x, y"]
+    subgraph Dofus["Injected into Dofus.exe"]
+        S[ServerInterface over .NET Remoting]
+        L[InputProcessorLoop: idle, button down, button up]
+        Q[Burst of 6 synthetic messages:<br/>raw input, pointer, classic]
+        P[Hooked PeekMessageW hands them over<br/>when the real queue runs dry]
+        G[Hooked GetRawInputData builds<br/>a fake hardware packet on demand]
+    end
+    U[Unity's per-frame input poll]
+    R --> S --> L --> Q --> P --> U
+    U -->|asks for the raw packet| G --> U
+```
+
+- **Inside the hook.** Ten Win32 functions are detoured with EasyHook. `PeekMessageW` is the dispatcher; `GetRawInputData` and `GetRawInputBuffer` fabricate `RAWINPUT` packets; `GetCursorPos`, `GetAsyncKeyState`, `GetCapture` and `ReleaseCapture` keep the game believing a real button is held. The app runs elevated and normalises the game's UI scale so OCR regions line up.
 - **Custom strategies.** A C# file extending `CustomDofusMagingAI` is compiled at runtime with Roslyn and can veto or replace any stage; `Script.Crocoring/` farms sink to a multiple of 10 before attempting an AP exo.
 - **Account and language.** OAuth login to inkybot-web; batches rune statistics, publishes exo screenshots, triggers Discord / push notifications. English or French UI, picked from the game's settings.
 
