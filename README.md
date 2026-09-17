@@ -1,62 +1,68 @@
 # inkybot
 
-Windows desktop bot that automates "maging" (rune-based stat enchanting) in the MMORPG Dofus. It reads the game through screen capture and OCR, decides which rune to apply next, and clicks for you.
+Windows desktop bot that automates "maging" (re-rolling an item's stats with runes) in the MMORPG Dofus: it reads the game through screen capture and OCR, picks the next rune, and clicks for you.
 
 ## What it is
 
-- A .NET 4.8 WinForms app that docks the running Dofus client inside its own window, watches the maging workshop via OCR, and applies runes until an item's stats match a user-defined target.
-- Built for a task that is slow, visual and repetitive by nature: one rune every few seconds, a static UI, and everything the bot needs already on screen. No packets, no memory reading.
-- Ships with a built-in rule-based "maging AI"; power users can drop in their own C# strategy script, compiled at runtime.
+- A .NET 4.8 WinForms app that docks the running Dofus client inside its own window, reads the maging table by OCR and applies runes until the item's stats reach the targets you set. Up to 45 inventory items can be queued.
+- It reads pixels, not packets or memory. The only code inside the game is `InkybotHook`, a DLL from reverse-engineering the Unity client's Win32 input path (10 hooked functions, forged raw-input packets) so clicks land while you keep your mouse.
+- Solo project, ~750 commits, 24 releases from v0.1 beta (Nov 2020) to v3.2 (Mar 2026), sold by subscription through the sibling backend. 80 NUnit tests, 47 real game screenshots as OCR fixtures.
 
 ## Background
 
-- Dofus is Ankama's turn-based tactical MMORPG (2004). Players earn kamas (the currency), level professions and trade gear. Since December 2024 the PC client runs on Unity ("Dofus 3"), which is what this bot targets: it reads the Ankama Launcher's `dofus3` settings to find the game and its language.
-- Maging (French *forgemagie*, English *smithmagic*) modifies an item's stats by applying runes. An attempt can succeed, fail, or knock other stats down; the "sink" (*puits*) is a running budget of lost stat power that can be spent to land harder runes. Pushing a stat past its cap is an over-mage; adding a stat the item never had is an "exo".
-- By hand this is hundreds of click / check / decide cycles per item. Inkybot runs the loop.
+- Dofus is Ankama's turn-based tactical MMORPG (2004). The target here is the Unity-based Dofus 3 client, supported since v3.0 (Dec 2024).
+- Maging (*forgemagie* / smithmagic) applies runes to an item; each attempt can succeed, fail or knock other stats down. Landing an AP or MP point the item never had (an "exo") takes many attempts and careful sink management.
+- The author's write-up, `article.md`, explains why OCR was chosen over packets: players mage on their main accounts, so detection risk drove the design. It predates the input hook.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    A[Capture Dofus window] --> B[OCR regions: stats, history, sink]
-    B --> C[Parse into Item / Stat model]
-    C --> D{Maging AI}
-    D -->|CombineRune| E[Forge click via injected hook]
-    E --> F[Poll history until it changes]
-    F --> A
-    D -->|Finish| G[Notify, next queued item]
+    A[Capture the docked Dofus window] --> B[OCR: item stats, attempt log, sink]
+    B --> C{Maging AI: which rune, or done?}
+    C -->|apply rune| D
+    subgraph G[Inside Dofus.exe]
+        D[InkybotHook forges the click]
+    end
+    D --> E[Poll attempt log until it changes, re-read sink]
+    E --> A
+    C -->|done| F[Take item off the table, notify, next in queue]
 ```
 
-- Tick loop: `ScreenReaderDofusMagingJob` runs on a background thread. Each `Tick` = read screen, resolve an action, execute it, wait for the mage history to change, read the new sink. Nothing is assumed; every combine is verified on screen.
-- Screen reading: `DofusScreenScan` crops fixed regions from a window capture (ScreenRecorderLib by default, Windows.Graphics.Capture and Win32 `PrintWindow` as fallbacks), preprocesses with Magick.NET, runs Tesseract (English, French and digits models) and corrects with SymSpell.
-- Decisions: `DofusMagingAI` chains resolvers (Target, Perfection, ReachMinimum, FinishSink, Exo) against a per-stat config: target, minimum, priority, allowed rune sizes. Deterministic, no ML.
-- Input: `InkybotHook` is an EasyHook DLL injected into the Dofus process. It hooks `PeekMessageW`, raw-input and cursor APIs to forge clicks Unity accepts, so maging works with the game in the background while you keep your mouse.
-- Account and API: the client logs in to inkybot-web with OAuth, checks subscription or trial, streams rune statistics, publishes exo screenshots and triggers Discord / push notifications. Payloads are AES-256-CBC encrypted.
-- English and French UI, auto-detected from the game's own settings.
+- **Verify-on-screen tick loop.** Each `Tick` on a background thread reads the screen, resolves one action, clicks, then polls the game's attempt log until a line changes. Three timeouts on one rune means out of runes; a changed stat layout aborts.
+- **Screen reading.** Fixed regions are cropped from a Windows.Graphics.Capture frame (Win32 `PrintWindow` after blank frames), cleaned with Magick.NET and read by Tesseract 5 with SymSpell correction. Sink and stats are prefetched while the log is polled.
+- **Decisions.** Ten deterministic resolvers (`Services/*ItemMageResolve.cs`) run in order: safe combines toward targets, perfection only when spare sink covers the hard minimums, over-mage only to reach a minimum, exo last. Stat points carry sink weights (Vitality 0.2, AP 100): it is a budget planner.
+- **Input.** `InkybotHook` (EasyHook) detours `PeekMessageW`, raw-input, cursor and key-state APIs inside Dofus and feeds it synthetic message bursts, because Unity ignores plain `SendInput`. The app runs elevated and normalises the game's UI scale so OCR regions line up.
+- **Custom strategies.** A C# file extending `CustomDofusMagingAI` is compiled at runtime with Roslyn and can veto or replace any stage; `Script.Crocoring/` farms sink to a multiple of 10 before attempting an AP exo.
+- **Account and language.** OAuth login to inkybot-web; batches rune statistics, publishes exo screenshots, triggers Discord / push notifications. English or French UI, picked from the game's settings.
 
 ## Tech stack
 
-- C# / .NET Framework 4.8, WinForms, x64; legacy `.csproj` built with MSBuild.
-- Tesseract 5, Magick.NET, SymSpell; ScreenRecorderLib, Windows.Graphics.Capture, SharpDX for capture.
-- EasyHook (process injection), Westwind.Scripting + Roslyn (custom AI scripts), NLog, Newtonsoft.Json.
-- ConfuserEx obfuscation on Release builds; NUnit 3 tests; GitHub Actions build and release workflows.
+- C# / .NET Framework 4.8, WinForms, x64; legacy `.csproj` built with MSBuild; NUnit 3 (tests are not run in CI).
+- Tesseract 5, Magick.NET, SymSpell; Windows.Graphics.Capture + SharpDX with a Win32 `PrintWindow` fallback.
+- EasyHook, Westwind.Scripting + Roslyn, NLog; ConfuserEx obfuscation on Release; GitHub Actions build and release workflows.
 
 ## Repository layout
 
-- `Inkybot/` - the WinForms app: forms, OCR and capture services, maging job, AI resolvers, API client.
-- `Inkybot.Dofus/` - domain library (Item, Stat, Rune, MageConfig) and the `DofusMagingAI` base class custom scripts extend.
-- `InkybotHook/` - the injected DLL; its README documents the reverse-engineered Unity input pipeline.
-- `Script.Crocoring/`, `Script.Gelano/` - example custom maging AI scripts. `Tests/` - NUnit tests against real screenshots.
+- `InkybotHook/` — the injected DLL; start with its README for the deduced per-frame Unity input model.
+- `Inkybot/Services/` — capture, OCR (`DofusScreenScan`), the maging job (`MagingJob/Tick.cs`) and the resolvers.
+- `Inkybot.Dofus/` — domain model (Item, Stat, Rune, MageConfig) and the base classes custom scripts extend.
+- `Script.Crocoring/`, `Tests/` — example strategies; NUnit tests over the AI and OCR against real screenshots.
+- `article.md`, `CLAUDE.md` — design write-up and architecture notes; parts predate the hook.
 
-## Building
+## Running it
 
-- Open `Inkybot.sln` in Visual Studio or Rider, or run what CI does: `nuget restore Inkybot.sln` then `msbuild Inkybot.sln /p:Configuration=Release`.
-- Pushing a `v*` tag builds on `windows-latest` and publishes a zipped GitHub release.
+```
+nuget restore Inkybot.sln
+msbuild Inkybot.sln /p:Configuration=Release
+```
+A `v*` tag publishes a zipped GitHub Release from CI and can ship it to the web app's download storage; EasyHook's native files must be copied from the NuGet cache first (see `build.yml`).
 
 ## Related
 
-- [inkybot-web](https://github.com/kpolicar/inkybot-web) - the Laravel backend and website: accounts, subscriptions, the API this client talks to, Discord bot and release notes.
+- [inkybot-web](https://github.com/kpolicar/inkybot-web) — the Laravel backend and site: accounts, subscriptions, the encrypted API this client talks to, Discord bot, release notes.
 
 ## Status
 
-Personal project, not affiliated with Ankama. The hosted backend (inkybot.me) has been shut down; the current build runs in `OfflineMode` against a mocked API with telemetry disabled. Source is not licensed for redistribution (see `LICENSE`).
+Backend shut down; since July 2026 the client runs offline against a mocked API, telemetry off.
+Personal project by Klemen Poličar. Not affiliated with Ankama SAS; Dofus is their trademark. Source is not licensed for redistribution (see `LICENSE`).
