@@ -35,18 +35,18 @@ flowchart LR
 Clicking is the hard part. Dofus reads raw input and pointer messages, so `SendInput` does nothing; instead a DLL is injected into the game and feeds it synthetic input from the inside.
 
 ```mermaid
-flowchart TB
-    R["Inkybot: RequestClick x, y"]
+flowchart LR
+    R["Inkybot asks<br/>for a click"]
     subgraph Dofus["Injected into Dofus.exe"]
-        S[ServerInterface over .NET Remoting]
-        L[InputProcessorLoop: idle, button down, button up]
-        Q[Burst of 6 synthetic messages:<br/>raw input, pointer, classic]
-        P[Hooked PeekMessageW hands them over<br/>when the real queue runs dry]
-        G[Hooked GetRawInputData builds<br/>a fake hardware packet on demand]
+        S["ServerInterface<br/>.NET Remoting"]
+        L["InputProcessorLoop<br/>down, then up"]
+        Q["6 synthetic messages:<br/>raw input, pointer, classic"]
+        P["Hooked PeekMessageW<br/>hands them over"]
+        G["Hooked GetRawInputData<br/>fakes the hardware packet"]
     end
-    U[Unity's per-frame input poll]
+    U["Unity's per-frame<br/>input poll"]
     R --> S --> L --> Q --> P --> U
-    U -->|asks for the raw packet| G --> U
+    U -->|needs the raw packet| G --> U
 ```
 
 - **Inside the hook.** Ten Win32 functions are detoured with EasyHook. `PeekMessageW` is the dispatcher; `GetRawInputData` and `GetRawInputBuffer` fabricate `RAWINPUT` packets; `GetCursorPos`, `GetAsyncKeyState`, `GetCapture` and `ReleaseCapture` keep the game believing a real button is held. The app runs elevated and normalises the game's UI scale so OCR regions line up.
